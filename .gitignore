@@ -1,3 +1,7 @@
+# PacMan
+build/
+
+# IDEs and OS
 .idea/
 .vs/
 .vscode/
@@ -48,3 +52,4 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+cmake-build-debug
