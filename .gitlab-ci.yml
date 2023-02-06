@@ -1,0 +1,28 @@
+
+image: gcc
+
+stages :
+  - build
+
+before_script:
+  - apt-get update
+  - apt-get install build-essential cmake libsdl2-dev -y
+
+cmake:
+  stage: build
+  only:
+    - merge_requests
+    - main
+  script:
+    - cmake .
+
+make:
+  stage: build
+  only:
+    - merge_requests
+    - main
+  dependencies:
+    - cmake
+  script:
+    - make
+
