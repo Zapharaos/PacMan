@@ -13,7 +13,8 @@ build:
     - apt-get update
     - apt-get install build-essential cmake libsdl2-dev -y
   script:
-    - cmake .
+    - mkdir build && cd build
+    - cmake ..
     - make
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
