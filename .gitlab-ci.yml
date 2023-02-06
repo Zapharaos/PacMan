@@ -16,6 +16,7 @@ build:
     - cmake .
     - make
   artifacts:
-    -paths:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
       - build/
 
