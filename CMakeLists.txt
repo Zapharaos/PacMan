@@ -5,7 +5,8 @@ project(PacMan LANGUAGES CXX)
 
 find_package(SDL2 REQUIRED)
 
-add_executable(${PROJECT_NAME} "")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+add_executable(${PROJECT_NAME} "" include/constants.h)
 target_sources(${PROJECT_NAME} PRIVATE src/pacman.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
