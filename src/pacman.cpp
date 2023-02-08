@@ -2,29 +2,36 @@
 
 #include <iostream>
 #include "../include/constants.h"
+#include "../include/map.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
 SDL_Surface* plancheSprites = nullptr;
 
+int bg_width = constants::MAP_SCALE_RATIO * constants::MAP_WIDTH;
+int bg_height = constants::MAP_SCALE_RATIO  * constants::MAP_HEIGHT;
 SDL_Rect src_bg = { constants::MAP_START_X,constants::MAP_START_Y, constants::MAP_WIDTH,constants::MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
-SDL_Rect bg = { constants::MAP_SCALE_RATIO,constants::MAP_SCALE_RATIO, constants::MAP_SCALE_RATIO * constants::MAP_WIDTH, constants::MAP_SCALE_RATIO  * constants::MAP_HEIGHT}; // ici scale x4
+SDL_Rect bg = { 0,0, bg_width,bg_height }; // ici scale x4
 
 SDL_Rect ghost_r = { constants::GHOST_START_X,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
 SDL_Rect ghost_l = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 2,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
-SDL_Rect ghost_d = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 6,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
 SDL_Rect ghost_u = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 4,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
-SDL_Rect ghost = { 34,34, 32,32 };     // ici scale x2
+SDL_Rect ghost_d = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 6,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
+SDL_Rect ghost = { 34,34, constants::CELL_WIDTH,constants::CELL_HEIGHT };     // ici scale x2
 
 int count;
+Map* map = nullptr;
 
 void init()
 {
-	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, constants::MAP_SCALE_RATIO * constants::MAP_WIDTH + 8, constants::MAP_SCALE_RATIO  * constants::MAP_HEIGHT + 8, SDL_WINDOW_SHOWN);
+	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, bg_width, bg_height, SDL_WINDOW_SHOWN);
 	win_surf = SDL_GetWindowSurface(pWindow);
 
 	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     count = 0;
+
+    map = new Map{bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT};
+    map->print();
 }
 
 
@@ -104,6 +111,10 @@ int main(int argc, char** argv)
             puts("LEFT");
         if (keys[SDL_SCANCODE_RIGHT])
             puts("RIGHT");
+        if (keys[SDL_SCANCODE_UP])
+            puts("UP");
+        if (keys[SDL_SCANCODE_DOWN])
+            puts("DOWN");
 
         // AFFICHAGE
 		draw();

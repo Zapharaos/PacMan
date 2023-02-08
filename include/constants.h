@@ -18,6 +18,9 @@ namespace constants
     inline constexpr int GHOST_START_Y {123};
     inline constexpr int GHOST_WIDTH {16};
     inline constexpr int GHOST_HEIGHT {16};
+
+    inline constexpr int CELL_WIDTH {32};
+    inline constexpr int CELL_HEIGHT {32};
 }
 
 #endif //PACMAN_CONSTANTS_H
