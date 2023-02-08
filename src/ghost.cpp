@@ -4,7 +4,7 @@
 
 #include <utility>
 
-#include "../include/Ghost.h"
+#include "../include/ghost.h"
 
 Ghost::Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up,
              const SDL_Rect &scared, const SDL_Rect &lessScared, const SDL_Rect &invisUp, const SDL_Rect &invisDown,
