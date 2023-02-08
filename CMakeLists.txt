@@ -8,7 +8,7 @@ find_package(SDL2 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(${PROJECT_NAME} "" include/constants.h include/map.h include/cell.h include/Ghost.h)
-target_sources(${PROJECT_NAME} PRIVATE src/pacman.cpp src/map.cpp src/cell.cpp src/Ghost.cpp))
+target_sources(${PROJECT_NAME} PRIVATE src/pacman.cpp src/map.cpp src/cell.cpp src/Ghost.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
