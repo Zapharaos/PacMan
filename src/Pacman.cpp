@@ -1,29 +1,37 @@
 #include <SDL.h>
 
 #include <iostream>
+#include "../include/constants.h"
+#include "../include/map.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
 SDL_Surface* plancheSprites = nullptr;
 
-SDL_Rect src_bg = { 200,3, 168,216 }; // x,y, w,h (0,0) en haut a gauche
-SDL_Rect bg = { 4,4, 672,864 }; // ici scale x4
+int bg_width = constants::MAP_SCALE_RATIO * constants::MAP_WIDTH;
+int bg_height = constants::MAP_SCALE_RATIO  * constants::MAP_HEIGHT;
+SDL_Rect src_bg = { constants::MAP_START_X,constants::MAP_START_Y, constants::MAP_WIDTH,constants::MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
+SDL_Rect bg = { 0,0, bg_width,bg_height }; // ici scale x4
 
-SDL_Rect ghost_r = { 3,123, 16,16 }; 
-SDL_Rect ghost_l = { 37,123, 16,16 }; 
-SDL_Rect ghost_d = { 105,123, 16,16 }; 
-SDL_Rect ghost_u = { 71,123, 16,16 }; 
-SDL_Rect ghost = { 34,34, 32,32 };     // ici scale x2
+SDL_Rect ghost_r = { constants::GHOST_START_X,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
+SDL_Rect ghost_l = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 2,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
+SDL_Rect ghost_u = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 4,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
+SDL_Rect ghost_d = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 6,constants::GHOST_START_Y, constants::GHOST_WIDTH,constants::GHOST_HEIGHT };
+SDL_Rect ghost = { 34,34, constants::CELL_WIDTH,constants::CELL_HEIGHT };     // ici scale x2
 
 int count;
+Map* map = nullptr;
 
 void init()
 {
-	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 900, SDL_WINDOW_SHOWN);
+	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, bg_width, bg_height, SDL_WINDOW_SHOWN);
 	win_surf = SDL_GetWindowSurface(pWindow);
 
 	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     count = 0;
+
+    map = new Map{bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT};
+    map->print();
 }
 
 
@@ -59,7 +67,7 @@ void draw()
     // ici on change entre les 2 sprites sources pour une jolie animation.
     SDL_Rect ghost_in2 = *ghost_in;
     if ((count/4)%2)
-        ghost_in2.x += 17;
+        ghost_in2.x += (constants::GHOST_WIDTH + 1);
         
     // couleur transparente
     SDL_SetColorKey(plancheSprites, true, 0);
@@ -103,6 +111,10 @@ int main(int argc, char** argv)
             puts("LEFT");
         if (keys[SDL_SCANCODE_RIGHT])
             puts("RIGHT");
+        if (keys[SDL_SCANCODE_UP])
+            puts("UP");
+        if (keys[SDL_SCANCODE_DOWN])
+            puts("DOWN");
 
         // AFFICHAGE
 		draw();
