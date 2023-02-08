@@ -29,7 +29,9 @@ void init()
 
 	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     count = 0;
-    map = new Map(bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT);
+
+    map = new Map{bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT};
+    map->print();
 }
 
 

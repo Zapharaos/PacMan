@@ -13,11 +13,13 @@ class Map {
     public:
         Map();
         Map(int width, int height);
+        void print() const;
+        inline int getCellIndexByPositions(int x, int y) { return y * height_ + x; };
 
-private:
-        int width = 0;
-        int height = 0;
-        std::vector<Cell> cells;
+    private:
+        int width_ = 0;
+        int height_ = 0;
+        std::vector<Cell> cells_;
 };
 
 
