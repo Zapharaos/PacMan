@@ -14,8 +14,10 @@
 #define SCARED 1
 #define LESSSCARED 2
 #define INVISIBLE 3
+using namespace std;
 
 class Ghost {
+
 private:
     // all sprites
     SDL_Rect right ;
@@ -35,11 +37,73 @@ private:
     pair<int, int> coo;
 
     string name ;
-    int State ;
+    int state ;
 
 
+public:
 
+    Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up, const SDL_Rect &scared,
+          const SDL_Rect &lessScared, const SDL_Rect &invisUp, const SDL_Rect &invisDown, const SDL_Rect &invisRight,
+          const SDL_Rect &invisLeft, const SDL_Rect &starting, const pair<int, int> &coo, string name,
+          int state);
 
+    [[nodiscard]] const SDL_Rect &getRight() const;
+
+    void setRight(const SDL_Rect &right);
+
+    [[nodiscard]] const SDL_Rect &getLeft() const;
+
+    void setLeft(const SDL_Rect &left);
+
+    [[nodiscard]] const SDL_Rect &getDown() const;
+
+    void setDown(const SDL_Rect &down);
+
+    [[nodiscard]] const SDL_Rect &getUp() const;
+
+    void setUp(const SDL_Rect &up);
+
+    [[nodiscard]] const SDL_Rect &getScared() const;
+
+    void setScared(const SDL_Rect &scared);
+
+    [[nodiscard]] const SDL_Rect &getLessScared() const;
+
+    void setLessScared(const SDL_Rect &lessScared);
+
+    [[nodiscard]] const SDL_Rect &getInvisUp() const;
+
+    void setInvisUp(const SDL_Rect &invisUp);
+
+    [[nodiscard]] const SDL_Rect &getInvisDown() const;
+
+    void setInvisDown(const SDL_Rect &invisDown);
+
+    [[nodiscard]] const SDL_Rect &getInvisRight() const;
+
+    void setInvisRight(const SDL_Rect &invisRight);
+
+    [[nodiscard]] const SDL_Rect &getInvisLeft() const;
+
+    void setInvisLeft(const SDL_Rect &invisLeft);
+
+    [[nodiscard]] const SDL_Rect &getStarting() const;
+
+    void setStarting(const SDL_Rect &starting);
+
+    [[nodiscard]] const pair<int, int> &getCoo() const;
+
+    void setCoo(const pair<int, int> &coo);
+
+    [[nodiscard]] const string &getName() const;
+
+    void setName(const string &name);
+
+    [[nodiscard]] int getState() const;
+
+    void setState(int state);
+
+    virtual ~Ghost();
 };
 
 
