@@ -6,12 +6,13 @@
 #define PACMAN_CELL_H
 
 #include <string>
+#include <array>
 
-class Cell {
+class cell {
 
     public:
-        Cell();
-        Cell(int x, int y);
+        cell();
+        cell(int x, int y);
 
     [[nodiscard]] int getX() const;
 
@@ -25,17 +26,12 @@ class Cell {
 
     void setIsWall(bool isWall);
 
-    [[nodiscard]] int getPoints() const;
-
-    void setPoints(int points);
-
     void print() const;
 
     private:
         int x_ = 0;
         int y_ = 0;
         bool is_wall_ = false;
-        int points_ = 0;
 };
 
 

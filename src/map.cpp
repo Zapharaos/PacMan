@@ -3,19 +3,19 @@
 //
 
 #include <iostream>
-#include "../include/Map.h"
+#include "../include/map.h"
 
-Map::Map() = default;
+map::map() = default;
 
-Map::Map(int width, int height) : width_(width), height_(height)
+map::map(int width, int height) : width_(width), height_(height)
 {
     for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++)
-            cells_.emplace_back(Cell{x, y});
+            cells_.emplace_back(cell{x, y});
 }
 
-void Map::print() const{
+void map::print() const
+{
     std::cout << "width: " << width_ << ", height: " << height_ << ", cells: " << std::endl;
-    for(auto cell: cells_)
-        cell.print();
+    for(const auto& cell: cells_) cell.print();
 }

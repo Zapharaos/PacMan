@@ -6,20 +6,20 @@
 #define PACMAN_MAP_H
 
 #include <vector>
-#include "Cell.h"
+#include "cell.h"
 
-class Map {
+class map {
 
     public:
-        Map();
-        Map(int width, int height);
+        map();
+        map(int width, int height);
         void print() const;
         inline int getCellIndexByPositions(int x, int y) { return y * height_ + x; };
 
     private:
         int width_ = 0;
         int height_ = 0;
-        std::vector<Cell> cells_;
+        std::vector<cell> cells_;
 };
 
 

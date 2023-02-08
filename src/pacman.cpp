@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "../include/constants.h"
-#include "../include/Map.h"
+#include "../include/map.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
@@ -20,7 +20,7 @@ SDL_Rect ghost_d = { constants::GHOST_START_X + (constants::GHOST_WIDTH + 1) * 6
 SDL_Rect ghost = { 34,34, constants::CELL_WIDTH,constants::CELL_HEIGHT };     // ici scale x2
 
 int count;
-Map* map = nullptr;
+map* map = nullptr;
 
 void init()
 {
@@ -30,7 +30,7 @@ void init()
 	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     count = 0;
 
-    map = new Map{bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT};
+    map = new map{bg_width / constants::CELL_WIDTH, bg_height / constants::CELL_HEIGHT};
     map->print();
 }
 
