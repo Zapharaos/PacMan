@@ -5,34 +5,34 @@
 #include <iostream>
 #include "../include/cell.h"
 
-cell::cell() = default;
+Cell::Cell() = default;
 
-cell::cell(int x, int y) : x_(x), y_(y) {}
+Cell::Cell(int x, int y) : x_(x), y_(y) {}
 
-int cell::getX() const {
+int Cell::getX() const {
     return x_;
 }
 
-void cell::setX(int x) {
+void Cell::setX(int x) {
     x_ = x;
 }
 
-int cell::getY() const {
+int Cell::getY() const {
     return y_;
 }
 
-void cell::setY(int y) {
+void Cell::setY(int y) {
     y_ = y;
 }
 
-bool cell::isWall() const {
+bool Cell::isWall() const {
     return is_wall_;
 }
 
-void cell::setIsWall(bool isWall) {
+void Cell::setIsWall(bool isWall) {
     is_wall_ = isWall;
 }
 
-void cell::print() const{
-    std::cout << "x: " << x_ << ", y: " << y_ << std::endl;
+void Cell::print() const{
+    std::cout << "x: " << x_ << ", y: " << y_ << ", isWall: " << is_wall_ << std::endl;
 }

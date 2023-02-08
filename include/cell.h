@@ -8,11 +8,11 @@
 #include <string>
 #include <array>
 
-class cell {
+class Cell {
 
     public:
-        cell();
-        cell(int x, int y);
+        Cell();
+        Cell(int x, int y);
 
     [[nodiscard]] int getX() const;
 

@@ -8,18 +8,18 @@
 #include <vector>
 #include "cell.h"
 
-class map {
+class Map {
 
     public:
-        map();
-        map(int width, int height);
+        Map();
+        Map(int width, int height);
         void print() const;
         inline int getCellIndexByPositions(int x, int y) { return y * height_ + x; };
 
     private:
         int width_ = 0;
         int height_ = 0;
-        std::vector<cell> cells_;
+        std::vector<Cell> cells_;
 };
 
 

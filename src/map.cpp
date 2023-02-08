@@ -5,16 +5,16 @@
 #include <iostream>
 #include "../include/map.h"
 
-map::map() = default;
+Map::Map() = default;
 
-map::map(int width, int height) : width_(width), height_(height)
+Map::Map(int width, int height) : width_(width), height_(height)
 {
     for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++)
-            cells_.emplace_back(cell{x, y});
+            cells_.emplace_back(Cell{x, y});
 }
 
-void map::print() const
+void Map::print() const
 {
     std::cout << "width: " << width_ << ", height: " << height_ << ", cells: " << std::endl;
     for(const auto& cell: cells_) cell.print();
