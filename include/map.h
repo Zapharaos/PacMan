@@ -12,9 +12,9 @@ class Map {
 
     public:
         Map();
-        Map(int width, int height);
+        Map(int width, int height, const std::vector<int>& cell_types);
         void print() const;
-        inline int getCellIndexByPositions(int x, int y) { return y * height_ + x; };
+        void printAsMap() const;
 
     private:
         int width_ = 0;

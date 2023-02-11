@@ -7,7 +7,7 @@
 
 Cell::Cell() = default;
 
-Cell::Cell(int x, int y) : x_(x), y_(y) {}
+Cell::Cell(int x, int y, bool is_wall) : x_(x), y_(y), is_wall_(is_wall) {}
 
 int Cell::getX() const {
     return x_;

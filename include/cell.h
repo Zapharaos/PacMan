@@ -12,7 +12,7 @@ class Cell {
 
     public:
         Cell();
-        Cell(int x, int y);
+        Cell(int x, int y, bool is_wall);
 
     [[nodiscard]] int getX() const;
 

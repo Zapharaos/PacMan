@@ -31,7 +31,7 @@ private:
     SDL_Rect invis_right ;
     SDL_Rect invis_left ;
 
-    //starting position on map
+    //starting position on pacman_map.txt
     SDL_Rect starting ;     // ici scale x2
 
     pair<int, int> coo;
