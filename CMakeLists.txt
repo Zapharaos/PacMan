@@ -11,13 +11,17 @@ add_executable(${PROJECT_NAME} ""
 		include/map.h
 		include/cell.h
 		include/game.h
-		include/ghost.h)
+		include/ghost.h
+		include/entity.h
+)
 target_sources(${PROJECT_NAME} PRIVATE
 		src/pacman.cpp
 		src/map.cpp
 		src/cell.cpp
 		src/game.cpp
-		src/ghost.cpp)
+		src/ghost.cpp
+		src/entity.cpp
+)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})

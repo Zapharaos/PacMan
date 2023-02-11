@@ -8,11 +8,10 @@
 
 Ghost::Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up,
              const SDL_Rect &scared, const SDL_Rect &lessScared, const SDL_Rect &invisUp, const SDL_Rect &invisDown,
-             const SDL_Rect &invisRight, const SDL_Rect &invisLeft, const SDL_Rect &starting, const pair<int, int> &coo,
-             string name, int state) : right(right), left(left), down(down), up(up), scared(scared),
+             const SDL_Rect &invisRight, const SDL_Rect &invisLeft, const SDL_Rect &starting,int state)
+             : right(right), left(left), down(down), up(up), scared(scared),
                                               less_scared(lessScared), invis_up(invisUp), invis_down(invisDown),
-                                              invis_right(invisRight), invis_left(invisLeft), starting(starting),
-                                              coo(coo), name(std::move(name)), state(state) {}
+                                              invis_right(invisRight), invis_left(invisLeft), starting(starting), state(state) {}
 
 const SDL_Rect &Ghost::getRight() const {
     return right;
@@ -102,21 +101,6 @@ void Ghost::setStarting(const SDL_Rect &starting_) {
     Ghost::starting = starting_;
 }
 
-const pair<int, int> &Ghost::getCoo() const {
-    return coo;
-}
-
-void Ghost::setCoo(const pair<int, int> &coo_) {
-    Ghost::coo = coo_;
-}
-
-const string &Ghost::getName() const {
-    return name;
-}
-
-void Ghost::setName(const string &name_) {
-    Ghost::name = name_;
-}
 
 int Ghost::getState() const {
     return state;
