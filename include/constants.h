@@ -7,6 +7,17 @@
 
 namespace constants
 {
+
+    // Files path
+    inline const char *const PATH_FILE_PACMAN_SPRITES {"./pacman_sprites.bmp"};
+    inline const char *const PATH_FILE_PACMAN_MAP {"./pacman_map.txt"};
+
+    // Cell types
+    inline constexpr int CELL_TYPE_WALL {0};
+    inline constexpr int CELL_TYPE_LOW_POINTS {1};
+    inline constexpr int CELL_TYPE_HIGH_POINTS {2};
+    inline constexpr int CELL_TYPE_DEFAULT {3};
+
     // Bitmap => Map
     inline constexpr int BMP_MAP_START_X {200};
     inline constexpr int BMP_MAP_START_Y {3};

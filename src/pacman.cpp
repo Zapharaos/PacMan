@@ -25,10 +25,11 @@ void init()
 	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT, SDL_WINDOW_SHOWN);
 	win_surf = SDL_GetWindowSurface(pWindow);
 
-	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
+	plancheSprites = SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES);
     count = 0;
 
-    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT);
+    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::PATH_FILE_PACMAN_MAP);
+    game->getMap().printAsMap();
 }
 
 
@@ -115,7 +116,7 @@ int main(int argc, char** argv)
 
         // AFFICHAGE
 		draw();
-		SDL_UpdateWindowSurface(pWindow); 
+		SDL_UpdateWindowSurface(pWindow);
         // LIMITE A 60 FPS
 		SDL_Delay(16); // utiliser SDL_GetTicks64() pour plus de precisions
 	}
