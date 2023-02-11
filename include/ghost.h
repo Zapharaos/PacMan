@@ -8,12 +8,8 @@
 #include <string>
 #include <iostream>
 #include <utility>
+#include "constants.h"
 
-// Ghost states
-#define DEFAULT 0
-#define SCARED 1
-#define LESSSCARED 2
-#define INVISIBLE 3
 using namespace std;
 
 class Ghost {
@@ -34,18 +30,12 @@ private:
     //starting position on pacman_map.txt
     SDL_Rect starting ;     // ici scale x2
 
-    pair<int, int> coo;
-
-    string name ;
-    int state ;
-
-
+    int state;
 public:
 
     Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up, const SDL_Rect &scared,
           const SDL_Rect &lessScared, const SDL_Rect &invisUp, const SDL_Rect &invisDown, const SDL_Rect &invisRight,
-          const SDL_Rect &invisLeft, const SDL_Rect &starting, const pair<int, int> &coo, string name,
-          int state);
+          const SDL_Rect &invisLeft, const SDL_Rect &starting, int state);
 
     [[nodiscard]] const SDL_Rect &getRight() const;
 
@@ -90,14 +80,6 @@ public:
     [[nodiscard]] const SDL_Rect &getStarting() const;
 
     void setStarting(const SDL_Rect &starting);
-
-    [[nodiscard]] const pair<int, int> &getCoo() const;
-
-    void setCoo(const pair<int, int> &coo);
-
-    [[nodiscard]] const string &getName() const;
-
-    void setName(const string &name);
 
     [[nodiscard]] int getState() const;
 

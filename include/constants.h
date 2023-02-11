@@ -29,16 +29,18 @@ namespace constants
     inline constexpr int BMP_CELL_HEIGHT {8};
 
     // Bitmap => Entity
-    inline constexpr int BMP_ENTITY_WIDTH {16};
-    inline constexpr int BMP_ENTITY_HEIGHT {16};
     inline constexpr int BMP_ENTITY_BORDER_WIDTH {1};
-    inline constexpr int BMP_ENTITY_TOTAL_WIDTH {BMP_ENTITY_WIDTH + BMP_ENTITY_BORDER_WIDTH};
-    inline constexpr int BMP_ENTITY_OFFSET_TO_RIGHT_IMG {0 * BMP_ENTITY_TOTAL_WIDTH};
-    inline constexpr int BMP_ENTITY_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_TOTAL_WIDTH};
-    inline constexpr int BMP_ENTITY_OFFSET_TO_UP_IMG {4 * BMP_ENTITY_TOTAL_WIDTH};
-    inline constexpr int BMP_ENTITY_OFFSET_TO_DOWN_IMG {6 * BMP_ENTITY_TOTAL_WIDTH};
+    inline constexpr int BMP_ENTITY_GHOST_WIDTH {16};
+    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {16};
+    inline constexpr int BMP_ENTITY_GHOST_TOTAL_WIDTH {BMP_ENTITY_GHOST_WIDTH + BMP_ENTITY_BORDER_WIDTH};
+    inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG {0};
+    inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
+    inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG {BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG + 2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
+    inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG{BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG + 2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
 
-    // Bitmap => Ghosts
+    // Bitmap => Entity positions
+    inline constexpr int BMP_PACMAN_START_X {3};
+    inline constexpr int BMP_PACMAN_START_Y {89};
     inline constexpr int BMP_GHOST_BLINKY_START_X {3};
     inline constexpr int BMP_GHOST_BLINKY_START_Y {123};
     inline constexpr int BMP_GHOST_PINKY_START_X {3};
@@ -52,6 +54,8 @@ namespace constants
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
     inline constexpr int MAP_HEIGHT {BMP_MAP_HEIGHT / BMP_CELL_HEIGHT};
     inline constexpr int SCALE_BMP_TO_WINDOW {4};
+    inline constexpr int SPEED_PACMAN {2};
+    inline constexpr int SPEED_GHOST {1};
 
     // Window => Map
     inline constexpr int WINDOW_MAP_START_X {0};
@@ -62,6 +66,22 @@ namespace constants
     // Window => Cell
     inline constexpr int WINDOW_CELL_WIDTH {SCALE_BMP_TO_WINDOW * BMP_CELL_WIDTH};
     inline constexpr int WINDOW_CELL_HEIGHT {SCALE_BMP_TO_WINDOW * BMP_CELL_HEIGHT};
+
+    // Ghost states
+    inline constexpr int GHOST_DEFAULT {0};
+    inline constexpr int GHOST_SCARED {1};
+    inline constexpr int GHOST_LESSSCARED{2};
+    inline constexpr int GHOST_INVISIBLE {3};
+
+
 }
+
+enum directions
+{
+    LEFT = 1,
+    RIGHT = 2,
+    UP = 3,
+    DOWN = 4
+};
 
 #endif //PACMAN_CONSTANTS_H

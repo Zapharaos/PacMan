@@ -12,14 +12,20 @@ class Map {
 
     public:
         Map();
-        Map(int width, int height, const std::vector<int>& cell_types);
+        Map(int width, int height, int cell_size, const std::vector<int>& cell_types);
         void print() const;
         void printAsMap() const;
+        [[nodiscard]] bool canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp) const;
+        [[nodiscard]] Cell getCellAtPosition(std::pair<int, int> position) const;
+        [[nodiscard]] bool isPositionOutOfBounds(std::pair<int, int> position) const;
+        [[nodiscard]] inline int getCellIndexFromPosition(std::pair<int, int> position) const;
 
     private:
         int width_ = 0;
         int height_ = 0;
+        int cell_size_ = 0;
         std::vector<Cell> cells_;
+        [[nodiscard]] std::pair<float, float> getCellCoordinatesFromPositions(std::pair<int, int> coordinates, bool isMovingLeftOrUp) const;
 };
 
 

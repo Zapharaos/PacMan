@@ -11,14 +11,19 @@ SDL_Surface* plancheSprites = nullptr;
 SDL_Rect src_bg = { constants::BMP_MAP_START_X,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
 SDL_Rect bg = { constants::WINDOW_MAP_START_X,constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT }; // ici scale x4
 
-SDL_Rect ghost_blinky_r = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_OFFSET_TO_RIGHT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_WIDTH,constants::BMP_ENTITY_HEIGHT };
-SDL_Rect ghost_blinky_l = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_OFFSET_TO_LEFT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_WIDTH,constants::BMP_ENTITY_HEIGHT };
-SDL_Rect ghost_blinky_u = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_OFFSET_TO_UP_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_WIDTH,constants::BMP_ENTITY_HEIGHT };
-SDL_Rect ghost_blinky_d = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_OFFSET_TO_DOWN_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_WIDTH,constants::BMP_ENTITY_HEIGHT };
-SDL_Rect ghost_blinky = { 34,34, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
+SDL_Rect ghost_blinky_r = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+SDL_Rect ghost_blinky_l = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+SDL_Rect ghost_blinky_u = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+SDL_Rect ghost_blinky_d = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
+
+SDL_Rect pacman_default = { constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+SDL_Rect pacman = { 32*10,32*20, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
 
 int count;
 Game* game = nullptr;
+
+SDL_Rect* pacman_in = nullptr;
 
 void init()
 {
@@ -28,7 +33,9 @@ void init()
 	plancheSprites = SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES);
     count = 0;
 
-    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::PATH_FILE_PACMAN_MAP);
+    pacman_in = &(pacman_default);
+
+    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP);
     game->getMap().printAsMap();
 }
 
@@ -45,32 +52,34 @@ void draw()
     {
         case 0:
             ghost_in = &(ghost_blinky_r);
-            ghost_blinky.x++;
+            ghost_blinky.x+=constants::SPEED_GHOST;
             break;
         case 1:
             ghost_in = &(ghost_blinky_d);
-            ghost_blinky.y++;
+            ghost_blinky.y+=constants::SPEED_GHOST;
             break;
         case 2:
             ghost_in = &(ghost_blinky_l);
-            ghost_blinky.x--;
+            ghost_blinky.x-=constants::SPEED_GHOST;
             break;
         case 3:
             ghost_in = &(ghost_blinky_u);
-            ghost_blinky.y--;
+            ghost_blinky.y-=constants::SPEED_GHOST;
             break;
     }
     count =(count+1)%(512);
 
     // ici on change entre les 2 sprites sources pour une jolie animation.
+    SDL_Rect pacman_in2 = *pacman_in;
     SDL_Rect ghost_in2 = *ghost_in;
     if ((count/4)%2)
-        ghost_in2.x += constants::BMP_ENTITY_TOTAL_WIDTH;
+        ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
         
     // couleur transparente
     SDL_SetColorKey(plancheSprites, true, 0);
     // copie du sprite zoomé
 	SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
+    SDL_BlitScaled(plancheSprites, &pacman_in2, win_surf, &pacman);
 }
 
 
@@ -86,9 +95,13 @@ int main(int argc, char** argv)
 	init();
     // BOUCLE PRINCIPALE
 	bool quit = false;
+    SDL_Event event;
+    // Gestion du clavier
+    int nbk;
+    const Uint8* keys = SDL_GetKeyboardState(&nbk);
+
 	while (!quit)
 	{
-		SDL_Event event;
 		while (!quit && SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -100,19 +113,21 @@ int main(int argc, char** argv)
 			}
 		}
 
-        // Gestion du clavier        
-        int nbk;
-        const Uint8* keys = SDL_GetKeyboardState(&nbk);
-        if (keys[SDL_SCANCODE_ESCAPE])
+        SDL_PumpEvents();
+
+        /*if (keys[SDL_SCANCODE_ESCAPE])
+        {
+            puts("QUIT");
             quit = true;
+        }*/
         if (keys[SDL_SCANCODE_LEFT])
-            puts("LEFT");
+            game->movePacman(directions::LEFT, &pacman);
         if (keys[SDL_SCANCODE_RIGHT])
-            puts("RIGHT");
+            game->movePacman(directions::RIGHT, &pacman);
         if (keys[SDL_SCANCODE_UP])
-            puts("UP");
+            game->movePacman(directions::UP, &pacman);
         if (keys[SDL_SCANCODE_DOWN])
-            puts("DOWN");
+            game->movePacman(directions::DOWN, &pacman);
 
         // AFFICHAGE
 		draw();

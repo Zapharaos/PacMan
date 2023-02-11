@@ -34,7 +34,7 @@ make
 
 Run the game
 ```sh
-./Pacman
+./PacMan
 ```
 
 Enjoy !

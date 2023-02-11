@@ -8,18 +8,24 @@
 #include <iostream>
 #include <fstream>
 #include "../include/map.h"
+#include "../include/entity.h"
 
 class Game {
 public:
-    [[nodiscard]] const Map &getMap() const;
+    [[nodiscard]] Map getMap() const;
 
     Game();
-    Game(int width, int height, const char * file_path);
+    Game(int width, int height, int cell_size, const char * file_path);
+
+    void movePacman(directions direction, SDL_Rect *rect);
 
 private:
     Map map_;
+    std::vector<Entity> ghosts_;
+    Entity pacman_;
 
     static std::vector<int> getCellsTypeFromFile(const std::string &file_path);
+
 };
 
 
