@@ -35,8 +35,8 @@ void Map::printAsMap() const
 }
 
 bool Map::canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp) const {
+    if(!isDirectNeighbour(destination)) return false;
     std::pair<int, int> scaled = getCellCoordinatesFromPositions(destination, isMovingLeftOrUp);
-    std::cout << scaled.first << ", " << scaled.second << std::endl;
     if(isPositionOutOfBounds(scaled)){
         std::cerr << "canMoveToCell : Position out of bounds" << std::endl;
         return false;
@@ -44,10 +44,14 @@ bool Map::canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp) 
     return !getCellAtPosition(scaled).isWall();
 }
 
+float Map::getScaledPosition(int position) const {
+    return (float) position / (float) cell_size_;
+}
+
 std::pair<float, float> Map::getCellCoordinatesFromPositions(std::pair<int, int> coordinates, bool isMovingLeftOrUp) const {
     std::pair<int, int> scaled;
-    float x = (float)coordinates.first / (float)cell_size_;
-    float y = (float)coordinates.second / (float)cell_size_;
+    float x = getScaledPosition(coordinates.first);
+    float y = getScaledPosition(coordinates.second);
     if(isMovingLeftOrUp) {
         scaled.first = std::floor(x);
         scaled.second = std::floor(y);
@@ -70,4 +74,10 @@ int Map::getCellIndexFromPosition(std::pair<int, int> position) const {
 
 Cell Map::getCellAtPosition(std::pair<int, int> position) const {
     return cells_[getCellIndexFromPosition(position)];
+}
+
+bool Map::isDirectNeighbour(std::pair<int, int> coordinates) const {
+    float x = getScaledPosition(coordinates.first);
+    float y = getScaledPosition(coordinates.second);
+    return(x == std::floor(x) || y == std::floor(y));
 }

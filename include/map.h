@@ -26,6 +26,8 @@ class Map {
         int cell_size_ = 0;
         std::vector<Cell> cells_;
         [[nodiscard]] std::pair<float, float> getCellCoordinatesFromPositions(std::pair<int, int> coordinates, bool isMovingLeftOrUp) const;
+        [[nodiscard]] float getScaledPosition(int position) const;
+        [[nodiscard]] bool isDirectNeighbour(std::pair<int, int> coordinates) const;
 };
 
 
