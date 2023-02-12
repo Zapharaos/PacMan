@@ -4,9 +4,9 @@
 
 #ifndef PEC_MEN_POWERUP_H
 #define PEC_MEN_POWERUP_H
+#include "entity.h"
 
-
-class powerUp {
+class powerUp : public Entity{
 
 };
 

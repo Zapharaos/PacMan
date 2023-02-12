@@ -84,4 +84,22 @@ enum directions
     DOWN = 4
 };
 
+enum powerUps
+{
+    CHERRY_LONG = 1,
+    CHERRY_SHORT = 2,
+    BERRY_LONG = 3 ,
+    BERRY_SHORT = 4,
+    APPLE_LONG = 5,
+    APPLE_SHORT = 6,
+    MELON_LONG = 7,
+    MELON_SHORT = 8,
+    GALBOSS_LONG = 9,
+    GALBOSS_SHORT = 10,
+    BELL_LONG = 11,
+    BELL_SHORT = 12,
+    KEY_LONG = 13,
+    KEY_SHORT =14
+};
+
 #endif //PACMAN_CONSTANTS_H
