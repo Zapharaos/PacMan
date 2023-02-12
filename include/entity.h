@@ -35,7 +35,4 @@ public:
 
 };
 
-Entity::~Entity() = default;
-
-
 #endif //PEC_MEN_ENTITY_H

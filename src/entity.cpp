@@ -6,9 +6,7 @@
 
 #include <utility>
 
-Entity::Entity(const pair<int, int> &coordinates, const string &name) {
 
-}
 
 const pair<int, int> &Entity::getCoordinates() const {
     return coordinates_;
@@ -27,5 +25,14 @@ void Entity::setName(const string &name) {
 }
 
 Entity::Entity() {
+
+}
+
+Entity::Entity(const pair<int, int> &coordinates, const string &name) :
+coordinates_(coordinates) ,name_(name) {
+
+}
+
+Entity::~Entity() {
 
 }
