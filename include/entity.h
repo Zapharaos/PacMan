@@ -13,23 +13,26 @@
 using namespace std;
 
 class Entity{
-private:
+protected:
     // coordinates
     pair<int, int> coordinates_;
     // name of sprite
     string name_ ;
 public:
-    void setCoordinates(pair<int, int> &coordinates);
-
-public:
-    pair<int, int> &getCoordinates();
-
-public:
-    Entity(const pair<int, int> &coordinates, string name);
+    Entity(const pair<int, int> &coordinates, const string &name);
 
     Entity();
 
-};
+    [[nodiscard]] const pair<int, int> &getCoordinates() const;
 
+    void setCoordinates(const pair<int, int> &coordinates);
+
+    [[nodiscard]] const string &getName() const;
+
+    void setName(const string &name);
+
+    virtual ~Entity();
+
+};
 
 #endif //PEC_MEN_ENTITY_H

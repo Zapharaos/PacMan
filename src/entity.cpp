@@ -6,14 +6,33 @@
 
 #include <utility>
 
-Entity::Entity(const pair<int, int> &coordinates, string name) : coordinates_(coordinates), name_(std::move(name)) {}
 
-pair<int, int> &Entity::getCoordinates() {
+
+const pair<int, int> &Entity::getCoordinates() const {
     return coordinates_;
 }
 
-void Entity::setCoordinates(pair<int, int> &coordinates) {
-    Entity::coordinates_ = coordinates;
+void Entity::setCoordinates(const pair<int, int> &coordinates) {
+    coordinates_ = coordinates;
 }
 
-Entity::Entity() = default;
+const string &Entity::getName() const {
+    return name_;
+}
+
+void Entity::setName(const string &name) {
+    name_ = name;
+}
+
+Entity::Entity() {
+
+}
+
+Entity::Entity(const pair<int, int> &coordinates, const string &name) :
+coordinates_(coordinates) ,name_(name) {
+
+}
+
+Entity::~Entity() {
+
+}

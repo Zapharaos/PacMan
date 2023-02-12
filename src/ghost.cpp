@@ -111,3 +111,5 @@ void Ghost::setState(int state_) {
 }
 
 Ghost::~Ghost() = default;
+
+
