@@ -9,10 +9,11 @@
 #include <iostream>
 #include <utility>
 #include "constants.h"
+#include "entity.h"
 
 using namespace std;
 
-class Ghost {
+class Ghost : public Entity {
 
 private:
     // all sprites
