@@ -15,19 +15,24 @@ class Map {
         Map(int width, int height, int cell_size, const std::vector<int>& cell_types);
         void print() const;
         void printAsMap() const;
-        [[nodiscard]] bool canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp) const;
+        [[nodiscard]] bool canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp);
         [[nodiscard]] Cell getCellAtPosition(std::pair<int, int> position) const;
         [[nodiscard]] bool isPositionOutOfBounds(std::pair<int, int> position) const;
         [[nodiscard]] inline int getCellIndexFromPosition(std::pair<int, int> position) const;
+        [[nodiscard]] const std::pair<int, int> &getDestination() const;
 
     private:
         int width_ = 0;
         int height_ = 0;
         int cell_size_ = 0;
         std::vector<Cell> cells_;
-        [[nodiscard]] std::pair<float, float> getCellCoordinatesFromPositions(std::pair<int, int> coordinates, bool isMovingLeftOrUp) const;
+        std::pair<int, int> destination_;
+
+        [[nodiscard]] std::pair<int, int> getCellCoordinatesFromPositions(std::pair<int, int> destination, bool isMovingLeftOrUp);
         [[nodiscard]] float getScaledPosition(int position) const;
-        [[nodiscard]] bool isDirectNeighbour(std::pair<int, int> coordinates) const;
+        [[nodiscard]] bool isDirectNeighbour(std::pair<int, int> destination) const;
+        [[nodiscard]] bool isTunnel(std::pair<int, int> position) const;
+        [[nodiscard]] std::pair<int, int> getTunnelCoordinates(std::pair<int, int> destination) const;
 };
 
 
