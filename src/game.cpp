@@ -61,23 +61,10 @@ void Game::movePacman(directions direction, SDL_Rect *rect) {
 
     if(!map_.canMoveToCell(destination, isMovingLeftOrUp)) return;
 
+    destination = map_.getDestination();
     pacman_.setCoordinates(destination);
-    switch(direction) {
-        case LEFT:
-            rect->x-=constants::SPEED_PACMAN;
-            break;
-        case RIGHT:
-            rect->x+=constants::SPEED_PACMAN;
-            break;
-        case UP:
-            rect->y-=constants::SPEED_PACMAN;
-            break;
-        case DOWN:
-            rect->y+=constants::SPEED_PACMAN;
-            break;
-        default:
-            std::cerr << "movePacman : Direction not recognized..." << std::endl;
-    }
+    rect->x = destination.first;
+    rect->y = destination.second;
 
     std::cout << "Moved to => (" << pacman_.getCoordinates().first / 32 << ", " << pacman_.getCoordinates().second /32 << "), (" << pacman_.getCoordinates().first << ", " << pacman_.getCoordinates().second << ")" << std::endl;
 }
