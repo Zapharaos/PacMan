@@ -14,12 +14,15 @@ using namespace std;
 
 class Entity{
 protected:
-    // coordinates
+
+// coordinates
     pair<int, int> coordinates_;
     // name of sprite
     string name_ ;
+    //number of points won if eaten
+    int points ;
 public:
-    Entity(const pair<int, int> &coordinates, const string &name);
+    Entity(const pair<int, int> &coordinates, string name, int points);
 
     Entity();
 
@@ -31,8 +34,15 @@ public:
 
     void setName(const string &name);
 
+    int getPoints() const;
+
+    void setPoints(int points_);
+
     virtual ~Entity();
 
+    Entity(const pair<int, int> &coordinates, string name);
+
+    Entity(string name, int points);
 };
 
 #endif //PEC_MEN_ENTITY_H

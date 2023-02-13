@@ -24,15 +24,23 @@ void Entity::setName(const string &name) {
     name_ = name;
 }
 
-Entity::Entity() {
+Entity::Entity(const pair<int, int> &coordinates, string name, int points) : coordinates_(coordinates),
+                                                                                    name_(std::move(name)), points(points) {}
 
+int Entity::getPoints() const {
+    return points;
 }
 
-Entity::Entity(const pair<int, int> &coordinates, const string &name) :
-coordinates_(coordinates) ,name_(name) {
-
+void Entity::setPoints(int points_) {
+    Entity::points = points_;
 }
 
-Entity::~Entity() {
 
-}
+
+Entity::Entity()  {}
+
+Entity::Entity(const pair<int, int> &coordinates, string name) : coordinates_(coordinates), name_(std::move(name)) {}
+
+Entity::Entity(string name, int points) : name_(std::move(name)), points(points) {}
+
+Entity::~Entity() = default;

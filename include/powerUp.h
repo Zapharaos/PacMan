@@ -13,22 +13,21 @@ class PowerUp : public Entity{
 
 protected:
     powerUps type ;
-    SDL_Rect sprite;
+    SDL_Rect sprite{};
 public:
+    PowerUp(const pair<int, int> &coordinates, const string &name, int points, powerUps type, const SDL_Rect &sprite);
+
+    PowerUp(const pair<int, int> &coordinates, const string &name, powerUps type, const SDL_Rect &sprite);
 
     PowerUp();
 
-    PowerUp(const powerUps &type, const SDL_Rect &sprite);
+    [[nodiscard]] powerUps getType() const;
 
-    [[nodiscard]] const powerUps &getType() const;
-
-    void setType(const powerUps type);
+    void setType(powerUps type);
 
     [[nodiscard]] const SDL_Rect &getSprite() const;
 
-    void setSprite(const SDL_Rect sprite);
-
-    virtual ~PowerUp();
+    void setSprite(const SDL_Rect &sprite);
 
 
 };
