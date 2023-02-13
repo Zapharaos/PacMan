@@ -88,6 +88,21 @@ namespace constants
     inline constexpr int BIG_PELLET_POINTS {50};
     inline constexpr int GHOST_BASE_POINTS {200};
 
+    //Powerup points per round
+    inline constexpr int POWERUP_POINTS_ROUND_1 {100};
+    inline constexpr int POWERUP_POINTS_ROUND_2 {300};
+    inline constexpr int POWERUP_POINTS_ROUND_3 {500};
+    inline constexpr int POWERUP_POINTS_ROUND_4 {500};
+    inline constexpr int POWERUP_POINTS_ROUND_5 {700};
+    inline constexpr int POWERUP_POINTS_ROUND_6 {700};
+    inline constexpr int POWERUP_POINTS_ROUND_7 {1000};
+    inline constexpr int POWERUP_POINTS_ROUND_8 {1000};
+    inline constexpr int POWERUP_POINTS_ROUND_9 {2000};
+    inline constexpr int POWERUP_POINTS_ROUND_10 {2000};
+    inline constexpr int POWERUP_POINTS_ROUND_11 {3000};
+    inline constexpr int POWERUP_POINTS_ROUND_12 {3000};
+    inline constexpr int POWERUP_POINTS_ROUND_13_MORE {5000};
+
     //POWERUP Time in seconds
     inline constexpr int POWERUP_TIME_VERY_LONG_PLUS {6};
     inline constexpr int POWERUP_TIME_VERY_LONG {5};
