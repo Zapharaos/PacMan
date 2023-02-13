@@ -59,6 +59,10 @@ namespace constants
     inline constexpr int BMP_GHOST_INKY_START_Y {159};
     inline constexpr int BMP_GHOST_CLIDE_START_X {3};
     inline constexpr int BMP_GHOST_CLIDE_START_Y {177};
+    // Bottom Row
+    inline constexpr int BMP_POWERUP_LONG_START_X {264};
+    inline constexpr int BMP_POWERUP_SHORT_START_X {244};
+    inline constexpr int BMP_POWERUP_START_Y {289};
 
     // Game =>
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
