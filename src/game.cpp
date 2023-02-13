@@ -10,7 +10,8 @@ Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-    pacman_ = Entity(std::pair<int, int> {10*cell_size, 20*cell_size}, "pacman");
+    string pacName = "pacman";
+    pacman_ = Entity(std::pair<int, int> {10*cell_size, 20*cell_size}, pacName);
 
 }
 

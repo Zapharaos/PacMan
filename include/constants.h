@@ -38,6 +38,16 @@ namespace constants
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG {BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG + 2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG{BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG + 2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
 
+    // Bitmap => PowerUps
+    inline constexpr int BMP_ENTITY_POWERUP_WIDTH{14};
+    inline constexpr int BMP_ENTITY_POWERUP_HEIGHT{14};
+    inline constexpr int BMP_ENTITY_POWERUP_TOTAL_WIDTH{ BMP_ENTITY_POWERUP_WIDTH + BMP_ENTITY_BORDER_WIDTH};
+    inline constexpr int BMP_ENTITY_POWERUP_TOTAL_HEIGHT{ BMP_ENTITY_POWERUP_HEIGHT + BMP_ENTITY_BORDER_WIDTH};
+    inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_RIGHT_IMG {0};
+    inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_POWERUP_TOTAL_WIDTH};
+    inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_UP_IMG {BMP_ENTITY_POWERUP_OFFSET_TO_LEFT_IMG + 2 * BMP_ENTITY_POWERUP_TOTAL_WIDTH};
+    inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_DOWN_IMG{BMP_ENTITY_POWERUP_OFFSET_TO_UP_IMG + 2 * BMP_ENTITY_POWERUP_TOTAL_WIDTH};
+
     // Bitmap => Entity positions
     inline constexpr int BMP_PACMAN_START_X {3};
     inline constexpr int BMP_PACMAN_START_Y {89};
@@ -49,6 +59,10 @@ namespace constants
     inline constexpr int BMP_GHOST_INKY_START_Y {159};
     inline constexpr int BMP_GHOST_CLIDE_START_X {3};
     inline constexpr int BMP_GHOST_CLIDE_START_Y {177};
+    // Bottom Row
+    inline constexpr int BMP_POWERUP_LONG_START_X {264};
+    inline constexpr int BMP_POWERUP_SHORT_START_X {244};
+    inline constexpr int BMP_POWERUP_START_Y {289};
 
     // Game =>
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
@@ -73,6 +87,33 @@ namespace constants
     inline constexpr int GHOST_LESSSCARED{2};
     inline constexpr int GHOST_INVISIBLE {3};
 
+    //POWER Up Points
+    inline constexpr int SMALL_PELLET_POINTS {10};
+    inline constexpr int BIG_PELLET_POINTS {50};
+    inline constexpr int GHOST_BASE_POINTS {200};
+
+    //Powerup points per round
+    inline constexpr int POWERUP_POINTS_ROUND_1 {100};
+    inline constexpr int POWERUP_POINTS_ROUND_2 {300};
+    inline constexpr int POWERUP_POINTS_ROUND_3 {500};
+    inline constexpr int POWERUP_POINTS_ROUND_4 {500};
+    inline constexpr int POWERUP_POINTS_ROUND_5 {700};
+    inline constexpr int POWERUP_POINTS_ROUND_6 {700};
+    inline constexpr int POWERUP_POINTS_ROUND_7 {1000};
+    inline constexpr int POWERUP_POINTS_ROUND_8 {1000};
+    inline constexpr int POWERUP_POINTS_ROUND_9 {2000};
+    inline constexpr int POWERUP_POINTS_ROUND_10 {2000};
+    inline constexpr int POWERUP_POINTS_ROUND_11 {3000};
+    inline constexpr int POWERUP_POINTS_ROUND_12 {3000};
+    inline constexpr int POWERUP_POINTS_ROUND_13_MORE {5000};
+
+    //POWERUP Time in seconds
+    inline constexpr int POWERUP_TIME_VERY_LONG_PLUS {6};
+    inline constexpr int POWERUP_TIME_VERY_LONG {5};
+    inline constexpr int POWERUP_TIME_LONG {3};
+    inline constexpr int POWERUP_TIME_MEDIUM {2};
+    inline constexpr int POWERUP_TIME_SHORT {1};
+
 
 }
 
@@ -82,6 +123,24 @@ enum directions
     RIGHT = 2,
     UP = 3,
     DOWN = 4
+};
+
+enum powerUps
+{
+    CHERRY_LONG = 1,
+    CHERRY_SHORT = 2,
+    BERRY_LONG = 3 ,
+    BERRY_SHORT = 4,
+    APPLE_LONG = 5,
+    APPLE_SHORT = 6,
+    MELON_LONG = 7,
+    MELON_SHORT = 8,
+    GALBOSS_LONG = 9,
+    GALBOSS_SHORT = 10,
+    BELL_LONG = 11,
+    BELL_SHORT = 12,
+    KEY_LONG = 13,
+    KEY_SHORT =14
 };
 
 #endif //PACMAN_CONSTANTS_H
