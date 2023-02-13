@@ -83,6 +83,18 @@ namespace constants
     inline constexpr int GHOST_LESSSCARED{2};
     inline constexpr int GHOST_INVISIBLE {3};
 
+    //POWER Up Points
+    inline constexpr int SMALL_PELLET_POINTS {10};
+    inline constexpr int BIG_PELLET_POINTS {50};
+    inline constexpr int GHOST_BASE_POINTS {200};
+
+    //POWERUP Time in seconds
+    inline constexpr int POWERUP_TIME_VERY_LONG_PLUS {6};
+    inline constexpr int POWERUP_TIME_VERY_LONG {5};
+    inline constexpr int POWERUP_TIME_LONG {3};
+    inline constexpr int POWERUP_TIME_MEDIUM {2};
+    inline constexpr int POWERUP_TIME_SHORT {1};
+
 
 }
 
