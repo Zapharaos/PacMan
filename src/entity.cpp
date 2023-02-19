@@ -37,7 +37,7 @@ void Entity::setPoints(int points_) {
 
 
 
-Entity::Entity()  {}
+Entity::Entity()  = default;
 
 Entity::Entity(const pair<int, int> &coordinates, string name) : coordinates_(coordinates), name_(std::move(name)) {}
 
