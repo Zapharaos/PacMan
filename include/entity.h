@@ -20,9 +20,13 @@ protected:
     // name of sprite
     string name_ ;
     //number of points won if eaten
-    int points ;
+    int points{} ;
 public:
     Entity(const pair<int, int> &coordinates, string name, int points);
+
+    Entity(const pair<int, int> &coordinates, string name);
+
+    Entity(string name, int points);
 
     Entity();
 
@@ -34,15 +38,12 @@ public:
 
     void setName(const string &name);
 
-    int getPoints() const;
+    [[nodiscard]] int getPoints() const;
 
     void setPoints(int points_);
 
     virtual ~Entity();
 
-    Entity(const pair<int, int> &coordinates, string name);
-
-    Entity(string name, int points);
 };
 
 #endif //PEC_MEN_ENTITY_H

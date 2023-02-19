@@ -86,7 +86,7 @@ public:
 
     void setState(int state);
 
-    virtual ~Ghost();
+    ~Ghost() override;
 };
 
 
