@@ -55,3 +55,6 @@ _deps
 .cmake/*
 cmake-build-debug
 build.ninja
+
+#local save file
+resources/save.json
