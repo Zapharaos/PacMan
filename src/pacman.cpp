@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../include/constants.h"
 #include "../include/game.h"
+#include "../include/saveGame.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
@@ -20,7 +21,7 @@ SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_
 SDL_Rect pacman_default = { constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
 SDL_Rect pacman = { 32*10,32*20, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
 
-int count;
+int count_;
 Game* game = nullptr;
 
 SDL_Rect* pacman_in = nullptr;
@@ -31,7 +32,7 @@ void init()
 	win_surf = SDL_GetWindowSurface(pWindow);
 
 	plancheSprites = SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES);
-    count = 0;
+    count_ = 0;
 
     pacman_in = &(pacman_default);
 
@@ -48,7 +49,7 @@ void draw()
 
     // petit truc pour faire tourner le fantome
     SDL_Rect* ghost_in = nullptr;
-    switch (count/128)
+    switch (count_ / 128)
     {
         case 0:
             ghost_in = &(ghost_blinky_r);
@@ -67,12 +68,12 @@ void draw()
             ghost_blinky.y-=constants::SPEED_GHOST;
             break;
     }
-    count =(count+1)%(512);
+    count_ = (count_ + 1) % (512);
 
     // ici on change entre les 2 sprites sources pour une jolie animation.
     SDL_Rect pacman_in2 = *pacman_in;
     SDL_Rect ghost_in2 = *ghost_in;
-    if ((count/4)%2)
+    if ((count_ / 4) % 2)
         ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
         
     // couleur transparente
@@ -86,6 +87,7 @@ void draw()
 
 int main(int argc, char** argv)
 {
+    saveGame::saveGameState(50,50) ;
     if (SDL_Init(SDL_INIT_VIDEO) != 0 )
     {
 		std::cerr <<"Echec de l'initialisation de la SDL "<<SDL_GetError() << std::endl;

@@ -14,7 +14,8 @@ add_executable(${PROJECT_NAME} ""
 		include/ghost.h
 		include/entity.h
 		include/powerUp.h
-)
+		include/saveGame.h
+		include/json.hpp)
 target_sources(${PROJECT_NAME} PRIVATE
 		src/pacman.cpp
 		src/map.cpp
@@ -23,6 +24,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/ghost.cpp
 		src/entity.cpp
 		src/powerUp.cpp
+		src/saveGame.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
