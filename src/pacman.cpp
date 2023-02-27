@@ -87,6 +87,7 @@ void draw()
 
 int main(int argc, char** argv)
 {
+    //Save game test
     saveGame::saveGameState(50,50) ;
     if (SDL_Init(SDL_INIT_VIDEO) != 0 )
     {
