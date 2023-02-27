@@ -9,21 +9,28 @@
 #include <fstream>
 #include "../include/map.h"
 #include "../include/entity.h"
+#include "ghost.h"
 
 class Game {
 public:
-    [[nodiscard]] Map getMap() const;
-
     Game();
     Game(int width, int height, int cell_size, const char * file_path, int lives);
 
     void movePacman(directions direction, SDL_Rect *rect);
+    void handleCollisions();
 
 private:
     Map map_;
-    std::vector<Entity> ghosts_;
+    std::vector<Ghost> ghosts_;
     Entity pacman_;
+
+    // TODO : temp attributes
+    std::vector<Entity> powers_;
+    std::vector<Entity> points_;
+    bool powerup_ = false;
+    int score_ = 0;
     int lives_ = 0;
+
     static std::vector<int> getCellsTypeFromFile(const std::string &file_path);
 
 };

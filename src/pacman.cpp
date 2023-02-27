@@ -37,7 +37,6 @@ void init()
     pacman_in = &(pacman_default);
 
     game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP, constants::LIVES);
-    game->getMap().printAsMap();
 }
 
 
@@ -91,7 +90,7 @@ int main(int argc, char** argv)
     saveGame::saveGameState(50,50) ;
     if (SDL_Init(SDL_INIT_VIDEO) != 0 )
     {
-		std::cerr <<"Echec de l'initialisation de la SDL "<<SDL_GetError() << std::endl;
+		std::cerr <<"Echec de l'initialisation de la SDL " << SDL_GetError() << std::endl;
 		return 1;
     }
 
@@ -131,6 +130,8 @@ int main(int argc, char** argv)
             game->movePacman(directions::UP, &pacman);
         if (keys[SDL_SCANCODE_DOWN])
             game->movePacman(directions::DOWN, &pacman);
+
+        game->handleCollisions();
 
         // AFFICHAGE
 		draw();

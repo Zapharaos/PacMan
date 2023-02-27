@@ -21,7 +21,7 @@ void PowerUp::setSprite(const SDL_Rect &sprite_) {
 }
 
 PowerUp::PowerUp(const pair<int, int> &coordinates, const string &name, int points, powerUps type,
-                 const SDL_Rect &sprite) : Entity(coordinates, name, points), type(type), sprite(sprite) {}
+                 const SDL_Rect &sprite) : Entity(coordinates, 0, name, points), type(type), sprite(sprite) {}
 
 PowerUp::PowerUp(const pair<int, int> &coordinates, const string &name, powerUps type, const SDL_Rect &sprite) : Entity(
         coordinates, name), type(type), sprite(sprite) {}

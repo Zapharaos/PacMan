@@ -7,12 +7,13 @@
 
 #include <string>
 #include <array>
+#include "constants.h"
 
 class Cell {
 
     public:
         Cell();
-        Cell(int x, int y, bool is_wall);
+        Cell(int x, int y, cell_type type);
 
     [[nodiscard]] int getX() const;
 
@@ -22,16 +23,18 @@ class Cell {
 
     void setY(int y);
 
-    [[nodiscard]] bool isWall() const;
+    [[nodiscard]] cell_type getType() const;
 
-    void setIsWall(bool isWall);
+    void setType(cell_type type);
+
+    [[nodiscard]] bool isWall() const;
 
     void print() const;
 
     private:
         int x_ = 0;
         int y_ = 0;
-        bool is_wall_ = false;
+        cell_type type_ = cell_type::WALL;
 };
 
 

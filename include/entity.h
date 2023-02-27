@@ -17,12 +17,16 @@ protected:
 
 // coordinates
     pair<int, int> coordinates_;
+    int size_;
     // name of sprite
     string name_ ;
     //number of points won if eaten
-    int points{} ;
+    int points_{} ;
 public:
-    Entity(const pair<int, int> &coordinates, string name, int points);
+    [[nodiscard]] int getPoints() const;
+
+public:
+    Entity(const pair<int, int> &coordinates, int size, string name, int points);
 
     Entity(const pair<int, int> &coordinates, string name);
 
@@ -30,19 +34,15 @@ public:
 
     Entity();
 
+    virtual ~Entity();
+
     [[nodiscard]] const pair<int, int> &getCoordinates() const;
 
     void setCoordinates(const pair<int, int> &coordinates);
 
-    [[nodiscard]] const string &getName() const;
+    [[nodiscard]] bool hasCollided(const Entity& entity) const;
 
-    void setName(const string &name);
-
-    [[nodiscard]] int getPoints() const;
-
-    void setPoints(int points_);
-
-    virtual ~Entity();
+    void print() const;
 
 };
 
