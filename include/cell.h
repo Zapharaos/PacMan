@@ -8,33 +8,33 @@
 #include <string>
 #include <array>
 #include "constants.h"
+#include "entity.h"
 
 class Cell {
 
     public:
         Cell();
-        Cell(int x, int y, cell_type type);
+        Cell(int x, int y, cell_type type, const Entity& entity);
 
     [[nodiscard]] int getX() const;
 
-    void setX(int x);
-
     [[nodiscard]] int getY() const;
-
-    void setY(int y);
 
     [[nodiscard]] cell_type getType() const;
 
-    void setType(cell_type type);
+    [[nodiscard]] const Entity &getEntity() const;
+
+    void setEntity(const Entity &entity);
 
     [[nodiscard]] bool isWall() const;
 
     void print() const;
 
-    private:
+private:
         int x_ = 0;
         int y_ = 0;
         cell_type type_ = cell_type::WALL;
+        Entity entity_ {};
 };
 
 

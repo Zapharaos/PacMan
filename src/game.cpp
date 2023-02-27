@@ -10,19 +10,14 @@ Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-
     pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, "pacman", 0);
+
     // TODO : setup ghosts
-
-    lives_ = lives; // TODO : temp
-
-    // TODO : better to link these to cells ?
-    powers_ = map_.getPowerEntities();
-    points_ = map_.getPointEntities();
+    lives_ = lives; // TODO : temp, waiting for the scoreboard
 }
 
-std::vector<int> Game::getCellsTypeFromFile(const std::string& file_path) {
-    std::vector<int> cell_types;
+std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) {
+    std::vector<cell_type> cell_types;
     std::ifstream file; // indata is like cin
     char value; // variable for input value
 
@@ -33,30 +28,40 @@ std::vector<int> Game::getCellsTypeFromFile(const std::string& file_path) {
     }
     file >> value;
     while ( !file.eof() ) { // keep reading until end-of-file
-        cell_types.emplace_back(strtol(&value, nullptr, 10));
+        cell_types.emplace_back((cell_type) strtol(&value, nullptr, 10));
         file >> value; // sets EOF flag if no value found
     }
     file.close();
     return cell_types;
 }
 
-void Game::handleCollisions() {
+void Game::handleCollisionsWithEntities(Cell& cell) {
     bool lowPoints = score_ < constants::NEW_UP_POINTS_CAP;
-    for(auto & power : powers_)
+
+    Entity entity = cell.getEntity();
+    if(!entity.isDisabled() && pacman_.hasCollided(entity))
     {
-        if(pacman_.hasCollided(power))
+        entity.setIsDisabled(true);
+        cell.setEntity(entity);
+        score_ += entity.getPoints();
+
+        if(cell.getType() == POWER)
         {
-            power.print();
-            score_ += power.getPoints();
             powerup_ = true;
             // TODO : handle power ups
         }
+        else if(cell.getType() == POINT)
+        {
+            // TODO : remove point sprite
+        }
     }
+
     for(auto & ghost : ghosts_)
     {
         if(pacman_.hasCollided(ghost))
         {
             ghost.print();
+            ghost.setIsDisabled(true);
             if(powerup_)
             {
                 score_ += ghost.getPoints();
@@ -76,22 +81,11 @@ void Game::handleCollisions() {
             }
         }
     }
-    for(auto & point : points_)
+
+    if(lowPoints && score_ >= constants::NEW_UP_POINTS_CAP)
     {
-        if(pacman_.hasCollided(point))
-        {
-            point.print();
-            score_ += point.getPoints();
-            // TODO : remove point sprite
-        }
-    }
-    if(lowPoints)
-    {
-        if(score_ >= constants::NEW_UP_POINTS_CAP)
-        {
-            lives_++;
-            // TODO : update lives
-        }
+        lives_++;
+        // TODO : update lives
     }
 }
 
@@ -126,5 +120,7 @@ void Game::movePacman(directions direction, SDL_Rect *rect) {
     rect->x = destination.first;
     rect->y = destination.second;
 
-    std::cout << "Moved to => (" << pacman_.getCoordinates().first / constants::WINDOW_CELL_HEIGHT << ", " << pacman_.getCoordinates().second / constants::WINDOW_CELL_HEIGHT << "), (" << pacman_.getCoordinates().first << ", " << pacman_.getCoordinates().second << ")" << std::endl;
+    //std::cout << "Moved to => (" << pacman_.getCoordinates().first / constants::WINDOW_CELL_HEIGHT << ", " << pacman_.getCoordinates().second / constants::WINDOW_CELL_HEIGHT << "), (" << pacman_.getCoordinates().first << ", " << pacman_.getCoordinates().second << ")" << std::endl;
+
+    handleCollisionsWithEntities(map_.getCellAtDestination(destination, isMovingLeftOrUp));
 }
