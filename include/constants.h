@@ -39,8 +39,8 @@ namespace constants
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG{BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG + 2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
 
     // Bitmap => PowerUps
-    inline constexpr int BMP_ENTITY_POWERUP_WIDTH{14};
-    inline constexpr int BMP_ENTITY_POWERUP_HEIGHT{14};
+    inline constexpr int BMP_ENTITY_POWERUP_WIDTH{12};
+    inline constexpr int BMP_ENTITY_POWERUP_HEIGHT{12};
     inline constexpr int BMP_ENTITY_POWERUP_TOTAL_WIDTH{ BMP_ENTITY_POWERUP_WIDTH + BMP_ENTITY_BORDER_WIDTH};
     inline constexpr int BMP_ENTITY_POWERUP_TOTAL_HEIGHT{ BMP_ENTITY_POWERUP_HEIGHT + BMP_ENTITY_BORDER_WIDTH};
     inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_RIGHT_IMG {0};
@@ -63,6 +63,31 @@ namespace constants
     inline constexpr int BMP_POWERUP_LONG_START_X {264};
     inline constexpr int BMP_POWERUP_SHORT_START_X {244};
     inline constexpr int BMP_POWERUP_START_Y {289};
+
+    //Bitmap->Letters and numbers
+    inline constexpr int BMP_CHARACTER_WIDTH {7};
+    inline constexpr int BMP_CHARACTER_HEIGHT {7};
+    inline constexpr int BMP_CHARACTER_OFFSET_TO_LEFT_IMG {2 * BMP_CHARACTER_WIDTH};
+    inline constexpr int BMP_CHARACTER_OFFSET_TO_UP_IMG {BMP_CHARACTER_OFFSET_TO_LEFT_IMG + 2 * BMP_CHARACTER_WIDTH};
+    inline constexpr int BMP_CHARACTER_OFFSET_TO_DOWN_IMG{BMP_CHARACTER_OFFSET_TO_UP_IMG + 2 * BMP_CHARACTER_WIDTH};
+
+    //Bitmap -> Letter and number positions
+    inline constexpr int BMP_NUMBER_START_ZERO_ROW_X {4};
+    inline constexpr int BMP_NUMBER_START_FIRST_ROW_X {13};
+    inline constexpr int BMP_NUMBER_START_FIRST_ROW_Y {53};
+    inline constexpr int BMP_NUMBER_START_SECOND_ROW_X {12};
+    inline constexpr int BMP_NUMBER_START_SECOND_ROW_Y {61};
+    inline constexpr int BMP_NUMBER_START_THIRD_ROW_X {4};
+    inline constexpr int BMP_NUMBER_START_THIRD_ROW_Y {69};
+
+    //Bitmap -> points
+    inline constexpr int BMP_POINTS_START_ROW_1_X {155};
+    inline constexpr int BMP_POINTS_START_ROW_1_Y {176};
+    inline constexpr int BMP_POINTS_START_ROW_2_X {154};
+    inline constexpr int BMP_POINTS_START_ROW_2_Y {133};
+    inline constexpr int BMP_POINTS_WIDTH {16};
+    inline constexpr int BMP_POINTS_HEIGHT {7};
+
 
     // Game =>
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
