@@ -5,18 +5,26 @@
 #include <iostream>
 #include <cmath>
 #include "../include/map.h"
-#include "../include/constants.h"
 
 Map::Map() = default;
 
-Map::Map(int width, int height, int cell_size, const std::vector<int>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
+Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
 {
-    for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-            cells_.emplace_back(Cell{x, y, (cell_type) cell_types[x + width * y]});
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            Entity entity = {};
+            cell_type type = cell_types[x + width * y];
+            if(type == POINT) {
+                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
+                entity = {coordinates, constants::WINDOW_POINTS_SIZE, "point", constants::SMALL_PELLET_POINTS};
+            } else if(type == POWER) {
+                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
+                entity = {coordinates, constants::WINDOW_POWER_SIZE, "power", constants::BIG_PELLET_POINTS};
+            }
+            cells_.emplace_back(Cell{x, y, type, entity});
+        }
+    }
 }
-
-
 
 void Map::printAsMap() const
 {
@@ -74,7 +82,7 @@ int Map::getCellIndexFromPosition(std::pair<int, int> position) const {
     return position.first + position.second * width_;
 }
 
-Cell Map::getCellAtPosition(std::pair<int, int> position) const {
+Cell& Map::getCellAtPosition(std::pair<int, int> position) {
     return cells_[getCellIndexFromPosition(position)];
 }
 
@@ -104,30 +112,6 @@ std::pair<int, int> Map::getTunnelCoordinates(std::pair<int, int> destination) c
     return destination;
 }
 
-std::vector<Entity> Map::getPowerEntities() {
-    std::vector<Entity> entities;
-    for(auto & cell : cells_)
-    {
-        if (cell.getType() == cell_type::POWER) {
-            int x = cell.getX() * cell_size_ + constants::WINDOW_POWER_OFFSET;
-            int y = cell.getY() * cell_size_ + constants::WINDOW_POWER_OFFSET;
-            entities.emplace_back(Entity{{x, y}, constants::WINDOW_POWER_SIZE, "power", constants::BIG_PELLET_POINTS});
-            //std::cout << "x: " << x << ", y: " << y << ", size: " << constants::WINDOW_POWER_SIZE << std::endl;
-        }
-    }
-    return entities;
-}
-
-std::vector<Entity> Map::getPointEntities() {
-    std::vector<Entity> entities;
-    for(auto & cell : cells_)
-    {
-        if (cell.getType() == cell_type::POINT) {
-            int x = cell.getX() * cell_size_ + constants::WINDOW_POINTS_OFFSET;
-            int y = cell.getY() * cell_size_ + constants::WINDOW_POINTS_OFFSET;
-            entities.emplace_back(Entity{{x, y}, constants::WINDOW_POINTS_SIZE, "point", constants::SMALL_PELLET_POINTS});
-            //std::cout << "x: " << x << ", y: " << y << ", size: " << constants::WINDOW_POINTS_SIZE << std::endl;
-        }
-    }
-    return entities;
+Cell& Map::getCellAtDestination(std::pair<int, int> destination, bool isMovingLeftOrUp) {
+    return getCellAtPosition(getCellCoordinatesFromPositions(destination, isMovingLeftOrUp));
 }

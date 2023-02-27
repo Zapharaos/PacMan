@@ -7,30 +7,26 @@
 
 Cell::Cell() = default;
 
-Cell::Cell(int x, int y, cell_type type) : x_(x), y_(y), type_(type) {}
+Cell::Cell(int x, int y, cell_type type, const Entity& entity) : x_(x), y_(y), type_(type), entity_(entity){}
 
 int Cell::getX() const {
     return x_;
-}
-
-void Cell::setX(int x) {
-    x_ = x;
 }
 
 int Cell::getY() const {
     return y_;
 }
 
-void Cell::setY(int y) {
-    y_ = y;
-}
-
 cell_type Cell::getType() const {
     return type_;
 }
 
-void Cell::setType(cell_type type) {
-    type_ = type;
+const Entity &Cell::getEntity() const {
+    return entity_;
+}
+
+void Cell::setEntity(const Entity &entity) {
+    entity_ = entity;
 }
 
 bool Cell::isWall() const {
@@ -38,5 +34,6 @@ bool Cell::isWall() const {
 }
 
 void Cell::print() const{
-    std::cout << "x: " << x_ << ", y: " << y_ << ", type: " << type_ << std::endl;
+    std::cout << "x: " << x_ << ", y: " << y_ << ", type: " << type_;
+    entity_.print();
 }
