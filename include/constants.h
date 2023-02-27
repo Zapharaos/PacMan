@@ -95,6 +95,7 @@ namespace constants
     inline constexpr int SCALE_BMP_TO_WINDOW {4};
     inline constexpr int SPEED_PACMAN {2};
     inline constexpr int SPEED_GHOST {1};
+    inline constexpr int LIVES {3};
 
     // Window => Map
     inline constexpr int WINDOW_MAP_START_X {0};

@@ -8,11 +8,10 @@
 
 Game::Game() = default;
 
-Game::Game(int width, int height, int cell_size, const char *file_path) {
+Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-    string pacName = "pacman";
-    pacman_ = Entity(std::pair<int, int> {10*cell_size, 20*cell_size}, pacName);
-
+    pacman_ = Entity(std::pair<int, int> {10*cell_size, 20*cell_size}, "pacman");
+    lives_ = lives;
 }
 
 std::vector<int> Game::getCellsTypeFromFile(const std::string& file_path) {
@@ -70,4 +69,13 @@ void Game::movePacman(directions direction, SDL_Rect *rect) {
     rect->y = destination.second;
 
     std::cout << "Moved to => (" << pacman_.getCoordinates().first / 32 << ", " << pacman_.getCoordinates().second /32 << "), (" << pacman_.getCoordinates().first << ", " << pacman_.getCoordinates().second << ")" << std::endl;
+
+    // check and handle collisions :
+
+    /* if points got past 10K, then do :
+    lives_++;
+     */
+    /* if ghost collision without power, then do :
+     lives_--;
+     */
 }
