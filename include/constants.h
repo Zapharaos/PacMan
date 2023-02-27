@@ -12,12 +12,6 @@ namespace constants
     inline const char *const PATH_FILE_PACMAN_SPRITES {"./pacman_sprites.bmp"};
     inline const char *const PATH_FILE_PACMAN_MAP {"./pacman_map.txt"};
 
-    // Cell types
-    inline constexpr int CELL_TYPE_WALL {0};
-    inline constexpr int CELL_TYPE_LOW_POINTS {1};
-    inline constexpr int CELL_TYPE_HIGH_POINTS {2};
-    inline constexpr int CELL_TYPE_DEFAULT {3};
-
     // Bitmap => Map
     inline constexpr int BMP_MAP_START_X {200};
     inline constexpr int BMP_MAP_START_Y {3};
@@ -96,6 +90,7 @@ namespace constants
     inline constexpr int SPEED_PACMAN {2};
     inline constexpr int SPEED_GHOST {1};
     inline constexpr int LIVES {3};
+    inline constexpr int NEW_UP_POINTS_CAP {10000};
 
     // Window => Map
     inline constexpr int WINDOW_MAP_START_X {0};
@@ -106,6 +101,18 @@ namespace constants
     // Window => Cell
     inline constexpr int WINDOW_CELL_WIDTH {SCALE_BMP_TO_WINDOW * BMP_CELL_WIDTH};
     inline constexpr int WINDOW_CELL_HEIGHT {SCALE_BMP_TO_WINDOW * BMP_CELL_HEIGHT};
+
+    // Window => Pacman
+    inline constexpr int WINDOW_PACMAN_X {10 * WINDOW_CELL_WIDTH};
+    inline constexpr int WINDOW_PACMAN_Y {20 * WINDOW_CELL_HEIGHT};
+
+    // Window => Points
+    inline constexpr int WINDOW_POINTS_OFFSET {3 * SCALE_BMP_TO_WINDOW};
+    inline constexpr int WINDOW_POINTS_SIZE {2 * SCALE_BMP_TO_WINDOW};
+
+    // Window => Power
+    inline constexpr int WINDOW_POWER_OFFSET {0 * SCALE_BMP_TO_WINDOW};
+    inline constexpr int WINDOW_POWER_SIZE {7 * SCALE_BMP_TO_WINDOW};
 
     // Ghost states
     inline constexpr int GHOST_DEFAULT {0};
@@ -149,6 +156,14 @@ enum directions
     RIGHT = 2,
     UP = 3,
     DOWN = 4
+};
+
+enum cell_type
+{
+    WALL = 0,
+    POINT = 1,
+    POWER = 2,
+    PATH = 3
 };
 
 enum powerUps

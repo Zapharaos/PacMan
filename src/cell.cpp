@@ -7,7 +7,7 @@
 
 Cell::Cell() = default;
 
-Cell::Cell(int x, int y, bool is_wall) : x_(x), y_(y), is_wall_(is_wall) {}
+Cell::Cell(int x, int y, cell_type type) : x_(x), y_(y), type_(type) {}
 
 int Cell::getX() const {
     return x_;
@@ -25,14 +25,18 @@ void Cell::setY(int y) {
     y_ = y;
 }
 
-bool Cell::isWall() const {
-    return is_wall_;
+cell_type Cell::getType() const {
+    return type_;
 }
 
-void Cell::setIsWall(bool isWall) {
-    is_wall_ = isWall;
+void Cell::setType(cell_type type) {
+    type_ = type;
+}
+
+bool Cell::isWall() const {
+    return type_ == cell_type::WALL;
 }
 
 void Cell::print() const{
-    std::cout << "x: " << x_ << ", y: " << y_ << ", isWall: " << is_wall_ << std::endl;
+    std::cout << "x: " << x_ << ", y: " << y_ << ", type: " << type_ << std::endl;
 }

@@ -13,14 +13,10 @@ Map::Map(int width, int height, int cell_size, const std::vector<int>& cell_type
 {
     for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++)
-            cells_.emplace_back(Cell{x, y, cell_types[x + width * y] == constants::CELL_TYPE_WALL});
+            cells_.emplace_back(Cell{x, y, (cell_type) cell_types[x + width * y]});
 }
 
-void Map::print() const
-{
-    std::cout << "width: " << width_ << ", height: " << height_ << ", cells: " << std::endl;
-    for(const auto& cell: cells_) cell.print();
-}
+
 
 void Map::printAsMap() const
 {
@@ -106,4 +102,32 @@ std::pair<int, int> Map::getTunnelCoordinates(std::pair<int, int> destination) c
     else if(destination.second > (height_ - 1) * cell_size_)
         destination.second = 0;
     return destination;
+}
+
+std::vector<Entity> Map::getPowerEntities() {
+    std::vector<Entity> entities;
+    for(auto & cell : cells_)
+    {
+        if (cell.getType() == cell_type::POWER) {
+            int x = cell.getX() * cell_size_ + constants::WINDOW_POWER_OFFSET;
+            int y = cell.getY() * cell_size_ + constants::WINDOW_POWER_OFFSET;
+            entities.emplace_back(Entity{{x, y}, constants::WINDOW_POWER_SIZE, "power", constants::BIG_PELLET_POINTS});
+            //std::cout << "x: " << x << ", y: " << y << ", size: " << constants::WINDOW_POWER_SIZE << std::endl;
+        }
+    }
+    return entities;
+}
+
+std::vector<Entity> Map::getPointEntities() {
+    std::vector<Entity> entities;
+    for(auto & cell : cells_)
+    {
+        if (cell.getType() == cell_type::POINT) {
+            int x = cell.getX() * cell_size_ + constants::WINDOW_POINTS_OFFSET;
+            int y = cell.getY() * cell_size_ + constants::WINDOW_POINTS_OFFSET;
+            entities.emplace_back(Entity{{x, y}, constants::WINDOW_POINTS_SIZE, "point", constants::SMALL_PELLET_POINTS});
+            //std::cout << "x: " << x << ", y: " << y << ", size: " << constants::WINDOW_POINTS_SIZE << std::endl;
+        }
+    }
+    return entities;
 }
