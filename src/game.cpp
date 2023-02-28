@@ -10,7 +10,7 @@ Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-    pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, 0);
+    pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size);
 
     // TODO : setup ghosts
     lives_ = lives; // TODO : temp, waiting for the scoreboard
@@ -60,6 +60,7 @@ void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
             {
                 score_ += ghost.getPoints();
                 ghost.setIsDisabled(true);
+                // TODO : hide Pacman & show points earned
             }
             else
             {

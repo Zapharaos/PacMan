@@ -13,8 +13,11 @@ Entity::Entity()  = default;
 Entity::Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled, SDL_Rect image) :
         coordinates_(coordinates), size_(size), points_(points), isDisabled_(isDisabled), image_(image) {}
 
-Entity::Entity(const pair<int, int> &coordinates, int size, int points) :
-        coordinates_(coordinates), size_(size), points_(points) {}
+Entity::Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled) :
+    coordinates_(coordinates), size_(size), points_(points), isDisabled_(isDisabled) {}
+
+Entity::Entity(const pair<int, int> &coordinates, int size) :
+        coordinates_(coordinates), size_(size) {}
 
 int Entity::getPoints() const {
     return points_;
@@ -38,6 +41,10 @@ void Entity::setIsDisabled(bool isDisabled) {
 
 SDL_Rect Entity::getImage() const {
     return image_;
+}
+
+void Entity::setImage(const SDL_Rect &image) {
+    image_ = image;
 }
 
 bool Entity::hasCollided(directions direction, const Entity& entity) const {

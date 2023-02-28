@@ -17,7 +17,7 @@ add_executable(${PROJECT_NAME} ""
 
  		include/scoreBoard.h
 		include/saveGame.h
-		include/json.hpp  include/extractor.h)
+		include/json.hpp  include/extractor.h src/movingEntity.cpp include/movingEntity.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 		src/pacman.cpp
