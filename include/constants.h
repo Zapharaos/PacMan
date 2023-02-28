@@ -4,7 +4,7 @@
 
 #ifndef PACMAN_CONSTANTS_H
 #define PACMAN_CONSTANTS_H
-
+//#include <SDL.h>
 namespace constants
 {
 
@@ -82,6 +82,9 @@ namespace constants
     inline constexpr int BMP_POINTS_WIDTH {16};
     inline constexpr int BMP_POINTS_HEIGHT {7};
 
+    //Score Board
+    inline constexpr int SCORE_BOARD_WIDTH {300};
+
 
     // Game =>
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
@@ -101,6 +104,7 @@ namespace constants
     // Window => Cell
     inline constexpr int WINDOW_CELL_WIDTH {SCALE_BMP_TO_WINDOW * BMP_CELL_WIDTH};
     inline constexpr int WINDOW_CELL_HEIGHT {SCALE_BMP_TO_WINDOW * BMP_CELL_HEIGHT};
+
 
     // Window => Pacman
     inline constexpr int WINDOW_PACMAN_X {10 * WINDOW_CELL_WIDTH};
@@ -147,8 +151,54 @@ namespace constants
     inline constexpr int POWERUP_TIME_MEDIUM {2};
     inline constexpr int POWERUP_TIME_SHORT {1};
 
-
 }
+
+// Power up time in seconds
+enum power_up_times
+{
+    POWERUP_TIME_VERY_LONG_PLUS = 6 ,
+    POWERUP_TIME_VERY_LONG = 5 ,
+    POWERUP_TIME_LONG = 3 ,
+    POWERUP_TIME_MEDIUM = 2 ,
+    POWERUP_TIME_SHORT = 1
+};
+
+//POWER Up Points
+enum power_up_points
+{
+    SMALL_PELLET_POINTS = 10 ,
+    BIG_PELLET_POINTS = 50 ,
+    GHOST_BASE_POINTS = 200
+};
+
+
+// Ghost states
+enum ghost_states
+{
+    GHOST_DEFAULT = 0 ,
+    GHOST_SCARED = 1 ,
+    GHOST_LESS_SCARED = 2 ,
+    GHOST_INVISIBLE = 3
+};
+
+
+//Powerup points per round
+enum points_per_round
+{
+    ROUND_ONE = 100 ,
+    ROUND_TWO = 300 ,
+    ROUND_THREE = 500 ,
+    ROUND_FOUR = 500 ,
+    ROUND_FIVE = 700 ,
+    ROUND_SIX = 700 ,
+    ROUND_SEVEN = 1000 ,
+    ROUND_EIGHT = 1000 ,
+    ROUND_NINE = 2000 ,
+    ROUND_TEN = 2000 ,
+    ROUND_ELEVEN = 3000 ,
+    ROUND_TWELVE = 3000 ,
+    ROUND_THIRTEEN_PLUS = 5000
+};
 
 enum directions
 {
