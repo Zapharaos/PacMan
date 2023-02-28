@@ -104,7 +104,7 @@ void Game::movePacman(directions direction, SDL_Rect *rect) {
             destination.second += constants::SPEED_PACMAN;
             break;
         default:
-            std::cerr << "movePacman : Direction not recognized..." << std::endl;
+            return; // nothing to do here
     }
 
     if(!map_.canMoveToCell(destination, isMovingLeftOrUp)) return;

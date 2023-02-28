@@ -97,6 +97,7 @@ int main(int argc, char** argv)
     // Gestion du clavier
     int nbk;
     const Uint8* keys = SDL_GetKeyboardState(&nbk);
+    directions last;
 
 	while (!quit)
 	{
@@ -119,13 +120,17 @@ int main(int argc, char** argv)
             quit = true;
         }*/
         if (keys[SDL_SCANCODE_LEFT])
-            game->movePacman(directions::LEFT, &pacman);
+            game->movePacman((last = directions::LEFT), &pacman);
         if (keys[SDL_SCANCODE_RIGHT])
-            game->movePacman(directions::RIGHT, &pacman);
+            game->movePacman((last = directions::RIGHT), &pacman);
         if (keys[SDL_SCANCODE_UP])
-            game->movePacman(directions::UP, &pacman);
+            game->movePacman((last = directions::UP), &pacman);
         if (keys[SDL_SCANCODE_DOWN])
-            game->movePacman(directions::DOWN, &pacman);
+            game->movePacman((last = directions::DOWN), &pacman);
+
+        // No key input -> continuous movement
+        if(!keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN])
+            game->movePacman(last, &pacman);
 
         // AFFICHAGE
 		draw();
