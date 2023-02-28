@@ -10,16 +10,19 @@ Map::Map() = default;
 
 Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
 {
+    SDL_Rect point_image = { constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE };
+    SDL_Rect power_image = { constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE };
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Entity entity = {};
             cell_type type = cell_types[x + width * y];
             if(type == POINT) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
-                entity = {coordinates, constants::WINDOW_POINTS_SIZE, "point", constants::SMALL_PELLET_POINTS};
+                entity = {coordinates, constants::WINDOW_POINTS_SIZE, constants::SMALL_PELLET_POINTS, false, point_image};
             } else if(type == POWER) {
-                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
-                entity = {coordinates, constants::WINDOW_POWER_SIZE, "power", constants::BIG_PELLET_POINTS};
+                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
+                entity = {coordinates, constants::WINDOW_POWER_SIZE, constants::BIG_PELLET_POINTS, false, power_image};
             }
             cells_.emplace_back(Cell{x, y, type, entity});
         }
@@ -114,4 +117,12 @@ std::pair<int, int> Map::getTunnelCoordinates(std::pair<int, int> destination) c
 
 Cell& Map::getCellAtDestination(std::pair<int, int> destination, bool isMovingLeftOrUp) {
     return getCellAtPosition(getCellCoordinatesFromPositions(destination, isMovingLeftOrUp));
+}
+
+std::vector<Cell> Map::getCellsWithActiveEntities() {
+    std::vector<Cell> cells;
+    for(auto & cell : cells_)
+        if(!cell.getEntity().isDisabled())
+            cells.emplace_back(cell);
+    return cells;
 }

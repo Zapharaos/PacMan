@@ -24,8 +24,6 @@ SDL_Rect pacman = { 32*10,32*20, constants::WINDOW_CELL_WIDTH,constants::WINDOW_
 int count_;
 Game* game = nullptr;
 
-SDL_Rect* pacman_in = nullptr;
-
 void init()
 {
 	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, constants::WINDOW_MAP_WIDTH + constants::SCORE_BOARD_WIDTH ,constants::WINDOW_MAP_HEIGHT, SDL_WINDOW_SHOWN);
@@ -33,8 +31,6 @@ void init()
 
 	plancheSprites = SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES);
     count_ = 0;
-
-    pacman_in = &(pacman_default);
 
     game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP, constants::LIVES);
 }
@@ -45,6 +41,7 @@ void draw()
 {
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_bg, win_surf, &bg);
+    game->drawStaticEntities(plancheSprites, win_surf);
 
     // petit truc pour faire tourner le fantome
     SDL_Rect* ghost_in = nullptr;
@@ -70,7 +67,6 @@ void draw()
     count_ = (count_ + 1) % (512);
 
     // ici on change entre les 2 sprites sources pour une jolie animation.
-    SDL_Rect pacman_in2 = *pacman_in;
     SDL_Rect ghost_in2 = *ghost_in;
     if ((count_ / 4) % 2)
         ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
@@ -79,7 +75,7 @@ void draw()
     SDL_SetColorKey(plancheSprites, true, 0);
     // copie du sprite zoomé
 	SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
-    SDL_BlitScaled(plancheSprites, &pacman_in2, win_surf, &pacman);
+    SDL_BlitScaled(plancheSprites, &(pacman_default), win_surf, &pacman);
 }
 
 

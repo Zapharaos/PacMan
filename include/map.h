@@ -19,6 +19,7 @@ class Map {
         [[nodiscard]] bool canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp);
         [[nodiscard]] const std::pair<int, int> &getDestination() const;
         [[nodiscard]] Cell& getCellAtDestination(std::pair<int, int> destination, bool isMovingLeftOrUp);
+        std::vector<Cell> getCellsWithActiveEntities();
 
     private:
         int width_ = 0;

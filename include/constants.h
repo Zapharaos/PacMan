@@ -13,7 +13,7 @@ namespace constants
     inline const char *const PATH_FILE_PACMAN_MAP {"./pacman_map.txt"};
 
     // Bitmap => Map
-    inline constexpr int BMP_MAP_START_X {200};
+    inline constexpr int BMP_MAP_START_X {369};
     inline constexpr int BMP_MAP_START_Y {3};
     inline constexpr int BMP_MAP_WIDTH {168};
     inline constexpr int BMP_MAP_HEIGHT {216};
@@ -45,6 +45,12 @@ namespace constants
     // Bitmap => Entity positions
     inline constexpr int BMP_PACMAN_START_X {3};
     inline constexpr int BMP_PACMAN_START_Y {89};
+    inline constexpr int BMP_POINT_START_X {4};
+    inline constexpr int BMP_POINT_START_Y {81};
+    inline constexpr int BMP_POINT_SIZE {2};
+    inline constexpr int BMP_POWER_START_X {9};
+    inline constexpr int BMP_POWER_START_Y {79};
+    inline constexpr int BMP_POWER_SIZE {7};
     inline constexpr int BMP_GHOST_BLINKY_START_X {3};
     inline constexpr int BMP_GHOST_BLINKY_START_Y {123};
     inline constexpr int BMP_GHOST_PINKY_START_X {3};
