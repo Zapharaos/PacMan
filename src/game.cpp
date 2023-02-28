@@ -50,22 +50,16 @@ void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
             powerup_ = true;
             // TODO : handle power ups
         }
-        else if(cell.getType() == POINT)
-        {
-            // TODO : remove point sprite
-        }
     }
 
     for(auto & ghost : ghosts_)
     {
-        if(pacman_.hasCollided(direction, ghost))
+        if(!ghost.isDisabled() && pacman_.hasCollided(direction, ghost))
         {
-            ghost.print();
-            ghost.setIsDisabled(true);
             if(powerup_)
             {
                 score_ += ghost.getPoints();
-                // TODO : remove ghost sprite
+                ghost.setIsDisabled(true);
             }
             else
             {
