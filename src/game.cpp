@@ -10,7 +10,7 @@ Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-    pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, "pacman", 0);
+    pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, 0);
 
     // TODO : setup ghosts
     lives_ = lives; // TODO : temp, waiting for the scoreboard
@@ -35,11 +35,11 @@ std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) 
     return cell_types;
 }
 
-void Game::handleCollisionsWithEntities(Cell& cell) {
+void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
     bool lowPoints = score_ < constants::NEW_UP_POINTS_CAP;
 
     Entity entity = cell.getEntity();
-    if(!entity.isDisabled() && pacman_.hasCollided(entity))
+    if(!entity.isDisabled() && pacman_.hasCollided(direction, entity))
     {
         entity.setIsDisabled(true);
         cell.setEntity(entity);
@@ -58,7 +58,7 @@ void Game::handleCollisionsWithEntities(Cell& cell) {
 
     for(auto & ghost : ghosts_)
     {
-        if(pacman_.hasCollided(ghost))
+        if(pacman_.hasCollided(direction, ghost))
         {
             ghost.print();
             ghost.setIsDisabled(true);
@@ -120,7 +120,15 @@ void Game::movePacman(directions direction, SDL_Rect *rect) {
     rect->x = destination.first;
     rect->y = destination.second;
 
-    //std::cout << "Moved to => (" << pacman_.getCoordinates().first / constants::WINDOW_CELL_HEIGHT << ", " << pacman_.getCoordinates().second / constants::WINDOW_CELL_HEIGHT << "), (" << pacman_.getCoordinates().first << ", " << pacman_.getCoordinates().second << ")" << std::endl;
+    handleCollisionsWithEntities(direction, map_.getCellAtDestination(destination, isMovingLeftOrUp));
+}
 
-    handleCollisionsWithEntities(map_.getCellAtDestination(destination, isMovingLeftOrUp));
+void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf) {
+    for(auto & cell : map_.getCellsWithActiveEntities())
+    {
+        Entity entity = cell.getEntity();
+        SDL_Rect image = entity.getImage();
+        SDL_Rect image_position = entity.getImagePosition();
+        SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
+    }
 }

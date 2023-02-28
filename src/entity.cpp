@@ -6,7 +6,19 @@
 
 #include <utility>
 
+Entity::~Entity() = default;
 
+Entity::Entity()  = default;
+
+Entity::Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled, SDL_Rect image) :
+        coordinates_(coordinates), size_(size), points_(points), isDisabled_(isDisabled), image_(image) {}
+
+Entity::Entity(const pair<int, int> &coordinates, int size, int points) :
+        coordinates_(coordinates), size_(size), points_(points) {}
+
+int Entity::getPoints() const {
+    return points_;
+}
 
 const pair<int, int> &Entity::getCoordinates() const {
     return coordinates_;
@@ -14,42 +26,6 @@ const pair<int, int> &Entity::getCoordinates() const {
 
 void Entity::setCoordinates(const pair<int, int> &coordinates) {
     coordinates_ = coordinates;
-}
-
-Entity::Entity(const pair<int, int> &coordinates, int size, string name, int points) :
-    coordinates_(coordinates), size_(size), name_(std::move(name)), points_(points) {}
-
-
-
-Entity::Entity()  = default;
-
-Entity::Entity(const pair<int, int> &coordinates, string name) : coordinates_(coordinates), name_(std::move(name)) {}
-
-Entity::Entity(string name, int points) : name_(std::move(name)), points_(points) {}
-
-bool Entity::hasCollided(const Entity& entity) const {
-    /*std::cout << "e.x : " << entity.coordinates_.first << ", e.x.max : " << entity.coordinates_.first + entity.size_ << std::endl;
-    std::cout << "e.y : " << entity.coordinates_.second << ", e.y.max : " << entity.coordinates_.second + entity.size_ << std::endl;
-    std::cout << "p.x : " << this->coordinates_.first << ", p.x.max : " << this->coordinates_.first + this->size_ << std::endl;
-    std::cout << "p.y : " << this->coordinates_.second << ", p.y.max : " << this->coordinates_.second + this->size_ << "\n" << std::endl;*/
-    if(entity.coordinates_.first <= this->coordinates_.first &&
-        this->coordinates_.first <= entity.coordinates_.first + entity.size_ ||
-        entity.coordinates_.second <= this->coordinates_.second &&
-        this->coordinates_.second <= entity.coordinates_.second + entity.size_ ||
-            this->coordinates_.first <= entity.coordinates_.first &&
-            entity.coordinates_.first <= this->coordinates_.first + this->size_ ||
-            this->coordinates_.second <= entity.coordinates_.second &&
-            entity.coordinates_.second <= this->coordinates_.second + this->size_)
-        return true;
-    return false;
-}
-
-void Entity::print() const {
-    std::cout << "x: " << coordinates_.first << ", y: " << coordinates_.second << ", size: " << size_ << ", points: " << points_ << ", isDisabled: " << isDisabled_ << std::endl;
-}
-
-int Entity::getPoints() const {
-    return points_;
 }
 
 bool Entity::isDisabled() const {
@@ -60,4 +36,37 @@ void Entity::setIsDisabled(bool isDisabled) {
     Entity::isDisabled_ = isDisabled;
 }
 
-Entity::~Entity() = default;
+SDL_Rect Entity::getImage() const {
+    return image_;
+}
+
+bool Entity::hasCollided(directions direction, const Entity& entity) const {
+    /*std::cout << "e.x : " << entity.coordinates_.first << ", e.x.max : " << entity.coordinates_.first + entity.size_ << std::endl;
+    std::cout << "e.y : " << entity.coordinates_.second << ", e.y.max : " << entity.coordinates_.second + entity.size_ << std::endl;
+    std::cout << "p.x : " << this->coordinates_.first << ", p.x.max : " << this->coordinates_.first + this->size_ << std::endl;
+    std::cout << "p.y : " << this->coordinates_.second << ", p.y.max : " << this->coordinates_.second + this->size_ << "\n" << std::endl;*/
+    switch (direction) {
+        case LEFT:
+            return (entity.coordinates_.first <= this->coordinates_.first &&
+               this->coordinates_.first <= entity.coordinates_.first + entity.size_);
+        case RIGHT:
+            return (this->coordinates_.first <= entity.coordinates_.first &&
+                    entity.coordinates_.first <= this->coordinates_.first + this->size_);
+        case UP:
+            return (entity.coordinates_.second <= this->coordinates_.second &&
+                    this->coordinates_.second <= entity.coordinates_.second + entity.size_);
+        case DOWN:
+            return (this->coordinates_.second <= entity.coordinates_.second &&
+                    entity.coordinates_.second <= this->coordinates_.second + this->size_);
+        default:
+            return false;
+    }
+}
+
+SDL_Rect Entity::getImagePosition() const {
+    return {coordinates_.first, coordinates_.second, size_, size_};
+}
+
+void Entity::print() const {
+    std::cout << "x: " << coordinates_.first << ", y: " << coordinates_.second << ", size: " << size_ << ", points: " << points_ << ", isDisabled: " << isDisabled_ << std::endl;
+}
