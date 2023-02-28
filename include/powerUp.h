@@ -12,6 +12,7 @@
 class PowerUp : public Entity{
 
 protected:
+    // TODO : IS powerup Active ?
     powerUps type ;
     SDL_Rect sprite{};
 public:

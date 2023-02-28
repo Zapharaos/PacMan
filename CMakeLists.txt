@@ -14,8 +14,11 @@ add_executable(${PROJECT_NAME} ""
 		include/ghost.h
 		include/entity.h
 		include/powerUp.h
+
+ 		include/scoreBoard.h
 		include/saveGame.h
-		include/json.hpp)
+		include/json.hpp  include/extractor.h)
+
 target_sources(${PROJECT_NAME} PRIVATE
 		src/pacman.cpp
 		src/map.cpp
@@ -24,7 +27,10 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/ghost.cpp
 		src/entity.cpp
 		src/powerUp.cpp
+		src/scoreBoard.cpp
 		src/saveGame.cpp
+		src/extractor.cpp
+
 )
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
