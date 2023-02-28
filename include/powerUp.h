@@ -18,8 +18,6 @@ protected:
 public:
     PowerUp(const pair<int, int> &coordinates, int points, powerUps type, const SDL_Rect &sprite);
 
-    PowerUp(const pair<int, int> &coordinates, powerUps type, const SDL_Rect &sprite);
-
     PowerUp();
 
     [[nodiscard]] powerUps getType() const;

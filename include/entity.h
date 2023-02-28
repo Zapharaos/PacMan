@@ -26,7 +26,8 @@ public:
     virtual ~Entity();
     Entity();
     Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled, SDL_Rect image);
-    Entity(const pair<int, int> &coordinates, int size, int points); // TODO : temp
+    Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled);
+    Entity(const pair<int, int> &coordinates, int size);
 
     [[nodiscard]] int getPoints() const;
     [[nodiscard]] const pair<int, int> &getCoordinates() const;
@@ -34,6 +35,7 @@ public:
     [[nodiscard]] bool isDisabled() const;
     void setIsDisabled(bool isDisabled);
     [[nodiscard]] SDL_Rect getImage() const;
+    void setImage(const SDL_Rect &image);
 
     [[nodiscard]] bool hasCollided(directions direction, const Entity& entity) const;
     [[nodiscard]] SDL_Rect getImagePosition() const;
