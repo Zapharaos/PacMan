@@ -2,13 +2,13 @@
 // Created by matthieu on 28/02/2023.
 //
 
-#include "../include/Pacman.h"
+#include "../include/pacman.h"
 
 Pacman::Pacman() = default;
 
-Pacman::Pacman(const pair<int, int> &coordinates, int size, SDL_Rect image, int speed, const vector<SDL_Rect> &left,
-               const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down) :
-               MovingEntity(coordinates, size, image, speed, left, right, up, down) {}
+Pacman::Pacman(const pair<int, int> &coordinates, int size, Sprite sprite, int speed, const vector<Sprite> &left,
+               const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down) :
+               MovingEntity(coordinates, size, sprite, speed, left, right, up, down) {}
 
 const pair<int, int> &Pacman::getCoordinates() const {
     return Entity::getCoordinates();
@@ -18,8 +18,8 @@ bool Pacman::isMovingLeftOrUp() const {
     return MovingEntity::isMovingLeftOrUp();
 }
 
-SDL_Rect Pacman::getImage() const {
-    return Entity::getImage();
+Sprite Pacman::getSprite() const {
+    return Entity::getSprite();
 }
 
 SDL_Rect Pacman::getImagePosition() const {

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <utility>
 #include "constants.h"
+#include "sprite.h"
 
 using namespace std;
 
@@ -19,23 +20,23 @@ private:
     int size_{};
     int points_{};
     bool isDisabled_ = true;
-    SDL_Rect image_{};
+    Sprite sprite_{};
 
 public:
 
     virtual ~Entity();
     Entity();
-    Entity(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, bool isDisabled);
-    Entity(const pair<int, int> &coordinates, int size, SDL_Rect image);
+    Entity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled);
+    Entity(const pair<int, int> &coordinates, int size, Sprite sprite);
 
     [[nodiscard]] int getPoints() const;
     [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
     void setCoordinates(const pair<int, int> &coordinates);
+    [[nodiscard]] int getSize() const;
     [[nodiscard]] bool isDisabled() const;
     void setIsDisabled(bool isDisabled);
-    [[nodiscard]] virtual SDL_Rect getImage() const;
-    void setImage(const SDL_Rect &image);
-    [[nodiscard]] int getSize() const;
+    [[nodiscard]] virtual Sprite getSprite() const;
+    void setSprite(const Sprite &sprite);
 
     [[nodiscard]] virtual SDL_Rect getImagePosition() const;
     void print() const;

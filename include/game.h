@@ -10,7 +10,7 @@
 #include "map.h"
 #include "movingEntity.h"
 #include "ghost.h"
-#include "Pacman.h"
+#include "pacman.h"
 
 class Game {
 public:
