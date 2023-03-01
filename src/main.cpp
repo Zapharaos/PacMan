@@ -41,6 +41,9 @@ void draw()
 
     game->drawStaticEntities(plancheSprites, win_surf);
 
+    // couleur transparente
+    SDL_SetColorKey(plancheSprites, true, 0);
+
     Pacman pacman = game->getPacman();
     SDL_Rect image = pacman.getSprite().getImage();
     SDL_Rect image_position = pacman.getImagePosition();
@@ -74,9 +77,6 @@ void draw()
         ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
     // copie du sprite zoomé
     SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
-
-    // couleur transparente
-    SDL_SetColorKey(plancheSprites, true, 0);
 }
 
 

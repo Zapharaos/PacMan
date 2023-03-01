@@ -49,11 +49,11 @@ bool MovingEntity::move(Map map, directions direction) {
     bool isMovingLeftOrUp = (direction == LEFT || direction == UP);
     if(!map.canMoveToCell(destination, isMovingLeftOrUp)) return false;
 
+    animate(direction);
+
     setCoordinates(map.getDestination());
     previous_direction_ = direction;
     isMovingLeftOrUp_ = isMovingLeftOrUp;
-
-    animate(direction);
 
     return true;
 

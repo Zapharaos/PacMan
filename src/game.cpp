@@ -21,10 +21,10 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     Sprite pacman_down_1 {{ 109,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
     Sprite pacman_down_2 {{ 126,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }, {0,0,0,10*2}};
 
-    std::vector<Sprite> pacman_left {pacman_left_1, pacman_left_2, pacman_default};
-    std::vector<Sprite> pacman_right {pacman_right_1, pacman_right_2, pacman_default};
-    std::vector<Sprite> pacman_up {pacman_up_1, pacman_up_2, pacman_default};
-    std::vector<Sprite> pacman_down {pacman_down_1, pacman_down_2, pacman_default};
+    std::vector<Sprite> pacman_left {pacman_default, pacman_left_1, pacman_left_2};
+    std::vector<Sprite> pacman_right {pacman_default, pacman_right_1, pacman_right_2};
+    std::vector<Sprite> pacman_up {pacman_default, pacman_up_1, pacman_up_2};
+    std::vector<Sprite> pacman_down {pacman_default, pacman_down_1, pacman_down_2};
 
     pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(0),
                      constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
