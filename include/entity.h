@@ -17,7 +17,7 @@ class Entity{
 private:
     pair<int, int> coordinates_;
     int size_{};
-    int points_{} ;
+    int points_{};
     bool isDisabled_ = true;
     SDL_Rect image_{};
 

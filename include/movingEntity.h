@@ -24,6 +24,8 @@ private:
     int refreshAnimation_counter_ {};
     static const int refreshAnimation_rate_ = constants::ENTITY_REFRESH_RATE;
 
+    std::pair<int, int> getDestination(directions direction);
+
 public:
     MovingEntity();
     MovingEntity(const pair<int, int> &coordinates, int size, const SDL_Rect &image, int speed);
@@ -35,7 +37,8 @@ public:
     [[nodiscard]] directions getPreviousDirection() const;
     [[nodiscard]] virtual bool isMovingLeftOrUp() const;
 
-    virtual void move(Map map, directions direction);
+    virtual bool move(Map map, directions direction);
+    void animate(directions direction);
     std::pair<bool, int> updateImagePosition(directions direction, unsigned max_index);
 };
 

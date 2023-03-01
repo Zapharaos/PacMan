@@ -21,7 +21,8 @@ public:
 
     [[nodiscard]] SDL_Rect getImagePosition() const override;
     [[nodiscard]] bool hasCollided(const Entity& entity) const;
-    void move(Map map, directions direction) override;
+    directions move(const Map& map, directions continuous_direction, directions try_direction);
+    void move(const Map& map, directions continuous_direction);
 };
 
 

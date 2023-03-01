@@ -21,10 +21,10 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
                                         { 35,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }};
     std::vector<SDL_Rect> pacman_up {pacman_default,
                                      { 75,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                     { 92,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }};
+                                     { 92,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }};
     std::vector<SDL_Rect> pacman_down {pacman_default,
                                        { 109,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                       { 126,94, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }};
+                                       { 126,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }};
 
     pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(0),
                      constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
@@ -56,8 +56,14 @@ std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) 
     return cell_types;
 }
 
-void Game::move(directions direction) {
-    pacman_.move(map_, direction);
+directions Game::move(directions continuous_direction, directions try_direction) {
+    directions result = pacman_.move(map_, continuous_direction, try_direction);
+    handleEntitiesCollisions();
+    return result;
+}
+
+void Game::move(directions continuous_direction) {
+    pacman_.move(map_, continuous_direction);
     handleEntitiesCollisions();
 }
 
@@ -77,6 +83,7 @@ void Game::handleEntitiesCollisions() {
             powerup_ = true;
             // TODO : handle power ups
         }
+        // TODO : goodies => freeze 1/60s + point animation
     }
 
     for(auto & ghost : ghosts_)
@@ -88,6 +95,7 @@ void Game::handleEntitiesCollisions() {
                 score_ += ghost.getPoints();
                 ghost.setIsDisabled(true);
                 // TODO : hide Pacman & show points earned
+                // TODO : freeze 1/60s + point animation
             }
             else
             {

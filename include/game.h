@@ -20,7 +20,8 @@ public:
     [[nodiscard]] const Pacman &getPacman() const;
 
     void handleEntitiesCollisions();
-    void move(directions direction);
+    directions move(directions continuous_direction, directions try_direction);
+    void move(directions continuous_direction);
     void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
 
 private:
