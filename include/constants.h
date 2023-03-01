@@ -102,7 +102,7 @@ namespace constants
     // Entities
     inline constexpr int PACMAN_SPEED {2};
     inline constexpr int GHOST_SPEED {1};
-    inline constexpr int ENTITY_REFRESH_RATE {4};
+    inline constexpr int ENTITY_REFRESH_RATE {3};
 
     // Window => Map
     inline constexpr int WINDOW_MAP_START_X {0};
