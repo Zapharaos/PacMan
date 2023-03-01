@@ -11,20 +11,20 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
 
     // TODO : clean up
-    SDL_Rect pacman_default { constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+    Sprite pacman_default {{ constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
+    Sprite pacman_left_1 {{ 46,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
+    Sprite pacman_left_2 {{ 63,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }, {6*2,0,10*2,0}};
+    Sprite pacman_right_1 {{ 20,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
+    Sprite pacman_right_2 {{ 35,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }, {0,0,10*2,0}};
+    Sprite pacman_up_1 {{ 75,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
+    Sprite pacman_up_2 {{ 92,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }, {0,6*2,0,10*2}};
+    Sprite pacman_down_1 {{ 109,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
+    Sprite pacman_down_2 {{ 126,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }, {0,0,0,10*2}};
 
-    std::vector<SDL_Rect> pacman_left {pacman_default,
-                                       { 46,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                       { 63,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }};
-    std::vector<SDL_Rect> pacman_right {pacman_default,
-                                        { 20,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                        { 35,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }};
-    std::vector<SDL_Rect> pacman_up {pacman_default,
-                                     { 75,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                     { 92,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }};
-    std::vector<SDL_Rect> pacman_down {pacman_default,
-                                       { 109,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
-                                       { 126,94, constants::BMP_ENTITY_GHOST_WIDTH,10 }};
+    std::vector<Sprite> pacman_left {pacman_left_1, pacman_left_2, pacman_default};
+    std::vector<Sprite> pacman_right {pacman_right_1, pacman_right_2, pacman_default};
+    std::vector<Sprite> pacman_up {pacman_up_1, pacman_up_2, pacman_default};
+    std::vector<Sprite> pacman_down {pacman_down_1, pacman_down_2, pacman_default};
 
     pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(0),
                      constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
@@ -123,7 +123,7 @@ void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf
     for(auto & cell : map_.getCellsWithActiveEntities())
     {
         Entity entity = cell.getEntity();
-        SDL_Rect image = entity.getImage();
+        SDL_Rect image = entity.getSprite().getImage();
         SDL_Rect image_position = entity.getImagePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
     }

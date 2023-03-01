@@ -10,11 +10,11 @@ Entity::~Entity() = default;
 
 Entity::Entity()  = default;
 
-Entity::Entity(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, bool isDisabled) :
-        coordinates_(coordinates), size_(size), image_(image), points_(points), isDisabled_(isDisabled) {}
+Entity::Entity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled) :
+        coordinates_(coordinates), size_(size), sprite_(sprite), points_(points), isDisabled_(isDisabled) {}
 
-Entity::Entity(const pair<int, int> &coordinates, int size, SDL_Rect image) :
-        coordinates_(coordinates), size_(size), image_(image) {}
+Entity::Entity(const pair<int, int> &coordinates, int size, Sprite sprite) :
+        coordinates_(coordinates), size_(size), sprite_(sprite) {}
 
 int Entity::getPoints() const {
     return points_;
@@ -28,6 +28,10 @@ void Entity::setCoordinates(const pair<int, int> &coordinates) {
     coordinates_ = coordinates;
 }
 
+int Entity::getSize() const {
+    return size_;
+}
+
 bool Entity::isDisabled() const {
     return isDisabled_;
 }
@@ -36,20 +40,18 @@ void Entity::setIsDisabled(bool isDisabled) {
     Entity::isDisabled_ = isDisabled;
 }
 
-SDL_Rect Entity::getImage() const {
-    return image_;
+Sprite Entity::getSprite() const {
+    return sprite_;
 }
 
-void Entity::setImage(const SDL_Rect &image) {
-    image_ = image;
-}
-
-int Entity::getSize() const {
-    return size_;
+void Entity::setSprite(const Sprite &sprite) {
+    sprite_ = sprite;
 }
 
 SDL_Rect Entity::getImagePosition() const {
-    return {coordinates_.first, coordinates_.second, size_, size_};
+    auto offset = getSprite().getOffset();
+    return {coordinates_.first + offset.x, coordinates_.second + offset.y,
+            (offset.w == 0 ? size_ : offset.w), (offset.h == 0 ? size_ : offset.h)};
 }
 
 void Entity::print() const {

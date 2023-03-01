@@ -42,7 +42,7 @@ void draw()
     game->drawStaticEntities(plancheSprites, win_surf);
 
     Pacman pacman = game->getPacman();
-    SDL_Rect image = pacman.getImage();
+    SDL_Rect image = pacman.getSprite().getImage();
     SDL_Rect image_position = pacman.getImagePosition();
     SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
 

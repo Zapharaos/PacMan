@@ -11,13 +11,13 @@
 class Pacman : MovingEntity {
 
 public:
-    Pacman(const pair<int, int> &coordinates, int size, SDL_Rect image, int speed, const vector<SDL_Rect> &left,
-           const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down);
+    Pacman(const pair<int, int> &coordinates, int size, Sprite sprite, int speed, const vector<Sprite> &left,
+           const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
     Pacman();
 
     [[nodiscard]] const pair<int, int> &getCoordinates() const override;
     [[nodiscard]] bool isMovingLeftOrUp() const override;
-    [[nodiscard]] SDL_Rect getImage() const override;
+    [[nodiscard]] Sprite getSprite() const override;
 
     [[nodiscard]] SDL_Rect getImagePosition() const override;
     [[nodiscard]] bool hasCollided(const Entity& entity) const;

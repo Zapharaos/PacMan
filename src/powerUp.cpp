@@ -6,8 +6,8 @@
 
 PowerUp::PowerUp() = default;
 
-PowerUp::PowerUp(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, powerUps type) :
-        Entity(coordinates, size, image, points, false), type_(type) {}
+PowerUp::PowerUp(const pair<int, int> &coordinates, int size, Sprite sprite, int points, powerUps type) :
+        Entity(coordinates, size, sprite, points, false), type_(type) {}
 
 
 

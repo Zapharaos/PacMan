@@ -16,7 +16,7 @@ protected:
     powerUps type_ {};
 
 public:
-    PowerUp(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, powerUps type);
+    PowerUp(const pair<int, int> &coordinates, int size, Sprite sprite, int points, powerUps type);
     PowerUp();
 };
 

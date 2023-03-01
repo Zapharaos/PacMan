@@ -14,10 +14,10 @@ class MovingEntity : public Entity{
 
 private:
     int speed_ {};
-    std::vector<SDL_Rect> left_ {};
-    std::vector<SDL_Rect> right_ {};
-    std::vector<SDL_Rect> up_ {};
-    std::vector<SDL_Rect> down_ {};
+    std::vector<Sprite> left_ {};
+    std::vector<Sprite> right_ {};
+    std::vector<Sprite> up_ {};
+    std::vector<Sprite> down_ {};
     directions previous_direction_ {};
     std::pair<bool, int> previous_imagePosition_ {true, 0};
     bool isMovingLeftOrUp_ = false;
@@ -28,11 +28,10 @@ private:
 
 public:
     MovingEntity();
-    MovingEntity(const pair<int, int> &coordinates, int size, const SDL_Rect &image, int speed);
-    MovingEntity(const pair<int, int> &coordinates, int size, SDL_Rect image, int speed, const vector<SDL_Rect> &left,
-                 const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down);
-    MovingEntity(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, bool isDisabled, int speed, const vector<SDL_Rect> &left,
-                 const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down);
+    MovingEntity(const pair<int, int> &coordinates, int size, Sprite sprite, int speed, const vector<Sprite> &left,
+                 const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
+    MovingEntity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled, int speed, const vector<Sprite> &left,
+                 const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
 
     [[nodiscard]] directions getPreviousDirection() const;
     [[nodiscard]] virtual bool isMovingLeftOrUp() const;
