@@ -4,43 +4,59 @@
 
 #include "../include/movingEntity.h"
 
-movingEntity::movingEntity(const pair<int, int> &coordinates, int size, int points, bool isDisabled, int speed,
-                           const vector<SDL_Rect> &left, const vector<SDL_Rect> &right, const vector<SDL_Rect> &up,
-                           const vector<SDL_Rect> &down) :
-    Entity(coordinates, size, points, isDisabled), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
+MovingEntity::MovingEntity() = default;
 
-movingEntity::movingEntity(const pair<int, int> &coordinates, int size, int speed, const vector<SDL_Rect> &left,
+MovingEntity::MovingEntity(const pair<int, int> &coordinates, int size, const SDL_Rect &image, int speed) :
+        Entity(coordinates, size, image), speed_(speed) {}
+
+MovingEntity::MovingEntity(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, bool isDisabled, int speed,
+                           const vector<SDL_Rect> &left, const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down) :
+                           Entity(coordinates, size, image, points, isDisabled), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
+
+MovingEntity::MovingEntity(const pair<int, int> &coordinates, int size, SDL_Rect image, int speed, const vector<SDL_Rect> &left,
                            const vector<SDL_Rect> &right, const vector<SDL_Rect> &up, const vector<SDL_Rect> &down) :
-    Entity(coordinates, size), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
+                            Entity(coordinates, size, image), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
 
-void movingEntity::move(Map map, directions direction) {
+directions MovingEntity::getPreviousDirection() const {
+    return previous_direction_;
+}
+
+bool MovingEntity::isMovingLeftOrUp() const {
+    return isMovingLeftOrUp_;
+}
+
+void MovingEntity::move(Map map, directions direction) {
 
     std::pair<int, int> destination = getCoordinates();
     bool isMovingLeftOrUp = false;
-    SDL_Rect image;
-    std::pair<bool, int> position;
+    SDL_Rect image = getImage();
+    std::pair<bool, int> position = previous_imagePosition_;
 
     switch(direction) {
         case LEFT:
-            destination.first -= constants::SPEED_PACMAN;
+            destination.first -= speed_;
             isMovingLeftOrUp = true;
-            position = updateNextImage(direction, left_.size() - 1);
+            if(left_.empty()) break; // keep default image
+            position = updateImagePosition(direction, left_.size() - 1);
             image = left_.at(position.second);
             break;
         case RIGHT:
-            destination.first += constants::SPEED_PACMAN;
-            position = updateNextImage(direction, right_.size() - 1);
+            destination.first += speed_;
+            if(right_.empty()) break; // keep default image
+            position = updateImagePosition(direction, right_.size() - 1);
             image = right_.at(position.second);
             break;
         case UP:
-            destination.second -= constants::SPEED_PACMAN;
+            destination.second -= speed_;
             isMovingLeftOrUp = true;
-            position = updateNextImage(direction, up_.size() - 1);
+            if(up_.empty()) break; // keep default image
+            position = updateImagePosition(direction, up_.size() - 1);
             image = up_.at(position.second);
             break;
         case DOWN:
-            destination.second += constants::SPEED_PACMAN;
-            position = updateNextImage(direction, down_.size() - 1);
+            destination.second += speed_;
+            if(down_.empty()) break; // keep default image
+            position = updateImagePosition(direction, down_.size() - 1);
             image = down_.at(position.second);
             break;
         default:
@@ -49,28 +65,48 @@ void movingEntity::move(Map map, directions direction) {
 
     if(!map.canMoveToCell(destination, isMovingLeftOrUp)) return;
 
-    setImage(image);
+    if(refreshAnimation_counter_ == refreshAnimation_rate_ || previous_direction_ != direction) // reset
+    {
+        refreshAnimation_counter_ = 0;
+        previous_imagePosition_ = position;
+        setImage(image);
+    } else
+    {
+        refreshAnimation_counter_++;
+    }
+
     setCoordinates(map.getDestination());
     previous_direction_ = direction;
-    previous_imagePosition_ = position;
+    isMovingLeftOrUp_ = isMovingLeftOrUp;
+
+    /*SDL_Rect image_position = getImagePosition();
+    std::cout << "destination => x : " << destination.first << ", y : " << destination.second << std::endl;
+    std::cout << "Image => x: " << image.x << ", y: " << image.y << ", w: " << image.w << ", h: " << image.h << std::endl;
+    std::cout << "Position => x: " << image_position.x << ", y: " << image_position.y << ", w: " << image_position.w << ", h: " << image_position.h << "\n" << std::endl;*/
 }
 
-std::pair<bool, int> movingEntity::updateNextImage(directions direction, unsigned last_index) {
+std::pair<bool, int> MovingEntity::updateImagePosition(directions direction, unsigned max_index) {
 
     if(previous_direction_ != direction) // direction changed => reset
         return {true, 0};
 
-    bool toLeft = previous_imagePosition_.first; // moving from start to end
+    if(refreshAnimation_counter_ != refreshAnimation_rate_) // no changes
+        return previous_imagePosition_;
+
+    if(max_index == 0) // only one image for this direction
+        return {true, 0};
+
+    bool toRight = previous_imagePosition_.first; // is moving from start to end
     int index = previous_imagePosition_.second; // previous image index in images
 
-    if(toLeft)
+    if(toRight)
     {
-        if(index == last_index) // end
-            return {false, index--}; // switch to backward movement inside images
-        return {toLeft, index++};
+        if(index >= max_index) // at end
+            return {false, index-1}; // switch to backward movement inside images
+        return {toRight, index+1}; // keep moving towards the end
     }
 
-    if(index == 0) // start
-        return {true, index++}; // switch to forward movement inside images
-    return {toLeft, index--};
+    if(index == 0) // at start
+        return {true, index+1}; // switch to forward movement inside images
+    return {toRight, index-1}; // keep moving towards the start
 }

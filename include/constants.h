@@ -64,14 +64,14 @@ namespace constants
     inline constexpr int BMP_POWERUP_SHORT_START_X {244};
     inline constexpr int BMP_POWERUP_START_Y {289};
 
-    //Bitmap->Letters and numbers
+    // Bitmap => Letters and numbers
     inline constexpr int BMP_CHARACTER_WIDTH {7};
     inline constexpr int BMP_CHARACTER_HEIGHT {7};
     inline constexpr int BMP_CHARACTER_OFFSET_TO_LEFT_IMG {2 * BMP_CHARACTER_WIDTH};
     inline constexpr int BMP_CHARACTER_OFFSET_TO_UP_IMG {BMP_CHARACTER_OFFSET_TO_LEFT_IMG + 2 * BMP_CHARACTER_WIDTH};
     inline constexpr int BMP_CHARACTER_OFFSET_TO_DOWN_IMG{BMP_CHARACTER_OFFSET_TO_UP_IMG + 2 * BMP_CHARACTER_WIDTH};
 
-    //Bitmap -> Letter and number positions
+    // Bitmap => Letter and number positions
     inline constexpr int BMP_NUMBER_START_ZERO_ROW_X {4};
     inline constexpr int BMP_NUMBER_START_FIRST_ROW_X {13};
     inline constexpr int BMP_NUMBER_START_FIRST_ROW_Y {53};
@@ -80,7 +80,7 @@ namespace constants
     inline constexpr int BMP_NUMBER_START_THIRD_ROW_X {4};
     inline constexpr int BMP_NUMBER_START_THIRD_ROW_Y {69};
 
-    //Bitmap -> points
+    // Bitmap => points
     inline constexpr int BMP_POINTS_START_ROW_1_X {155};
     inline constexpr int BMP_POINTS_START_ROW_1_Y {176};
     inline constexpr int BMP_POINTS_START_ROW_2_X {154};
@@ -96,10 +96,13 @@ namespace constants
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
     inline constexpr int MAP_HEIGHT {BMP_MAP_HEIGHT / BMP_CELL_HEIGHT};
     inline constexpr int SCALE_BMP_TO_WINDOW {4};
-    inline constexpr int SPEED_PACMAN {2};
-    inline constexpr int SPEED_GHOST {1};
     inline constexpr int LIVES {3};
     inline constexpr int NEW_UP_POINTS_CAP {10000};
+
+    // Entities
+    inline constexpr int PACMAN_SPEED {2};
+    inline constexpr int GHOST_SPEED {1};
+    inline constexpr int ENTITY_REFRESH_RATE {3};
 
     // Window => Map
     inline constexpr int WINDOW_MAP_START_X {0};

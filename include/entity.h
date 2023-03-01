@@ -25,20 +25,19 @@ public:
 
     virtual ~Entity();
     Entity();
-    Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled, SDL_Rect image);
-    Entity(const pair<int, int> &coordinates, int size, int points, bool isDisabled);
-    Entity(const pair<int, int> &coordinates, int size);
+    Entity(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, bool isDisabled);
+    Entity(const pair<int, int> &coordinates, int size, SDL_Rect image);
 
     [[nodiscard]] int getPoints() const;
-    [[nodiscard]] const pair<int, int> &getCoordinates() const;
+    [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
     void setCoordinates(const pair<int, int> &coordinates);
     [[nodiscard]] bool isDisabled() const;
     void setIsDisabled(bool isDisabled);
-    [[nodiscard]] SDL_Rect getImage() const;
+    [[nodiscard]] virtual SDL_Rect getImage() const;
     void setImage(const SDL_Rect &image);
+    [[nodiscard]] int getSize() const;
 
-    [[nodiscard]] bool hasCollided(directions direction, const Entity& entity) const;
-    [[nodiscard]] SDL_Rect getImagePosition() const;
+    [[nodiscard]] virtual SDL_Rect getImagePosition() const;
     void print() const;
 
 };
