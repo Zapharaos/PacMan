@@ -25,45 +25,75 @@ bool MovingEntity::isMovingLeftOrUp() const {
     return isMovingLeftOrUp_;
 }
 
-void MovingEntity::move(Map map, directions direction) {
-
+std::pair<int, int> MovingEntity::getDestination(directions direction) {
     std::pair<int, int> destination = getCoordinates();
-    bool isMovingLeftOrUp = false;
+    switch(direction) {
+        case LEFT:
+            destination.first -= speed_;
+            break;
+        case RIGHT:
+            destination.first += speed_;
+            break;
+        case UP:
+            destination.second -= speed_;
+            break;
+        case DOWN:
+            destination.second += speed_;
+            break;
+        default:
+            break; // nothing to do here
+    }
+    return destination;
+}
+
+bool MovingEntity::move(Map map, directions direction) {
+
+    std::pair<int, int> destination = getDestination(direction);
+    bool isMovingLeftOrUp = (direction == LEFT || direction == UP);
+    if(!map.canMoveToCell(destination, isMovingLeftOrUp)) return false;
+
+    setCoordinates(map.getDestination());
+    previous_direction_ = direction;
+    isMovingLeftOrUp_ = isMovingLeftOrUp;
+
+    animate(direction);
+
+    return true;
+
+    /*SDL_Rect image_position = getImagePosition();
+    std::cout << "destination => x : " << destination.first << ", y : " << destination.second << std::endl;
+    std::cout << "Image => x: " << image.x << ", y: " << image.y << ", w: " << image.w << ", h: " << image.h << std::endl;
+    std::cout << "Position => x: " << image_position.x << ", y: " << image_position.y << ", w: " << image_position.w << ", h: " << image_position.h << "\n" << std::endl;*/
+}
+
+void MovingEntity::animate(directions direction) {
     SDL_Rect image = getImage();
     std::pair<bool, int> position = previous_imagePosition_;
 
     switch(direction) {
         case LEFT:
-            destination.first -= speed_;
-            isMovingLeftOrUp = true;
             if(left_.empty()) break; // keep default image
             position = updateImagePosition(direction, left_.size() - 1);
             image = left_.at(position.second);
             break;
         case RIGHT:
-            destination.first += speed_;
             if(right_.empty()) break; // keep default image
             position = updateImagePosition(direction, right_.size() - 1);
             image = right_.at(position.second);
             break;
         case UP:
-            destination.second -= speed_;
-            isMovingLeftOrUp = true;
             if(up_.empty()) break; // keep default image
             position = updateImagePosition(direction, up_.size() - 1);
             image = up_.at(position.second);
             break;
         case DOWN:
-            destination.second += speed_;
             if(down_.empty()) break; // keep default image
             position = updateImagePosition(direction, down_.size() - 1);
             image = down_.at(position.second);
             break;
         default:
-            return; // nothing to do here
+            break; // nothing to do here
     }
-
-    if(!map.canMoveToCell(destination, isMovingLeftOrUp)) return;
 
     if(refreshAnimation_counter_ == refreshAnimation_rate_ || previous_direction_ != direction) // reset
     {
@@ -74,10 +104,6 @@ void MovingEntity::move(Map map, directions direction) {
     {
         refreshAnimation_counter_++;
     }
-
-    setCoordinates(map.getDestination());
-    previous_direction_ = direction;
-    isMovingLeftOrUp_ = isMovingLeftOrUp;
 
     /*SDL_Rect image_position = getImagePosition();
     std::cout << "destination => x : " << destination.first << ", y : " << destination.second << std::endl;

@@ -119,16 +119,14 @@ int main(int argc, char** argv)
             quit = true;
 
         if (keys[SDL_SCANCODE_LEFT])
-            game->move((last = directions::LEFT));
-        if (keys[SDL_SCANCODE_RIGHT])
-            game->move((last = directions::RIGHT));
-        if (keys[SDL_SCANCODE_UP])
-            game->move((last = directions::UP));
-        if (keys[SDL_SCANCODE_DOWN])
-            game->move((last = directions::DOWN));
-
-        // No key input -> continuous movement
-        if(!keys[SDL_SCANCODE_ESCAPE] && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN])
+            last = game->move(last, directions::LEFT);
+        else if (keys[SDL_SCANCODE_RIGHT])
+            last = game->move(last, directions::RIGHT);
+        else if (keys[SDL_SCANCODE_UP])
+            last = game->move(last, directions::UP);
+        else if (keys[SDL_SCANCODE_DOWN])
+            last = game->move(last, directions::DOWN);
+        else
             game->move(last);
 
         // AFFICHAGE

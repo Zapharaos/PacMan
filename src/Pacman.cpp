@@ -46,6 +46,15 @@ bool Pacman::hasCollided(const Entity& entity) const {
     }
 }
 
-void Pacman::move(Map map, directions direction) {
-    MovingEntity::move(map, direction);
+directions Pacman::move(const Map& map, directions continuous_direction, directions try_direction) {
+    if(! MovingEntity::move(map, try_direction))
+    {
+        MovingEntity::move(map, continuous_direction);
+        return continuous_direction;
+    }
+    return try_direction;
+}
+
+void Pacman::move(const Map& map, directions continuous_direction) {
+    MovingEntity::move(map, continuous_direction);
 }
