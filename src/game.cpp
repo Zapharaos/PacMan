@@ -3,17 +3,38 @@
 //
 
 #include "../include/game.h"
-#include "../include/constants.h"
-#include "../include/entity.h"
+#include "../include/extractor.h"
 
 Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
-    pacman_ = Entity({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size);
+
+    // TODO : clean up
+    SDL_Rect pacman_default { constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
+
+    std::vector<SDL_Rect> pacman_left {pacman_default,
+                                       { 46,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
+                                       { 63,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }};
+    std::vector<SDL_Rect> pacman_right {pacman_default,
+                                        { 20,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
+                                        { 35,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }};
+    std::vector<SDL_Rect> pacman_up {pacman_default,
+                                     { 75,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
+                                     { 92,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }};
+    std::vector<SDL_Rect> pacman_down {pacman_default,
+                                       { 109,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT },
+                                       { 126,94, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }};
+
+    pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(0),
+                     constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
 
     // TODO : setup ghosts
     lives_ = lives; // TODO : temp, waiting for the scoreboard
+}
+
+const Pacman &Game::getPacman() const {
+    return pacman_;
 }
 
 std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) {
@@ -35,11 +56,17 @@ std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) 
     return cell_types;
 }
 
-void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
+void Game::move(directions direction) {
+    pacman_.move(map_, direction);
+    handleEntitiesCollisions();
+}
+
+void Game::handleEntitiesCollisions() {
     bool lowPoints = score_ < constants::NEW_UP_POINTS_CAP;
 
+    Cell& cell = map_.getCellAtDestination(pacman_.getCoordinates(), pacman_.isMovingLeftOrUp());
     Entity entity = cell.getEntity();
-    if(!entity.isDisabled() && pacman_.hasCollided(direction, entity))
+    if(!entity.isDisabled() && pacman_.hasCollided(entity))
     {
         entity.setIsDisabled(true);
         cell.setEntity(entity);
@@ -54,7 +81,7 @@ void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
 
     for(auto & ghost : ghosts_)
     {
-        if(!ghost.isDisabled() && pacman_.hasCollided(direction, ghost))
+        if(!ghost.isDisabled() && pacman_.hasCollided(ghost))
         {
             if(powerup_)
             {
@@ -84,40 +111,6 @@ void Game::handleCollisionsWithEntities(directions direction, Cell& cell) {
     }
 }
 
-void Game::movePacman(directions direction, SDL_Rect *rect) {
-
-    std::pair<int, int> destination = pacman_.getCoordinates();
-    bool isMovingLeftOrUp = false;
-
-    switch(direction) {
-        case LEFT:
-            destination.first -= constants::SPEED_PACMAN;
-            isMovingLeftOrUp = true;
-            break;
-        case RIGHT:
-            destination.first += constants::SPEED_PACMAN;
-            break;
-        case UP:
-            destination.second -= constants::SPEED_PACMAN;
-            isMovingLeftOrUp = true;
-            break;
-        case DOWN:
-            destination.second += constants::SPEED_PACMAN;
-            break;
-        default:
-            return; // nothing to do here
-    }
-
-    if(!map_.canMoveToCell(destination, isMovingLeftOrUp)) return;
-
-    destination = map_.getDestination();
-    pacman_.setCoordinates(destination);
-    rect->x = destination.first;
-    rect->y = destination.second;
-
-    handleCollisionsWithEntities(direction, map_.getCellAtDestination(destination, isMovingLeftOrUp));
-}
-
 void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf) {
     for(auto & cell : map_.getCellsWithActiveEntities())
     {
@@ -126,4 +119,5 @@ void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf
         SDL_Rect image_position = entity.getImagePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
     }
+
 }

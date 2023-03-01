@@ -19,10 +19,10 @@ Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cel
             cell_type type = cell_types[x + width * y];
             if(type == POINT) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
-                entity = {coordinates, constants::WINDOW_POINTS_SIZE, constants::SMALL_PELLET_POINTS, false, point_image};
+                entity = {coordinates, constants::WINDOW_POINTS_SIZE, point_image, constants::SMALL_PELLET_POINTS, false};
             } else if(type == POWER) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
-                entity = {coordinates, constants::WINDOW_POWER_SIZE, constants::BIG_PELLET_POINTS, false, power_image};
+                entity = {coordinates, constants::WINDOW_POWER_SIZE, power_image, constants::BIG_PELLET_POINTS, false};
             }
             cells_.emplace_back(Cell{x, y, type, entity});
         }

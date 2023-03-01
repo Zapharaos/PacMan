@@ -7,23 +7,26 @@
 
 #include <iostream>
 #include <fstream>
-#include "../include/map.h"
-#include "../include/entity.h"
+#include "map.h"
+#include "movingEntity.h"
 #include "ghost.h"
+#include "Pacman.h"
 
 class Game {
 public:
     Game();
     Game(int width, int height, int cell_size, const char * file_path, int lives);
 
-    void movePacman(directions direction, SDL_Rect *rect);
-    void handleCollisionsWithEntities(directions direction, Cell& cell);
+    [[nodiscard]] const Pacman &getPacman() const;
+
+    void handleEntitiesCollisions();
+    void move(directions direction);
     void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
 
 private:
     Map map_;
     std::vector<Ghost> ghosts_;
-    Entity pacman_;
+    Pacman pacman_;
 
     // TODO : temp attributes
     bool powerup_ = false;

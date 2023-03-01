@@ -18,9 +18,6 @@ SDL_Rect ghost_blinky_u = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP
 SDL_Rect ghost_blinky_d = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
 SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
 
-SDL_Rect pacman_default = { constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
-SDL_Rect pacman = { 32*10,32*20, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
-
 int count_;
 Game* game = nullptr;
 
@@ -41,7 +38,13 @@ void draw()
 {
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_bg, win_surf, &bg);
+
     game->drawStaticEntities(plancheSprites, win_surf);
+
+    Pacman pacman = game->getPacman();
+    SDL_Rect image = pacman.getImage();
+    SDL_Rect image_position = pacman.getImagePosition();
+    SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
 
     // petit truc pour faire tourner le fantome
     SDL_Rect* ghost_in = nullptr;
@@ -49,33 +52,31 @@ void draw()
     {
         case 0:
             ghost_in = &(ghost_blinky_r);
-            ghost_blinky.x+=constants::SPEED_GHOST;
+            ghost_blinky.x+=constants::GHOST_SPEED;
             break;
         case 1:
             ghost_in = &(ghost_blinky_d);
-            ghost_blinky.y+=constants::SPEED_GHOST;
+            ghost_blinky.y+=constants::GHOST_SPEED;
             break;
         case 2:
             ghost_in = &(ghost_blinky_l);
-            ghost_blinky.x-=constants::SPEED_GHOST;
+            ghost_blinky.x-=constants::GHOST_SPEED;
             break;
         case 3:
             ghost_in = &(ghost_blinky_u);
-            ghost_blinky.y-=constants::SPEED_GHOST;
+            ghost_blinky.y-=constants::GHOST_SPEED;
             break;
     }
     count_ = (count_ + 1) % (512);
-
     // ici on change entre les 2 sprites sources pour une jolie animation.
     SDL_Rect ghost_in2 = *ghost_in;
     if ((count_ / 4) % 2)
         ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
-        
+    // copie du sprite zoomé
+    SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
+
     // couleur transparente
     SDL_SetColorKey(plancheSprites, true, 0);
-    // copie du sprite zoomé
-	SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
-    SDL_BlitScaled(plancheSprites, &(pacman_default), win_surf, &pacman);
 }
 
 
@@ -114,23 +115,21 @@ int main(int argc, char** argv)
 
         SDL_PumpEvents();
 
-        /*if (keys[SDL_SCANCODE_ESCAPE])
-        {
-            puts("QUIT");
+        if (keys[SDL_SCANCODE_ESCAPE])
             quit = true;
-        }*/
+
         if (keys[SDL_SCANCODE_LEFT])
-            game->movePacman((last = directions::LEFT), &pacman);
+            game->move((last = directions::LEFT));
         if (keys[SDL_SCANCODE_RIGHT])
-            game->movePacman((last = directions::RIGHT), &pacman);
+            game->move((last = directions::RIGHT));
         if (keys[SDL_SCANCODE_UP])
-            game->movePacman((last = directions::UP), &pacman);
+            game->move((last = directions::UP));
         if (keys[SDL_SCANCODE_DOWN])
-            game->movePacman((last = directions::DOWN), &pacman);
+            game->move((last = directions::DOWN));
 
         // No key input -> continuous movement
-        if(!keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN])
-            game->movePacman(last, &pacman);
+        if(!keys[SDL_SCANCODE_ESCAPE] && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN])
+            game->move(last);
 
         // AFFICHAGE
 		draw();

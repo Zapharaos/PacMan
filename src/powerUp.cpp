@@ -4,26 +4,10 @@
 
 #include "../include/powerUp.h"
 
-powerUps PowerUp::getType() const {
-    return type;
-}
+PowerUp::PowerUp() = default;
 
-void PowerUp::setType(powerUps type_) {
-    PowerUp::type = type_;
-}
-
-const SDL_Rect &PowerUp::getSprite() const {
-    return sprite;
-}
-
-void PowerUp::setSprite(const SDL_Rect &sprite_) {
-    PowerUp::sprite = sprite_;
-}
-
-PowerUp::PowerUp(const pair<int, int> &coordinates, int points, powerUps type,
-                 const SDL_Rect &sprite) : Entity(coordinates, 0, points, false), type(type), sprite(sprite) {}
-
-PowerUp::PowerUp() {}
+PowerUp::PowerUp(const pair<int, int> &coordinates, int size, SDL_Rect image, int points, powerUps type) :
+        Entity(coordinates, size, image, points, false), type_(type) {}
 
 
 
