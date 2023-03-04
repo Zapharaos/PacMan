@@ -7,29 +7,29 @@ find_package(SDL2 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(${PROJECT_NAME} ""
-		include/constants.h
-		include/map.h
-		include/cell.h
+		include/utils/constants.h
+		include/map/map.h
+		include/map/cell.h
 		include/game.h
-		include/ghost.h
-		include/entity.h
-		include/powerUp.h
+		include/entity/ghost.h
+        include/entity/entity.h
+		include/entity/powerUp.h
 
  		include/scoreBoard.h
 		include/saveGame.h
-		include/json.hpp  include/extractor.h src/movingEntity.cpp include/movingEntity.h src/pacman.cpp include/pacman.h src/sprite.cpp include/sprite.h)
+		include/utils/json.hpp include/sprite/extractor.h src/entity/movingEntity.cpp include/entity/movingEntity.h src/entity/pacman.cpp include/entity/pacman.h src/sprite/sprite.cpp include/sprite/sprite.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
         src/main.cpp
-		src/map.cpp
-		src/cell.cpp
+		src/map/map.cpp
+		src/map/cell.cpp
 		src/game.cpp
-		src/ghost.cpp
-		src/entity.cpp
-		src/powerUp.cpp
+		src/entity/ghost.cpp
+		src/entity/entity.cpp
+		src/entity/powerUp.cpp
 		src/scoreBoard.cpp
 		src/saveGame.cpp
-		src/extractor.cpp
+		src/sprite/extractor.cpp
 
 )
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})

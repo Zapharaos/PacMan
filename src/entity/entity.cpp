@@ -2,7 +2,7 @@
 // Created by omar on 08/02/23.
 //
 
-#include "../include/entity.h"
+#include "../../include/entity/entity.h"
 
 #include <utility>
 

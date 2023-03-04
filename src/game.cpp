@@ -3,7 +3,7 @@
 //
 
 #include "../include/game.h"
-#include "../include/extractor.h"
+#include "../include/sprite/extractor.h"
 
 Game::Game() = default;
 
@@ -37,8 +37,8 @@ const Pacman &Game::getPacman() const {
     return pacman_;
 }
 
-std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) {
-    std::vector<cell_type> cell_types;
+std::vector<CellType> Game::getCellsTypeFromFile(const std::string& file_path) {
+    std::vector<CellType> cell_types;
     std::ifstream file; // indata is like cin
     char value; // variable for input value
 
@@ -49,20 +49,20 @@ std::vector<cell_type> Game::getCellsTypeFromFile(const std::string& file_path) 
     }
     file >> value;
     while ( !file.eof() ) { // keep reading until end-of-file
-        cell_types.emplace_back((cell_type) strtol(&value, nullptr, 10));
+        cell_types.emplace_back((CellType) strtol(&value, nullptr, 10));
         file >> value; // sets EOF flag if no value found
     }
     file.close();
     return cell_types;
 }
 
-directions Game::move(directions continuous_direction, directions try_direction) {
-    directions result = pacman_.move(map_, continuous_direction, try_direction);
+Direction Game::move(Direction continuous_direction, Direction try_direction) {
+    Direction result = pacman_.move(map_, continuous_direction, try_direction);
     handleEntitiesCollisions();
     return result;
 }
 
-void Game::move(directions continuous_direction) {
+void Game::move(Direction continuous_direction) {
     pacman_.move(map_, continuous_direction);
     handleEntitiesCollisions();
 }
@@ -78,7 +78,7 @@ void Game::handleEntitiesCollisions() {
         cell.setEntity(entity);
         score_ += entity.getPoints();
 
-        if(cell.getType() == POWER)
+        if(cell.getType() == CellType::POWER)
         {
             powerup_ = true;
             // TODO : handle power ups

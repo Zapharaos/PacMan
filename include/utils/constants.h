@@ -4,7 +4,7 @@
 
 #ifndef PACMAN_CONSTANTS_H
 #define PACMAN_CONSTANTS_H
-//#include <SDL.h>
+
 namespace constants
 {
 
@@ -162,6 +162,7 @@ namespace constants
 
 }
 
+// TODO : will be read from settings file
 // Power up time in seconds
 enum power_up_times
 {
@@ -172,7 +173,7 @@ enum power_up_times
     POWERUP_TIME_SHORT = 1
 };
 
-//POWER Up Points
+// TODO : will be read from settings file
 enum power_up_points
 {
     SMALL_PELLET_POINTS = 10 ,
@@ -180,18 +181,7 @@ enum power_up_points
     GHOST_BASE_POINTS = 200
 };
 
-
-// Ghost states
-enum ghost_states
-{
-    GHOST_DEFAULT = 0 ,
-    GHOST_SCARED = 1 ,
-    GHOST_LESS_SCARED = 2 ,
-    GHOST_INVISIBLE = 3
-};
-
-
-//Powerup points per round
+// TODO : will be read from settings file
 enum points_per_round
 {
     ROUND_ONE = 100 ,
@@ -209,24 +199,7 @@ enum points_per_round
     ROUND_THIRTEEN_PLUS = 5000
 };
 
-enum directions
-{
-    NONE = 0,
-    LEFT = 1,
-    RIGHT = 2,
-    UP = 3,
-    DOWN = 4
-};
-
-enum cell_type
-{
-    WALL = 0,
-    POINT = 1,
-    POWER = 2,
-    PATH = 3,
-    TUNNEL = 4
-};
-
+// TODO : will be read from settings file
 enum powerUps
 {
     CHERRY_LONG = 1,

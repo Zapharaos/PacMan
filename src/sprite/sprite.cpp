@@ -2,7 +2,7 @@
 // Created by matthieu on 01/03/2023.
 //
 
-#include "../include/sprite.h"
+#include "../../include/sprite/sprite.h"
 
 Sprite::Sprite() = default;
 
