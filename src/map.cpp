@@ -24,99 +24,63 @@ Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cel
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
                 entity = {coordinates, constants::WINDOW_POWER_SIZE, power, constants::BIG_PELLET_POINTS, false};
             }
-            cells_.emplace_back(Cell{x, y, type, entity});
+            cells_.emplace_back(Cell{{x, y}, cell_size, type, entity});
         }
     }
 }
 
-void Map::printAsMap() const
-{
-    for (int y = 0; y < height_; y++)
+bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destination, directions direction, directions turn) {
+
+    bool toFloor = (direction == LEFT || direction == UP);
+    Cell destination_cell = getCellFromCoordinates(destination, toFloor);
+
+    if(destination_cell.isWall()) // check if facing a wall
     {
-        for (int x = 0; x < width_; x++)
-        {
-            std::cout << (cells_[x + width_ * y].isWall() ? " " : "1") << " ";
-        }
-        std::cout << std::endl;
+        int remainder = getRemainder(origin, origin, destination, direction);
+        destination = changeDestinationOnTurn(origin, remainder, turn);
+        return canMoveToCell(origin, destination, turn);
     }
+
+    Cell origin_cell = getCellFromCoordinates(origin, true);
+    destination_cell = getCellFromCoordinates(destination, !toFloor);
+    std::pair<int, int> edge = destination_cell.getScaledPosition();
+
+    // if edge is between origin & destination
+    if(!isPositionInBetween(direction, edge, origin, destination))
+        return false;
+
+    int remainder = getRemainder(origin, edge, destination, direction);
+    destination = changeDestinationOnTurn(edge, remainder, turn);
+    return canMoveToCell(edge, destination, turn);
 }
 
-bool Map::canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp) {
-    if(!isDirectNeighbour(destination)) return false;
-    std::pair<int, int> scaled = getCellCoordinatesFromPositions(destination, isMovingLeftOrUp);
-    if(isTunnel(scaled))
-    {
-        destination_ = getTunnelCoordinates(destination);
+bool Map::canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, directions direction) {
+
+    Cell destination_cell = getCellFromCoordinates(destination, (direction == LEFT || direction == UP));
+    Cell origin_cell = getCellFromCoordinates(origin, (direction == LEFT || direction == UP));
+
+    if(!destination_cell.isAlignedWith(destination)) return false;
+
+    destination_ = destination;
+
+    if(destination_cell.isTunnel()) {
+        std::cout << "TODO : TUNNEL" << std::endl;
+        // TODO : Tunnel => destination_ = getTunnelCoordinates(destination);
         return true;
     }
-    if(isPositionOutOfBounds(scaled)){
-        std::cerr << "canMoveToCell : Position out of bounds" << std::endl;
-        return false;
-    }
-    destination_ = destination;
-    return !getCellAtPosition(scaled).isWall();
-}
 
-float Map::getScaledPosition(int position) const {
-    return (float) position / (float) cell_size_;
-}
-
-std::pair<int, int> Map::getCellCoordinatesFromPositions(std::pair<int, int> destination, bool isMovingLeftOrUp) {
-    std::pair<int, int> scaled;
-    float x = getScaledPosition(destination.first);
-    float y = getScaledPosition(destination.second);
-    if(isMovingLeftOrUp) {
-        scaled.first = std::floor(x);
-        scaled.second = std::floor(y);
-    } else {
-        scaled.first = std::ceil(x);
-        scaled.second = std::ceil(y);
-    }
-    return scaled;
-}
-
-bool Map::isPositionOutOfBounds(std::pair<int, int> position) const {
-    if(position.first < 0 || position.second < 0) return true;
-    if(position.first > width_ || position.second > height_) return true;
-    return false;
-}
-
-int Map::getCellIndexFromPosition(std::pair<int, int> position) const {
-    return position.first + position.second * width_;
+    if(!destination_cell.isWall()) return true; // is not a wall
+    if(origin_cell.equalsScaledPosition(origin)) return false; // is already next to the wall
+    destination_ = origin_cell.getScaledPosition(); // move next to the wall
+    return true;
 }
 
 Cell& Map::getCellAtPosition(std::pair<int, int> position) {
-    return cells_[getCellIndexFromPosition(position)];
-}
-
-bool Map::isDirectNeighbour(std::pair<int, int> destination) const {
-    float x = getScaledPosition(destination.first);
-    float y = getScaledPosition(destination.second);
-    return(x == std::floor(x) || y == std::floor(y));
+    return cells_[position.first + position.second * width_];
 }
 
 const std::pair<int, int> &Map::getDestination() const {
     return destination_;
-}
-
-bool Map::isTunnel(std::pair<int, int> position) const {
-    return (position.first == -1 || position.first == width_ || position.second == -1 || position.second == height_);
-}
-
-std::pair<int, int> Map::getTunnelCoordinates(std::pair<int, int> destination) const {
-    if(destination.first < 0)
-        destination.first = (width_ - 1) * cell_size_;
-    else if(destination.first > (width_ - 1) * cell_size_)
-        destination.first = 0;
-    else if(destination.second < 0)
-        destination.second = (height_ - 1) * cell_size_;
-    else if(destination.second > (height_ - 1) * cell_size_)
-        destination.second = 0;
-    return destination;
-}
-
-Cell& Map::getCellAtDestination(std::pair<int, int> destination, bool isMovingLeftOrUp) {
-    return getCellAtPosition(getCellCoordinatesFromPositions(destination, isMovingLeftOrUp));
 }
 
 std::vector<Cell> Map::getCellsWithActiveEntities() {
@@ -125,4 +89,73 @@ std::vector<Cell> Map::getCellsWithActiveEntities() {
         if(!cell.getEntity().isDisabled())
             cells.emplace_back(cell);
     return cells;
+}
+
+bool Map::isPositionInBetween(directions direction, std::pair<int, int> position, std::pair<int, int> origin, std::pair<int, int> destination) {
+    bool from_left = (origin.first <= position.first && position.first < destination.first);
+    bool from_right = (destination.first < position.first && position.first <= origin.first);
+    bool from_up_ = (origin.second <= position.second && position.second < destination.second);
+    bool from_bottom_ = (destination.second < position.second && position.second <= origin.second);
+
+    if(direction == LEFT)
+        return from_right;
+    if(direction == RIGHT)
+        return from_left;
+    if(direction == UP)
+        return from_bottom_;
+    if(direction == DOWN)
+        return from_up_;
+    return false;
+}
+
+int Map::getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, directions direction) {
+    switch(direction) {
+        case LEFT:
+            return (origin.first - destination.first) - (origin.first - middle.first);
+        case RIGHT:
+            return (destination.first - origin.first) - (middle.first - origin.first);
+        case UP:
+            return (origin.second - destination.second) - (origin.second - middle.second);
+        case DOWN:
+            return (destination.second - origin.second) - (middle.second - origin.second);
+        default:
+            return 0;
+    }
+}
+
+pair<int, int> Map::changeDestinationOnTurn(pair<int, int> origin, int remainder, directions direction)
+{
+    pair<int, int> destination = origin;
+    switch(direction) {
+        case LEFT:
+            destination.first -= remainder;
+            break;
+        case RIGHT:
+            destination.first += remainder;
+            break;
+        case UP:
+            destination.second -= remainder;
+            break;
+        case DOWN:
+            destination.second += remainder;
+            break;
+        default:
+            break;
+    }
+    return destination;
+}
+
+Cell& Map::getCellFromCoordinates(pair<int, int> coordinates, bool toFloor)
+{
+    std::pair<int, int> scaled;
+    float x = (float) coordinates.first / (float) cell_size_;
+    float y = (float) coordinates.second / (float) cell_size_;
+    if(toFloor) {
+        scaled.first = std::floor(x);
+        scaled.second = std::floor(y);
+    } else {
+        scaled.first = std::ceil(x);
+        scaled.second = std::ceil(y);
+    }
+    return getCellAtPosition(scaled);
 }
