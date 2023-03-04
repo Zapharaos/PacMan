@@ -2,7 +2,7 @@
 // Created by omar on 12/02/23.
 //
 
-#include "../include/powerUp.h"
+#include "../../include/entity/powerUp.h"
 
 PowerUp::PowerUp() = default;
 

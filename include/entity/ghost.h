@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include <utility>
-#include "constants.h"
+#include "../utils/constants.h"
 #include "entity.h"
 
 using namespace std;
@@ -32,6 +32,16 @@ private:
     SDL_Rect starting ;     // ici scale x2
 
     int state;
+
+    // Ghost states
+    enum ghost_states
+    {
+        GHOST_DEFAULT = 0 ,
+        GHOST_SCARED = 1 ,
+        GHOST_LESS_SCARED = 2 ,
+        GHOST_INVISIBLE = 3
+    };
+
 public:
 
     Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up, const SDL_Rect &scared,

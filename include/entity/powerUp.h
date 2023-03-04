@@ -7,7 +7,7 @@
 #include <SDL.h>
 #include <utility>
 #include "entity.h"
-#include "constants.h"
+#include "../utils/constants.h"
 
 class PowerUp : public Entity{
 

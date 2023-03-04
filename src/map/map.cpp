@@ -4,11 +4,11 @@
 
 #include <iostream>
 #include <cmath>
-#include "../include/map.h"
+#include "../../include/map/map.h"
 
 Map::Map() = default;
 
-Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
+Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
 {
     Sprite point {{ constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE }, {}};
     Sprite power {{ constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE }, {}};
@@ -16,11 +16,11 @@ Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cel
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Entity entity = {};
-            cell_type type = cell_types[x + width * y];
-            if(type == POINT) {
+            CellType type = cell_types[x + width * y];
+            if(type == CellType::POINT) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
                 entity = {coordinates, constants::WINDOW_POINTS_SIZE, point, constants::SMALL_PELLET_POINTS, false};
-            } else if(type == POWER) {
+            } else if(type == CellType::POWER) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
                 entity = {coordinates, constants::WINDOW_POWER_SIZE, power, constants::BIG_PELLET_POINTS, false};
             }
@@ -29,9 +29,9 @@ Map::Map(int width, int height, int cell_size, const std::vector<cell_type>& cel
     }
 }
 
-bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destination, directions direction, directions turn) {
+bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction, Direction turn) {
 
-    bool toFloor = (direction == LEFT || direction == UP);
+    bool toFloor = (direction == Direction::LEFT || direction == Direction::UP);
     Cell destination_cell = getCellFromCoordinates(destination, toFloor);
 
     if(destination_cell.isWall()) // check if facing a wall
@@ -54,17 +54,17 @@ bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destinat
     return canMoveToCell(edge, destination, turn);
 }
 
-bool Map::canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, directions direction) {
+bool Map::canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction) {
 
-    Cell destination_cell = getCellFromCoordinates(destination, (direction == LEFT || direction == UP));
-    Cell origin_cell = getCellFromCoordinates(origin, (direction == LEFT || direction == UP));
+    Cell destination_cell = getCellFromCoordinates(destination, (direction == Direction::LEFT || direction == Direction::UP));
+    Cell origin_cell = getCellFromCoordinates(origin, (direction == Direction::LEFT || direction == Direction::UP));
 
     if(!destination_cell.isAlignedWith(destination)) return false;
 
     destination_ = destination;
 
-    if(destination_cell.isTunnel()) {
-        std::cout << "TODO : TUNNEL" << std::endl;
+    if(destination_cell.isWarp()) {
+        std::cout << "Todo : Warp" << std::endl;
         // TODO : Tunnel => destination_ = getTunnelCoordinates(destination);
         return true;
     }
@@ -91,52 +91,55 @@ std::vector<Cell> Map::getCellsWithActiveEntities() {
     return cells;
 }
 
-bool Map::isPositionInBetween(directions direction, std::pair<int, int> position, std::pair<int, int> origin, std::pair<int, int> destination) {
+bool Map::isPositionInBetween(Direction direction, std::pair<int, int> position, std::pair<int, int> origin, std::pair<int, int> destination) {
     bool from_left = (origin.first <= position.first && position.first < destination.first);
     bool from_right = (destination.first < position.first && position.first <= origin.first);
     bool from_up_ = (origin.second <= position.second && position.second < destination.second);
     bool from_bottom_ = (destination.second < position.second && position.second <= origin.second);
 
-    if(direction == LEFT)
-        return from_right;
-    if(direction == RIGHT)
-        return from_left;
-    if(direction == UP)
-        return from_bottom_;
-    if(direction == DOWN)
-        return from_up_;
-    return false;
+    switch(direction) {
+        case Direction::LEFT:
+            return from_right;
+        case Direction::RIGHT:
+            return from_left;
+        case Direction::UP:
+            return from_bottom_;
+        case Direction::DOWN:
+            return from_up_;
+        default:
+            return false;
+    }
 }
 
-int Map::getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, directions direction) {
+int Map::getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, Direction direction) {
     switch(direction) {
-        case LEFT:
+        case Direction::LEFT:
             return (origin.first - destination.first) - (origin.first - middle.first);
-        case RIGHT:
+        case Direction::RIGHT:
             return (destination.first - origin.first) - (middle.first - origin.first);
-        case UP:
+        case Direction::UP:
             return (origin.second - destination.second) - (origin.second - middle.second);
-        case DOWN:
+        case Direction::DOWN:
             return (destination.second - origin.second) - (middle.second - origin.second);
         default:
             return 0;
     }
 }
 
-pair<int, int> Map::changeDestinationOnTurn(pair<int, int> origin, int remainder, directions direction)
+pair<int, int> Map::changeDestinationOnTurn(pair<int, int> origin, int remainder, Direction direction)
 {
     pair<int, int> destination = origin;
     switch(direction) {
-        case LEFT:
+        case Direction::LEFT:
             destination.first -= remainder;
             break;
-        case RIGHT:
+        case Direction::RIGHT:
             destination.first += remainder;
             break;
-        case UP:
+        case Direction::UP:
             destination.second -= remainder;
             break;
-        case DOWN:
+        case Direction::DOWN:
             destination.second += remainder;
             break;
         default:

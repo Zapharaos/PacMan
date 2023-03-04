@@ -7,10 +7,10 @@
 
 #include <iostream>
 #include <fstream>
-#include "map.h"
-#include "movingEntity.h"
-#include "ghost.h"
-#include "pacman.h"
+#include "map/map.h"
+#include "entity/movingEntity.h"
+#include "entity/ghost.h"
+#include "entity/pacman.h"
 
 class Game {
 public:
@@ -20,8 +20,8 @@ public:
     [[nodiscard]] const Pacman &getPacman() const;
 
     void handleEntitiesCollisions();
-    directions move(directions continuous_direction, directions try_direction);
-    void move(directions continuous_direction);
+    Direction move(Direction continuous_direction, Direction try_direction);
+    void move(Direction continuous_direction);
     void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
 
 private:
@@ -34,7 +34,7 @@ private:
     int score_ = 0;
     int lives_ = 0;
 
-    static std::vector<cell_type> getCellsTypeFromFile(const std::string &file_path);
+    static std::vector<CellType> getCellsTypeFromFile(const std::string &file_path);
 };
 
 

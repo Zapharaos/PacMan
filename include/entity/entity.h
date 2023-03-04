@@ -8,8 +8,8 @@
 #include <string>
 #include <iostream>
 #include <utility>
-#include "constants.h"
-#include "sprite.h"
+#include "../utils/constants.h"
+#include "../sprite/sprite.h"
 
 using namespace std;
 

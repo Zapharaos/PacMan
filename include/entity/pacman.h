@@ -18,12 +18,12 @@ public:
     [[nodiscard]] const pair<int, int> &getCoordinates() const override;
     [[nodiscard]] bool isMovingLeftOrUp() const override;
     [[nodiscard]] Sprite getSprite() const override;
-    [[nodiscard]] directions getPreviousDirection() const override;
+    [[nodiscard]] Direction getPreviousDirection() const override;
 
     [[nodiscard]] SDL_Rect getImagePosition() const override;
     [[nodiscard]] bool hasCollided(const Entity& entity) const;
-    directions move(const Map& map, directions continuous_direction, directions try_direction);
-    void move(const Map& map, directions continuous_direction);
+    Direction move(const Map& map, Direction continuous_direction, Direction try_direction);
+    void move(const Map& map, Direction continuous_direction);
 };
 
 

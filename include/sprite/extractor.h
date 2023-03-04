@@ -7,7 +7,7 @@
 
 #include <SDL_rect.h>
 #include <vector>
-#include "constants.h"
+#include "../utils/constants.h"
 
 class Extractor {
 public:
