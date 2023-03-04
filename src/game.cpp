@@ -26,7 +26,7 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     std::vector<Sprite> pacman_up {pacman_default, pacman_up_1, pacman_up_2};
     std::vector<Sprite> pacman_down {pacman_default, pacman_down_1, pacman_down_2};
 
-    pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(0),
+    pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(1),
                      constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
 
     // TODO : setup ghosts
@@ -70,7 +70,7 @@ void Game::move(directions continuous_direction) {
 void Game::handleEntitiesCollisions() {
     bool lowPoints = score_ < constants::NEW_UP_POINTS_CAP;
 
-    Cell& cell = map_.getCellAtDestination(pacman_.getCoordinates(), pacman_.isMovingLeftOrUp());
+    Cell& cell = map_.getCellFromCoordinates(pacman_.getCoordinates(), pacman_.isMovingLeftOrUp());
     Entity entity = cell.getEntity();
     if(!entity.isDisabled() && pacman_.hasCollided(entity))
     {

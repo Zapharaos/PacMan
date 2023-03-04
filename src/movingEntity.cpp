@@ -22,8 +22,8 @@ bool MovingEntity::isMovingLeftOrUp() const {
     return isMovingLeftOrUp_;
 }
 
-std::pair<int, int> MovingEntity::getDestination(directions direction) {
-    std::pair<int, int> destination = getCoordinates();
+std::pair<int, int> MovingEntity::getDestination(std::pair<int, int> origin, directions direction) const {
+    std::pair<int, int> destination = origin;
     switch(direction) {
         case LEFT:
             destination.first -= speed_;
@@ -43,24 +43,43 @@ std::pair<int, int> MovingEntity::getDestination(directions direction) {
     return destination;
 }
 
-bool MovingEntity::move(Map map, directions direction) {
+directions MovingEntity::move(Map map, directions direction, directions turn) {
 
-    std::pair<int, int> destination = getDestination(direction);
-    bool isMovingLeftOrUp = (direction == LEFT || direction == UP);
-    if(!map.canMoveToCell(destination, isMovingLeftOrUp)) return false;
+    std::pair<int, int> origin = getCoordinates();
+    std::pair<int, int> destination = getDestination(origin, direction);
+
+    if(direction == NONE || areDirectionsOpposite(direction, turn))
+    {
+        move(map, turn);
+        return turn;
+    }
+
+    if(areDirectionsEqual(direction, turn) || !map.canTurnToCell(origin, destination, direction, turn))
+    {
+        move(map, direction);
+        return direction;
+    }
+
+    animate(turn);
+    setCoordinates(map.getDestination());
+    previous_direction_ = turn;
+    isMovingLeftOrUp_ = (turn == LEFT || turn == UP);
+
+    return turn;
+}
+
+void MovingEntity::move(Map map, directions direction) {
+
+    if(direction == NONE) return;
+
+    std::pair<int, int> origin = getCoordinates();
+    std::pair<int, int> destination = getDestination(origin, direction);
+    if(!map.canMoveToCell(origin, destination, direction)) return;
 
     animate(direction);
-
     setCoordinates(map.getDestination());
     previous_direction_ = direction;
-    isMovingLeftOrUp_ = isMovingLeftOrUp;
-
-    return true;
-
-    /*SDL_Rect image_position = getImagePosition();
-    std::cout << "destination => x : " << destination.first << ", y : " << destination.second << std::endl;
-    std::cout << "Image => x: " << image.x << ", y: " << image.y << ", w: " << image.w << ", h: " << image.h << std::endl;
-    std::cout << "Position => x: " << image_position.x << ", y: " << image_position.y << ", w: " << image_position.w << ", h: " << image_position.h << "\n" << std::endl;*/
+    isMovingLeftOrUp_ = (direction == LEFT || direction == UP);
 }
 
 void MovingEntity::animate(directions direction) {
@@ -101,11 +120,6 @@ void MovingEntity::animate(directions direction) {
     {
         refreshAnimation_counter_++;
     }
-
-    /*SDL_Rect image_position = getImagePosition();
-    std::cout << "destination => x : " << destination.first << ", y : " << destination.second << std::endl;
-    std::cout << "Image => x: " << image.x << ", y: " << image.y << ", w: " << image.w << ", h: " << image.h << std::endl;
-    std::cout << "Position => x: " << image_position.x << ", y: " << image_position.y << ", w: " << image_position.w << ", h: " << image_position.h << "\n" << std::endl;*/
 }
 
 std::pair<bool, int> MovingEntity::updateImagePosition(directions direction, unsigned max_index) {
@@ -132,4 +146,12 @@ std::pair<bool, int> MovingEntity::updateImagePosition(directions direction, uns
     if(index == 0) // at start
         return {true, index+1}; // switch to forward movement inside images
     return {toRight, index-1}; // keep moving towards the start
+}
+
+// TODO : move to another custom file
+bool MovingEntity::areDirectionsEqual(directions a, directions b) {
+    return a == b;
+}
+bool MovingEntity::areDirectionsOpposite(directions a, directions b) {
+    return (a == LEFT || a == RIGHT) == (b == LEFT || b == RIGHT);
 }

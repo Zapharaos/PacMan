@@ -100,7 +100,7 @@ namespace constants
     inline constexpr int NEW_UP_POINTS_CAP {10000};
 
     // Entities
-    inline constexpr int PACMAN_SPEED {2};
+    inline constexpr int PACMAN_SPEED {3};
     inline constexpr int GHOST_SPEED {1};
     inline constexpr int ENTITY_REFRESH_RATE {3};
 
@@ -211,6 +211,7 @@ enum points_per_round
 
 enum directions
 {
+    NONE = 0,
     LEFT = 1,
     RIGHT = 2,
     UP = 3,
@@ -222,7 +223,8 @@ enum cell_type
     WALL = 0,
     POINT = 1,
     POWER = 2,
-    PATH = 3
+    PATH = 3,
+    TUNNEL = 4
 };
 
 enum powerUps

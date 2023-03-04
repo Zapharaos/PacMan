@@ -18,6 +18,7 @@ public:
     [[nodiscard]] const pair<int, int> &getCoordinates() const override;
     [[nodiscard]] bool isMovingLeftOrUp() const override;
     [[nodiscard]] Sprite getSprite() const override;
+    [[nodiscard]] directions getPreviousDirection() const override;
 
     [[nodiscard]] SDL_Rect getImagePosition() const override;
     [[nodiscard]] bool hasCollided(const Entity& entity) const;

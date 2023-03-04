@@ -98,7 +98,7 @@ int main(int argc, char** argv)
     // Gestion du clavier
     int nbk;
     const Uint8* keys = SDL_GetKeyboardState(&nbk);
-    directions last;
+    directions last = NONE;
 
 	while (!quit)
 	{

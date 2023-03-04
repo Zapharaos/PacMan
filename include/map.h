@@ -15,11 +15,11 @@ class Map {
         Map();
         Map(int width, int height, int cell_size, const std::vector<cell_type>& cell_types);
 
-        void printAsMap() const;
-        [[nodiscard]] bool canMoveToCell(std::pair<int, int> destination, bool isMovingLeftOrUp);
+        [[nodiscard]] bool canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, directions direction);
+        [[nodiscard]] bool canTurnToCell(pair<int, int> origin, pair<int, int> destination, directions direction, directions turn);
         [[nodiscard]] const std::pair<int, int> &getDestination() const;
-        [[nodiscard]] Cell& getCellAtDestination(std::pair<int, int> destination, bool isMovingLeftOrUp);
-        std::vector<Cell> getCellsWithActiveEntities();
+        [[nodiscard]] std::vector<Cell> getCellsWithActiveEntities();
+        [[nodiscard]] Cell& getCellFromCoordinates(pair<int, int> coordinates, bool toFloor);
 
     private:
         int width_ = 0;
@@ -28,14 +28,10 @@ class Map {
         std::vector<Cell> cells_;
         std::pair<int, int> destination_;
 
-        [[nodiscard]] std::pair<int, int> getCellCoordinatesFromPositions(std::pair<int, int> destination, bool isMovingLeftOrUp);
-        [[nodiscard]] float getScaledPosition(int position) const;
-        [[nodiscard]] bool isDirectNeighbour(std::pair<int, int> destination) const;
-        [[nodiscard]] bool isTunnel(std::pair<int, int> position) const;
-        [[nodiscard]] std::pair<int, int> getTunnelCoordinates(std::pair<int, int> destination) const;
         [[nodiscard]] Cell& getCellAtPosition(std::pair<int, int> position);
-        [[nodiscard]] bool isPositionOutOfBounds(std::pair<int, int> position) const;
-        [[nodiscard]] inline int getCellIndexFromPosition(std::pair<int, int> position) const;
+        [[nodiscard]] static bool isPositionInBetween(directions direction, pair<int, int> position, pair<int, int> origin, pair<int, int> destination) ;
+        [[nodiscard]] static pair<int, int> changeDestinationOnTurn(pair<int, int> origin, int remainder, directions direction);
+        [[nodiscard]] static int getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, directions direction);
 };
 
 

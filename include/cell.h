@@ -12,29 +12,31 @@
 
 class Cell {
 
-    public:
-        Cell();
-        Cell(int x, int y, cell_type type, const Entity& entity);
-
-    [[nodiscard]] int getX() const;
-
-    [[nodiscard]] int getY() const;
-
-    [[nodiscard]] cell_type getType() const;
-
-    [[nodiscard]] const Entity &getEntity() const;
-
-    void setEntity(const Entity &entity);
-
-    [[nodiscard]] bool isWall() const;
-
-    void print() const;
-
-private:
-        int x_ = 0;
-        int y_ = 0;
+    private:
+        std::pair<int, int> position_ {};
+        int size_ {};
         cell_type type_ = cell_type::WALL;
         Entity entity_ {};
+
+    public:
+        Cell();
+        Cell(std::pair<int, int> position, int size, cell_type type, const Entity& entity);
+
+        bool operator==(const Cell &rhs) const;
+        bool operator!=(const Cell &rhs) const;
+
+        [[nodiscard]] cell_type getType() const;
+        [[nodiscard]] const Entity &getEntity() const;
+        void setEntity(const Entity &entity);
+        [[nodiscard]] bool isWall() const;
+        [[nodiscard]] bool isTunnel() const;
+
+        void print() const;
+        [[nodiscard]] bool isAlignedWith(pair<int, int> position) const;
+        [[nodiscard]] bool equalsScaledPosition(std::pair<int, int> position) const;
+        [[nodiscard]] std::pair<int, int> getScaledPosition() const;
+        [[nodiscard]] pair<int, int> getNeighboursPosition(directions direction) const;
+        [[nodiscard]] pair<int, int> getCornerPosition(directions direction, directions turn) const;
 };
 
 
