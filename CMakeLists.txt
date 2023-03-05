@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.14)
 
 project(PacMan LANGUAGES CXX)
 
@@ -17,7 +17,7 @@ add_executable(${PROJECT_NAME} ""
 
  		include/scoreBoard.h
 		include/saveGame.h
-		include/utils/json.hpp include/sprite/extractor.h src/entity/movingEntity.cpp include/entity/movingEntity.h src/entity/pacman.cpp include/entity/pacman.h src/sprite/sprite.cpp include/sprite/sprite.h)
+		include/utils/json.hpp include/sprite/extractor.h src/entity/movingEntity.cpp include/entity/movingEntity.h src/entity/pacman.cpp include/entity/pacman.h src/sprite/sprite.cpp include/sprite/sprite.h src/window.cpp)
 
 target_sources(${PROJECT_NAME} PRIVATE
         src/main.cpp
