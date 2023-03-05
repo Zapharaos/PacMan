@@ -34,6 +34,10 @@ class Map {
         [[nodiscard]] static bool isPositionInBetween(Direction direction, pair<int, int> position, pair<int, int> origin, pair<int, int> destination) ;
         [[nodiscard]] static pair<int, int> changeDestinationOnTurn(pair<int, int> origin, int remainder, Direction direction);
         [[nodiscard]] static int getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, Direction direction);
+        [[nodiscard]] pair<int, int> getPositionFromCoordinates(pair<int, int> coordinates, bool toFloor) const;
+        [[nodiscard]] Cell getWarpEntryCell(pair<int, int> coordinates, bool toFloor);
+        [[nodiscard]] Cell getWarpExitCell(pair<int, int> coordinates, bool toFloor);
+        [[nodiscard]] bool hasExit(const Cell &cell);
 };
 
 

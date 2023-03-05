@@ -100,7 +100,7 @@ namespace constants
     inline constexpr int NEW_UP_POINTS_CAP {10000};
 
     // Entities
-    inline constexpr int PACMAN_SPEED {3};
+    inline constexpr int PACMAN_SPEED {16};
     inline constexpr int GHOST_SPEED {1};
     inline constexpr int ENTITY_REFRESH_RATE {3};
 
@@ -132,11 +132,6 @@ namespace constants
     inline constexpr int GHOST_SCARED {1};
     inline constexpr int GHOST_LESSSCARED{2};
     inline constexpr int GHOST_INVISIBLE {3};
-
-    //POWER Up Points
-    inline constexpr int SMALL_PELLET_POINTS {10};
-    inline constexpr int BIG_PELLET_POINTS {50};
-    inline constexpr int GHOST_BASE_POINTS {200};
 
     //Powerup points per round
     inline constexpr int POWERUP_POINTS_ROUND_1 {100};
@@ -174,11 +169,11 @@ enum power_up_times
 };
 
 // TODO : will be read from settings file
-enum power_up_points
+enum class Score
 {
-    SMALL_PELLET_POINTS = 10 ,
-    BIG_PELLET_POINTS = 50 ,
-    GHOST_BASE_POINTS = 200
+    PELLET = 10,
+    ENERGIZER = 50,
+    GHOST = 200
 };
 
 // TODO : will be read from settings file

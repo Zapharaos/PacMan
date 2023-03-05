@@ -78,7 +78,7 @@ void Game::handleEntitiesCollisions() {
         cell.setEntity(entity);
         score_ += entity.getPoints();
 
-        if(cell.getType() == CellType::POWER)
+        if(cell.getType() == CellType::ENERGIZER)
         {
             powerup_ = true;
             // TODO : handle power ups
@@ -122,7 +122,7 @@ void Game::handleEntitiesCollisions() {
 void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf) {
     for(auto & cell : map_.getCellsWithActiveEntities())
     {
-        Entity entity = cell.getEntity();
+        const Entity& entity = cell.getEntity();
         SDL_Rect image = entity.getSprite().getImage();
         SDL_Rect image_position = entity.getImagePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
