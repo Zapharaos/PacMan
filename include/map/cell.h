@@ -13,8 +13,8 @@
 enum class CellType
 {
     WALL = 0,
-    POINT = 1,
-    POWER = 2,
+    PELLET = 1,
+    ENERGIZER = 2,
     PATH = 3,
     WARP = 4
 };
@@ -44,6 +44,7 @@ class Cell {
         [[nodiscard]] bool isAlignedWith(pair<int, int> position) const;
         [[nodiscard]] bool equalsScaledPosition(std::pair<int, int> position) const;
         [[nodiscard]] std::pair<int, int> getScaledPosition() const;
+        [[nodiscard]] pair<int, int> getWarpExit(int width, int height) const;
 };
 
 

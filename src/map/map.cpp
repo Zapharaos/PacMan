@@ -17,12 +17,12 @@ Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell
         for (int x = 0; x < width; x++) {
             Entity entity = {};
             CellType type = cell_types[x + width * y];
-            if(type == CellType::POINT) {
+            if(type == CellType::PELLET) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
-                entity = {coordinates, constants::WINDOW_POINTS_SIZE, point, constants::SMALL_PELLET_POINTS, false};
-            } else if(type == CellType::POWER) {
+                entity = {coordinates, constants::WINDOW_POINTS_SIZE, point, (int) Score::PELLET, false};
+            } else if(type == CellType::ENERGIZER) {
                 std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
-                entity = {coordinates, constants::WINDOW_POWER_SIZE, power, constants::BIG_PELLET_POINTS, false};
+                entity = {coordinates, constants::WINDOW_POWER_SIZE, power, (int) Score::ENERGIZER, false};
             }
             cells_.emplace_back(Cell{{x, y}, cell_size, type, entity});
         }
@@ -56,18 +56,28 @@ bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destinat
 
 bool Map::canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction) {
 
-    Cell destination_cell = getCellFromCoordinates(destination, (direction == Direction::LEFT || direction == Direction::UP));
-    Cell origin_cell = getCellFromCoordinates(origin, (direction == Direction::LEFT || direction == Direction::UP));
+    bool toFloor = (direction == Direction::LEFT || direction == Direction::UP);
+
+    Cell exit = getWarpExitCell(destination, toFloor);
+    if(exit.isWarp()) // if the exit cell has been reached
+    {
+        destination_ = exit.getWarpExit(width_, height_);
+        return true;
+    }
+
+    Cell entry = getWarpEntryCell(origin, toFloor);
+    if(entry.isWarp() && hasExit(entry)) // allow moving out of bounds
+    {
+        destination_ = destination;
+        return true;
+    }
+
+    Cell origin_cell = getCellFromCoordinates(origin, toFloor);
+    Cell destination_cell = getCellFromCoordinates(destination, toFloor);
 
     if(!destination_cell.isAlignedWith(destination)) return false;
 
     destination_ = destination;
-
-    if(destination_cell.isWarp()) {
-        std::cout << "Todo : Warp" << std::endl;
-        // TODO : Tunnel => destination_ = getTunnelCoordinates(destination);
-        return true;
-    }
 
     if(!destination_cell.isWall()) return true; // is not a wall
     if(origin_cell.equalsScaledPosition(origin)) return false; // is already next to the wall
@@ -150,6 +160,11 @@ pair<int, int> Map::changeDestinationOnTurn(pair<int, int> origin, int remainder
 
 Cell& Map::getCellFromCoordinates(pair<int, int> coordinates, bool toFloor)
 {
+    return getCellAtPosition(getPositionFromCoordinates(coordinates, toFloor));
+}
+
+pair<int, int> Map::getPositionFromCoordinates(pair<int, int> coordinates, bool toFloor) const
+{
     std::pair<int, int> scaled;
     float x = (float) coordinates.first / (float) cell_size_;
     float y = (float) coordinates.second / (float) cell_size_;
@@ -160,5 +175,41 @@ Cell& Map::getCellFromCoordinates(pair<int, int> coordinates, bool toFloor)
         scaled.first = std::ceil(x);
         scaled.second = std::ceil(y);
     }
-    return getCellAtPosition(scaled);
+    return scaled;
+}
+
+Cell Map::getWarpEntryCell(pair<int, int> coordinates, bool toFloor) {
+    std::pair<int, int> position = getPositionFromCoordinates(coordinates, toFloor);
+
+    if(position.first == -1)
+        position.first = 0;
+    else if(position.first == width_)
+        position.first = width_-1;
+    else if(position.second == -1)
+        position.second = 0;
+    else if(position.second == height_)
+        position.second = height_-1;
+
+    return getCellAtPosition(position);
+}
+
+Cell Map::getWarpExitCell(pair<int, int> coordinates, bool toFloor) {
+    std::pair<int, int> position = getPositionFromCoordinates(coordinates, toFloor);
+
+    if(position.first == -2)
+        position.first = width_-1;
+    else if(position.first == width_+1)
+        position.first = 0;
+    else if(position.second == -2)
+        position.second = height_-1;
+    else if(position.second == height_+1)
+        position.second = 0;
+    else
+        return {};
+
+    return getCellAtPosition(position);
+}
+
+bool Map::hasExit(const Cell& cell) {
+    return getCellFromCoordinates(cell.getWarpExit(width_, height_), true).isWarp();
 }

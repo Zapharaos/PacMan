@@ -57,3 +57,12 @@ bool Cell::equalsScaledPosition(std::pair<int, int> position) const {
 std::pair<int, int> Cell::getScaledPosition() const {
     return {position_.first * size_, position_.second * size_};
 }
+
+std::pair<int, int> Cell::getWarpExit(int width, int height) const {
+    std::pair<int, int> exit = getScaledPosition();
+    if(position_.first == width - 1)
+        exit.first = width * size_ - 1;
+    else if(position_.second == height - 1)
+        exit.second = height * size_ - 1;
+    return exit;
+}
