@@ -10,40 +10,7 @@
 
 
 
-
-int Window::getMapWidth() const {
-    return map_width_;
-}
-
-void Window::setMapWidth(int mapWidth) {
-    map_width_ = mapWidth;
-}
-
-int Window::getMapHeight() const {
-    return map_height_;
-}
-
-void Window::setMapHeight(int mapHeight) {
-    map_height_ = mapHeight;
-}
-
-int Window::getScoreBoardWidth() const {
-    return score_board_width_;
-}
-
-void Window::setScoreBoardWidth(int scoreBoardWidth) {
-    score_board_width_ = scoreBoardWidth;
-}
-
-const std::string &Window::getTitle() const {
-    return title_;
-}
-
-void Window::setTitle(const std::string &title) {
-    title_ = title;
-}
-
-const SDL_Rect &Window::getMapInit() const {
+const SDL_Rect &Window::getMapInit() {
     return map_init_;
 }
 
@@ -58,7 +25,7 @@ void Window::setMapInit(const SDL_Rect &mapInit) {
             );
 }
 
-const SDL_Rect &Window::getMapEmpty() const {
+const SDL_Rect &Window::getMapEmpty() {
     return map_empty_;
 }
 
@@ -73,7 +40,7 @@ void Window::setMapEmpty(const SDL_Rect &mapEmpty) {
     );
 }
 
-const SDL_Rect &Window::getMapWhite() const {
+const SDL_Rect &Window::getMapWhite() {
     return map_white_;
 }
 
@@ -89,11 +56,6 @@ void Window::setMapWhite(const SDL_Rect &mapWhite) {
 }
 
 
-Window::Window(int mapWidth, int mapHeight, int scoreBoardWidth, const SDL_Rect &mapInit, const SDL_Rect &mapEmpty,
-               const SDL_Rect &mapWhite, string title) : map_width_(mapWidth), map_height_(mapHeight),
-                                                                score_board_width_(scoreBoardWidth), map_init_(mapInit),
-                                                                map_empty_(mapEmpty), map_white_(mapWhite),
-                                                                title_(std::move(title)) {}
 
 void Window::createWindow() {
 
@@ -122,4 +84,82 @@ void Window::drawWindow() {
 
     // couleur transparente
     SDL_SetColorKey(plancheSprites_, true, 0);
+}
+
+Window::Window(int mapWidth, int mapHeight, int scoreBoardWidth, string title) : map_width_(mapWidth),
+                                                                                        map_height_(mapHeight),
+                                                                                        score_board_width_(
+                                                                                                scoreBoardWidth),
+                                                                                        title_(std::move(title)) {}
+
+int Window::getMapWidth() const {
+    return map_width_;
+}
+
+void Window::setMapWidth(int mapWidth) {
+    map_width_ = mapWidth;
+}
+
+int Window::getMapHeight() const {
+    return map_height_;
+}
+
+void Window::setMapHeight(int mapHeight) {
+    map_height_ = mapHeight;
+}
+
+int Window::getScoreBoardWidth() const {
+    return score_board_width_;
+}
+
+void Window::setScoreBoardWidth(int scoreBoardWidth) {
+    score_board_width_ = scoreBoardWidth;
+}
+
+const string &Window::getTitle() const {
+    return title_;
+}
+
+void Window::setTitle(const string &title) {
+    title_ = title;
+}
+
+SDL_Window *Window::getPWindow() const {
+    return pWindow_;
+}
+
+void Window::setPWindow(SDL_Window *pWindow) {
+    pWindow_ = pWindow;
+}
+
+SDL_Surface *Window::getWinSurf() const {
+    return win_surf_;
+}
+
+void Window::setWinSurf(SDL_Surface *winSurf) {
+    win_surf_ = winSurf;
+}
+
+SDL_Surface *Window::getPlancheSprites() const {
+    return plancheSprites_;
+}
+
+void Window::setPlancheSprites(SDL_Surface *plancheSprites) {
+    plancheSprites_ = plancheSprites;
+}
+
+const SDL_Rect &Window::getSrcBg() const {
+    return src_bg_;
+}
+
+void Window::setSrcBg(const SDL_Rect &srcBg) {
+    src_bg_ = srcBg;
+}
+
+const SDL_Rect &Window::getBg() const {
+    return bg_;
+}
+
+void Window::setBg(const SDL_Rect &bg) {
+    bg_ = bg;
 }
