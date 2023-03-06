@@ -32,15 +32,22 @@ bool Pacman::hasCollided(const Entity& entity) const {
     auto p_coor = this->getCoordinates();
     auto p_size = this->getSize();
 
+    bool left = (e_coor.first <= p_coor.first && p_coor.first < e_coor.first + e_size);
+    bool right = (p_coor.first <= e_coor.first && e_coor.first < p_coor.first + p_size);
+    bool up = (e_coor.second <= p_coor.second && p_coor.second < e_coor.second + e_size);
+    bool down = (p_coor.second <= e_coor.second && e_coor.second < p_coor.second + p_size);
+    bool horizontal = left || right;
+    bool vertical = up || down;
+
     switch (getPreviousDirection()) {
         case Direction::LEFT:
-            return (e_coor.first <= p_coor.first && p_coor.first <= e_coor.first + e_size);
+            return left && vertical;
         case Direction::RIGHT:
-            return (p_coor.first <= e_coor.first && e_coor.first <= p_coor.first + p_size);
+            return right && vertical;
         case Direction::UP:
-            return (e_coor.second <= p_coor.second && p_coor.second <= e_coor.second + e_size);
+            return up && horizontal;
         case Direction::DOWN:
-            return (p_coor.second <= e_coor.second && e_coor.second <= p_coor.second + p_size);
+            return down && horizontal;
         default:
             return false; // unreachable
     }

@@ -30,6 +30,7 @@ public:
     Entity(const pair<int, int> &coordinates, int size, Sprite sprite);
 
     [[nodiscard]] int getPoints() const;
+    void setPoints(int points);
     [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
     void setCoordinates(const pair<int, int> &coordinates);
     [[nodiscard]] int getSize() const;
