@@ -24,8 +24,8 @@ namespace constants
 
     // Bitmap => Entity
     inline constexpr int BMP_ENTITY_BORDER_WIDTH {1};
-    inline constexpr int BMP_ENTITY_GHOST_WIDTH {16};
-    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {16};
+    inline constexpr int BMP_ENTITY_GHOST_WIDTH {14};
+    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {14};
     inline constexpr int BMP_ENTITY_GHOST_TOTAL_WIDTH {BMP_ENTITY_GHOST_WIDTH + BMP_ENTITY_BORDER_WIDTH};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG {0};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
@@ -43,8 +43,8 @@ namespace constants
     inline constexpr int BMP_ENTITY_POWERUP_OFFSET_TO_DOWN_IMG{BMP_ENTITY_POWERUP_OFFSET_TO_UP_IMG + 2 * BMP_ENTITY_POWERUP_TOTAL_WIDTH};
 
     // Bitmap => Entity positions
-    inline constexpr int BMP_PACMAN_START_X {3};
-    inline constexpr int BMP_PACMAN_START_Y {89};
+    inline constexpr int BMP_PACMAN_START_X {4};
+    inline constexpr int BMP_PACMAN_START_Y {90};
     inline constexpr int BMP_POINT_START_X {4};
     inline constexpr int BMP_POINT_START_Y {81};
     inline constexpr int BMP_POINT_SIZE {2};

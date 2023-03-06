@@ -23,9 +23,7 @@ const vector<Sprite> &Fruits::Fruit::getAnimations() const {
 
 Fruits::Fruits() = default;
 
-Fruits::Fruits(const pair<int, int> &coordinates, int size, Sprite sprite,
-             long time, const std::function<void(void)> &function) :
-        Entity(coordinates, size, sprite), timer_(time, function) {}
+Fruits::Fruits(long time, const std::function<void(void)> &function) : timer_(time, function) {}
 
 void Fruits::appendFruit(int points, const std::set<int>& levels, const std::vector<Sprite>& animations) {
     fruits_.emplace_back(Fruit{points, levels, animations});
@@ -51,9 +49,7 @@ void Fruits::incrementClearedPellets(int level)
         sprite_index = 0;
         setIsDisabled(false);
         setPoints(current.getPoints());
-        Sprite sprite = current.getAnimations().at(sprite_index);
-        setSprite(sprite);
-        // TODO : set coordinates from current sprite
+        setSprite(current.getAnimations().at(sprite_index));
         timer_.start();
     }
 }

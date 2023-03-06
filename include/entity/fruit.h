@@ -37,8 +37,7 @@ private:
 
 public:
     Fruits();
-    Fruits(const pair<int, int> &coordinates, int size, Sprite sprite,
-          long time, const std::function<void(void)> &function);
+    Fruits(long time, const std::function<void(void)> &function);
 
     void appendFruit(int points, const set<int>& levels, const vector<Sprite>& animations);
     void incrementClearedPellets(int level);

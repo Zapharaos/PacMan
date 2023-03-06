@@ -10,19 +10,18 @@ Map::Map() = default;
 
 Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell_types) : width_(width), height_(height), cell_size_(cell_size)
 {
-    Sprite point {{ constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE }, {}};
-    Sprite power {{ constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE }, {}};
-
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Entity entity = {};
             CellType type = cell_types[x + width * y];
             if(type == CellType::PELLET) {
-                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POINTS_OFFSET, y * cell_size_ + constants::WINDOW_POINTS_OFFSET};
-                entity = {coordinates, constants::WINDOW_POINTS_SIZE, point, (int) Score::PELLET, false};
+                std::pair<int, int> coordinates = {x * cell_size_, y * cell_size_};
+                Sprite sprite_pellet {{ constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE }, {3*2*2, 3*2*2, 2*2*2, 2*2*2}, coordinates};
+                entity = {sprite_pellet, (int) Score::PELLET, false};
             } else if(type == CellType::ENERGIZER) {
-                std::pair<int, int> coordinates = {x * cell_size_ + constants::WINDOW_POWER_OFFSET, y * cell_size_ + constants::WINDOW_POWER_OFFSET};
-                entity = {coordinates, constants::WINDOW_POWER_SIZE, power, (int) Score::ENERGIZER, false};
+                std::pair<int, int> coordinates = {x * cell_size_, y * cell_size_};
+                Sprite sprite_energizer {{ constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE }, {0, 0, 7*2*2, 7*2*2}, coordinates};
+                entity = {sprite_energizer, (int) Score::ENERGIZER, false};
             }
             cells_.emplace_back(Cell{{x, y}, cell_size, type, entity});
         }

@@ -10,11 +10,9 @@ Entity::~Entity() = default;
 
 Entity::Entity()  = default;
 
-Entity::Entity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled) :
-        coordinates_(coordinates), size_(size), sprite_(sprite), points_(points), isDisabled_(isDisabled) {}
+Entity::Entity(Sprite sprite, int points, bool isDisabled) : sprite_(sprite), points_(points), isDisabled_(isDisabled) {}
 
-Entity::Entity(const pair<int, int> &coordinates, int size, Sprite sprite) :
-        coordinates_(coordinates), size_(size), sprite_(sprite) {}
+Entity::Entity(Sprite sprite) : sprite_(sprite) {}
 
 int Entity::getPoints() const {
     return points_;
@@ -22,18 +20,6 @@ int Entity::getPoints() const {
 
 void Entity::setPoints(int points) {
     points_ = points;
-}
-
-const pair<int, int> &Entity::getCoordinates() const {
-    return coordinates_;
-}
-
-void Entity::setCoordinates(const pair<int, int> &coordinates) {
-    coordinates_ = coordinates;
-}
-
-int Entity::getSize() const {
-    return size_;
 }
 
 bool Entity::isDisabled() const {
@@ -52,12 +38,19 @@ void Entity::setSprite(const Sprite &sprite) {
     sprite_ = sprite;
 }
 
-SDL_Rect Entity::getImagePosition() const {
-    auto offset = getSprite().getOffset();
-    return {coordinates_.first + offset.x, coordinates_.second + offset.y,
-            (offset.w == 0 ? size_ : offset.w), (offset.h == 0 ? size_ : offset.h)};
+SDL_Rect Entity::getSpritePosition() const {
+    return sprite_.getPosition();
+}
+
+SDL_Rect Entity::getSpritePosition(std::pair<int, int> coordinates) const {
+    return sprite_.getPosition(coordinates);
+}
+
+
+const SDL_Rect &Entity::getSpriteImage() const {
+    return sprite_.getImage();
 }
 
 void Entity::print() const {
-    std::cout << "x: " << coordinates_.first << ", y: " << coordinates_.second << ", size: " << size_ << ", points: " << points_ << ", isDisabled: " << isDisabled_ << std::endl;
+    std::cout << "points: " << points_ << ", isDisabled: " << isDisabled_ << std::endl;
 }
