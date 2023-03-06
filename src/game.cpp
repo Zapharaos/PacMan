@@ -11,6 +11,8 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
 
     // TODO : clean up
+
+    // Pacman
     Sprite pacman_default {{ constants::BMP_PACMAN_START_X,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
     Sprite pacman_left_1 {{ 46,constants::BMP_PACMAN_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT }, {}};
     Sprite pacman_left_2 {{ 63,constants::BMP_PACMAN_START_Y, 10,constants::BMP_ENTITY_GHOST_HEIGHT }, {6*2,0,10*2,0}};
@@ -28,6 +30,43 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
 
     pacman_ = Pacman({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, pacman_left.at(1),
                      constants::PACMAN_SPEED, pacman_left, pacman_right, pacman_up, pacman_down);
+
+    // Fruits
+    const std::function<void(void)> &function = [&](){ fruits_.setIsDisabled(true); };
+    fruits_ = {{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, cell_size, {}, 9500, function};
+
+    fruits_.appendFruit(100, {1}, {
+        Sprite({ 290,238, 12,12 }, {2*2, 2*2, 12*2, 12*2}),
+        Sprite({ 290,258, 12,12 }, {2*2, 2*2, 12*2, 12*2})
+        });
+    fruits_.appendFruit(300, {2}, {
+        Sprite({ 307,238, 11,12 }, {2*2, 2*2, 11*2, 12*2}),
+        Sprite({ 307,258, 11,12 }, {2*2, 2*2, 11*2, 12*2})
+        });
+    fruits_.appendFruit(500, {3, 4}, {
+        Sprite({ 322,238, 12,12 }, {2*2, 2*2, 12*2, 12*2}),
+        Sprite({ 322,258, 12,12 }, {2*2, 2*2, 12*2, 12*2})
+        });
+    fruits_.appendFruit(700, {5, 6}, {
+        Sprite({ 338,238, 12,12 }, {2*2, 2*2, 12*2, 12*2}),
+        Sprite({ 338,258, 12,12 }, {2*2, 2*2, 12*2, 12*2})
+        });
+    fruits_.appendFruit(1000, {7, 8}, {
+        Sprite({ 355,236, 11,14 }, {2*2, 1*2, 11*2, 14*2}),
+        Sprite({ 355,256, 11,14 }, {2*2, 1*2, 11*2, 14*2})
+        });
+    fruits_.appendFruit(2000, {9, 10}, {
+        Sprite({ 371,239, 11,11 }, {2*2, 2*2, 11*2, 11*2}),
+        Sprite({ 371,259, 11,11 }, {2*2, 2*2, 11*2, 11*2})
+        });
+    fruits_.appendFruit(3000, {11, 12}, {
+        Sprite({ 387,237, 12,13 }, {2*2, 1*2, 12*2, 13*2}),
+        Sprite({ 387,257, 12,13 }, {2*2, 1*2, 12*2, 13*2})
+        });
+    fruits_.appendFruit(5000, {13}, {
+        Sprite({ 405,237, 7,13 }, {4*2, 1*2, 7*2, 13*2}),
+        Sprite({ 405,257, 7,13 }, {4*2, 1*2, 7*2, 13*2})
+        });
 
     // TODO : setup ghosts
     lives_ = lives; // TODO : temp, waiting for the scoreboard
@@ -77,6 +116,7 @@ void Game::handleEntitiesCollisions() {
         entity.setIsDisabled(true);
         cell.setEntity(entity);
         score_ += entity.getPoints();
+        fruits_.incrementClearedPellets(level_);
 
         if(cell.getType() == CellType::ENERGIZER)
         {
@@ -84,6 +124,12 @@ void Game::handleEntitiesCollisions() {
             // TODO : handle power ups
         }
         // TODO : goodies => freeze 1/60s + point animation
+    }
+
+    if(!fruits_.isDisabled() && pacman_.hasCollided(fruits_))
+    {
+        score_ += fruits_.getPoints();
+        fruits_.setIsDisabled(true);
     }
 
     for(auto & ghost : ghosts_)
@@ -125,6 +171,12 @@ void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf
         const Entity& entity = cell.getEntity();
         SDL_Rect image = entity.getSprite().getImage();
         SDL_Rect image_position = entity.getImagePosition();
+        SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
+    }
+
+    if(!fruits_.isDisabled()) {
+        SDL_Rect image = fruits_.getSprite().getImage();
+        SDL_Rect image_position = fruits_.getImagePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
     }
 

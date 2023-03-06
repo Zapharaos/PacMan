@@ -100,7 +100,7 @@ namespace constants
     inline constexpr int NEW_UP_POINTS_CAP {10000};
 
     // Entities
-    inline constexpr int PACMAN_SPEED {16};
+    inline constexpr int PACMAN_SPEED {3};
     inline constexpr int GHOST_SPEED {1};
     inline constexpr int ENTITY_REFRESH_RATE {3};
 
@@ -174,43 +174,6 @@ enum class Score
     PELLET = 10,
     ENERGIZER = 50,
     GHOST = 200
-};
-
-// TODO : will be read from settings file
-enum points_per_round
-{
-    ROUND_ONE = 100 ,
-    ROUND_TWO = 300 ,
-    ROUND_THREE = 500 ,
-    ROUND_FOUR = 500 ,
-    ROUND_FIVE = 700 ,
-    ROUND_SIX = 700 ,
-    ROUND_SEVEN = 1000 ,
-    ROUND_EIGHT = 1000 ,
-    ROUND_NINE = 2000 ,
-    ROUND_TEN = 2000 ,
-    ROUND_ELEVEN = 3000 ,
-    ROUND_TWELVE = 3000 ,
-    ROUND_THIRTEEN_PLUS = 5000
-};
-
-// TODO : will be read from settings file
-enum powerUps
-{
-    CHERRY_LONG = 1,
-    CHERRY_SHORT = 2,
-    BERRY_LONG = 3 ,
-    BERRY_SHORT = 4,
-    APPLE_LONG = 5,
-    APPLE_SHORT = 6,
-    MELON_LONG = 7,
-    MELON_SHORT = 8,
-    GALBOSS_LONG = 9,
-    GALBOSS_SHORT = 10,
-    BELL_LONG = 11,
-    BELL_SHORT = 12,
-    KEY_LONG = 13,
-    KEY_SHORT =14
 };
 
 #endif //PACMAN_CONSTANTS_H

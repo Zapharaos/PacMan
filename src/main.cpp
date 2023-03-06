@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 		draw();
 		SDL_UpdateWindowSurface(pWindow);
         // LIMITE A 60 FPS
-		SDL_Delay(16); // utiliser SDL_GetTicks64() pour plus de precisions
+		SDL_Delay(1000/60); // utiliser SDL_GetTicks64() pour plus de precisions
 	}
     SDL_Quit(); // ON SORT
     return 0;

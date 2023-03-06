@@ -20,6 +20,10 @@ int Entity::getPoints() const {
     return points_;
 }
 
+void Entity::setPoints(int points) {
+    points_ = points;
+}
+
 const pair<int, int> &Entity::getCoordinates() const {
     return coordinates_;
 }

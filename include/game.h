@@ -11,6 +11,7 @@
 #include "entity/movingEntity.h"
 #include "entity/ghost.h"
 #include "entity/pacman.h"
+#include "entity/fruit.h"
 
 class Game {
 public:
@@ -26,8 +27,10 @@ public:
 
 private:
     Map map_;
+    int level_ = 1;
     std::vector<Ghost> ghosts_;
     Pacman pacman_;
+    Fruits fruits_;
 
     // TODO : temp attributes
     bool powerup_ = false;
