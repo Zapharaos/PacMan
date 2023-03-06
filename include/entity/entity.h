@@ -16,8 +16,6 @@ using namespace std;
 class Entity{
 
 private:
-    pair<int, int> coordinates_;
-    int size_{};
     int points_{};
     bool isDisabled_ = true;
     Sprite sprite_{};
@@ -26,20 +24,20 @@ public:
 
     virtual ~Entity();
     Entity();
-    Entity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled);
-    Entity(const pair<int, int> &coordinates, int size, Sprite sprite);
+    Entity(Sprite sprite, int points, bool isDisabled);
+    explicit Entity(Sprite sprite);
 
     [[nodiscard]] int getPoints() const;
     void setPoints(int points);
-    [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
-    void setCoordinates(const pair<int, int> &coordinates);
-    [[nodiscard]] int getSize() const;
     [[nodiscard]] bool isDisabled() const;
     void setIsDisabled(bool isDisabled);
     [[nodiscard]] virtual Sprite getSprite() const;
     void setSprite(const Sprite &sprite);
 
-    [[nodiscard]] virtual SDL_Rect getImagePosition() const;
+    [[nodiscard]] virtual SDL_Rect getSpritePosition() const;
+    [[nodiscard]] virtual SDL_Rect getSpritePosition(std::pair<int, int> coordinates) const;
+    [[nodiscard]] virtual const SDL_Rect &getSpriteImage() const;
+
     void print() const;
 
 };

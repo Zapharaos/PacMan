@@ -45,9 +45,9 @@ void draw()
     SDL_SetColorKey(plancheSprites, true, 0);
 
     Pacman pacman = game->getPacman();
-    SDL_Rect image = pacman.getSprite().getImage();
-    SDL_Rect image_position = pacman.getImagePosition();
-    SDL_BlitScaled(plancheSprites, &image, win_surf, &image_position);
+    SDL_Rect image = pacman.getSpriteImage();
+    SDL_Rect position = pacman.getSpritePosition();
+    SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
 
     // petit truc pour faire tourner le fantome
     SDL_Rect* ghost_in = nullptr;

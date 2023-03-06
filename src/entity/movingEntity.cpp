@@ -6,23 +6,15 @@
 
 MovingEntity::MovingEntity() = default;
 
-MovingEntity::MovingEntity(const pair<int, int> &coordinates, int size, Sprite sprite, int points, bool isDisabled, int speed,
+MovingEntity::MovingEntity(Sprite sprite, int points, bool isDisabled, int speed, const pair<int, int> &coordinates,
                            const vector<Sprite> &left, const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down) :
-                           Entity(coordinates, size, sprite, points, isDisabled), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
+                           Entity(sprite, points, isDisabled), speed_(speed), coordinates_(coordinates), left_(left), right_(right), up_(up), down_(down) {}
 
-MovingEntity::MovingEntity(const pair<int, int> &coordinates, int size, Sprite sprite, int speed, const vector<Sprite> &left,
+MovingEntity::MovingEntity(Sprite sprite, int speed, const pair<int, int> &coordinates, const vector<Sprite> &left,
                            const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down) :
-                            Entity(coordinates, size, sprite), speed_(speed), left_(left), right_(right), up_(up), down_(down) {}
+                            Entity(sprite), speed_(speed), coordinates_(coordinates), left_(left), right_(right), up_(up), down_(down) {}
 
-Direction MovingEntity::getPreviousDirection() const {
-    return previous_direction_;
-}
-
-bool MovingEntity::isMovingLeftOrUp() const {
-    return isMovingLeftOrUp_;
-}
-
-std::pair<int, int> MovingEntity::getDestination(std::pair<int, int> origin, Direction direction) const {
+std::pair<int, int> MovingEntity::getDestinationCoordinates(std::pair<int, int> origin, Direction direction) const {
     std::pair<int, int> destination = origin;
     switch(direction) {
         case Direction::LEFT:
@@ -43,10 +35,30 @@ std::pair<int, int> MovingEntity::getDestination(std::pair<int, int> origin, Dir
     return destination;
 }
 
+const pair<int, int> &MovingEntity::getCoordinates() const {
+    return coordinates_;
+}
+
+void MovingEntity::setCoordinates(const pair<int, int> &coordinates) {
+    coordinates_ = coordinates;
+}
+
+bool MovingEntity::isMovingLeftOrUp() const {
+    return isMovingLeftOrUp_;
+}
+
+const SDL_Rect &MovingEntity::getSpriteImage() const {
+    return Entity::getSpriteImage();
+}
+
+SDL_Rect MovingEntity::getSpritePosition() const {
+    return Entity::getSpritePosition(getCoordinates());
+}
+
 Direction MovingEntity::move(Map map, Direction direction, Direction turn) {
 
     std::pair<int, int> origin = getCoordinates();
-    std::pair<int, int> destination = getDestination(origin, direction);
+    std::pair<int, int> destination = getDestinationCoordinates(origin, direction);
 
     if(direction == Direction::NONE || areDirectionsOpposite(direction, turn))
     {
@@ -73,7 +85,7 @@ void MovingEntity::move(Map map, Direction direction) {
     if(direction == Direction::NONE) return;
 
     std::pair<int, int> origin = getCoordinates();
-    std::pair<int, int> destination = getDestination(origin, direction);
+    std::pair<int, int> destination = getDestinationCoordinates(origin, direction);
     if(!map.canMoveToCell(origin, destination, direction)) return;
 
     animate(direction);
@@ -89,22 +101,22 @@ void MovingEntity::animate(Direction direction) {
     switch(direction) {
         case Direction::LEFT:
             if(left_.empty()) break; // keep default image
-            position = updateImagePosition(direction, left_.size() - 1);
+            position = getCurrentSprite(direction, left_.size() - 1);
             sprite = left_.at(position.second);
             break;
         case Direction::RIGHT:
             if(right_.empty()) break; // keep default image
-            position = updateImagePosition(direction, right_.size() - 1);
+            position = getCurrentSprite(direction, right_.size() - 1);
             sprite = right_.at(position.second);
             break;
         case Direction::UP:
             if(up_.empty()) break; // keep default image
-            position = updateImagePosition(direction, up_.size() - 1);
+            position = getCurrentSprite(direction, up_.size() - 1);
             sprite = up_.at(position.second);
             break;
         case Direction::DOWN:
             if(down_.empty()) break; // keep default image
-            position = updateImagePosition(direction, down_.size() - 1);
+            position = getCurrentSprite(direction, down_.size() - 1);
             sprite = down_.at(position.second);
             break;
         default:
@@ -122,7 +134,7 @@ void MovingEntity::animate(Direction direction) {
     }
 }
 
-std::pair<bool, int> MovingEntity::updateImagePosition(Direction direction, unsigned max_index) {
+std::pair<bool, int> MovingEntity::getCurrentSprite(Direction direction, unsigned max_index) {
 
     if(previous_direction_ != direction) // direction changed => reset
         return {true, 0};
