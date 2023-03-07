@@ -10,9 +10,9 @@ Entity::~Entity() = default;
 
 Entity::Entity()  = default;
 
-Entity::Entity(Sprite sprite, int points, bool isDisabled) : sprite_(sprite), points_(points), isDisabled_(isDisabled) {}
+Entity::Entity(Sprite sprite, int points, bool isDisabled) : sprite_(std::move(sprite)), points_(points), isDisabled_(isDisabled) {}
 
-Entity::Entity(Sprite sprite) : sprite_(sprite) {}
+Entity::Entity(Sprite sprite) : sprite_(std::move(sprite)) {}
 
 int Entity::getPoints() const {
     return points_;
@@ -42,13 +42,12 @@ SDL_Rect Entity::getSpritePosition() const {
     return sprite_.getPosition();
 }
 
-SDL_Rect Entity::getSpritePosition(std::pair<int, int> coordinates) const {
-    return sprite_.getPosition(coordinates);
-}
-
-
 const SDL_Rect &Entity::getSpriteImage() const {
     return sprite_.getImage();
+}
+
+void Entity::setSpriteCoordinates(std::pair<int, int> coordinates) {
+    sprite_.setCoordinates(coordinates);
 }
 
 void Entity::print() const {

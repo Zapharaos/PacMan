@@ -14,12 +14,20 @@ const pair<int, int> &Pacman::getCoordinates() const {
     return MovingEntity::getCoordinates();
 }
 
-bool Pacman::isMovingLeftOrUp() const {
-    return MovingEntity::isMovingLeftOrUp();
+bool Pacman::isLeftOrUp() const {
+    return MovingEntity::isLeftOrUp();
 }
 
 Sprite Pacman::getSprite() const {
     return Entity::getSprite();
+}
+
+SDL_Rect Pacman::getSpritePosition() const {
+    return MovingEntity::getSpritePosition();
+}
+
+const SDL_Rect &Pacman::getSpriteImage() const {
+    return MovingEntity::getSpriteImage();
 }
 
 bool Pacman::hasCollided(SDL_Rect e) const {
@@ -42,12 +50,4 @@ Direction Pacman::move(const Map& map, Direction continuous_direction, Direction
 
 void Pacman::move(const Map& map, Direction continuous_direction) {
     MovingEntity::move(map, continuous_direction);
-}
-
-SDL_Rect Pacman::getSpritePosition() const {
-    return MovingEntity::getSpritePosition();
-}
-
-const SDL_Rect &Pacman::getSpriteImage() const {
-    return MovingEntity::getSpriteImage();
 }

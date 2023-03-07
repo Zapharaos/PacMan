@@ -4,12 +4,16 @@
 
 #include "../../include/sprite/sprite.h"
 
+#include <utility>
+
 Sprite::Sprite() = default;
 
-Sprite::Sprite(const SDL_Rect &image, const SDL_Rect &offset) : image_(image), offset_(offset) {}
+Sprite::Sprite(const SDL_Rect &image, std::pair<int, int> offset, std::pair<int, int> size) :
+        image_(image), offset_(std::move(offset)), size_(std::move(size)) {}
 
-Sprite::Sprite(const SDL_Rect &image, const SDL_Rect &offset, const std::pair<int, int> coordinates) : image_(image), offset_(offset) {
-    position_ = getPosition(coordinates);
+Sprite::Sprite(const SDL_Rect &image, std::pair<int, int> offset, std::pair<int, int> size, std::pair<int, int> coordinates) :
+    image_(image), offset_(std::move(offset)), size_(std::move(size)), coordinates_(std::move(coordinates)){
+    updatePosition();
 }
 
 const SDL_Rect &Sprite::getImage() const {
@@ -20,6 +24,15 @@ const SDL_Rect &Sprite::getPosition() const {
     return position_;
 }
 
-SDL_Rect Sprite::getPosition(const std::pair<int, int> coordinates) const {
-    return {coordinates.first + offset_.x, coordinates.second + offset_.y, offset_.w, offset_.h};
+void Sprite::setCoordinates(const std::pair<int, int> &coordinates) {
+    coordinates_ = coordinates;
+    updatePosition();
 }
+
+void Sprite::updatePosition() {
+    position_ = {coordinates_.first + offset_.first,
+                 coordinates_.second + offset_.second,
+                 size_.first,
+                 size_.second};
+}
+

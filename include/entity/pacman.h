@@ -16,7 +16,7 @@ public:
     Pacman();
 
     [[nodiscard]] const pair<int, int> &getCoordinates() const override;
-    [[nodiscard]] bool isMovingLeftOrUp() const override;
+    [[nodiscard]] bool isLeftOrUp() const override;
     [[nodiscard]] Sprite getSprite() const override;
     [[nodiscard]] SDL_Rect getSpritePosition() const override;
     [[nodiscard]] const SDL_Rect &getSpriteImage() const override;

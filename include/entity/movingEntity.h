@@ -9,7 +9,7 @@
 #include <vector>
 #include "entity.h"
 #include "../map/map.h"
-#include "../enums/direction.h"
+#include "../utils/direction.h"
 
 class MovingEntity : public Entity{
 
@@ -22,7 +22,7 @@ private:
     std::vector<Sprite> down_ {};
     Direction previous_direction_ {};
     std::pair<bool, int> previous_imagePosition_ {true, 0};
-    bool isMovingLeftOrUp_ = false;
+    //bool isMovingLeftOrUp_ = false;
     int refreshAnimation_counter_ {};
     static const int refreshAnimation_rate_ = constants::ENTITY_REFRESH_RATE;
 
@@ -37,7 +37,7 @@ public:
 
     [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
     void setCoordinates(const pair<int, int> &coordinates);
-    [[nodiscard]] virtual bool isMovingLeftOrUp() const;
+    [[nodiscard]] virtual bool isLeftOrUp() const;
     [[nodiscard]] SDL_Rect getSpritePosition() const override;
     [[nodiscard]] const SDL_Rect &getSpriteImage() const override;
 

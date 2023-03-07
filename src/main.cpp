@@ -4,6 +4,7 @@
 #include "../include/utils/constants.h"
 #include "../include/game.h"
 #include "../include/saveGame.h"
+#include "../include/utils/direction.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
@@ -98,7 +99,7 @@ int main(int argc, char** argv)
     // Gestion du clavier
     int nbk;
     const Uint8* keys = SDL_GetKeyboardState(&nbk);
-    Direction last = Direction::NONE;
+    Direction last;
 
 	while (!quit)
 	{
@@ -119,13 +120,13 @@ int main(int argc, char** argv)
             quit = true;
 
         if (keys[SDL_SCANCODE_LEFT])
-            last = game->move(last, Direction::LEFT);
+            last = game->move(last, {DirectionType::LEFT, true});
         else if (keys[SDL_SCANCODE_RIGHT])
-            last = game->move(last, Direction::RIGHT);
+            last = game->move(last, {DirectionType::RIGHT, false});
         else if (keys[SDL_SCANCODE_UP])
-            last = game->move(last, Direction::UP);
+            last = game->move(last, {DirectionType::UP, true});
         else if (keys[SDL_SCANCODE_DOWN])
-            last = game->move(last, Direction::DOWN);
+            last = game->move(last, {DirectionType::DOWN, false});
         else
             game->move(last);
 

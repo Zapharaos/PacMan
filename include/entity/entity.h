@@ -34,12 +34,11 @@ public:
     [[nodiscard]] virtual Sprite getSprite() const;
     void setSprite(const Sprite &sprite);
 
-    [[nodiscard]] virtual SDL_Rect getSpritePosition() const;
-    [[nodiscard]] virtual SDL_Rect getSpritePosition(std::pair<int, int> coordinates) const;
     [[nodiscard]] virtual const SDL_Rect &getSpriteImage() const;
+    [[nodiscard]] virtual SDL_Rect getSpritePosition() const;
+    virtual void setSpriteCoordinates(pair<int, int> coordinates);
 
     void print() const;
-
 };
 
 #endif //PEC_MEN_ENTITY_H
