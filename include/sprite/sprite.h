@@ -11,17 +11,21 @@
 class Sprite {
 public:
     Sprite();
-    Sprite(const SDL_Rect &image, const SDL_Rect &offset);
-    Sprite(const SDL_Rect &image, const SDL_Rect &offset, std::pair<int, int> coordinates);
+    Sprite(const SDL_Rect &image, std::pair<int, int> offset, std::pair<int, int> size);
+    Sprite(const SDL_Rect &image, std::pair<int, int> offset, std::pair<int, int> size, std::pair<int, int> coordinates);
 
     [[nodiscard]] const SDL_Rect &getImage() const;
     [[nodiscard]] const SDL_Rect &getPosition() const;
-    [[nodiscard]] SDL_Rect getPosition(std::pair<int, int> coordinates) const;
+    void setCoordinates(const std::pair<int, int> &coordinates);
 
 private:
     SDL_Rect image_ {};
-    SDL_Rect offset_ {};
     SDL_Rect position_ {};
+    std::pair<int, int> offset_ {};
+    std::pair<int, int> size_ {};
+    std::pair<int, int> coordinates_ {};
+
+    void updatePosition();
 };
 
 

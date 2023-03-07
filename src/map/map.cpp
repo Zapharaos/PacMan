@@ -16,11 +16,13 @@ Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell
             CellType type = cell_types[x + width * y];
             if(type == CellType::PELLET) {
                 std::pair<int, int> coordinates = {x * cell_size_, y * cell_size_};
-                Sprite sprite_pellet {{ constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE }, {3*2*2, 3*2*2, 2*2*2, 2*2*2}, coordinates};
+                Sprite sprite_pellet {{ constants::BMP_POINT_START_X,constants::BMP_POINT_START_Y, constants::BMP_POINT_SIZE,constants::BMP_POINT_SIZE },
+                                      {3*2*2, 3*2*2}, {2*2*2, 2*2*2}, coordinates};
                 entity = {sprite_pellet, (int) Score::PELLET, false};
             } else if(type == CellType::ENERGIZER) {
                 std::pair<int, int> coordinates = {x * cell_size_, y * cell_size_};
-                Sprite sprite_energizer {{ constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE }, {0, 0, 7*2*2, 7*2*2}, coordinates};
+                Sprite sprite_energizer {{ constants::BMP_POWER_START_X,constants::BMP_POWER_START_Y, constants::BMP_POWER_SIZE,constants::BMP_POWER_SIZE },
+                                         {0, 0}, {7*2*2, 7*2*2}, coordinates};
                 entity = {sprite_energizer, (int) Score::ENERGIZER, false};
             }
             cells_.emplace_back(Cell{{x, y}, cell_size, type, entity});
@@ -30,7 +32,7 @@ Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell
 
 bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction, Direction turn) {
 
-    bool toFloor = (direction == Direction::LEFT || direction == Direction::UP);
+    bool toFloor = direction.isLeftOrUp();
     Cell destination_cell = getCellFromCoordinates(destination, toFloor);
 
     if(destination_cell.isWall()) // check if facing a wall
@@ -55,7 +57,7 @@ bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destinat
 
 bool Map::canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction) {
 
-    bool toFloor = (direction == Direction::LEFT || direction == Direction::UP);
+    bool toFloor = direction.isLeftOrUp();
 
     Cell exit = getWarpExitCell(destination, toFloor);
     if(exit.isWarp()) // if the exit cell has been reached
@@ -106,54 +108,28 @@ bool Map::isPositionInBetween(Direction direction, std::pair<int, int> position,
     bool from_up_ = (origin.second <= position.second && position.second < destination.second);
     bool from_bottom_ = (destination.second < position.second && position.second <= origin.second);
 
-    switch(direction) {
-        case Direction::LEFT:
-            return from_right;
-        case Direction::RIGHT:
-            return from_left;
-        case Direction::UP:
-            return from_bottom_;
-        case Direction::DOWN:
-            return from_up_;
-        default:
-            return false;
-    }
+    if(direction.isLeft()) return from_right;
+    else if(direction.isRight()) return from_left;
+    else if(direction.isUp()) return from_bottom_;
+    else if(direction.isDown()) return from_up_;
+    return false;
 }
 
 int Map::getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, Direction direction) {
-    switch(direction) {
-        case Direction::LEFT:
-            return (origin.first - destination.first) - (origin.first - middle.first);
-        case Direction::RIGHT:
-            return (destination.first - origin.first) - (middle.first - origin.first);
-        case Direction::UP:
-            return (origin.second - destination.second) - (origin.second - middle.second);
-        case Direction::DOWN:
-            return (destination.second - origin.second) - (middle.second - origin.second);
-        default:
-            return 0;
-    }
+    if(direction.isLeft()) return (origin.first - destination.first) - (origin.first - middle.first);
+    else if(direction.isRight()) return (destination.first - origin.first) - (middle.first - origin.first);
+    else if(direction.isUp()) return (origin.second - destination.second) - (origin.second - middle.second);
+    else if(direction.isDown()) return (destination.second - origin.second) - (middle.second - origin.second);
+    return 0;
 }
 
 pair<int, int> Map::changeDestinationOnTurn(pair<int, int> origin, int remainder, Direction direction)
 {
     pair<int, int> destination = origin;
-    switch(direction) {
-        case Direction::LEFT:
-            destination.first -= remainder;
-            break;
-        case Direction::RIGHT:
-            destination.first += remainder;
-            break;
-        case Direction::UP:
-            destination.second -= remainder;
-            break;
-        case Direction::DOWN:
-            destination.second += remainder;
-            break;
-        default:
-            break;
-    }
+    if(direction.isLeft()) destination.first -= remainder;
+    else if(direction.isRight()) destination.first += remainder;
+    else if(direction.isUp()) destination.second -= remainder;
+    else if(direction.isDown()) destination.second += remainder;
     return destination;
 }
 

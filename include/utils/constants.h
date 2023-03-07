@@ -24,8 +24,8 @@ namespace constants
 
     // Bitmap => Entity
     inline constexpr int BMP_ENTITY_BORDER_WIDTH {1};
-    inline constexpr int BMP_ENTITY_GHOST_WIDTH {14};
-    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {14};
+    inline constexpr int BMP_ENTITY_GHOST_WIDTH {16};
+    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {16};
     inline constexpr int BMP_ENTITY_GHOST_TOTAL_WIDTH {BMP_ENTITY_GHOST_WIDTH + BMP_ENTITY_BORDER_WIDTH};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG {0};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};

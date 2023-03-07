@@ -33,7 +33,7 @@ add_executable(${PROJECT_NAME} ""
 		include/saveGame.h
  		include/scoreBoard.h
 
-		)
+        src/utils/direction.cpp include/utils/direction.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 

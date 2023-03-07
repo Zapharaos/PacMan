@@ -8,7 +8,7 @@
 #include <vector>
 #include "cell.h"
 #include "../entity/entity.h"
-#include "../enums/direction.h"
+#include "../utils/direction.h"
 
 
 class Map {
