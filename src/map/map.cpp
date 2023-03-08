@@ -33,8 +33,10 @@ Map::Map(int width, int height, int cell_size, const std::vector<CellType>& cell
 bool Map::canTurnToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction, Direction turn) {
 
     bool toFloor = direction.isLeftOrUp();
-    Cell destination_cell = getCellFromCoordinates(destination, toFloor);
 
+    if(getWarpEntryCell(origin, toFloor).isWarp()) return false;
+
+    Cell destination_cell = getCellFromCoordinates(destination, toFloor);
     if(destination_cell.isWall()) // check if facing a wall
     {
         int remainder = getRemainder(origin, origin, destination, direction);
