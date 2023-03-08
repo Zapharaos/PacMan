@@ -73,7 +73,7 @@ namespace constants
 
     // Bitmap => Letter and number positions
     inline constexpr int BMP_NUMBER_START_ZERO_ROW_X {4};
-    inline constexpr int BMP_NUMBER_START_FIRST_ROW_X {13};
+    inline constexpr int BMP_NUMBER_START_FIRST_ROW_X {12};
     inline constexpr int BMP_NUMBER_START_FIRST_ROW_Y {53};
     inline constexpr int BMP_NUMBER_START_SECOND_ROW_X {12};
     inline constexpr int BMP_NUMBER_START_SECOND_ROW_Y {61};
@@ -88,8 +88,6 @@ namespace constants
     inline constexpr int BMP_POINTS_WIDTH {16};
     inline constexpr int BMP_POINTS_HEIGHT {7};
 
-    //Score Board
-    inline constexpr int SCORE_BOARD_WIDTH {300};
 
 
     // Game =>
@@ -98,6 +96,7 @@ namespace constants
     inline constexpr int SCALE_BMP_TO_WINDOW {4};
     inline constexpr int LIVES {3};
     inline constexpr int NEW_UP_POINTS_CAP {10000};
+
 
     // Entities
     inline constexpr int PACMAN_SPEED {3};
@@ -109,6 +108,16 @@ namespace constants
     inline constexpr int WINDOW_MAP_START_Y {0};
     inline constexpr int WINDOW_MAP_WIDTH {SCALE_BMP_TO_WINDOW * BMP_MAP_WIDTH};
     inline constexpr int WINDOW_MAP_HEIGHT {SCALE_BMP_TO_WINDOW * BMP_MAP_HEIGHT};
+
+
+    //Score Board
+    inline constexpr int SCORE_BOARD_WIDTH {300};
+    inline constexpr int SCORE_BOARD_START_X {WINDOW_MAP_WIDTH  +  10 };
+    inline constexpr int SCORE_BOARD_START_Y { 10 };
+    inline constexpr int SCORE_BOARD_POINTS_START_X {WINDOW_MAP_WIDTH  +  160 };
+    inline constexpr int SCORE_BOARD_POINTS_START_Y {40};
+
+
 
     // Window => Cell
     inline constexpr int WINDOW_CELL_WIDTH {SCALE_BMP_TO_WINDOW * BMP_CELL_WIDTH};

@@ -26,6 +26,8 @@ public:
     void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
     bool levelChange();
 
+    int getScore() const;
+
 private:
     Map map_;
     int lives_ = 0;

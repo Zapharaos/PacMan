@@ -31,9 +31,9 @@ add_executable(${PROJECT_NAME} ""
 
 		include/game.h
 		include/saveGame.h
- 		include/scoreBoard.h
-
-        src/utils/direction.cpp include/utils/direction.h src/utils/utils.cpp include/utils/utils.h)
+		include/display/scoreBoard.h
+		include/display/window.h
+        src/utils/direction.cpp include/utils/direction.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 
@@ -54,8 +54,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/game.cpp
 		src/main.cpp
 		src/saveGame.cpp
-		src/scoreBoard.cpp
-		src/window.cpp
+        src/display/scoreBoard.cpp
+        src/display/window.cpp
 
 		)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})

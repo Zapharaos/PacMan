@@ -5,6 +5,7 @@
 #include "../include/game.h"
 #include "../include/saveGame.h"
 #include "../include/utils/direction.h"
+#include "../include/display/window.h"
 
 SDL_Window* pWindow = nullptr;
 SDL_Surface* win_surf = nullptr;
@@ -24,93 +25,25 @@ int count_;
 Game* game = nullptr;
 Direction last;
 
-void init()
-{
-	pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, constants::WINDOW_MAP_WIDTH + constants::SCORE_BOARD_WIDTH ,constants::WINDOW_MAP_HEIGHT, SDL_WINDOW_SHOWN);
-	win_surf = SDL_GetWindowSurface(pWindow);
-
-	plancheSprites = SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES);
-    count_ = 0;
-
-    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT, constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP, constants::LIVES);
-}
-
-
-// fonction qui met à jour la surface de la fenetre "win_surf"
-void draw()
-{
-    SDL_SetColorKey(plancheSprites, false, 0);
-    SDL_BlitScaled(plancheSprites, &src_bg, win_surf, &bg);
-
-    if(game->levelChange())
-    {
-        last.reset(); // reset direction to stop the pacman from moving
-        ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };
-        count_ = 0;
-        // TODO : do level change animation & stop others until its done
-    }
-
-    game->drawStaticEntities(plancheSprites, win_surf);
-
-    // couleur transparente
-    SDL_SetColorKey(plancheSprites, true, 0);
-
-    Pacman pacman = game->getPacman();
-    SDL_Rect image = pacman.getSpriteImage();
-    SDL_Rect position = pacman.getSpritePosition();
-    SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
-
-    // petit truc pour faire tourner le fantome
-    SDL_Rect* ghost_in = nullptr;
-    switch (count_ / 128)
-    {
-        case 0:
-            ghost_in = &(ghost_blinky_r);
-            ghost_blinky.x+=constants::GHOST_SPEED;
-            break;
-        case 1:
-            ghost_in = &(ghost_blinky_d);
-            ghost_blinky.y+=constants::GHOST_SPEED;
-            break;
-        case 2:
-            ghost_in = &(ghost_blinky_l);
-            ghost_blinky.x-=constants::GHOST_SPEED;
-            break;
-        case 3:
-            ghost_in = &(ghost_blinky_u);
-            ghost_blinky.y-=constants::GHOST_SPEED;
-            break;
-    }
-    count_ = (count_ + 1) % (512);
-
-    if(pacman.isSuperpower())
-    {
-        // TODO : ghost scared
-        ghost_in = &(ghost_scared);
-    }
-
-    // ici on change entre les 2 sprites sources pour une jolie animation.
-    SDL_Rect ghost_in2 = *ghost_in;
-    if ((count_ / 4) % 2)
-        ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
-
-    // copie du sprite zoomé
-    SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
-}
-
-
 
 int main(int argc, char** argv)
 {
     //Save game test
-    saveGame::saveGameState(50,50) ;
+    SaveGame::saveGameState(50, 50) ;
     if (SDL_Init(SDL_INIT_VIDEO) != 0 )
     {
 		std::cerr <<"Echec de l'initialisation de la SDL " << SDL_GetError() << std::endl;
 		return 1;
     }
 
-	init();
+	//init();
+    Window window_ = *new Window("Title");
+    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT,
+                    constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP
+                    , constants::LIVES);
+    window_.createWindow();
+
+
     // BOUCLE PRINCIPALE
 	bool quit = false;
     SDL_Event event;
@@ -148,8 +81,9 @@ int main(int argc, char** argv)
             game->move(last);
 
         // AFFICHAGE
-		draw();
-		SDL_UpdateWindowSurface(pWindow);
+		//draw();
+        window_.drawWindow(game,last);
+		SDL_UpdateWindowSurface(window_.getPWindow());
         // LIMITE A 60 FPS
 		SDL_Delay(1000/60); // utiliser SDL_GetTicks64() pour plus de precisions
 	}

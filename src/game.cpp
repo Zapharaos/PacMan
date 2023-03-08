@@ -169,3 +169,7 @@ bool Game::levelChange() {
     return true;
 
 }
+
+int Game::getScore() const {
+    return score_;
+}
