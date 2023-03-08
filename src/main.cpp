@@ -21,6 +21,7 @@ SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_
 
 int count_;
 Game* game = nullptr;
+Direction last;
 
 void init()
 {
@@ -39,6 +40,12 @@ void draw()
 {
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_bg, win_surf, &bg);
+
+    if(game->levelChange())
+    {
+        last.reset(); // reset direction to stop the pacman from moving
+        // TODO : do level change animation & stop others until its done
+    }
 
     game->drawStaticEntities(plancheSprites, win_surf);
 
@@ -99,7 +106,6 @@ int main(int argc, char** argv)
     // Gestion du clavier
     int nbk;
     const Uint8* keys = SDL_GetKeyboardState(&nbk);
-    Direction last;
 
 	while (!quit)
 	{

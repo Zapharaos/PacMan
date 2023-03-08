@@ -146,3 +146,12 @@ std::pair<bool, int> MovingEntity::getCurrentSprite(Direction direction, unsigne
         return {true, index+1}; // switch to forward movement inside images
     return {toRight, index-1}; // keep moving towards the start
 }
+
+void MovingEntity::reset(pair<int, int> coordinates) {
+    coordinates_ = coordinates;
+    setSprite(left_.at(1));
+    setSpriteCoordinates(coordinates_);
+    previous_imagePosition_ = {true, 0};
+    refreshAnimation_counter_ = 0;
+    previous_direction_.reset();
+}

@@ -51,3 +51,7 @@ Direction Pacman::move(const Map& map, Direction continuous_direction, Direction
 void Pacman::move(const Map& map, Direction continuous_direction) {
     MovingEntity::move(map, continuous_direction);
 }
+
+void Pacman::reset(pair<int, int> coordinates) {
+    MovingEntity::reset(coordinates);
+}

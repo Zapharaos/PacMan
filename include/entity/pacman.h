@@ -24,6 +24,7 @@ public:
     [[nodiscard]] bool hasCollided(SDL_Rect e) const;
     Direction move(const Map& map, Direction continuous_direction, Direction try_direction);
     void move(const Map& map, Direction continuous_direction);
+    void reset(pair<int, int> coordinates) override;
 };
 
 

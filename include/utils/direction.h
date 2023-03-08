@@ -33,6 +33,8 @@ public:
     inline bool isEqual(Direction direction) { return direction_ == direction.getDirection(); };
     inline bool isSameAxis(Direction direction) { return (isLeft() || isRight()) && (direction.isLeft() || direction.isRight()); };
 
+    inline void reset() { direction_ = {DirectionType::UNINITIALIZED};};
+
 private:
     DirectionType direction_ {DirectionType::UNINITIALIZED};
     bool isLeftOrUp_ = false;

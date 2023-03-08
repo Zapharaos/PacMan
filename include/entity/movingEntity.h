@@ -22,7 +22,6 @@ private:
     std::vector<Sprite> down_ {};
     Direction previous_direction_ {};
     std::pair<bool, int> previous_imagePosition_ {true, 0};
-    //bool isMovingLeftOrUp_ = false;
     int refreshAnimation_counter_ {};
     static const int refreshAnimation_rate_ = constants::ENTITY_REFRESH_RATE;
 
@@ -36,7 +35,7 @@ public:
                  const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
 
     [[nodiscard]] virtual const pair<int, int> &getCoordinates() const;
-    void setCoordinates(const pair<int, int> &coordinates);
+    virtual void setCoordinates(const pair<int, int> &coordinates);
     [[nodiscard]] virtual bool isLeftOrUp() const;
     [[nodiscard]] SDL_Rect getSpritePosition() const override;
     [[nodiscard]] const SDL_Rect &getSpriteImage() const override;
@@ -45,6 +44,8 @@ public:
     virtual Direction move(Map map, Direction direction, Direction turn);
     void animate(Direction direction);
     std::pair<bool, int> getCurrentSprite(Direction direction, unsigned max_index);
+
+    virtual void reset(pair<int, int> coordinates);
 };
 
 
