@@ -10,12 +10,12 @@
 using json = nlohmann::json;
 
 
-class saveGame {
+class SaveGame {
 
 public:
     static void saveGameState(int high_score, int round);
-    std::string  getHighScore();
-    std::string getRound();
+    static std::string  getHighScore();
+    static std::string getRound();
 };
 
 
