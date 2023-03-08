@@ -5,15 +5,22 @@
 #ifndef PACMAN_PACMAN_H
 #define PACMAN_PACMAN_H
 
-
 #include "movingEntity.h"
+#include "../utils/timer.h"
 
 class Pacman : MovingEntity {
 
+private:
+    bool superpower_ = false;
+    Timer timer_ {};
+
 public:
-    Pacman(Sprite sprite, int speed, const pair<int, int> &coordinates, const vector<Sprite> &left,
-           const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
+    Pacman(long time, const std::function<void(void)> &function, Sprite sprite, int speed, const pair<int, int> &coordinates,
+           const vector<Sprite> &left, const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down);
     Pacman();
+
+    void setSuperpower(bool superpower);
+    [[nodiscard]] bool isSuperpower();
 
     [[nodiscard]] const pair<int, int> &getCoordinates() const override;
     [[nodiscard]] bool isLeftOrUp() const override;

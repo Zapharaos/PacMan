@@ -29,7 +29,7 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     std::vector<Sprite> pacman_up {pacman_default, pacman_up_1, pacman_up_2};
     std::vector<Sprite> pacman_down {pacman_default, pacman_down_1, pacman_down_2};
 
-    pacman_ = Pacman(pacman_left.at(1), constants::PACMAN_SPEED, {constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, pacman_left, pacman_right, pacman_up, pacman_down);
+    pacman_ = Pacman(5000, [&](){ pacman_.setSuperpower(false); }, pacman_left.at(1), constants::PACMAN_SPEED, {constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, pacman_left, pacman_right, pacman_up, pacman_down);
 
     // Fruits
     fruits_ = {9500, [&](){ fruits_.setIsDisabled(true); }};
@@ -108,10 +108,7 @@ void Game::handleEntitiesCollisions() {
         fruits_.updateSprite((eaten_++), level_);
 
         if(cell.getType() == CellType::ENERGIZER)
-        {
-            powerup_ = true;
-            // TODO : handle power ups
-        }
+            pacman_.setSuperpower(true);
         // TODO : goodies => freeze 1/60s + point animation
     }
 
@@ -126,7 +123,7 @@ void Game::handleEntitiesCollisions() {
     {
         if(!ghost.isDisabled() && pacman_.hasCollided(ghost.getSpritePosition()))
         {
-            if(!powerup_) {
+            if(!pacman_.isSuperpower()) {
                 lives_--;
                 break;
             }

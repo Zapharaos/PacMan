@@ -52,3 +52,10 @@ void Fruits::updateSprite(int eaten, int level)
         timer_.start();
     }
 }
+
+bool Fruits::isDisabled() {
+    timer_.setMutexLock(true);
+    bool result = Entity::isDisabled();
+    timer_.setMutexLock(false);
+    return result;
+}

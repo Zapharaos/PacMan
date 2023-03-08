@@ -6,9 +6,25 @@
 
 Pacman::Pacman() = default;
 
-Pacman::Pacman(Sprite sprite, int speed, const pair<int, int> &coordinates, const vector<Sprite> &left,
-               const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down) :
-               MovingEntity(sprite, speed, coordinates, left, right, up, down) {}
+Pacman::Pacman(long time, const std::function<void(void)> &function, Sprite sprite, int speed, const pair<int, int> &coordinates,
+               const vector<Sprite> &left, const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down) :
+               timer_(time, function), MovingEntity(sprite, speed, coordinates, left, right, up, down) {}
+
+void Pacman::setSuperpower(bool superpower) {
+    timer_.setMutexLock(true);
+    if(timer_.isRunning())
+        timer_.setKilled(true);
+    timer_.setMutexLock(false);
+    superpower_ = superpower;
+    if(superpower) timer_.start();
+}
+
+bool Pacman::isSuperpower() {
+    timer_.setMutexLock(true);
+    bool result = superpower_;
+    timer_.setMutexLock(false);
+    return result;
+}
 
 const pair<int, int> &Pacman::getCoordinates() const {
     return MovingEntity::getCoordinates();

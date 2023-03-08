@@ -38,6 +38,8 @@ public:
     Fruits();
     Fruits(long time, const std::function<void(void)> &function);
 
+    [[nodiscard]] bool isDisabled();
+
     void appendFruit(int points, const set<int>& levels, const vector<Sprite>& animations);
     void updateSprite(int eaten, int level);
 };
