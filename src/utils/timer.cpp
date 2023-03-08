@@ -4,14 +4,25 @@
 
 #include "../../include/utils/timer.h"
 
+#include <utility>
+
 Timer::Timer() = default;
 
-Timer::Timer(long time, const std::function<void(void)> &function) :
-        time_(time), function_(function) {}
+Timer::Timer(const Timer& other) {
+    time_ = other.time_;
+    function_ = other.function_;
+    running_ = other.running_;
+    killed_ = other.killed_;
+}
+
+Timer::Timer(long time, std::function<void(void)> function) :
+        time_(time), function_(std::move(function)) {}
 
 Timer& Timer::operator = (const Timer& other) {
     time_ = other.time_;
     function_ = other.function_;
+    running_ = other.running_;
+    killed_ = other.killed_;
     return *this;
 }
 

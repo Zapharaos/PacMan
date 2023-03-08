@@ -29,7 +29,7 @@ public:
 
     [[nodiscard]] int getPoints() const;
     void setPoints(int points);
-    [[nodiscard]] bool isDisabled() const;
+    [[nodiscard]] virtual bool isDisabled() const;
     void setIsDisabled(bool isDisabled);
     [[nodiscard]] virtual Sprite getSprite() const;
     void setSprite(const Sprite &sprite);

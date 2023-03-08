@@ -13,6 +13,7 @@ SDL_Surface* plancheSprites = nullptr;
 SDL_Rect src_bg = { constants::BMP_MAP_START_X,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
 SDL_Rect bg = { constants::WINDOW_MAP_START_X,constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT }; // ici scale x4
 
+SDL_Rect ghost_scared = { 3,195, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
 SDL_Rect ghost_blinky_r = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
 SDL_Rect ghost_blinky_l = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
 SDL_Rect ghost_blinky_u = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
@@ -44,6 +45,8 @@ void draw()
     if(game->levelChange())
     {
         last.reset(); // reset direction to stop the pacman from moving
+        ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };
+        count_ = 0;
         // TODO : do level change animation & stop others until its done
     }
 
@@ -79,10 +82,18 @@ void draw()
             break;
     }
     count_ = (count_ + 1) % (512);
+
+    if(pacman.isSuperpower())
+    {
+        // TODO : ghost scared
+        ghost_in = &(ghost_scared);
+    }
+
     // ici on change entre les 2 sprites sources pour une jolie animation.
     SDL_Rect ghost_in2 = *ghost_in;
     if ((count_ / 4) % 2)
         ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
+
     // copie du sprite zoomé
     SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost_blinky);
 }

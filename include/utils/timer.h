@@ -24,7 +24,8 @@ private:
 
 public:
     Timer();
-    Timer(long time, const std::function<void(void)> &function);
+    Timer(const Timer& other);
+    Timer(long time, std::function<void(void)> function);
 
     Timer& operator = (const Timer& other);
 
