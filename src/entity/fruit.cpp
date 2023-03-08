@@ -29,10 +29,9 @@ void Fruits::appendFruit(int points, const std::set<int>& levels, const std::vec
     fruits_.emplace_back(Fruit{points, levels, animations});
 }
 
-void Fruits::incrementClearedPellets(int level)
+void Fruits::updateSprite(int eaten, int level)
 {
-    clearedPellets_++;
-    if(pelletsCap_.find(clearedPellets_) != pelletsCap_.end())
+    if(pelletsCap_.find(eaten) != pelletsCap_.end())
     {
         timer_.setMutexLock(true);
         if(timer_.isRunning())

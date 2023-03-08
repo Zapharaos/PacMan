@@ -66,3 +66,7 @@ std::pair<int, int> Cell::getWarpExit(int width, int height) const {
         exit.second = height * size_ - 1;
     return exit;
 }
+
+void Cell::setIsDisabled(bool isDisabled) {
+    entity_.setIsDisabled(isDisabled);
+}

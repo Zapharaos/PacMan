@@ -9,6 +9,7 @@ Game::Game() = default;
 
 Game::Game(int width, int height, int cell_size, const char *file_path, int lives) {
     map_ = Map{width, height, cell_size, getCellsTypeFromFile(file_path)};
+    lives_ = lives;
 
     // TODO : clean up
 
@@ -59,7 +60,6 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
         Sprite({ 405,257, 7,13 }, {4*2, 1*2}, {7*2, 13*2}, fruit_coordinates)});
 
     // TODO : setup ghosts
-    lives_ = lives; // TODO : temp, waiting for the scoreboard
 }
 
 const Pacman &Game::getPacman() const {
@@ -103,10 +103,9 @@ void Game::handleEntitiesCollisions() {
     Entity entity = cell.getEntity();
     if(!entity.isDisabled() && pacman_.hasCollided(entity.getSpritePosition()))
     {
-        entity.setIsDisabled(true);
-        cell.setEntity(entity);
+        cell.setIsDisabled(true);
         score_ += entity.getPoints();
-        fruits_.incrementClearedPellets(level_);
+        fruits_.updateSprite((eaten_++), level_);
 
         if(cell.getType() == CellType::ENERGIZER)
         {
@@ -120,39 +119,27 @@ void Game::handleEntitiesCollisions() {
     {
         score_ += fruits_.getPoints();
         fruits_.setIsDisabled(true);
+        // TODO : freeze 1/60s + point animation
     }
 
     for(auto & ghost : ghosts_)
     {
         if(!ghost.isDisabled() && pacman_.hasCollided(ghost.getSpritePosition()))
         {
-            if(powerup_)
-            {
-                score_ += ghost.getPoints();
-                ghost.setIsDisabled(true);
-                // TODO : hide Pacman & show points earned
-                // TODO : freeze 1/60s + point animation
-            }
-            else
-            {
+            if(!powerup_) {
                 lives_--;
-                if(lives_ == 0)
-                {
-                    // TODO : game lost
-                }
-                else
-                {
-                    // TODO : continue round but life lost
-                }
+                break;
             }
+            score_ += ghost.getPoints();
+            ghost.setIsDisabled(true);
+            break;
+            // TODO : hide Pacman & show points earned
+            // TODO : freeze 1/60s + point animation
         }
     }
 
     if(lowPoints && score_ >= constants::NEW_UP_POINTS_CAP)
-    {
         lives_++;
-        // TODO : update lives
-    }
 }
 
 void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf) {
@@ -169,5 +156,19 @@ void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf
         SDL_Rect position = fruits_.getSpritePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
     }
+}
+
+bool Game::levelChange() {
+    if(eaten_ != pellets_) return false;
+
+    level_++;
+    eaten_ = 0;
+
+    map_.reset();
+    pacman_.reset({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y});
+
+    // TODO : ghosts reset
+
+    return true;
 
 }

@@ -45,6 +45,7 @@ class Cell {
         [[nodiscard]] bool equalsScaledPosition(std::pair<int, int> position) const;
         [[nodiscard]] std::pair<int, int> getScaledPosition() const;
         [[nodiscard]] pair<int, int> getWarpExit(int width, int height) const;
+        void setIsDisabled(bool isDisabled);
 };
 
 

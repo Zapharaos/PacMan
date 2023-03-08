@@ -23,7 +23,9 @@ class Map {
         [[nodiscard]] std::vector<Cell> getCellsWithActiveEntities();
         [[nodiscard]] Cell& getCellFromCoordinates(pair<int, int> coordinates, bool toFloor);
 
-    private:
+    void reset();
+
+private:
         int width_ = 0;
         int height_ = 0;
         int cell_size_ = 0;

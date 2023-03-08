@@ -190,3 +190,9 @@ Cell Map::getWarpExitCell(pair<int, int> coordinates, bool toFloor) {
 bool Map::hasExit(const Cell& cell) {
     return getCellFromCoordinates(cell.getWarpExit(width_, height_), true).isWarp();
 }
+
+void Map::reset() {
+    for(auto & cell : cells_) {
+        cell.setIsDisabled(false);
+    }
+}

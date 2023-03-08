@@ -24,18 +24,21 @@ public:
     Direction move(Direction continuous_direction, Direction try_direction);
     void move(Direction continuous_direction);
     void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
+    bool levelChange();
 
 private:
     Map map_;
+    int lives_ = 0;
+    int score_ = 0;
     int level_ = 1;
+    int eaten_ = 0;
+    static const int pellets_ = 192;
     std::vector<Ghost> ghosts_;
     Pacman pacman_;
     Fruits fruits_;
 
     // TODO : temp attributes
     bool powerup_ = false;
-    int score_ = 0;
-    int lives_ = 0;
 
     static std::vector<CellType> getCellsTypeFromFile(const std::string &file_path);
 };

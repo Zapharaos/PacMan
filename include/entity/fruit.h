@@ -30,8 +30,7 @@ private:
     };
 
     Timer timer_;
-    int clearedPellets_ {};
-    std::set<int> pelletsCap_ {70, 170};
+    std::set<int> pelletsCap_ {56, 136};
     std::vector<Fruit> fruits_ {};
     int sprite_index {};
 
@@ -40,7 +39,7 @@ public:
     Fruits(long time, const std::function<void(void)> &function);
 
     void appendFruit(int points, const set<int>& levels, const vector<Sprite>& animations);
-    void incrementClearedPellets(int level);
+    void updateSprite(int eaten, int level);
 };
 
 
