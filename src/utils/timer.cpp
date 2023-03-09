@@ -70,3 +70,11 @@ void Timer::start() {
     });
     thread_.detach();
 }
+
+void Timer::kill()
+{
+    mutex_.lock();
+    if(running_)
+        killed_ = true;
+    mutex_.unlock();
+}

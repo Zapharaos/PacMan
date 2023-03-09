@@ -48,6 +48,17 @@ SDL_Rect MovingEntity::getSpritePosition() const {
     return Entity::getSpritePosition();
 }
 
+const pair<bool, int> &MovingEntity::getPreviousImagePosition() const
+{
+    return previous_imagePosition_;
+}
+
+void MovingEntity::setPreviousImagePosition(
+        const pair<bool, int> &previousImagePosition)
+{
+    previous_imagePosition_ = previousImagePosition;
+}
+
 Direction MovingEntity::move(Map map, Direction direction, Direction turn) {
 
     std::pair<int, int> origin = getCoordinates();

@@ -42,6 +42,8 @@ public:
 
     void appendFruit(int points, const set<int>& levels, const vector<Sprite>& animations);
     void updateSprite(int eaten, int level);
+
+    void reset();
 };
 
 
