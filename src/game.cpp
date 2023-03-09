@@ -24,12 +24,25 @@ Game::Game(int width, int height, int cell_size, const char *file_path, int live
     Sprite pacman_down_1 {{ 110,91, 14,13 }, {1*2, 1*2}, {14*2, 13*2}};
     Sprite pacman_down_2 {{ 127,95, 14,9 }, {1*2,1*2},{14*2,9*2}};
 
+    Sprite pacman_death_1 {{ 4,111, 16,8 }, {0,0*2},{16*2,8*2}};
+    Sprite pacman_death_2 {{ 23,113, 16,6 }, {0,2*2},{16*2,6*2}};
+    Sprite pacman_death_3 {{ 42,114, 16,5 }, {0,3*2},{16*2,5*2}};
+    Sprite pacman_death_4 {{ 61,114, 16,5 }, {0,4*2},{16*2,5*2}};
+    Sprite pacman_death_5 {{ 80,113, 16,6 }, {0,4*2},{16*2,6*2}};
+    Sprite pacman_death_6 {{ 99,112, 14,6 }, {1*2,4*2},{14*2,6*2}};
+    Sprite pacman_death_7 {{ 116,112, 10,7 }, {3*2,4*2},{10*2,7*2}};
+    Sprite pacman_death_8 {{ 129,112, 6,7 }, {5*2,4*2},{6*2,7*2}};
+    Sprite pacman_death_9 {{ 138,112, 2,7 }, {7*2,4*2},{2*2,7*2}};
+    Sprite pacman_death_10 {{ 143,109, 11,10 }, {3*2,3*2},{11*2,10*2}};
+
     std::vector<Sprite> pacman_left {pacman_default, pacman_left_1, pacman_left_2};
     std::vector<Sprite> pacman_right {pacman_default, pacman_right_1, pacman_right_2};
     std::vector<Sprite> pacman_up {pacman_default, pacman_up_1, pacman_up_2};
     std::vector<Sprite> pacman_down {pacman_default, pacman_down_1, pacman_down_2};
+    std::vector<Sprite> pacman_death {pacman_death_1, pacman_death_2, pacman_death_3, pacman_death_4, pacman_death_5,
+                                      pacman_death_6, pacman_death_7, pacman_death_8, pacman_death_9, pacman_death_10};
 
-    pacman_ = Pacman(5000, [&](){ pacman_.setSuperpower(false); }, pacman_left.at(1), constants::PACMAN_SPEED, {constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, pacman_left, pacman_right, pacman_up, pacman_down);
+    pacman_ = Pacman(5000, [&](){ pacman_.setSuperpower(false); }, pacman_left.at(1), constants::PACMAN_SPEED, {constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}, pacman_left, pacman_right, pacman_up, pacman_down, pacman_death);
 
     // Fruits
     fruits_ = {9500, [&](){ fruits_.setIsDisabled(true); }};
@@ -66,6 +79,19 @@ const Pacman &Game::getPacman() const {
     return pacman_;
 }
 
+void Game::setPacman(const Pacman &pacman)
+{
+    pacman_ = pacman;
+}
+
+StatusType Game::getStatus() const {
+    return status_;
+}
+
+void Game::setStatus(StatusType status) {
+    status_ = status;
+}
+
 std::vector<CellType> Game::getCellsTypeFromFile(const std::string& file_path) {
     std::vector<CellType> cell_types;
     std::ifstream file; // indata is like cin
@@ -99,23 +125,29 @@ void Game::move(Direction continuous_direction) {
 void Game::handleEntitiesCollisions() {
     bool lowPoints = score_ < constants::NEW_UP_POINTS_CAP;
 
+    status_ = StatusType::RUNNING;
+
     Cell& cell = map_.getCellFromCoordinates(pacman_.getCoordinates(), pacman_.isLeftOrUp());
     Entity entity = cell.getEntity();
     if(!entity.isDisabled() && pacman_.hasCollided(entity.getSpritePosition()))
     {
         cell.setIsDisabled(true);
         score_ += entity.getPoints();
-        fruits_.updateSprite((eaten_++), level_);
 
-        if(cell.getType() == CellType::ENERGIZER)
+        pelletsEaten_++;
+        fruits_.updateSprite(pelletsEaten_, level_);
+
+        if(pelletsEaten_ == pelletsTotal_) // Level up
+            status_ = StatusType::LEVEL_UP;
+        else if(cell.getType() == CellType::ENERGIZER)
             pacman_.setSuperpower(true);
-        // TODO : goodies => freeze 1/60s + point animation
     }
 
     if(!fruits_.isDisabled() && pacman_.hasCollided(fruits_.getSpritePosition()))
     {
-        score_ += fruits_.getPoints();
         fruits_.setIsDisabled(true);
+        score_ += fruits_.getPoints();
+        status_ = StatusType::INTERRUPTED;
         // TODO : freeze 1/60s + point animation
     }
 
@@ -124,14 +156,15 @@ void Game::handleEntitiesCollisions() {
         if(!ghost.isDisabled() && pacman_.hasCollided(ghost.getSpritePosition()))
         {
             if(!pacman_.isSuperpower()) {
-                lives_--;
+                status_ = StatusType::LOST_LIFE;
+                pacman_.setDead(true);
                 break;
             }
-            score_ += ghost.getPoints();
             ghost.setIsDisabled(true);
+            score_ += ghost.getPoints();
+            status_ = StatusType::INTERRUPTED;
+            // TODO : freeze 1/60s + hide Pacman + point animation
             break;
-            // TODO : hide Pacman & show points earned
-            // TODO : freeze 1/60s + point animation
         }
     }
 
@@ -139,10 +172,11 @@ void Game::handleEntitiesCollisions() {
         lives_++;
 }
 
-void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf) {
+void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf, bool displayEnergizers) {
     for(auto & cell : map_.getCellsWithActiveEntities())
     {
-        Entity entity = cell.getEntity();
+        if(cell.getType() == CellType::ENERGIZER && !displayEnergizers) continue;
+        const Entity& entity = cell.getEntity();
         SDL_Rect image = entity.getSpriteImage();
         SDL_Rect position = entity.getSpritePosition();
         SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
@@ -155,19 +189,34 @@ void Game::drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf
     }
 }
 
-bool Game::levelChange() {
-    if(eaten_ != pellets_) return false;
-
+void Game::levelUp()
+{
     level_++;
-    eaten_ = 0;
+    pelletsEaten_ = 0;
+    status_ = StatusType::RUNNING;
 
     map_.reset();
+    fruits_.reset();
     pacman_.reset({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y});
-
     // TODO : ghosts reset
+    // TODO : speed and timers : up
+}
 
-    return true;
+void Game::lostLife()
+{
+    if((--lives_) == 0) {
+        lives_ = 3; // temp
+        score_ = 0;
+        level_ = 1;
+        pelletsEaten_ = 0;
+        map_.reset();
+    }
 
+    status_ = StatusType::RUNNING;
+    fruits_.reset();
+    pacman_.reset({constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y});
+    // TODO : ghosts reset
+    // TODO : speed and timers : reset
 }
 
 int Game::getScore() const {

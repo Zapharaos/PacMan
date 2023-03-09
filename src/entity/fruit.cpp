@@ -33,10 +33,7 @@ void Fruits::updateSprite(int eaten, int level)
 {
     if(pelletsCap_.find(eaten) != pelletsCap_.end())
     {
-        timer_.setMutexLock(true);
-        if(timer_.isRunning())
-            timer_.setKilled(true);
-        timer_.setMutexLock(false);
+        timer_.kill(); // stop previous fruit if still running
 
         Fruit &current = fruits_.back();
         for(auto & fruit : fruits_) {
@@ -58,4 +55,9 @@ bool Fruits::isDisabled() {
     bool result = Entity::isDisabled();
     timer_.setMutexLock(false);
     return result;
+}
+
+void Fruits::reset()
+{
+    timer_.kill();
 }

@@ -35,6 +35,7 @@ public:
     void setMutexLock(bool lock);
 
     void start();
+    void kill();
 };
 
 

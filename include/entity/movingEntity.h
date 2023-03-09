@@ -39,6 +39,8 @@ public:
     [[nodiscard]] virtual bool isLeftOrUp() const;
     [[nodiscard]] SDL_Rect getSpritePosition() const override;
     [[nodiscard]] const SDL_Rect &getSpriteImage() const override;
+    [[nodiscard]] virtual const pair<bool, int> &getPreviousImagePosition() const;
+    virtual void setPreviousImagePosition(const pair<bool, int> &previousImagePosition);
 
     virtual void move(Map map, Direction direction);
     virtual Direction move(Map map, Direction direction, Direction turn);

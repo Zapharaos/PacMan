@@ -13,6 +13,15 @@
 #include "entity/pacman.h"
 #include "entity/fruit.h"
 
+enum class StatusType {
+    STOPPED,
+    RUNNING,
+    PAUSED,
+    INTERRUPTED,
+    LEVEL_UP,
+    LOST_LIFE,
+};
+
 class Game {
 public:
     Game();
@@ -20,11 +29,18 @@ public:
 
     [[nodiscard]] const Pacman &getPacman() const;
 
-    void handleEntitiesCollisions();
+    void setPacman(const Pacman &pacman);
+
+    [[nodiscard]] StatusType getStatus() const;
+    void setStatus(StatusType status);
+
     Direction move(Direction continuous_direction, Direction try_direction);
     void move(Direction continuous_direction);
-    void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf);
-    bool levelChange();
+    void handleEntitiesCollisions();
+    void drawStaticEntities(SDL_Surface* plancheSprites, SDL_Surface* win_surf, bool displayEnergizers);
+
+    void levelUp();
+    void lostLife();
 
     int getScore() const;
 
@@ -33,14 +49,12 @@ private:
     int lives_ = 0;
     int score_ = 0;
     int level_ = 1;
-    int eaten_ = 0;
-    static const int pellets_ = 192;
+    int pelletsEaten_ = 0;
+    static const int pelletsTotal_ = 192;
     std::vector<Ghost> ghosts_;
     Pacman pacman_;
     Fruits fruits_;
-
-    // TODO : temp attributes
-    bool powerup_ = false;
+    StatusType status_ = {StatusType::RUNNING};
 
     static std::vector<CellType> getCellsTypeFromFile(const std::string &file_path);
 };
