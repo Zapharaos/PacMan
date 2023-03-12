@@ -101,13 +101,6 @@ public:
     void
     setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex) override;
 
-    /** Indicates whether two entities have collided.
-     *
-     * @param e The second entity's sprite's position.
-     * @return true if collision, else false.
-     */
-    [[nodiscard]] bool collides(SDL_Rect e);
-
     /** If legal, moves into a given direction.
      *
      * @see MovingEntity::move(Map map, Direction direction)

@@ -75,21 +75,6 @@ void Pacman::setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex)
     MovingEntity::setPreviousSpriteIndex(previousSpriteIndex);
 }
 
-bool Pacman::collides(SDL_Rect e)
-{
-    auto p = getSpritePosition();
-
-    bool left = (e.x <= p.x && p.x < e.x + e.w);
-    bool right = (p.x <= e.x && e.x < p.x + p.w);
-    bool up = (e.y <= p.y && p.y < e.y + e.h);
-    bool down = (p.y <= e.y && e.y < p.y + p.h);
-
-    bool horizontal = left || right;
-    bool vertical = up || down;
-
-    return horizontal && vertical;
-}
-
 void Pacman::move(const Map &map, const Direction &continuous_direction)
 {
     MovingEntity::move(map, continuous_direction);

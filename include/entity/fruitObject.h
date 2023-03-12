@@ -8,7 +8,7 @@
 #include <utility>
 #include <set>
 #include <vector>
-#include "../sprite/sprite.h"
+#include "../display/sprite.h"
 
 using namespace std;
 

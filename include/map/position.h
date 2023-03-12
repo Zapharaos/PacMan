@@ -94,7 +94,7 @@ public:
      * @param direction The direction.
      * @return the neighbor's position.
      */
-    [[nodiscard]] Position getNeighbor(Direction direction) const;
+    [[nodiscard]] Position getNeighbor(const Direction &direction) const;
 
     /** Moves into a direction.
      *
@@ -102,7 +102,7 @@ public:
      * @param distance The distance of the movement.
      * @return Copy of the original object with its position moved.
      */
-    [[nodiscard]] Position moveIntoDirection(Direction direction, int distance) const;
+    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
 
     /**
      * [Debug] : Prints the position.

@@ -3,7 +3,7 @@
 //
 
 #include <array>
-#include "../../include/sprite/extractor.h"
+#include "../../include/display/extractor.h"
 
 
 std::vector<SDL_Rect>

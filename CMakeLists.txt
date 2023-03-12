@@ -14,7 +14,9 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 add_executable(${PROJECT_NAME} ""
 
+		include/display/extractor.h
 		include/display/scoreBoard.h
+		include/display/sprite.h
 		include/display/window.h
 
 		include/entity/entity.h
@@ -27,9 +29,6 @@ add_executable(${PROJECT_NAME} ""
 		include/map/cell.h
 		include/map/map.h
 		include/map/position.h
-
-		include/sprite/extractor.h
-		include/sprite/sprite.h
 
 		include/utils/constants.h
 		include/utils/json.hpp
@@ -44,7 +43,9 @@ add_executable(${PROJECT_NAME} ""
 
 target_sources(${PROJECT_NAME} PRIVATE
 
+		src/display/extractor.cpp
 		src/display/scoreBoard.cpp
+		src/display/sprite.cpp
 		src/display/window.cpp
 
 		src/entity/entity.cpp
@@ -58,8 +59,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/map/map.cpp
 		src/map/position.cpp
 
-		src/sprite/extractor.cpp
-		src/sprite/sprite.cpp
 
 		src/utils/timer.cpp
 		src/utils/direction.cpp
