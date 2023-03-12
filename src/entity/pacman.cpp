@@ -6,7 +6,7 @@
 
 Pacman::Pacman() = default;
 
-Pacman::Pacman(const Position &position, Sprite sprite, int speed,
+Pacman::Pacman(const Position &position, const Sprite &sprite, int speed,
                const vector<Sprite> &left, const vector<Sprite> &right,
                const vector<Sprite> &up, const vector<Sprite> &down, long time,
                const vector<Sprite> &death) : MovingEntity(position, sprite,
@@ -50,12 +50,12 @@ const Position &Pacman::getPosition() const
     return MovingEntity::getPosition();
 }
 
-Sprite Pacman::getSprite() const
+const Sprite &Pacman::getSprite() const
 {
     return Entity::getSprite();
 }
 
-SDL_Rect Pacman::getSpritePosition()
+const SDL_Rect &Pacman::getSpritePosition()
 {
     return MovingEntity::getSpritePosition();
 }
@@ -90,13 +90,13 @@ bool Pacman::collides(SDL_Rect e)
     return horizontal && vertical;
 }
 
-void Pacman::move(const Map &map, Direction continuous_direction)
+void Pacman::move(const Map &map, const Direction &continuous_direction)
 {
     MovingEntity::move(map, continuous_direction);
 }
 
-Direction Pacman::move(const Map &map, Direction continuous_direction,
-                       Direction try_direction)
+Direction Pacman::move(const Map &map, const Direction &continuous_direction,
+                       const Direction &try_direction)
 {
     return MovingEntity::move(map, continuous_direction, try_direction);
 }
@@ -118,7 +118,7 @@ void Pacman::animateDeath()
     setPreviousSpriteIndex(position);
 }
 
-void Pacman::reset(Position coordinates)
+void Pacman::reset(const Position &coordinates)
 {
     MovingEntity::reset(coordinates);
     timer_.kill();

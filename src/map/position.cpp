@@ -37,7 +37,7 @@ bool Position::isOutOfBounds(int width, int height) const
             position_.second < 0 || position_.second >= height);
 }
 
-bool Position::isBetween(Position a, Position b) const
+bool Position::isBetween(const Position &a, const Position &b) const
 {
     return (b.position_.first < position_.first &&
             position_.first <= a.position_.first) ||
@@ -49,7 +49,7 @@ bool Position::isBetween(Position a, Position b) const
             position_.second < b.position_.second);
 }
 
-int Position::getSingleAxisDistance(Position position) const
+int Position::getSingleAxisDistance(const Position &position) const
 {
     if (position_.first == position.position_.first)
         return abs(position_.second - position.position_.second);
@@ -68,7 +68,7 @@ Position Position::getPositionUnscaled(int scale) const
     return Position{{floor(x), floor(y)}};
 }
 
-bool Position::isNeighbor(Position position) const
+bool Position::isNeighbor(const Position &position) const
 {
     return (position.getAbscissa() - 1 == getAbscissa() ||
             position.getAbscissa() + 1 == getAbscissa() ||
@@ -76,7 +76,7 @@ bool Position::isNeighbor(Position position) const
             position.getOrdinate() + 1 == getOrdinate());
 }
 
-Position Position::getNeighbor(Direction direction)
+Position Position::getNeighbor(Direction direction) const
 {
     auto position = position_;
     if (direction.isLeft())
@@ -90,7 +90,7 @@ Position Position::getNeighbor(Direction direction)
     return Position{position};
 }
 
-Position Position::moveIntoDirection(Direction direction, int distance)
+Position Position::moveIntoDirection(Direction direction, int distance) const
 {
     auto position = position_;
     if (direction.isLeft()) position.first -= distance;

@@ -57,7 +57,7 @@ public:
      * @param b The second position.
      * @return true if located between both positions, else false.
      */
-    [[nodiscard]] bool isBetween(Position a, Position b) const;
+    [[nodiscard]] bool isBetween(const Position &a, const Position &b) const;
 
     /** The distance on a single axis (horizontal or vertical).
      *
@@ -66,7 +66,7 @@ public:
      * @param position The second position.
      * @return the distance between both positions.
      */
-    [[nodiscard]] int getSingleAxisDistance(Position position) const;
+    [[nodiscard]] int getSingleAxisDistance(const Position &position) const;
 
     /** Scales the position.
      *
@@ -87,14 +87,14 @@ public:
      * @param position Second position.
      * @return true if positions are neighbors, else false.
      */
-    [[nodiscard]] bool isNeighbor(Position position) const;
+    [[nodiscard]] bool isNeighbor(const Position &position) const;
 
     /** Position's neighbor in a specific direction.
      *
      * @param direction The direction.
      * @return the neighbor's position.
      */
-    Position getNeighbor(Direction direction);
+    [[nodiscard]] Position getNeighbor(Direction direction) const;
 
     /** Moves into a direction.
      *
@@ -102,7 +102,7 @@ public:
      * @param distance The distance of the movement.
      * @return Copy of the original object with its position moved.
      */
-    [[nodiscard]] Position moveIntoDirection(Direction direction, int distance);
+    [[nodiscard]] Position moveIntoDirection(Direction direction, int distance) const;
 
     /**
      * [Debug] : Prints the position.

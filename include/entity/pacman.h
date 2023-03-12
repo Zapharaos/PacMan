@@ -46,7 +46,7 @@ public:
      * @param time Time before the timer expires and disables the superpower.
      * @param death Animations when has died.
      */
-    Pacman(const Position &position, Sprite sprite, int speed,
+    Pacman(const Position &position, const Sprite &sprite, int speed,
            const vector<Sprite> &left, const vector<Sprite> &right,
            const vector<Sprite> &up, const vector<Sprite> &down,
            long time, const vector<Sprite> &death);
@@ -73,7 +73,7 @@ public:
      *
      * @see Entity::getSpriteImage() override.
      */
-    [[nodiscard]] Sprite getSprite() const override;
+    [[nodiscard]] const Sprite &getSprite() const override;
 
     /** Getter : Sprite's position on the bitmap.
      *
@@ -85,7 +85,7 @@ public:
      *
      * @see MovingEntity::getSpritePosition() override.
      */
-    [[nodiscard]] SDL_Rect getSpritePosition() override;
+    [[nodiscard]] const SDL_Rect &getSpritePosition() override;
 
     /** Getter : Previous sprite's index within an animation.
      *
@@ -115,7 +115,7 @@ public:
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards to.
      */
-    void move(const Map &map, Direction continuous_direction);
+    void move(const Map &map, const Direction &continuous_direction) override;
 
     /** If legal, turns towards a direction, else moves towards the original direction.
      *
@@ -126,8 +126,8 @@ public:
      * @param try_direction The direction the entity wishes to move to.
      * @return turn if it could change direction, else direction.
      */
-    Direction move(const Map &map, Direction continuous_direction,
-                   Direction try_direction);
+    Direction move(const Map &map, const Direction &continuous_direction,
+                   const Direction &try_direction) override;
 
     /** Executes the death animation. */
     void animateDeath();
@@ -136,7 +136,7 @@ public:
      * Resets the entity object.
      * @see MovingEntity::reset()
      */
-    void reset(Position coordinates) override;
+    void reset(const Position &coordinates) override;
 };
 
 

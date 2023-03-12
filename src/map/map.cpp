@@ -4,6 +4,7 @@
 
 #include "../../include/map/map.h"
 
+// TODO : clean up
 Sprite sprite_pellet{{constants::BMP_POINT_START_X,
                                  constants::BMP_POINT_START_Y,
                              constants::BMP_POINT_SIZE,
@@ -57,7 +58,7 @@ int Map::getCellSize() const
     return cell_size_;
 }
 
-shared_ptr<Cell> Map::getCell(Position position)
+shared_ptr<Cell> Map::getCell(const Position &position) const
 {
     if (position.isOutOfBounds(width_, height_))
         return nullptr;
@@ -70,8 +71,8 @@ const vector<shared_ptr<Cell>> &Map::getCellsWithEntities() const
 }
 
 optional<Position>
-Map::turnToCell(Position origin, Position destination, Direction direction,
-                Direction turn)
+Map::turnToCell(const Position &origin, const Position &destination, const Direction &direction,
+                const Direction &turn) const
 {
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
@@ -95,12 +96,11 @@ Map::turnToCell(Position origin, Position destination, Direction direction,
                    origin.getSingleAxisDistance(edge);
 
     // Move into new direction
-    destination = edge.moveIntoDirection(turn, distance);
-    return moveToCell(edge, destination, turn);
+    return moveToCell(edge, edge.moveIntoDirection(turn, distance), turn);
 }
 
 optional<Position>
-Map::moveToCell(Position origin, Position destination, Direction direction)
+Map::moveToCell(const Position &origin, const Position &destination, const Direction &direction) const
 {
 
     // Get cells at origin & destination
@@ -133,9 +133,9 @@ Map::moveToCell(Position origin, Position destination, Direction direction)
     return origin_cell->getPositionScaled();
 }
 
-void Map::reset()
+void Map::reset() const
 {
     // Enables all cell entities back
-    for (auto &cell: cellsWithEntities_)
+    for (auto &cell: getCellsWithEntities())
         cell->setEnabled(true);
 }

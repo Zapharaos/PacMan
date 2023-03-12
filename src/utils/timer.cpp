@@ -19,8 +19,8 @@ Timer::Timer(const Timer &timer)
 Timer::Timer(long time) : time_(time)
 {}
 
-Timer::Timer(long time, function<void(void)> function) :
-        time_(time), function_(move(function))
+Timer::Timer(long time, const function<void(void)> &function) :
+        time_(time), function_(function)
 {}
 
 Timer &Timer::operator=(const Timer &timer)
@@ -68,9 +68,9 @@ void Timer::start()
     }).detach();
 }
 
-void Timer::start(function<void(void)> function)
+void Timer::start(const function<void(void)> &function)
 {
-    function_ = move(function);
+    function_ = function;
     start();
 }
 

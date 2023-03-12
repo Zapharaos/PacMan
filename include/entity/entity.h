@@ -66,7 +66,7 @@ public:
     virtual void setPosition(const Position &position);
 
     /** Getter : Image when displayed. */
-    [[nodiscard]] virtual Sprite getSprite() const;
+    [[nodiscard]] virtual const Sprite &getSprite() const;
 
     /** Setter : Image when displayed. */
     void setSprite(const Sprite &sprite);
@@ -93,7 +93,7 @@ public:
      *
      * @see Sprite::getPosition().
      */
-    [[nodiscard]] virtual SDL_Rect getSpritePosition();
+    [[nodiscard]] virtual const SDL_Rect &getSpritePosition();
 
     /** [Debug] : Prints the entity's members. */
     void print() const;

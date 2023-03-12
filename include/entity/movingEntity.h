@@ -69,7 +69,7 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    MovingEntity(const Position &position, Sprite sprite, bool enabled,
+    MovingEntity(const Position &position, const Sprite &sprite, bool enabled,
                  int points, int speed, const vector<Sprite> &left,
                  const vector<Sprite> &right, const vector<Sprite> &up,
                  const vector<Sprite> &down);
@@ -84,7 +84,7 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    MovingEntity(const Position &position, Sprite sprite, int speed,
+    MovingEntity(const Position &position, const Sprite &sprite, int speed,
                  const vector<Sprite> &left,
                  const vector<Sprite> &right, const vector<Sprite> &up,
                  const vector<Sprite> &down);
@@ -111,7 +111,7 @@ public:
      *
      * @see Entity::getSpritePosition() override.
      */
-    [[nodiscard]] SDL_Rect getSpritePosition() override;
+    [[nodiscard]] const SDL_Rect &getSpritePosition() override;
 
     /** Getter : Previous sprite's index within an animation. */
     [[nodiscard]] virtual const pair<bool, int> &getPreviousSpriteIndex() const;
@@ -125,7 +125,7 @@ public:
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards to.
      */
-    virtual void move(Map map, Direction direction);
+    virtual void move(const Map &map, const Direction &direction);
 
     /** If legal, turns towards a direction, else moves towards the original direction.
      *
@@ -134,7 +134,7 @@ public:
      * @param turn The direction the entity wishes to move to.
      * @return turn if it could change direction, else direction.
      */
-    virtual Direction move(Map map, Direction direction, Direction turn);
+    virtual Direction move(const Map &map, const Direction &direction, const Direction &turn);
 
     /** Switches between sprites depending on the direction.
      *
@@ -142,7 +142,7 @@ public:
      *
      * @param direction the direction of the current move.
      */
-    void animate(Direction direction);
+    void animate(const Direction &direction);
 
     /** Indicates the index of the current sprite.
      *
@@ -152,12 +152,12 @@ public:
      * @param max_index Maximum number of sprites for the current animation.
      * @return temporary update of previousSpriteIndex_
      */
-    pair<bool, int> getCurrentSprite(Direction direction, unsigned max_index);
+    pair<bool, int> getCurrentSprite(const Direction &direction, unsigned max_index);
 
     /**
      * Resets the entity object.
      */
-    virtual void reset(Position coordinates);
+    virtual void reset(const Position &coordinates);
 };
 
 

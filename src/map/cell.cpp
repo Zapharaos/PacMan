@@ -3,14 +3,15 @@
 //
 
 #include <iostream>
+#include <utility>
 #include "../../include/map/cell.h"
 #include "../../include/utils/utils.h"
 
 Cell::Cell() = default;
 
-Cell::Cell(Position position, int size, CellType type,
+Cell::Cell(Position position, int size, const CellType &type,
            const optional<Entity> &entity) :
-        position_(move(position)), size_(size), type_(type), entity_(entity)
+        position_(std::move(position)), size_(size), type_(type), entity_(entity)
 {}
 
 bool Cell::operator==(const Cell &rhs) const
@@ -23,7 +24,7 @@ bool Cell::operator!=(const Cell &rhs) const
     return !(rhs == *this);
 }
 
-CellType Cell::getType() const
+const CellType &Cell::getType() const
 {
     return type_;
 }
@@ -43,7 +44,7 @@ bool Cell::isNeighbor(const Cell &cell) const
     return position_.isNeighbor(cell.position_);
 }
 
-bool Cell::equalsPositionScaled(Position position) const
+bool Cell::equalsPositionScaled(const Position &position) const
 {
     return position == getPositionScaled();
 }

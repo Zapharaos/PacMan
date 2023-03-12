@@ -40,54 +40,54 @@ public:
      *
      * @param direction Direction taken.
      */
-    explicit Direction(DirectionType direction);
+    explicit Direction(const DirectionType &direction);
 
     /** Updates the direction type. */
-    void setDirection(DirectionType direction);
+    void setDirection(const DirectionType &direction);
 
     /** Is moving towards left / top. */
     [[nodiscard]] bool isLeftOrUp() const;
 
     /** Indicates if the direction is uninitialized. */
-    inline bool isUninitialized()
+    [[nodiscard]] inline bool isUninitialized() const
     { return direction_ == DirectionType::UNINITIALIZED; };
 
     /** Indicates if direction is left. */
-    inline bool isLeft()
+    [[nodiscard]] inline bool isLeft() const
     { return direction_ == DirectionType::LEFT; };
 
     /** Indicates if direction is right. */
-    inline bool isRight()
+    [[nodiscard]] inline bool isRight() const
     { return direction_ == DirectionType::RIGHT; };
 
     /** Indicates if direction is up. */
-    inline bool isUp()
+    [[nodiscard]] inline bool isUp() const
     { return direction_ == DirectionType::UP; };
 
     /** Indicates if direction is down. */
-    inline bool isDown()
+    [[nodiscard]] inline bool isDown() const
     { return direction_ == DirectionType::DOWN; };
 
     /** Indicates if direction is horizontal. */
-    inline bool isHorizontal()
+    [[nodiscard]] inline bool isHorizontal() const
     {
         return direction_ == DirectionType::LEFT ||
                direction_ == DirectionType::RIGHT;
     };
 
     /** Indicates if direction is vertical. */
-    inline bool isVertical()
+    [[nodiscard]] inline bool isVertical() const
     {
         return direction_ == DirectionType::UP ||
                direction_ == DirectionType::DOWN;
     };
 
     /** Indicates if both directions are equals. */
-    inline bool isEqual(Direction direction)
+    [[nodiscard]] inline bool isEqual(const Direction &direction) const
     { return direction_ == direction.direction_; };
 
     /** Indicates if both directions are moving on the same axis (i.e. vertical or horizontal). */
-    inline bool isSameAxis(Direction direction)
+    [[nodiscard]] inline bool isSameAxis(const Direction &direction) const
     {
         return isHorizontal() == direction.isHorizontal() ||
                isVertical() == direction.isVertical();

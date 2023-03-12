@@ -86,16 +86,16 @@ public:
     void setPacman(const Pacman &pacman);
 
     /** Getter : Current game status. */
-    [[nodiscard]] StatusType getStatus() const;
+    [[nodiscard]] const StatusType &getStatus() const;
 
     /** Setter : Current game status. */
-    void setStatus(StatusType status);
+    void setStatus(const StatusType &status);
 
     /** Pacman tries to move & handle collisions.
      *
      * @param continuous_direction The direction pacman is moving towards to.
      */
-    void move(Direction continuous_direction);
+    void move(const Direction &continuous_direction);
 
     /** Pacman tries to turn & handle collisions.
      *
@@ -103,7 +103,7 @@ public:
      * @param try_direction he direction pacman wishes to move to.
      * @return try_direction if it could change direction, else continuous_direction.
      */
-    Direction move(Direction continuous_direction, Direction try_direction);
+    Direction move(const Direction &continuous_direction, const Direction &try_direction);
 
     /** Handles collisions. */
     void handleEntitiesCollisions();
