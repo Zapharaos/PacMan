@@ -57,7 +57,7 @@ public:
     void setRoundNb(int roundNb);
 
     //Will write "High Score on Window" another function should handle the points display
-     void writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *plancheSprites);
+    void writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *plancheSprites);
 
 
     void initNumberSprites();

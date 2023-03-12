@@ -22,8 +22,8 @@ void Window::setMapInit(const SDL_Rect &mapInit) {
             0,
             constants::BMP_MAP_START_X,
             constants::BMP_MAP_START_Y,
-            1
-            );
+            constants::OFFSET_MAP
+    );
 }
 
 const SDL_Rect &Window::getMapEmpty() {
@@ -37,7 +37,7 @@ void Window::setMapEmpty(const SDL_Rect &mapEmpty) {
             1,
             constants::BMP_MAP_START_X,
             constants::BMP_MAP_START_Y,
-            1
+            constants::OFFSET_MAP
     );
 }
 
@@ -52,7 +52,7 @@ void Window::setMapWhite(const SDL_Rect &mapWhite) {
             2,
             constants::BMP_MAP_START_X,
             constants::BMP_MAP_START_Y,
-            1
+            constants::OFFSET_MAP
     );
 }
 

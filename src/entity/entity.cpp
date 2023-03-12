@@ -4,52 +4,73 @@
 
 #include "../../include/entity/entity.h"
 
-#include <utility>
+Entity::Entity() = default;
 
-Entity::~Entity() = default;
+Entity::Entity(Position position, Sprite sprite, bool enabled, int points)
+        : position_(move(position)), sprite_(move(sprite)), enabled_(enabled),
+          points_(points)
+{}
 
-Entity::Entity()  = default;
+Entity::Entity(Position position, Sprite sprite) : position_(move(position)),
+                                                   sprite_(move(sprite))
+{}
 
-Entity::Entity(Sprite sprite, int points, bool isDisabled) : sprite_(std::move(sprite)), points_(points), isDisabled_(isDisabled) {}
+Entity::Entity(Position position) : position_(move(position))
+{}
 
-Entity::Entity(Sprite sprite) : sprite_(std::move(sprite)) {}
-
-int Entity::getPoints() const {
-    return points_;
+const Position &Entity::getPosition() const
+{
+    return position_;
 }
 
-void Entity::setPoints(int points) {
-    points_ = points;
+void Entity::setPosition(const Position &position)
+{
+    position_ = position;
 }
 
-bool Entity::isDisabled() const {
-    return isDisabled_;
-}
-
-void Entity::setIsDisabled(bool isDisabled) {
-    Entity::isDisabled_ = isDisabled;
-}
-
-Sprite Entity::getSprite() const {
+Sprite Entity::getSprite() const
+{
     return sprite_;
 }
 
-void Entity::setSprite(const Sprite &sprite) {
+void Entity::setSprite(const Sprite &sprite)
+{
     sprite_ = sprite;
 }
 
-SDL_Rect Entity::getSpritePosition() const {
+int Entity::getPoints() const
+{
+    return points_;
+}
+
+void Entity::setPoints(int points)
+{
+    points_ = points;
+}
+
+bool Entity::isEnabled() const
+{
+    return enabled_;
+}
+
+void Entity::setEnabled(bool enabled)
+{
+    enabled_ = enabled;
+}
+
+SDL_Rect Entity::getSpritePosition()
+{
+    sprite_.updatePosition(position_);
     return sprite_.getPosition();
 }
 
-const SDL_Rect &Entity::getSpriteImage() const {
+const SDL_Rect &Entity::getSpriteImage() const
+{
     return sprite_.getImage();
 }
 
-void Entity::setSpriteCoordinates(std::pair<int, int> coordinates) {
-    sprite_.setCoordinates(coordinates);
-}
-
-void Entity::print() const {
-    std::cout << "points: " << points_ << ", isDisabled: " << isDisabled_ << std::endl;
+void Entity::print() const
+{
+    position_.print();
+    cout << "points: " << points_ << ", enabled: " << enabled_ << endl;
 }

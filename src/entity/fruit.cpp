@@ -4,60 +4,50 @@
 
 #include "../../include/entity/fruit.h"
 
-Fruits::Fruit::Fruit() = default;
+Fruit::Fruit() = default;
 
-Fruits::Fruit::Fruit(int points, const set<int> &levels, const vector<Sprite> &animations) :
-    points_(points), levels_(levels), animations_(animations) {}
+Fruit::Fruit(Position position, long time, set<int> pelletsCap,
+             vector<FruitObject> fruits) :
+        Entity(position), timer_(time), pelletsCap_(move(pelletsCap)),
+        fruits_(move(fruits))
+{}
 
-int Fruits::Fruit::getPoints() const {
-    return points_;
-}
-
-const set<int> &Fruits::Fruit::getLevels() const {
-    return levels_;
-}
-
-const vector<Sprite> &Fruits::Fruit::getAnimations() const {
-    return animations_;
-}
-
-Fruits::Fruits() = default;
-
-Fruits::Fruits(long time, const std::function<void(void)> &function) : timer_(time, function) {}
-
-void Fruits::appendFruit(int points, const std::set<int>& levels, const std::vector<Sprite>& animations) {
-    fruits_.emplace_back(Fruit{points, levels, animations});
-}
-
-void Fruits::updateSprite(int eaten, int level)
+void Fruit::update(int pelletsEaten, int level)
 {
-    if(pelletsCap_.find(eaten) != pelletsCap_.end())
+    // if a fruit should be displayed
+    if (pelletsCap_.find(pelletsEaten) != pelletsCap_.end())
     {
-        timer_.kill(); // stop previous fruit if still running
+        timer_.kill(); // just in case : disable previous fruit timer
 
-        Fruit &current = fruits_.back();
-        for(auto & fruit : fruits_) {
-            std::set<int> levels = fruit.getLevels();
-            if(levels.find(level) != levels.end())
+        FruitObject &current = fruits_.back(); // set as default fruit object
+        for (auto &fruit: fruits_) // find object corresponding to level
+        {
+            set<int> levels = fruit.getLevels();
+            if (levels.find(level) != levels.end())
                 current = fruit;
         }
 
-        sprite_index = 0;
-        setIsDisabled(false);
-        setPoints(current.getPoints());
-        setSprite(current.getAnimations().at(sprite_index));
-        timer_.start();
+        sprite_index_ = 0; // reset animation counter
+        setEnabled(true); // enables the entity
+        setPoints(current.getPoints()); // update the points
+        setSprite(current.getSprites().at(sprite_index_)); // update sprite
+
+        timer_.start([&]() {
+            setEnabled(false);
+        }); // only showing fruit for a specific time
     }
 }
 
-bool Fruits::isDisabled() {
+bool Fruit::isEnabled()
+{
+    // protecting access : as timer_ expires, it disables the entity
     timer_.setMutexLock(true);
-    bool result = Entity::isDisabled();
+    bool result = Entity::isEnabled();
     timer_.setMutexLock(false);
     return result;
 }
 
-void Fruits::reset()
+void Fruit::reset()
 {
-    timer_.kill();
+    timer_.kill(); // stop the timer
 }
