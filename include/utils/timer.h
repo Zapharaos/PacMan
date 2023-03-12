@@ -11,30 +11,73 @@
 #include <thread>
 #include <mutex>
 
+using namespace std;
+
+/** Asynchronous timer that calls a function at expiration. */
 class Timer
 {
 
 private:
-    long time_ = 10000;
-    std::mutex mutex_;
-    std::thread thread_ {};
-    std::function<void(void)> function_ {};
+
+    /** Function executed as the timer expires. */
+    function<void(void)> function_{};
+
+    /** Time to wait for the timer to expire. */
+    long time_{};
+
+    /** Protects the variables used by the threads. */
+    mutex mutex_;
+
+    /** Indicates if the timer is running. */
     bool running_ = false;
+
+    /** Indicates if the function should still be run when the timer expires. */
     bool killed_ = false;
 
 public:
+
+    /** Default Fruit constructor. */
     Timer();
-    Timer(const Timer& other);
-    Timer(long time, std::function<void(void)> function);
 
-    Timer& operator = (const Timer& other);
+    /** Copy constructor
+     *
+     * @param timer The timer to copy from.
+     */
+    Timer(const Timer &timer);
 
-    void setTime(const long &time);
-    [[nodiscard]] bool isRunning() const;
-    void setKilled(bool killed);
+    /** Timer constructor.
+     *
+     * @param time Time to wait for the timer to expire.
+     */
+    explicit Timer(long time);
+
+    /** Timer constructor.
+     *
+     * @param time Time to wait for the timer to expire.
+     * @param function Function executed as the timer expires.
+     */
+    Timer(long time, function<void(void)> function);
+
+    /** Copy assignment operator.
+     *
+     * @param timer The timer to copy from.
+     * @return The copied timer.
+     */
+    Timer &operator=(const Timer &timer);
+
+    /** Locks/unlocks the mutex. */
     void setMutexLock(bool lock);
 
+    /** Starts a new timer. */
     void start();
+
+    /** Starts a new timer.
+     *
+     * @param function Function executed as the timer expires.
+     */
+    void start(function<void(void)> function);
+
+    /** Kills the current running timer. */
     void kill();
 };
 

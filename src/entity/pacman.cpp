@@ -6,20 +6,28 @@
 
 Pacman::Pacman() = default;
 
-Pacman::Pacman(long time, const std::function<void(void)> &function, Sprite sprite, int speed, const pair<int, int> &coordinates,
-               const vector<Sprite> &left, const vector<Sprite> &right, const vector<Sprite> &up, const vector<Sprite> &down,
-               const vector<Sprite> &death) :
-               timer_(time, function), MovingEntity(sprite, speed, coordinates, left, right, up, down), death_(death) {}
+Pacman::Pacman(const Position &position, Sprite sprite, int speed,
+               const vector<Sprite> &left, const vector<Sprite> &right,
+               const vector<Sprite> &up, const vector<Sprite> &down, long time,
+               const vector<Sprite> &death) : MovingEntity(position, sprite,
+                                                           speed, left, right,
+                                                           up, down),
+                                              timer_(time), death_(death)
+{}
 
-void Pacman::setSuperpower(bool superpower) {
-    if(superpower) {
+void Pacman::setSuperpower(bool superpower)
+{
+    if ((superpower_ = superpower))
+    {
         timer_.kill(); // stop previous superpower if still running
-        timer_.start();
+        timer_.start([&]() {
+            setSuperpower(false);
+        }); // only activating superpower mode for a specific time
     }
-    superpower_ = superpower;
 }
 
-bool Pacman::isSuperpower() {
+bool Pacman::isSuperpower()
+{
     timer_.setMutexLock(true);
     bool result = superpower_;
     timer_.setMutexLock(false);
@@ -34,41 +42,42 @@ bool Pacman::isDead() const
 void Pacman::setDead(bool dead)
 {
     Pacman::dead_ = dead;
-    MovingEntity::setPreviousImagePosition({true, 0});
+    setPreviousSpriteIndex({true, 0});
 }
 
-const pair<int, int> &Pacman::getCoordinates() const {
-    return MovingEntity::getCoordinates();
+const Position &Pacman::getPosition() const
+{
+    return MovingEntity::getPosition();
 }
 
-bool Pacman::isLeftOrUp() const {
-    return MovingEntity::isLeftOrUp();
-}
-
-Sprite Pacman::getSprite() const {
+Sprite Pacman::getSprite() const
+{
     return Entity::getSprite();
 }
 
-SDL_Rect Pacman::getSpritePosition() const {
+SDL_Rect Pacman::getSpritePosition()
+{
     return MovingEntity::getSpritePosition();
 }
 
-const SDL_Rect &Pacman::getSpriteImage() const {
+const SDL_Rect &Pacman::getSpriteImage() const
+{
     return MovingEntity::getSpriteImage();
 }
 
-const pair<bool, int> &Pacman::getPreviousImagePosition() const
+const pair<bool, int> &Pacman::getPreviousSpriteIndex() const
 {
-    return MovingEntity::getPreviousImagePosition();
+    return MovingEntity::getPreviousSpriteIndex();
 }
 
-void Pacman::setPreviousImagePosition(const pair<bool, int> &previousImagePosition)
+void Pacman::setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex)
 {
-    MovingEntity::setPreviousImagePosition(previousImagePosition);
+    MovingEntity::setPreviousSpriteIndex(previousSpriteIndex);
 }
 
-bool Pacman::hasCollided(SDL_Rect e) const {
-    auto p = this->getSpritePosition();
+bool Pacman::collides(SDL_Rect e)
+{
+    auto p = getSpritePosition();
 
     bool left = (e.x <= p.x && p.x < e.x + e.w);
     bool right = (p.x <= e.x && e.x < p.x + p.w);
@@ -81,32 +90,36 @@ bool Pacman::hasCollided(SDL_Rect e) const {
     return horizontal && vertical;
 }
 
-Direction Pacman::move(const Map& map, Direction continuous_direction, Direction try_direction) {
-    return MovingEntity::move(map, continuous_direction, try_direction);
-}
-
-void Pacman::move(const Map& map, Direction continuous_direction) {
+void Pacman::move(const Map &map, Direction continuous_direction)
+{
     MovingEntity::move(map, continuous_direction);
 }
 
-void Pacman::reset(pair<int, int> coordinates) {
-    MovingEntity::reset(coordinates);
-    timer_.kill();
+Direction Pacman::move(const Map &map, Direction continuous_direction,
+                       Direction try_direction)
+{
+    return MovingEntity::move(map, continuous_direction, try_direction);
 }
 
-void Pacman::animateDeath() {
+void Pacman::animateDeath()
+{
 
-    std::pair<bool, int> position = getPreviousImagePosition();
+    pair<bool, int> position = getPreviousSpriteIndex();
 
-    if(position.second == death_.size()) { // end of animation
+    if (position.second == death_.size())
+    { // end of animation
         setDead(false);
         return;
     }
 
-    Sprite sprite = death_.at(position.second);
-    sprite.setCoordinates(getCoordinates());
-    setSprite(sprite);
-
+    // Updates sprite.
+    setSprite(death_.at(position.second));
     position.second++;
-    setPreviousImagePosition(position);
+    setPreviousSpriteIndex(position);
+}
+
+void Pacman::reset(Position coordinates)
+{
+    MovingEntity::reset(coordinates);
+    timer_.kill();
 }

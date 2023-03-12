@@ -64,15 +64,14 @@ int main(int argc, char** argv)
 
         // Movements
         if(!paused && !quit && game->getStatus() == StatusType::RUNNING) {
-            cout << "moving" << endl;
             if (keys[SDL_SCANCODE_LEFT])
-                last = game->move(last, {DirectionType::LEFT, true});
+                last = game->move(last, Direction{DirectionType::LEFT});
             else if (keys[SDL_SCANCODE_RIGHT])
-                last = game->move(last, {DirectionType::RIGHT, false});
+                last = game->move(last, Direction{DirectionType::RIGHT});
             else if (keys[SDL_SCANCODE_UP])
-                last = game->move(last, {DirectionType::UP, true});
+                last = game->move(last, Direction{DirectionType::UP});
             else if (keys[SDL_SCANCODE_DOWN])
-                last = game->move(last, {DirectionType::DOWN, false});
+                last = game->move(last, Direction{DirectionType::DOWN});
             else
                 game->move(last);
         }
@@ -81,7 +80,7 @@ int main(int argc, char** argv)
 
         // AFFICHAGE
         window_.drawWindow(game,last);
-		SDL_UpdateWindowSurface(window_.getPWindow());
+        SDL_UpdateWindowSurface(window_.getPWindow());
 
         // LIMITE A 60 FPS
 		SDL_Delay(tick); // utiliser SDL_GetTicks64() pour plus de precisions

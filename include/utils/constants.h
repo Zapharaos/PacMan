@@ -164,6 +164,10 @@ namespace constants
     inline constexpr int POWERUP_TIME_MEDIUM {2};
     inline constexpr int POWERUP_TIME_SHORT {1};
 
+    //OFFSET FOR Extractor
+    inline constexpr int OFFSET_MAP {1};
+    inline constexpr int OFFSET_CHAR {1};
+
 }
 
 // TODO : will be read from settings file

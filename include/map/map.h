@@ -6,40 +6,96 @@
 #define PACMAN_MAP_H
 
 #include <vector>
+#include <memory>
 #include "cell.h"
 #include "../entity/entity.h"
 #include "../utils/direction.h"
 
-
-class Map {
-
-    public:
-        Map();
-        Map(int width, int height, int cell_size, const std::vector<CellType>& cell_types);
-
-        [[nodiscard]] bool canMoveToCell(std::pair<int, int> origin, std::pair<int, int> destination, Direction direction);
-        [[nodiscard]] bool canTurnToCell(pair<int, int> origin, pair<int, int> destination, Direction direction, Direction turn);
-        [[nodiscard]] const std::pair<int, int> &getDestination() const;
-        [[nodiscard]] std::vector<Cell> getCellsWithActiveEntities();
-        [[nodiscard]] Cell& getCellFromCoordinates(pair<int, int> coordinates, bool toFloor);
-
-    void reset();
+/** The board of a game. */
+class Map
+{
 
 private:
-        int width_ = 0;
-        int height_ = 0;
-        int cell_size_ = 0;
-        std::vector<Cell> cells_;
-        std::pair<int, int> destination_;
 
-        [[nodiscard]] Cell& getCellAtPosition(std::pair<int, int> position);
-        [[nodiscard]] static bool isPositionInBetween(Direction direction, pair<int, int> position, pair<int, int> origin, pair<int, int> destination) ;
-        [[nodiscard]] static pair<int, int> changeDestinationOnTurn(pair<int, int> origin, int remainder, Direction direction);
-        [[nodiscard]] static int getRemainder(pair<int, int> origin, pair<int, int> middle, pair<int, int> destination, Direction direction);
-        [[nodiscard]] pair<int, int> getPositionFromCoordinates(pair<int, int> coordinates, bool toFloor) const;
-        [[nodiscard]] Cell getWarpEntryCell(pair<int, int> coordinates, bool toFloor);
-        [[nodiscard]] Cell getWarpExitCell(pair<int, int> coordinates, bool toFloor);
-        [[nodiscard]] bool hasExit(const Cell &cell);
+    /** Map's width. */
+    int width_ = 0;
+
+    /** Map's height. */
+    int height_ = 0;
+
+    /** Width/height of the cells. */
+    int cell_size_ = 0;
+
+    /** List of all cells.
+     * @details Cells with entities are shared with cellsWithEntities_ member.
+     */
+    vector<shared_ptr<Cell>> cells_;
+
+    /** Sub list of all cells with entities.
+     * @details Shared with cells_ member.
+     */
+    vector<shared_ptr<Cell>> cellsWithEntities_;
+
+public:
+
+    /** Default Map constructor. */
+    Map();
+
+    /** Map constructor.
+     *
+     * @note cell_types can be loaded with Game::getCellsTypeFromFile()
+     *
+     * @param width Map's width.
+     * @param height Map's height.
+     * @param cell_size Width/height of the cells.
+     * @param cell_types List of all cells type.
+     */
+    Map(int width, int height, int cell_size,
+        const vector<CellType> &cell_types);
+
+    /** Getter : Size of a cell. */
+    [[nodiscard]] int getCellSize() const;
+
+    /** Gets the cell at a given index position.
+     *
+     * @param position
+     * @return the cell at position.
+     */
+    [[nodiscard]] shared_ptr<Cell> getCell(Position position);
+
+    /** Getter : Sub list of all cells with entities. */
+    [[nodiscard]] const vector<shared_ptr<Cell>> &getCellsWithEntities() const;
+
+    /** If legal, turns into a direction.
+      *
+      * @details All positions are in pixels.
+      *
+      * @param origin Position of origin.
+      * @param destination Position of destination.
+      * @param direction Initial direction.
+      * @param turn Direction wished for.
+      *
+      * @return the effective destination if the move is legal, else it returns nullptr.
+      */
+    [[nodiscard]] optional<Position>
+    turnToCell(Position origin, Position destination, Direction direction,
+               Direction turn);
+
+    /** If legal, moves into a direction.
+     *
+     * @details All positions are in pixels.
+     *
+     * @param origin Position of origin.
+     * @param destination Position of destination.
+     * @param direction Initial direction.
+     *
+     * @return the effective destination if the move is legal, else it returns nullptr.
+     */
+    [[nodiscard]] optional<Position>
+    moveToCell(Position origin, Position destination, Direction direction);
+
+    /** Resets the map to its original state */
+    void reset();
 };
 
 

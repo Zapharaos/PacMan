@@ -3,16 +3,19 @@
 //
 
 #include <iostream>
-#include <utility>
 #include "../../include/map/cell.h"
+#include "../../include/utils/utils.h"
 
 Cell::Cell() = default;
 
-Cell::Cell(std::pair<int, int> position, int size, CellType type, const Entity& entity) : position_(std::move(position)), size_(size), type_(type), entity_(entity){}
+Cell::Cell(Position position, int size, CellType type,
+           const optional<Entity> &entity) :
+        position_(move(position)), size_(size), type_(type), entity_(entity)
+{}
 
 bool Cell::operator==(const Cell &rhs) const
 {
-    return position_.first == rhs.position_.first && position_.second == rhs.position_.second;
+    return position_ == rhs.position_;
 }
 
 bool Cell::operator!=(const Cell &rhs) const
@@ -20,53 +23,45 @@ bool Cell::operator!=(const Cell &rhs) const
     return !(rhs == *this);
 }
 
-CellType Cell::getType() const {
+CellType Cell::getType() const
+{
     return type_;
 }
 
-const Entity &Cell::getEntity() const {
+const optional<Entity> &Cell::getEntity() const
+{
     return entity_;
 }
 
-void Cell::setEntity(const Entity &entity) {
+void Cell::setEntity(const Entity &entity)
+{
     entity_ = entity;
 }
 
-bool Cell::isWall() const {
-    return type_ == CellType::WALL;
+bool Cell::isNeighbor(const Cell &cell) const
+{
+    return position_.isNeighbor(cell.position_);
 }
 
-bool Cell::isWarp() const {
-    return type_ == CellType::WARP;
+bool Cell::equalsPositionScaled(Position position) const
+{
+    return position == getPositionScaled();
 }
 
-void Cell::print() const{
-    std::cout << "(" << position_.first << ", " << position_.second << "), ("
-        << position_.first * size_ << ", " << position_.second * size_ << "), ";
-    entity_.print();
+Position Cell::getPositionScaled() const
+{
+    return position_.getPositionScaled(size_);
 }
 
-bool Cell::isAlignedWith(pair<int, int> position) const {
-    return position_.first * size_ == position.first || position_.second * size_ == position.second;
+void Cell::setEnabled(bool enabled)
+{
+    entity_->setEnabled(enabled);
 }
 
-bool Cell::equalsScaledPosition(std::pair<int, int> position) const {
-    return position_.first * size_ == position.first && position_.second * size_ == position.second;
-}
-
-std::pair<int, int> Cell::getScaledPosition() const {
-    return {position_.first * size_, position_.second * size_};
-}
-
-std::pair<int, int> Cell::getWarpExit(int width, int height) const {
-    std::pair<int, int> exit = getScaledPosition();
-    if(position_.first == width - 1)
-        exit.first = width * size_ - 1;
-    else if(position_.second == height - 1)
-        exit.second = height * size_ - 1;
-    return exit;
-}
-
-void Cell::setIsDisabled(bool isDisabled) {
-    entity_.setIsDisabled(isDisabled);
+void Cell::print() const
+{
+    position_.print();
+    position_.getPositionScaled(size_).print();
+    cout << static_cast<std::underlying_type<CellType>::type>(type_) << endl;
+    entity_->print();
 }

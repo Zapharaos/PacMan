@@ -4,6 +4,7 @@
 
 #ifndef PEC_MEN_GHOST_H
 #define PEC_MEN_GHOST_H
+
 #include <SDL.h>
 #include <string>
 #include <iostream>
@@ -13,39 +14,42 @@
 
 using namespace std;
 
-class Ghost : public Entity {
+class Ghost : public Entity
+{
 
 private:
     // all sprites
-    SDL_Rect right ;
-    SDL_Rect left ;
-    SDL_Rect down ;
-    SDL_Rect up ;
-    SDL_Rect scared ;
-    SDL_Rect less_scared ;
-    SDL_Rect invis_up ;
-    SDL_Rect invis_down ;
-    SDL_Rect invis_right ;
-    SDL_Rect invis_left ;
+    SDL_Rect right;
+    SDL_Rect left;
+    SDL_Rect down;
+    SDL_Rect up;
+    SDL_Rect scared;
+    SDL_Rect less_scared;
+    SDL_Rect invis_up;
+    SDL_Rect invis_down;
+    SDL_Rect invis_right;
+    SDL_Rect invis_left;
 
     //starting position on pacman_map.txt
-    SDL_Rect starting ;     // ici scale x2
+    SDL_Rect starting;     // ici scale x2
 
     int state;
 
     // Ghost states
     enum ghost_states
     {
-        GHOST_DEFAULT = 0 ,
-        GHOST_SCARED = 1 ,
-        GHOST_LESS_SCARED = 2 ,
+        GHOST_DEFAULT = 0,
+        GHOST_SCARED = 1,
+        GHOST_LESS_SCARED = 2,
         GHOST_INVISIBLE = 3
     };
 
 public:
 
-    Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down, const SDL_Rect &up, const SDL_Rect &scared,
-          const SDL_Rect &lessScared, const SDL_Rect &invisUp, const SDL_Rect &invisDown, const SDL_Rect &invisRight,
+    Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down,
+          const SDL_Rect &up, const SDL_Rect &scared,
+          const SDL_Rect &lessScared, const SDL_Rect &invisUp,
+          const SDL_Rect &invisDown, const SDL_Rect &invisRight,
           const SDL_Rect &invisLeft, const SDL_Rect &starting, int state);
 
     [[nodiscard]] const SDL_Rect &getRight() const;
@@ -96,7 +100,6 @@ public:
 
     void setState(int state);
 
-    ~Ghost() override;
 };
 
 

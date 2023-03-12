@@ -11,8 +11,8 @@ ScoreBoard::ScoreBoard() = default;
 
 ScoreBoard::ScoreBoard(int width, int height, int score, int highScore, int livesNb, int roundNb,
                        const std::vector<SDL_Rect> &numbers) : width_(width), height_(height), score_(score),
-                                                          high_score_(highScore), lives_nb_(livesNb),
-                                                          round_nb_(roundNb), numbers_(numbers) {}
+                                                               high_score_(highScore), lives_nb_(livesNb),
+                                                               round_nb_(roundNb), numbers_(numbers) {}
 
 
 
@@ -86,7 +86,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             7,
             constants::BMP_NUMBER_START_SECOND_ROW_X,
             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get I
     SDL_Rect i_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -94,7 +94,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             8,
             constants::BMP_NUMBER_START_SECOND_ROW_X,
             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get G
     SDL_Rect g_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -102,7 +102,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             6,
             constants::BMP_NUMBER_START_SECOND_ROW_X,
             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get S
     SDL_Rect s_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -110,15 +110,15 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             3,
             constants::BMP_NUMBER_START_THIRD_ROW_X,
             constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get C
     SDL_Rect c_ = Extractor::extractNthElementRowFromMap(
-             constants::BMP_CHARACTER_WIDTH,
-             constants::BMP_CHARACTER_HEIGHT,
-             2,
-             constants::BMP_NUMBER_START_SECOND_ROW_X,
-             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-             1);
+            constants::BMP_CHARACTER_WIDTH,
+            constants::BMP_CHARACTER_HEIGHT,
+            2,
+            constants::BMP_NUMBER_START_SECOND_ROW_X,
+            constants::BMP_NUMBER_START_SECOND_ROW_Y,
+            constants::OFFSET_CHAR);
     //Get O
     SDL_Rect o_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -126,7 +126,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             14,
             constants::BMP_NUMBER_START_SECOND_ROW_X,
             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get R
     SDL_Rect r_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -134,7 +134,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             2,
             constants::BMP_NUMBER_START_THIRD_ROW_X,
             constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
     //Get E
     SDL_Rect e_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -142,7 +142,7 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             4,
             constants::BMP_NUMBER_START_SECOND_ROW_X,
             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            1);
+            constants::OFFSET_CHAR);
 
     SDL_Rect position = h_;
     position.x = constants::SCORE_BOARD_START_X ;
@@ -186,18 +186,18 @@ void ScoreBoard::initNumberSprites() {
     //extract from 1 to 9 ;
 
     numbers_ = Extractor::extractRowFromMap( constants::BMP_CHARACTER_WIDTH,
-                                  constants::BMP_CHARACTER_HEIGHT,
-                                  9,
-                                  constants::BMP_NUMBER_START_FIRST_ROW_X,
-                                  constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                                  1
-            );
+                                             constants::BMP_CHARACTER_HEIGHT,
+                                             9,
+                                             constants::BMP_NUMBER_START_FIRST_ROW_X,
+                                             constants::BMP_NUMBER_START_FIRST_ROW_Y,
+                                             constants::OFFSET_CHAR
+    );
 
     //extract 0
     SDL_Rect sprite_zero = {constants::BMP_NUMBER_START_ZERO_ROW_X,
-                       constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                       constants::BMP_CHARACTER_WIDTH,
-                       constants::BMP_CHARACTER_HEIGHT};
+                            constants::BMP_NUMBER_START_FIRST_ROW_Y,
+                            constants::BMP_CHARACTER_WIDTH,
+                            constants::BMP_CHARACTER_HEIGHT};
     numbers_.push_back(sprite_zero);
 
     //0 1 2 3 4 5 6 7 8 9

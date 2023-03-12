@@ -7,45 +7,110 @@
 
 #include <string>
 #include <array>
+#include <optional>
+#include <memory>
 #include "../utils/constants.h"
 #include "../entity/entity.h"
+#include "position.h"
 
+/** Indicates the cell type (i.e. what it represents). */
 enum class CellType
 {
-    WALL = 0,
-    PELLET = 1,
-    ENERGIZER = 2,
-    PATH = 3,
-    WARP = 4
+    WALL,
+    PELLET,
+    ENERGIZER,
+    PATH,
+    WARP
 };
 
-class Cell {
+/** Cell inside on a board. */
+class Cell
+{
 
-    private:
-        std::pair<int, int> position_ {};
-        int size_ {};
-        CellType type_ = CellType::WALL;
-        Entity entity_ {};
+private:
 
-    public:
-        Cell();
-        Cell(std::pair<int, int> position, int size, CellType type, const Entity& entity);
+    /** Position on the board. */
+    Position position_{};
 
-        bool operator==(const Cell &rhs) const;
-        bool operator!=(const Cell &rhs) const;
+    /** Size in pixels. */
+    int size_{};
 
-        [[nodiscard]] CellType getType() const;
-        [[nodiscard]] const Entity &getEntity() const;
-        void setEntity(const Entity &entity);
-        [[nodiscard]] bool isWall() const;
-        [[nodiscard]] bool isWarp() const;
+    /** Type of cell. */
+    CellType type_ = CellType::WALL;
 
-        void print() const;
-        [[nodiscard]] bool isAlignedWith(pair<int, int> position) const;
-        [[nodiscard]] bool equalsScaledPosition(std::pair<int, int> position) const;
-        [[nodiscard]] std::pair<int, int> getScaledPosition() const;
-        [[nodiscard]] pair<int, int> getWarpExit(int width, int height) const;
-        void setIsDisabled(bool isDisabled);
+    /** Entity associated to the cell.
+     * @details Optional.
+     */
+    optional<Entity> entity_{};
+
+public:
+
+    /** Default Cell constructor. */
+    Cell();
+
+    /** Cell constructor.
+     *
+     * @param position Position on the board.
+     * @param size Size in pixels.
+     * @param type Type of cell.
+     * @param entity Entity associated to the cell.
+     */
+    Cell(Position position, int size, CellType type,
+         const optional<Entity> &entity);
+
+    /** If both cells are equals. */
+    bool operator==(const Cell &rhs) const;
+
+    /** If both cells are different. */
+    bool operator!=(const Cell &rhs) const;
+
+    /** If the cell is a wall. */
+    [[nodiscard]] inline bool isWall() const
+    { return type_ == CellType::WALL; };
+
+    /** If the cell is a warp. */
+    [[nodiscard]] inline bool isWarp() const
+    { return type_ == CellType::WARP; };
+
+    /** Getter : Type of cell. */
+    [[nodiscard]] CellType getType() const;
+
+    /** Getter : Entity associated to the cell.
+     * @return Optional entity.
+     */
+    [[nodiscard]] const optional<Entity> &getEntity() const;
+
+    /** Setter : Entity associated to the cell.
+     *
+     * @param entity New entity.
+     */
+    void setEntity(const Entity &entity);
+
+    /** Indicates if a cell is a neighbor.
+     *
+     * @param cell The second cell.
+     * @return true if it's a neighbor, else false.
+     */
+    [[nodiscard]] bool isNeighbor(const Cell &cell) const;
+
+    /** If a position fits perfectly on the cell.
+     *
+     * @param position Position in pixels.
+     * @return true if both pixel positions are equals.
+     */
+    [[nodiscard]] bool equalsPositionScaled(Position position) const;
+
+    /** Returns the cell's position in pixels. */
+    [[nodiscard]] Position getPositionScaled() const;
+
+    /** Setter : Enables/disables the entity (i.e. if the entity is displayed or not).
+     *
+     * @see Entity::setEnabled().
+     */
+    void setEnabled(bool enabled);
+
+    /** [Debug] : Prints the cell's members. */
+    void print() const;
 };
 
 
