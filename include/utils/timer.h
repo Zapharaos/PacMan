@@ -56,7 +56,7 @@ public:
      * @param time Time to wait for the timer to expire.
      * @param function Function executed as the timer expires.
      */
-    Timer(long time, function<void(void)> function);
+    Timer(long time, const function<void(void)> &function);
 
     /** Copy assignment operator.
      *
@@ -75,7 +75,7 @@ public:
      *
      * @param function Function executed as the timer expires.
      */
-    void start(function<void(void)> function);
+    void start(const function<void(void)> &function);
 
     /** Kills the current running timer. */
     void kill();

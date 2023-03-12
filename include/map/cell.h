@@ -55,7 +55,7 @@ public:
      * @param type Type of cell.
      * @param entity Entity associated to the cell.
      */
-    Cell(Position position, int size, CellType type,
+    Cell(Position position, int size, const CellType &type,
          const optional<Entity> &entity);
 
     /** If both cells are equals. */
@@ -73,7 +73,7 @@ public:
     { return type_ == CellType::WARP; };
 
     /** Getter : Type of cell. */
-    [[nodiscard]] CellType getType() const;
+    [[nodiscard]] const CellType &getType() const;
 
     /** Getter : Entity associated to the cell.
      * @return Optional entity.
@@ -98,7 +98,7 @@ public:
      * @param position Position in pixels.
      * @return true if both pixel positions are equals.
      */
-    [[nodiscard]] bool equalsPositionScaled(Position position) const;
+    [[nodiscard]] bool equalsPositionScaled(const Position &position) const;
 
     /** Returns the cell's position in pixels. */
     [[nodiscard]] Position getPositionScaled() const;

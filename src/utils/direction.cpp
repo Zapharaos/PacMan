@@ -6,12 +6,12 @@
 
 Direction::Direction() = default;
 
-Direction::Direction(DirectionType direction)
+Direction::Direction(const DirectionType &direction)
 {
     setDirection(direction);
 }
 
-void Direction::setDirection(DirectionType direction)
+void Direction::setDirection(const DirectionType &direction)
 {
     direction_ = direction;
     isLeftOrUp_ =

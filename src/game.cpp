@@ -170,23 +170,23 @@ void Game::setPacman(const Pacman &pacman)
     pacman_ = pacman;
 }
 
-StatusType Game::getStatus() const
+const StatusType &Game::getStatus() const
 {
     return status_;
 }
 
-void Game::setStatus(StatusType status)
+void Game::setStatus(const StatusType &status)
 {
     status_ = status;
 }
 
-void Game::move(Direction continuous_direction)
+void Game::move(const Direction &continuous_direction)
 {
     pacman_.move(map_, continuous_direction);
     handleEntitiesCollisions();
 }
 
-Direction Game::move(Direction continuous_direction, Direction try_direction)
+Direction Game::move(const Direction &continuous_direction, const Direction &try_direction)
 {
     Direction result = pacman_.move(map_, continuous_direction, try_direction);
     handleEntitiesCollisions();

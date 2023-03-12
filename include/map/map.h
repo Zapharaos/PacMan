@@ -61,7 +61,7 @@ public:
      * @param position
      * @return the cell at position.
      */
-    [[nodiscard]] shared_ptr<Cell> getCell(Position position);
+    [[nodiscard]] shared_ptr<Cell> getCell(const Position &position) const;
 
     /** Getter : Sub list of all cells with entities. */
     [[nodiscard]] const vector<shared_ptr<Cell>> &getCellsWithEntities() const;
@@ -78,8 +78,8 @@ public:
       * @return the effective destination if the move is legal, else it returns nullptr.
       */
     [[nodiscard]] optional<Position>
-    turnToCell(Position origin, Position destination, Direction direction,
-               Direction turn);
+    turnToCell(const Position &origin, const Position &destination, const Direction &direction,
+               const Direction &turn) const;
 
     /** If legal, moves into a direction.
      *
@@ -92,10 +92,10 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] optional<Position>
-    moveToCell(Position origin, Position destination, Direction direction);
+    moveToCell(const Position &origin, const Position &destination, const Direction &direction) const;
 
     /** Resets the map to its original state */
-    void reset();
+    void reset() const;
 };
 
 

@@ -6,7 +6,7 @@
 
 MovingEntity::MovingEntity() = default;
 
-MovingEntity::MovingEntity(const Position &position, Sprite sprite,
+MovingEntity::MovingEntity(const Position &position, const Sprite &sprite,
                            bool enabled, int points, int speed,
                            const vector<Sprite> &left,
                            const vector<Sprite> &right,
@@ -16,7 +16,7 @@ MovingEntity::MovingEntity(const Position &position, Sprite sprite,
         right_(right), up_(up), down_(down)
 {}
 
-MovingEntity::MovingEntity(const Position &position, Sprite sprite, int speed,
+MovingEntity::MovingEntity(const Position &position, const Sprite &sprite, int speed,
                            const vector<Sprite> &left,
                            const vector<Sprite> &right,
                            const vector<Sprite> &up, const vector<Sprite> &down)
@@ -40,7 +40,7 @@ const SDL_Rect &MovingEntity::getSpriteImage() const
     return Entity::getSpriteImage();
 }
 
-SDL_Rect MovingEntity::getSpritePosition()
+const SDL_Rect &MovingEntity::getSpritePosition()
 {
     return Entity::getSpritePosition();
 }
@@ -56,7 +56,7 @@ MovingEntity::setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex)
     previousSpriteIndex_ = previousSpriteIndex;
 }
 
-void MovingEntity::move(Map map, Direction direction)
+void MovingEntity::move(const Map &map, const Direction &direction)
 {
 
     // Direction must be initialized.
@@ -77,7 +77,7 @@ void MovingEntity::move(Map map, Direction direction)
     previousDirection_ = direction;
 }
 
-Direction MovingEntity::move(Map map, Direction direction, Direction turn)
+Direction MovingEntity::move(const Map &map, const Direction &direction, const Direction &turn)
 {
 
     // Trivial cases that allows an instant direction change.
@@ -107,7 +107,7 @@ Direction MovingEntity::move(Map map, Direction direction, Direction turn)
     return (previousDirection_ = turn);
 }
 
-void MovingEntity::animate(Direction direction)
+void MovingEntity::animate(const Direction &direction)
 {
 
     // Nothing to animate yet.
@@ -146,7 +146,7 @@ void MovingEntity::animate(Direction direction)
 }
 
 pair<bool, int>
-MovingEntity::getCurrentSprite(Direction direction, unsigned max_index)
+MovingEntity::getCurrentSprite(const Direction &direction, unsigned max_index)
 {
 
     if (!previousDirection_.isEqual(direction)) // direction changed => reset
@@ -175,7 +175,7 @@ MovingEntity::getCurrentSprite(Direction direction, unsigned max_index)
     return {toRight, index - 1}; // keep moving towards the start
 }
 
-void MovingEntity::reset(Position position)
+void MovingEntity::reset(const Position &position)
 {
     setSprite(left_.at(1)); // default sprite
     setPosition(position); // reset position

@@ -4,6 +4,8 @@
 
 #include "../../include/entity/entity.h"
 
+#include <utility>
+
 Entity::Entity() = default;
 
 Entity::Entity(Position position, Sprite sprite, bool enabled, int points)
@@ -28,7 +30,7 @@ void Entity::setPosition(const Position &position)
     position_ = position;
 }
 
-Sprite Entity::getSprite() const
+const Sprite &Entity::getSprite() const
 {
     return sprite_;
 }
@@ -58,15 +60,15 @@ void Entity::setEnabled(bool enabled)
     enabled_ = enabled;
 }
 
-SDL_Rect Entity::getSpritePosition()
-{
-    sprite_.updatePosition(position_);
-    return sprite_.getPosition();
-}
-
 const SDL_Rect &Entity::getSpriteImage() const
 {
     return sprite_.getImage();
+}
+
+const SDL_Rect &Entity::getSpritePosition()
+{
+    sprite_.updatePosition(position_);
+    return sprite_.getPosition();
 }
 
 void Entity::print() const

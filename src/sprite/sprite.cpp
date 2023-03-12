@@ -8,9 +8,9 @@
 
 Sprite::Sprite() = default;
 
-Sprite::Sprite(const SDL_Rect &image, pair<int, int> offset,
-               pair<int, int> size) :
-        image_(image), offset_(move(offset)), size_(move(size))
+Sprite::Sprite(const SDL_Rect &image, const pair<int, int> &offset,
+               const pair<int, int> &size) :
+        image_(image), offset_(offset), size_(size)
 {}
 
 const SDL_Rect &Sprite::getImage() const

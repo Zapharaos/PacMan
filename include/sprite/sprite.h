@@ -38,7 +38,7 @@ public:
      * @param offset Offset when displayed on the window.
      * @param size Size when displayed on the window.
      */
-    Sprite(const SDL_Rect &image, pair<int, int> offset, pair<int, int> size);
+    Sprite(const SDL_Rect &image, const pair<int, int> &offset, const pair<int, int> &size);
 
     /** Getter : Position on the bitmap. */
     [[nodiscard]] const SDL_Rect &getImage() const;
