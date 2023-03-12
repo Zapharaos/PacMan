@@ -2,7 +2,7 @@
 // Created by matthieu on 01/03/2023.
 //
 
-#include "../../include/sprite/sprite.h"
+#include "../../include/display/sprite.h"
 
 #include <utility>
 

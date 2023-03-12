@@ -10,7 +10,7 @@
 #include <iostream>
 #include <utility>
 #include "../utils/constants.h"
-#include "../sprite/sprite.h"
+#include "../display/sprite.h"
 
 using namespace std;
 

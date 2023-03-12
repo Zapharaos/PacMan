@@ -3,7 +3,7 @@
 //
 
 #include "../include/game.h"
-#include "../include/sprite/extractor.h"
+#include "../include/display/extractor.h"
 #include "../include/utils/utils.h"
 
 Game::Game() = default;
@@ -199,35 +199,35 @@ void Game::handleEntitiesCollisions()
 
     status_ = StatusType::RUNNING;
 
-    // Get entity at current cell.
-    auto coordinates = pacman_.getPosition();
-    auto position = coordinates.getPositionUnscaled(map_.getCellSize());
-    auto cell = map_.getCell(position);
+    // Get pacman sprite position.
+    auto pacman = pacman_.getSpritePosition();
 
-    if (cell && cell->getEntity()) // Cell has an entity.
+    // Get pacman current cell.
+    auto pacman_position = Position{{pacman.x, pacman.y}};
+    auto cell_position = pacman_position.getPositionUnscaled(map_.getCellSize());
+    auto cell = map_.getCell(cell_position);
+    auto entity = cell->getEntity();
+
+    // Cell has an active entity that collided with Pacman.
+    if (cell && entity && entity->isEnabled() && SDL_HasIntersection(&pacman, &entity->getSpritePosition()))
     {
-        // Entity is active and collided with Pacman.
-        auto entity = cell->getEntity();
-        if (entity->isEnabled() && pacman_.collides(entity->getSpritePosition()))
-        {
-            // Disables entity.
-            cell->setEnabled(false);
-            score_ += entity->getPoints();
+        // Disables entity.
+        cell->setEnabled(false);
+        score_ += entity->getPoints();
 
-            // Updates fruit.
-            pelletsEaten_++;
-            fruit_.update(pelletsEaten_, level_);
+        // Updates fruit.
+        pelletsEaten_++;
+        fruit_.update(pelletsEaten_, level_);
 
-            // Updates game.
-            if (pelletsEaten_ == pelletsTotal_) // Level up.
-                status_ = StatusType::LEVEL_UP;
-            else if (cell->getType() == CellType::ENERGIZER) // Superpower.
-                pacman_.setSuperpower(true);
-        }
+        // Updates game.
+        if (pelletsEaten_ == pelletsTotal_) // Level up.
+            status_ = StatusType::LEVEL_UP;
+        else if (cell->getType() == CellType::ENERGIZER) // Superpower.
+            pacman_.setSuperpower(true);
     }
 
     // Fruit is active and collided with Pacman.
-    if (fruit_.isEnabled() && pacman_.collides(fruit_.getSpritePosition()))
+    if (fruit_.isEnabled() && SDL_HasIntersection(&pacman, &fruit_.getSpritePosition()))
     {
         // Disables fruit.
         fruit_.setEnabled(false);
@@ -239,7 +239,7 @@ void Game::handleEntitiesCollisions()
     for (auto &ghost: ghosts_)
     {
         // Ghost is active and collided with Pacman.
-        if (ghost.isEnabled() && pacman_.collides(ghost.getSpritePosition()))
+        if (ghost.isEnabled() && SDL_HasIntersection(&pacman, &ghost.getSpritePosition()))
         {
             if (!pacman_.isSuperpower()) // Superpower disabled : death.
             {

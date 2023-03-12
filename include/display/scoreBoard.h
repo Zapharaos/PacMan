@@ -4,7 +4,7 @@
 
 #ifndef PACMAN_SCOREBOARD_H
 #define PACMAN_SCOREBOARD_H
-#include "../sprite/extractor.h"
+#include "extractor.h"
 //#include "window.h"
 #include "../utils/constants.h"
 #include "../saveGame.h"

@@ -76,7 +76,7 @@ bool Position::isNeighbor(const Position &position) const
             position.getOrdinate() + 1 == getOrdinate());
 }
 
-Position Position::getNeighbor(Direction direction) const
+Position Position::getNeighbor(const Direction &direction) const
 {
     auto position = position_;
     if (direction.isLeft())
@@ -90,7 +90,7 @@ Position Position::getNeighbor(Direction direction) const
     return Position{position};
 }
 
-Position Position::moveIntoDirection(Direction direction, int distance) const
+Position Position::moveIntoDirection(const Direction &direction, int distance) const
 {
     auto position = position_;
     if (direction.isLeft()) position.first -= distance;
