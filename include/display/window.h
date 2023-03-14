@@ -6,36 +6,35 @@
 #define PACMAN_WINDOW_H
 
 
-//#include <string>
-#//include <SDL.h>
-//#include "../sprite/extractor.h"
 #include <utility>
 #include <memory>
 #include "../game.h"
 #include "scoreBoard.h"
-//#include <utility>
-
+#include "../utils/utils.h"
 
 class Window {
 private :
-    int map_width_ ;
-    int map_height_ ;
-    int score_board_width_ ;
 
-    SDL_Rect map_init_ ;
-    SDL_Rect map_empty_ ;
-    SDL_Rect map_white_ ;
+    // Width and height of the window
+    int window_width_{} ;
+    int window_height_{} ;
 
-    SDL_Window* pWindow_ ;
-    SDL_Surface* win_surf_ ;
-    SDL_Surface* plancheSprites_ ;
-    SDL_Rect src_bg_ ;
-    SDL_Rect bg_ ;
-
+    //Main window
+    std::shared_ptr<SDL_Window> window_ ;
+    //Windw surface
+    std::shared_ptr<SDL_Surface> win_surf_ ;
+    //Sprite file
+    std::shared_ptr<SDL_Surface> plancheSprites_ ;
+    //renderer to render our images
+    std::shared_ptr<SDL_Renderer> render_ ;
+    //To load image t graphics hardware memory
+    std::shared_ptr<SDL_Texture> texture_ ;
+    //Window Title
     std::string title_ ;
-
+    //ScoreBoard Object
     ScoreBoard scoreBoard_ {};
-    //Game game_{};
+
+    std::shared_ptr<Game> game_ ;
 
 public:
 
@@ -51,8 +50,10 @@ public:
     int mapTickDelay = 15;
     int mapTickCount = 0;
 
+
     SDL_Rect map_default = { constants::BMP_MAP_START_X,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
     SDL_Rect map_switch = { 540,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
+    SDL_Rect bg_ = { constants::WINDOW_MAP_START_X,constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT }; // ici scale x4
 
     SDL_Rect ghost_scared = { 3,195, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
     SDL_Rect ghost_blinky_r = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
@@ -61,34 +62,29 @@ public:
     SDL_Rect ghost_blinky_d = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
     SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
 
-    explicit Window(string title);
+    Window(int windowWidth, int windowHeight, string title);
 
-    [[nodiscard]]  const SDL_Rect &getMapInit() ;
-
-    void setMapInit(const SDL_Rect &mapInit);
-
-    [[nodiscard]] const SDL_Rect &getMapEmpty() ;
-
-    void setMapEmpty(const SDL_Rect &mapEmpty);
-
-    [[nodiscard]]  const SDL_Rect &getMapWhite() ;
-
-    void setMapWhite(const SDL_Rect &mapWhite);
-
-    [[nodiscard]] SDL_Window *getPWindow() const;
-
-    void setPWindow(SDL_Window *pWindow);
-
-    void static spriteRender(SDL_Rect src, SDL_Rect dest, bool flag, SDL_Surface planche, SDL_Surface win_surface, int key);
-
-    void createWindow();
+    void createWindow(shared_ptr<Game> game);
 
     // fonction qui met à jour la surface de la fenetre "win_surf"
-    void drawWindow(Game* game,Direction last);
+    //void drawWindow(Game* game,Direction last);
 
     void writeHighScore();
 
     void updateHighScore(int points);
+
+
+    [[nodiscard]] const shared_ptr<SDL_Window> &getWindow() const;
+
+
+    void drawWindow(Direction last);
+
+    void freeRessources();
+
+    virtual ~Window();
+
+    [[nodiscard]] const shared_ptr<SDL_Renderer> &getRender() const;
+
 };
 
 

@@ -301,7 +301,8 @@ void Game::lostLife()
 }
 
 void
-Game::drawStaticEntities(SDL_Surface *plancheSprites, SDL_Surface *win_surf,
+Game::drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
+                         std::shared_ptr<SDL_Texture> texture,
                          bool displayEnergizers)
 {
 
@@ -320,7 +321,8 @@ Game::drawStaticEntities(SDL_Surface *plancheSprites, SDL_Surface *win_surf,
         // Display entity
         SDL_Rect image = entity->getSpriteImage();
         SDL_Rect position = entity->getSpritePosition();
-        SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
+        drawObject(render,texture,image,position);
+
     }
 
     // Fruit
@@ -329,6 +331,28 @@ Game::drawStaticEntities(SDL_Surface *plancheSprites, SDL_Surface *win_surf,
         // Display entity
         SDL_Rect image = fruit_.getSpriteImage();
         SDL_Rect position = fruit_.getSpritePosition();
-        SDL_BlitScaled(plancheSprites, &image, win_surf, &position);
+        drawObject(render,texture,image,position);
     }
+}
+
+int Game::getSavedHighScore() {
+    high_score_ = stoi(SaveGame::getHighScore());
+    return high_score_ ;
+}
+
+bool Game::updateHighScore() {
+    if (score_>high_score_){
+        high_score_ = score_;
+        return true ;
+    }
+    return false ;
+
+}
+
+int Game::getHighScore() const {
+    return high_score_;
+}
+
+void Game::setHighScore(int highScore) {
+    high_score_ = highScore;
 }

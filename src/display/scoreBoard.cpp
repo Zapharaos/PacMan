@@ -8,76 +8,11 @@
 ScoreBoard::ScoreBoard() = default;
 
 
+ScoreBoard::ScoreBoard(int width, int height, const vector<SDL_Rect> &numbers) : width_(width), height_(height),
+                                                                                 numbers_(numbers) {}
 
-ScoreBoard::ScoreBoard(int width, int height, int score, int highScore, int livesNb, int roundNb,
-                       const std::vector<SDL_Rect> &numbers) : width_(width), height_(height), score_(score),
-                                                               high_score_(highScore), lives_nb_(livesNb),
-                                                               round_nb_(roundNb), numbers_(numbers) {}
-
-
-
-int ScoreBoard::getWidth() const {
-    return width_;
-}
-
-void ScoreBoard::setWidth(int width) {
-    width_ = width;
-}
-
-int ScoreBoard::getHeight() const {
-    return height_;
-}
-
-void ScoreBoard::setHeight(int height) {
-    height_ = height;
-}
-
-
-int ScoreBoard::getHighScore() const {
-    return high_score_;
-}
-
-void ScoreBoard::setHighScore(int highScore) {
-    high_score_ = highScore;
-}
-
-int ScoreBoard::getLivesNb() const {
-    return lives_nb_;
-}
-
-void ScoreBoard::setLivesNb(int livesNb) {
-    lives_nb_ = livesNb;
-}
-
-int ScoreBoard::getScore() const {
-    return score_;
-}
-
-void ScoreBoard::setScore(int score) {
-    score_ = score;
-}
-
-bool ScoreBoard::updateHighScore() {
-    if (score_>high_score_){
-        high_score_ = score_;
-        return true ;
-    }
-    return false ;
-
-}
-
-int ScoreBoard::getRoundNb() const {
-    return round_nb_;
-}
-
-void ScoreBoard::setRoundNb(int roundNb) {
-    round_nb_ = roundNb;
-}
-
-
-
-void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *plancheSprites ) {
-
+void ScoreBoard::writeHighScoreText( const shared_ptr<SDL_Renderer>& render,
+                                     const shared_ptr<SDL_Texture>& texture) {
     initNumberSprites();
     //Get H
     SDL_Rect h_ = Extractor::extractNthElementRowFromMap(
@@ -113,12 +48,12 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
             constants::OFFSET_CHAR);
     //Get C
     SDL_Rect c_ = Extractor::extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            2,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
+             constants::BMP_CHARACTER_WIDTH,
+             constants::BMP_CHARACTER_HEIGHT,
+             2,
+             constants::BMP_NUMBER_START_SECOND_ROW_X,
+             constants::BMP_NUMBER_START_SECOND_ROW_Y,
+             constants::OFFSET_CHAR);
     //Get O
     SDL_Rect o_ = Extractor::extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -152,52 +87,52 @@ void ScoreBoard::writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *planche
 
     int offset = position.w + 1 ;
     //write H
-    SDL_BlitScaled(plancheSprites, &h_, win_surf, &position);
+    drawObject(render,texture, h_, position);
     //write I
     position.x += offset  ;
-    SDL_BlitScaled(plancheSprites, &i_, win_surf, &position);
+    drawObject(render,texture,i_,position);
     //write G
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &g_, win_surf, &position);
+    drawObject(render,texture, g_, position);
     //write H
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &h_, win_surf, &position);
+    drawObject(render,texture, h_, position);
     //space
     position.x += 5 ;
 
     //write S
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &s_, win_surf, &position);
+    drawObject(render,texture, s_, position);
     //write C
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &c_, win_surf, &position);
+    drawObject(render,texture, c_,  position);
     //write O
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &o_, win_surf, &position);
+    drawObject(render,texture, o_,  position);
     //write R
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &r_, win_surf, &position);
+    drawObject(render,texture, r_, position);
     //write E
     position.x += offset ;
-    SDL_BlitScaled(plancheSprites, &e_, win_surf, &position);
+    drawObject(render,texture, e_, position);
 }
 
 void ScoreBoard::initNumberSprites() {
     //extract from 1 to 9 ;
 
     numbers_ = Extractor::extractRowFromMap( constants::BMP_CHARACTER_WIDTH,
-                                             constants::BMP_CHARACTER_HEIGHT,
-                                             9,
-                                             constants::BMP_NUMBER_START_FIRST_ROW_X,
-                                             constants::BMP_NUMBER_START_FIRST_ROW_Y,
+                                  constants::BMP_CHARACTER_HEIGHT,
+                                  9,
+                                  constants::BMP_NUMBER_START_FIRST_ROW_X,
+                                  constants::BMP_NUMBER_START_FIRST_ROW_Y,
                                              constants::OFFSET_CHAR
-    );
+            );
 
     //extract 0
     SDL_Rect sprite_zero = {constants::BMP_NUMBER_START_ZERO_ROW_X,
-                            constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                            constants::BMP_CHARACTER_WIDTH,
-                            constants::BMP_CHARACTER_HEIGHT};
+                       constants::BMP_NUMBER_START_FIRST_ROW_Y,
+                       constants::BMP_CHARACTER_WIDTH,
+                       constants::BMP_CHARACTER_HEIGHT};
     numbers_.push_back(sprite_zero);
 
     //0 1 2 3 4 5 6 7 8 9
@@ -243,9 +178,10 @@ std::vector <SDL_Rect> ScoreBoard::getPointsToPrint(int points) {
     return points_to_print ;
 }
 
-void ScoreBoard::writeHighScorePoints(SDL_Surface *win_surf, SDL_Surface *plancheSprites, int points) {
+void ScoreBoard::writeHighScorePoints(  const shared_ptr<SDL_Renderer>& render,
+                                        const shared_ptr<SDL_Texture>& texture,
+                                        int points) {
 
-    SDL_SetColorKey(plancheSprites, true, 0);
     std::vector <SDL_Rect>  points_to_print = getPointsToPrint(points);
     SDL_Rect position = points_to_print[0] ;
     position.x = constants::SCORE_BOARD_POINTS_START_X ;
@@ -256,14 +192,15 @@ void ScoreBoard::writeHighScorePoints(SDL_Surface *win_surf, SDL_Surface *planch
     int offset = constants::BMP_CHARACTER_WIDTH + 8 ;
 
     for (SDL_Rect s : points_to_print ){
-        SDL_SetColorKey (plancheSprites,false,0);
-        SDL_BlitScaled(plancheSprites, &s, win_surf, &position);
+       // SDL_BlitScaled(plancheSprites.get(), &s, win_surf.get(), &position);
+        drawObject(render,texture,s,position);
         position.x += offset ;
     }
 }
 
-void ScoreBoard::writeScorePoints(SDL_Surface *win_surf, SDL_Surface *plancheSprites, int points) {
-    SDL_SetColorKey(plancheSprites, true, 0);
+void ScoreBoard::writeScorePoints(const shared_ptr<SDL_Renderer>& render,
+                                const shared_ptr<SDL_Texture>& texture,
+                                int points) {
     std::vector <SDL_Rect>  points_to_print = getPointsToPrint(points);
     SDL_Rect position = points_to_print[0] ;
     position.x = constants::SCORE_BOARD_POINTS_START_X ;
@@ -272,18 +209,15 @@ void ScoreBoard::writeScorePoints(SDL_Surface *win_surf, SDL_Surface *plancheSpr
     position.h = constants::BMP_CHARACTER_HEIGHT * 2 ;
 
     int offset = constants::BMP_CHARACTER_WIDTH + 8 ;
-    score_ = points ;
 
     for (SDL_Rect s : points_to_print ){
-        SDL_SetColorKey (plancheSprites,false,0);
-        SDL_BlitScaled(plancheSprites, &s, win_surf, &position);
+        drawObject(render,texture,s,position);
         position.x += offset ;
     }
 }
 
-int ScoreBoard::getSavedHighScore() {
-    high_score_ = stoi(SaveGame::getHighScore());
-    return high_score_ ;
+int ScoreBoard::getWidth() const {
+    return width_;
 }
 
 

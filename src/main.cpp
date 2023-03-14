@@ -1,12 +1,12 @@
 #include <SDL.h>
 
 #include <iostream>
+#include <memory>
 #include "../include/utils/constants.h"
 #include "../include/game.h"
 #include "../include/saveGame.h"
 #include "../include/display/window.h"
 
-Game* game = nullptr;
 Direction last;
 int tick = 1000/60;
 
@@ -20,11 +20,16 @@ int main(int argc, char** argv)
 		return 1;
     }
 
-    Window window_ = *new Window("Title");
-    game = new Game(constants::MAP_WIDTH, constants::MAP_HEIGHT,
-                    constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP
-                    , constants::LIVES);
-    window_.createWindow();
+
+    std::shared_ptr<Window> window_ = std::make_shared<Window> (constants::WINDOW_MAP_WIDTH,
+                                                constants::WINDOW_MAP_HEIGHT,
+                                                "Pacman");
+
+    std::shared_ptr<Game> game = std::make_shared<Game>     (constants::MAP_WIDTH, constants::MAP_HEIGHT,
+                                                             constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP
+                                                        , constants::LIVES);
+    game->setHighScore( game->getSavedHighScore());
+    window_->createWindow(game);
 
     // BOUCLE PRINCIPALE
 	bool quit = false;
@@ -79,12 +84,21 @@ int main(int argc, char** argv)
         paused = false;
 
         // AFFICHAGE
-        window_.drawWindow(game,last);
-        SDL_UpdateWindowSurface(window_.getPWindow());
 
+        window_->drawWindow(last);
+        SDL_RenderPresent(window_->getRender().get());
+        //SDL_RenderPresent(windowrender.get());
+        //SDL_UpdateWindowSurface(window_->getWindow().get());
+
+        //window_.drawMapInit(game,last);
+
+
+
+		//SDL_UpdateWindowSurface(window_.getWindow().get());
         // LIMITE A 60 FPS
 		SDL_Delay(tick); // utiliser SDL_GetTicks64() pour plus de precisions
 	}
     SDL_Quit(); // ON SORT
+    window_->freeRessources();
     return 0;
 }
