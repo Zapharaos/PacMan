@@ -10,6 +10,7 @@
 #include "entity.h"
 #include "../map/map.h"
 #include "../utils/direction.h"
+#include "../display/animation.h"
 
 /** Entity that can move across the map.
  *
@@ -24,33 +25,20 @@ private:
     int speed_{};
 
     /** Animations when moving towards the left. */
-    vector<Sprite> left_{};
+    Animation left_{};
 
     /** Animations when moving towards the right. */
-    vector<Sprite> right_{};
+    Animation right_{};
 
     /** Animations when moving towards the top. */
-    vector<Sprite> up_{};
+    Animation up_{};
 
     /** Animations when moving towards the bottom. */
-    vector<Sprite> down_{};
+    Animation down_{};
 
     /** Previous direction.
      * @details Used to determine a swap of animation. */
     Direction previousDirection_{};
-
-    /** Previous sprite's index within an animation.
-     * @details Used to determine the next sprite.
-     * @param bool is moving from left to right.
-     * @param int index of the sprite within the animation.
-     */
-    pair<bool, int> previousSpriteIndex_{true, 0};
-
-    /** Counts the ticks since the last sprite change. */
-    int ticksCount_ = 0;
-
-    /** How many ticks between each sprite change. */
-    static const int tickRate_ = constants::ENTITY_REFRESH_RATE;
 
 public:
 
@@ -70,9 +58,9 @@ public:
      * @param down Animations when moving towards the down.
      */
     MovingEntity(const Position &position, const Sprite &sprite, bool enabled,
-                 int points, int speed, const vector<Sprite> &left,
-                 const vector<Sprite> &right, const vector<Sprite> &up,
-                 const vector<Sprite> &down);
+                 int points, int speed, Animation left,
+                 Animation right, Animation up,
+                 Animation down);
 
     /** MovingEntity constructor.
      *
@@ -85,40 +73,9 @@ public:
      * @param down Animations when moving towards the down.
      */
     MovingEntity(const Position &position, const Sprite &sprite, int speed,
-                 const vector<Sprite> &left,
-                 const vector<Sprite> &right, const vector<Sprite> &up,
-                 const vector<Sprite> &down);
-
-    /** Getter : Raw position.
-     *
-     * @see Entity::getPosition() override.
-     */
-    [[nodiscard]] const Position &getPosition() const override;
-
-    /** Setter : Raw position.
-     *
-     * @see Entity::setPosition() override.
-     */
-    void setPosition(const Position &coordinates) override;
-
-    /** Getter : Sprite's position on the bitmap.
-     *
-     * @see Entity::getSpriteImage() override.
-     */
-    [[nodiscard]] const SDL_Rect &getSpriteImage() const override;
-
-    /** Getter : Sprite's position when displayed on the window.
-     *
-     * @see Entity::getSpritePosition() override.
-     */
-    [[nodiscard]] const SDL_Rect &getSpritePosition() override;
-
-    /** Getter : Previous sprite's index within an animation. */
-    [[nodiscard]] virtual const pair<bool, int> &getPreviousSpriteIndex() const;
-
-    /** Setter : Previous sprite's index within an animation. */
-    virtual void
-    setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex);
+                 Animation left,
+                 Animation right, Animation up,
+                 Animation down);
 
     /** If legal, moves into a given direction.
      *
@@ -139,20 +96,11 @@ public:
     /** Switches between sprites depending on the direction.
      *
      * @details Called when a move is legal.
+     * @see Animation::animate()
      *
      * @param direction the direction of the current move.
      */
     void animate(const Direction &direction);
-
-    /** Indicates the index of the current sprite.
-     *
-     * @see previousSpriteIndex_ member.
-     *
-     * @param direction the direction of the current move.
-     * @param max_index Maximum number of sprites for the current animation.
-     * @return temporary update of previousSpriteIndex_
-     */
-    pair<bool, int> getCurrentSprite(const Direction &direction, unsigned max_index);
 
     /**
      * Resets the entity object.

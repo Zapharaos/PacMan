@@ -77,74 +77,72 @@ Game::Game(int width, int height, int cell_size, const char *file_path,
                            {3 * 2,  3 * 2},
                            {11 * 2, 10 * 2}};
 
-    std::vector<Sprite> pacman_left{pacman_default, pacman_left_1,
-                                    pacman_left_2};
-    std::vector<Sprite> pacman_right{pacman_default, pacman_right_1,
-                                     pacman_right_2};
-    std::vector<Sprite> pacman_up{pacman_default, pacman_up_1, pacman_up_2};
-    std::vector<Sprite> pacman_down{pacman_default, pacman_down_1,
-                                    pacman_down_2};
-    std::vector<Sprite> pacman_death{pacman_death_1, pacman_death_2,
+    Animation pacman_left{{pacman_default, pacman_left_1, pacman_left_2}, true, constants::ENTITY_REFRESH_RATE};
+    Animation pacman_right{{pacman_default, pacman_right_1, pacman_right_2}, true, constants::ENTITY_REFRESH_RATE};
+    Animation pacman_up{{pacman_default, pacman_up_1, pacman_up_2}, true, constants::ENTITY_REFRESH_RATE};
+    Animation pacman_down{{pacman_default, pacman_down_1, pacman_down_2}, true, constants::ENTITY_REFRESH_RATE};
+
+    Animation pacman_death{{pacman_death_1, pacman_death_2,
                                      pacman_death_3, pacman_death_4,
                                      pacman_death_5,
                                      pacman_death_6, pacman_death_7,
                                      pacman_death_8, pacman_death_9,
-                                     pacman_death_10};
+                                     pacman_death_10}, false, 7};
 
     pacman_ = Pacman(
             Position{{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}},
-            pacman_left.at(1), constants::PACMAN_SPEED, pacman_left,
+            pacman_left.getSprite(), constants::PACMAN_SPEED, pacman_left,
             pacman_right, pacman_up, pacman_down, 5000, pacman_death);
 
     // Fruits
     vector<FruitObject> fruits = {
-            {100,  {1},      {
-                                     Sprite({290, 238, 12, 12}, {2 * 2, 2 * 2},
-                                            {12 * 2, 12 * 2}),
-                                     Sprite({290, 258, 12, 12}, {2 * 2, 2 * 2},
-                                            {12 * 2, 12 * 2})}
+            {100,  {1}, {{
+                                  Sprite({290, 238, 12, 12}, {2 * 2, 2 * 2},
+                                         {12 * 2, 12 * 2}),
+                                  Sprite({290, 258, 12, 12}, {1 * 2, 1 * 2},
+                                         {14 * 2, 14 * 2})}, false, 10}
             },
-            {300,  {2},      {
-                                     Sprite({307, 238, 11, 12}, {2 * 2, 2 * 2},
-                                            {11 * 2, 12 * 2}),
-                                     Sprite({307, 258, 11, 12}, {2 * 2, 2 * 2},
-                                            {11 * 2, 12 * 2})}
+            {300,  {2}, {{
+                                   Sprite({307, 238, 11, 12}, {2 * 2, 2 * 2},
+                                          {11 * 2, 12 * 2}),
+                                   Sprite({307, 258, 11, 12}, {1 * 2, 1 * 2},
+                                          {13 * 2, 14 * 2})}, false, 10}
             },
-            {500,  {3,  4},  {
-                                     Sprite({322, 238, 12, 12}, {2 * 2, 2 * 2},
-                                            {12 * 2, 12 * 2}),
-                                     Sprite({322, 258, 12, 12}, {2 * 2, 2 * 2},
-                                            {12 * 2, 12 * 2})}
+            {500,  {3,  4}, {{
+                                       Sprite({322, 238, 12, 12}, {2 * 2, 2 * 2},
+                                              {12 * 2, 12 * 2}),
+                                       Sprite({322, 258, 12, 12}, {1 * 2, 1 * 2},
+                                              {13 * 2, 14 * 2})}, false, 10}
             },
-            {700,  {5,  6},  {
+            {700,  {5,  6}, {{
                                      Sprite({338, 238, 12, 12}, {2 * 2, 2 * 2},
                                             {12 * 2, 12 * 2}),
-                                     Sprite({338, 258, 12, 12}, {2 * 2, 2 * 2},
-                                            {12 * 2, 12 * 2})}
+                                     Sprite({338, 258, 12, 12}, {1 * 2, 1 * 2},
+                                            {13 * 2, 14 * 2})}, false, 10}
             },
-            {1000, {7,  8},  {
+            {1000, {7,  8}, {{
                                      Sprite({355, 236, 11, 14}, {2 * 2, 1 * 2},
                                             {11 * 2, 14 * 2}),
-                                     Sprite({355, 256, 11, 14}, {2 * 2, 1 * 2},
-                                            {11 * 2, 14 * 2})}
+                                     Sprite({355, 256, 11, 14}, {1 * 2, 0},
+                                            {13 * 2, 15 * 2})}, false, 10}
             },
-            {2000, {9,  10}, {
-                                     Sprite({371, 239, 11, 11}, {2 * 2, 2 * 2},
-                                            {11 * 2, 11 * 2}),
-                                     Sprite({371, 259, 11, 11}, {2 * 2, 2 * 2},
-                                            {11 * 2, 11 * 2})}
+            {2000, {9,  10}, {{
+                                      Sprite({371, 239, 11, 11}, {2 * 2, 2 * 2},
+                                             {11 * 2, 11 * 2}),
+                                      Sprite({371, 259, 11, 11}, {1 * 2, 1 * 2},
+                                             {13 * 2, 13 * 2})}, false, 10}
             },
-            {3000, {11, 12}, {
-                                     Sprite({387, 237, 12, 13}, {2 * 2, 1 * 2},
-                                            {12 * 2, 13 * 2}),
-                                     Sprite({387, 257, 12, 13}, {2 * 2, 1 * 2},
-                                            {12 * 2, 13 * 2})}
+            {3000, {11, 12}, {{
+                                      Sprite({387, 237, 12, 13}, {2 * 2, 1 * 2},
+                                             {12 * 2, 13 * 2}),
+                                      Sprite({387, 257, 12, 13}, {1 * 2, 0},
+                                             {14 * 2, 15 * 2})}, false, 10}
             },
-            {5000, {13},     {
-                                     Sprite({405, 237, 7, 13}, {4 * 2, 1 * 2},
-                                            {7 * 2, 13 * 2}),
-                                     Sprite({405, 257, 7, 13}, {4 * 2, 1 * 2},
-                                            {7 * 2, 13 * 2})}
+            {5000, {13}, {{
+                                  Sprite({405, 237, 7, 13}, {4 * 2, 1 * 2},
+                                         {7 * 2, 13 * 2}),
+                                  Sprite({405, 257, 7, 13}, {3 * 2, 0},
+                                         {9 * 2, 15 * 2})}, false, 10}
             }
     };
     Position fruit_coordinates{
@@ -208,12 +206,23 @@ void Game::handleEntitiesCollisions()
     auto cell = map_.getCell(cell_position);
     auto entity = cell->getEntity();
 
+    // DEATH TEST : at cell (7, 10)
+    if(cell->getPositionScaled() == Position{{7*32, 10*32}})
+    {
+        status_ = StatusType::LOST_LIFE;
+        pacman_.setDead(true);
+        return;
+    }
+
     // Cell has an active entity that collided with Pacman.
     if (cell && entity && entity->isEnabled() && SDL_HasIntersection(&pacman, &entity->getSpritePosition()))
     {
         // Disables entity.
-        cell->setEnabled(false);
+        entity->setEnabled(false);
         score_ += entity->getPoints();
+
+        // Freeze pacman.
+        pacman_.count(1);
 
         // Updates fruit.
         pelletsEaten_++;
@@ -221,9 +230,19 @@ void Game::handleEntitiesCollisions()
 
         // Updates game.
         if (pelletsEaten_ == pelletsTotal_) // Level up.
+        {
             status_ = StatusType::LEVEL_UP;
+
+            // TODO : level up animation
+            // Freeze pacman & ghosts.
+            // After freeze : Map blinking => pacman shown & ghosts hidden.
+
+        }
         else if (cell->getType() == CellType::ENERGIZER) // Superpower.
+        {
             pacman_.setSuperpower(true);
+            // TODO : ghost scared (timer) into ghost blinking (ticks)
+        }
     }
 
     // Fruit is active and collided with Pacman.
@@ -232,8 +251,8 @@ void Game::handleEntitiesCollisions()
         // Disables fruit.
         fruit_.setEnabled(false);
         score_ += fruit_.getPoints();
+        // TODO : display points sprite
         status_ = StatusType::INTERRUPTED;
-        // TODO : freeze 1/60s + point animation
     }
 
     for (auto &ghost: ghosts_)
@@ -245,6 +264,12 @@ void Game::handleEntitiesCollisions()
             {
                 status_ = StatusType::LOST_LIFE;
                 pacman_.setDead(true);
+
+                // TODO : death animation
+                // Freeze pacman + Freeze ghosts but still animate them.
+                // After freeze => pacman animateDeath & hide ghosts.
+                // After animateDeath => restart.
+
                 continue;
             }
 
@@ -253,7 +278,12 @@ void Game::handleEntitiesCollisions()
             score_ += ghost.getPoints();
             status_ = StatusType::INTERRUPTED;
 
-            // TODO : freeze 1/60s + hide Pacman + point animation
+            // TODO : eating animation
+            // Freeze pacman & hide.
+            // Freeze ghosts.
+            // Display points sprite.
+
+            // TODO : ghost going back to home
         }
     }
 
@@ -301,22 +331,23 @@ void Game::lostLife()
 }
 
 void
+
 Game::drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
-                         std::shared_ptr<SDL_Texture> texture,
-                         bool displayEnergizers)
+                         std::shared_ptr<SDL_Texture> texture)
 {
 
     // Pellets
-    optional<Entity> entity;
     for (auto &cell: map_.getCellsWithEntities())
     {
-        // Blinking energizers
-        if (cell->getType() == CellType::ENERGIZER &&
-            !displayEnergizers)
+        auto entity = cell->getEntity();
+
+        // Blinking energizer
+        if (cell->getType() == CellType::ENERGIZER && entity->countLowerHalf())
             continue;
 
         // Entity disabled
-        if (!(entity = cell->getEntity())->isEnabled()) continue;
+        if (!entity->isEnabled())
+            continue;
 
         // Display entity
         SDL_Rect image = entity->getSpriteImage();
@@ -329,6 +360,7 @@ Game::drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
     if (fruit_.isEnabled())
     {
         // Display entity
+        fruit_.animate();
         SDL_Rect image = fruit_.getSpriteImage();
         SDL_Rect position = fruit_.getSpritePosition();
         drawObject(render,texture,image,position);

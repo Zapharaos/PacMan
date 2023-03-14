@@ -68,8 +68,11 @@ void Window::freeRessources(){
 }
 //TODO To cleanup
 void Window::drawWindow(Direction last){
-        SDL_QueryTexture(texture_.get(), nullptr, nullptr, &bg_.w, &bg_.h);
 
+    StatusType statusType = game_->getStatus();
+    if(statusType == StatusType::PAUSED) return; // nothing to update
+
+    SDL_QueryTexture(texture_.get(), nullptr, nullptr, &bg_.w, &bg_.h);
     SDL_RenderClear(render_.get());
 
     SDL_Rect  map_ ;
@@ -80,24 +83,8 @@ void Window::drawWindow(Direction last){
 
 
     writeHighScore();
-
-    Pacman pacman = game_->getPacman();
-    SDL_Rect image = pacman.getSpriteImage();
-    SDL_Rect position = pacman.getSpritePosition();
+    updateHighScore(game_->getScore());
     drawObject(render_, texture_, map_default, map_);
-    drawObject(render_,texture_,image, position);
-
-
-    writeHighScore();
-
-    StatusType statusType = game_->getStatus();
-    if(statusType == StatusType::PAUSED) return; // nothing to update
-
-
-
-    //SDL_QueryTexture(plancheSprites_.get, NULL, NULL, &dest.w, &dest.h);
-    if((++energizerTickCount) >= energizerTickDelay*2)
-        energizerTickCount = 0;
 
     if(statusType == StatusType::INTERRUPTED)
     {
@@ -105,7 +92,6 @@ void Window::drawWindow(Direction last){
         // TODO : after all animation ticks ended
         game_->setStatus(StatusType::RUNNING);
     }
-    game_->drawStaticEntities(render_, texture_, energizerTickCount >= energizerTickDelay);
 
     if(statusType == StatusType::LEVEL_UP) {
         if ((++mapTickCount) >= mapTickDelay) {
@@ -121,29 +107,72 @@ void Window::drawWindow(Direction last){
                 count_ = 0;
             }
         }
+        if(mapSwitchCount%2 != 0)
+            drawObject(render_,texture_, map_switch, map_);
+    }
 
-        if (statusType == StatusType::LOST_LIFE) {
-            Pacman pacman = game_->getPacman();
-            if (pacman.isDead() && (++deathTickCount) == deathTickDelay) {
-                deathTickCount = 0;
-                pacman.animateDeath(); // saved ?
-                game_->setPacman(pacman);
-                if (!pacman.isDead()) { // animation is over
-                    last.reset();
-                    game_->lostLife();
-                }
+    if(statusType == StatusType::LOST_LIFE) {
+        Pacman pacman = game_->getPacman();
+        if (pacman.isDead()) {
+            pacman.animateDeath(); // saved ?
+            game_->setPacman(pacman);
+            if (!pacman.isDead()) { // animation is over
+                last.reset();
+                game_->lostLife();
             }
         }
-
-        game_->drawStaticEntities(render_, texture_, energizerTickCount >= energizerTickDelay);
-
-        // couleur transparente
-        //SDL_SetColorKey(plancheSprites_, true, 0);
-        //TODO Changer transparence avec SDL2
-
     }
-    updateHighScore(game_->getScore());
 
+    game_->drawStaticEntities(render_, texture_);
+    // couleur transparente
+    //SDL_SetColorKey(plancheSprites_, true, 0);
+    //TODO Changer transparence avec SDL2
+
+    Pacman pacman = game_->getPacman();
+    SDL_Rect image = pacman.getSpriteImage();
+    SDL_Rect position = pacman.getSpritePosition();
+    drawObject(render_,texture_,image, position);
+
+    // TODO : display ghosts => this is only temporary
+    if(statusType == StatusType::RUNNING)
+    {
+        // petit truc pour faire tourner le fantome
+        SDL_Rect* ghost_in = nullptr;
+        switch (count_ / 128)
+        {
+            case 0:
+                ghost_in = &(ghost_blinky_r);
+                ghost_blinky.x+=constants::GHOST_SPEED;
+                break;
+            case 1:
+                ghost_in = &(ghost_blinky_d);
+                ghost_blinky.y+=constants::GHOST_SPEED;
+                break;
+            case 2:
+                ghost_in = &(ghost_blinky_l);
+                ghost_blinky.x-=constants::GHOST_SPEED;
+                break;
+            case 3:
+                ghost_in = &(ghost_blinky_u);
+                ghost_blinky.y-=constants::GHOST_SPEED;
+                break;
+        }
+        count_ = (count_ + 1) % (512);
+
+        if(pacman.isSuperpower())
+        {
+            // TODO : ghost scared
+            ghost_in = &(ghost_scared);
+        }
+
+        // ici on change entre les 2 sprites sources pour une jolie animation.
+        SDL_Rect ghost_in2 = *ghost_in;
+        if ((count_ / 4) % 2)
+            ghost_in2.x += constants::BMP_ENTITY_GHOST_TOTAL_WIDTH;
+
+        // copie du sprite zoomé
+        drawObject(render_,texture_,ghost_in2, ghost_blinky);
+    }
 }
 
 void Window::writeHighScore() {

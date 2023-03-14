@@ -11,6 +11,16 @@ Direction::Direction(const DirectionType &direction)
     setDirection(direction);
 }
 
+bool Direction::operator==(const Direction &direction) const
+{
+    return direction_ == direction.direction_;
+}
+
+bool Direction::operator!=(const Direction &direction) const
+{
+    return !(direction == *this);
+}
+
 void Direction::setDirection(const DirectionType &direction)
 {
     direction_ = direction;

@@ -19,18 +19,18 @@ void Fruit::update(int pelletsEaten, int level)
     {
         timer_.kill(); // just in case : disable previous fruit timer
 
-        FruitObject &current = fruits_.back(); // set as default fruit object
-        for (auto &fruit: fruits_) // find object corresponding to level
+        index_ = 0;
+        for (auto &fruit: fruits_) // find fruit corresponding to level
         {
             set<int> levels = fruit.getLevels();
             if (levels.find(level) != levels.end())
-                current = fruit;
+                break;
+            index_++;
         }
 
-        sprite_index_ = 0; // reset animation counter
         setEnabled(true); // enables the entity
-        setPoints(current.getPoints()); // update the points
-        setSprite(current.getSprites().at(sprite_index_)); // update sprite
+        setPoints(fruits_.at(index_).getPoints()); // update points
+        setSprite(fruits_.at(index_).getAnimation().getSprite()); // update sprite
 
         timer_.start([&]() {
             setEnabled(false);
@@ -50,4 +50,8 @@ bool Fruit::isEnabled()
 void Fruit::reset()
 {
     timer_.kill(); // stop the timer
+}
+
+void Fruit::animate() {
+    setSprite(fruits_.at(index_).animate());
 }

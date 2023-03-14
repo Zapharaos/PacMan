@@ -4,11 +4,13 @@
 
 #include "../../include/entity/fruitObject.h"
 
+#include <utility>
+
 FruitObject::FruitObject() = default;
 
 FruitObject::FruitObject(int points, const set<int> &levels,
-                         const vector<Sprite> &sprites) :
-        points_(points), levels_(levels), sprites_(sprites)
+                         Animation animation) :
+        points_(points), levels_(levels), animation_(move(animation))
 {}
 
 int FruitObject::getPoints() const
@@ -21,7 +23,13 @@ const set<int> &FruitObject::getLevels() const
     return levels_;
 }
 
-const vector<Sprite> &FruitObject::getSprites() const
+const Animation &FruitObject::getAnimation() const
 {
-    return sprites_;
+    return animation_;
 }
+
+const Sprite &FruitObject::animate()
+{
+    return animation_.animate();
+}
+

@@ -11,6 +11,7 @@
 #include <utility>
 #include "../utils/constants.h"
 #include "../display/sprite.h"
+#include "../utils/counter.h"
 
 using namespace std;
 
@@ -31,6 +32,11 @@ private:
 
     /** Points earned when entity is eaten. */
     int points_{};
+
+protected:
+
+    /** Counts a number of frames. */
+    Counter counter_ {};
 
 public:
 
@@ -65,9 +71,6 @@ public:
     /** Setter : Raw position. */
     virtual void setPosition(const Position &position);
 
-    /** Getter : Image when displayed. */
-    [[nodiscard]] virtual const Sprite &getSprite() const;
-
     /** Setter : Image when displayed. */
     void setSprite(const Sprite &sprite);
 
@@ -87,13 +90,21 @@ public:
      *
      * @see Sprite::getImage().
      */
-    [[nodiscard]] virtual const SDL_Rect &getSpriteImage() const;
+    [[nodiscard]] const SDL_Rect &getSpriteImage() const;
 
     /** Getter : Sprite's position when displayed on the window.
      *
      * @see Sprite::getPosition().
      */
-    [[nodiscard]] virtual const SDL_Rect &getSpritePosition();
+    [[nodiscard]] const SDL_Rect &getSpritePosition();
+
+    /** Starts counting the frames until the cap is reached.
+     *
+     * @param cap Maximum amount of frames.
+     */
+    void count(long cap);
+
+    bool countLowerHalf();
 
     /** [Debug] : Prints the entity's members. */
     void print() const;

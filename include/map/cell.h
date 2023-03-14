@@ -41,7 +41,7 @@ private:
     /** Entity associated to the cell.
      * @details Optional.
      */
-    optional<Entity> entity_{};
+    shared_ptr<Entity> entity_{};
 
 public:
 
@@ -56,7 +56,7 @@ public:
      * @param entity Entity associated to the cell.
      */
     Cell(Position position, int size, const CellType &type,
-         const optional<Entity> &entity);
+         const shared_ptr<Entity> &entity);
 
     /** If both cells are equals. */
     bool operator==(const Cell &rhs) const;
@@ -78,13 +78,7 @@ public:
     /** Getter : Entity associated to the cell.
      * @return Optional entity.
      */
-    [[nodiscard]] const optional<Entity> &getEntity() const;
-
-    /** Setter : Entity associated to the cell.
-     *
-     * @param entity New entity.
-     */
-    void setEntity(const Entity &entity);
+    [[nodiscard]] const shared_ptr<Entity> &getEntity() const;
 
     /** Indicates if a cell is a neighbor.
      *
@@ -102,12 +96,6 @@ public:
 
     /** Returns the cell's position in pixels. */
     [[nodiscard]] Position getPositionScaled() const;
-
-    /** Setter : Enables/disables the entity (i.e. if the entity is displayed or not).
-     *
-     * @see Entity::setEnabled().
-     */
-    void setEnabled(bool enabled);
 
     /** [Debug] : Prints the cell's members. */
     void print() const;
