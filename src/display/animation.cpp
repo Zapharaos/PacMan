@@ -14,10 +14,10 @@ const Sprite &Animation::animate(bool restart) {
 
     if(restart) reset();
 
-    if((ticksCount_++) == ticksCap_)
+    if(!counter_.isActive()) // if enough frames
     {
-        // Reset counter.
-        ticksCount_ = 0;
+        // Restart counter.
+        counter_.start(ticksCap_);
 
         // Handle reverse.
         if((reverse_ && index_ == animation_.size() - 1) || (!toRight_ && index_ == 0))
@@ -35,6 +35,7 @@ const Sprite &Animation::animate(bool restart) {
         else
             index_--;
     }
+    counter_.increment(); // increment number of frames
     return animation_.at(index_);
 }
 
@@ -45,8 +46,8 @@ const Sprite & Animation::getSprite() const {
 void Animation::reset() {
     index_ = 0;
     toRight_ = true;
-    ticksCount_ = 0;
     over_ = false;
+    counter_.start(ticksCap_);
 }
 
 bool Animation::isOver() const {
