@@ -42,6 +42,12 @@ public:
      */
     explicit Direction(const DirectionType &direction);
 
+    /** If both directions are equals. */
+    bool operator==(const Direction &direction) const;
+
+    /** If both directions are different. */
+    bool operator!=(const Direction &direction) const;
+
     /** Updates the direction type. */
     void setDirection(const DirectionType &direction);
 
@@ -81,10 +87,6 @@ public:
         return direction_ == DirectionType::UP ||
                direction_ == DirectionType::DOWN;
     };
-
-    /** Indicates if both directions are equals. */
-    [[nodiscard]] inline bool isEqual(const Direction &direction) const
-    { return direction_ == direction.direction_; };
 
     /** Indicates if both directions are moving on the same axis (i.e. vertical or horizontal). */
     [[nodiscard]] inline bool isSameAxis(const Direction &direction) const

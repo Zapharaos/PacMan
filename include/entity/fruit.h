@@ -33,10 +33,9 @@ private:
      * @see Fruit::FruitObject class */
     vector<FruitObject> fruits_{};
 
-    // TODO : sprite_index_ : animation ?
-
-    /** Index of the current fruit's sprite */
-    int sprite_index_{};
+    /** Index of the current FruitObject.
+     * @details Used to access and animate the fruit. */
+    int index_ {};
 
 public:
 
@@ -68,6 +67,14 @@ public:
      * @param level Current level of the game.
      */
     void update(int pelletsEaten, int level);
+
+    /** Executes the sprite switches when conditions are met.
+     *
+     * @see FruitObject::animate()
+     *
+     * @return The current sprite to be displayed.
+     */
+    void animate();
 
     /**
      * Resets the fruit object.

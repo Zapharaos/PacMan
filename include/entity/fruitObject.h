@@ -9,6 +9,7 @@
 #include <set>
 #include <vector>
 #include "../display/sprite.h"
+#include "../display/animation.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ private :
     set<int> levels_{};
 
     /** Sprites to switch between when the fruit is displayed. */
-    vector<Sprite> sprites_{};
+    Animation animation_{};
 
 public:
 
@@ -38,7 +39,7 @@ public:
      * @param levels Sprites to switch between when the fruit is displayed.
      */
     FruitObject(int points, const set<int> &levels,
-                const vector<Sprite> &sprites);
+                Animation animation);
 
     /** Getter : Points awarded when the fruit is eaten. */
     [[nodiscard]] int getPoints() const;
@@ -47,7 +48,15 @@ public:
     [[nodiscard]] const set<int> &getLevels() const;
 
     /** Getter : Sprites to switch between when the fruit is displayed. */
-    [[nodiscard]] const vector<Sprite> &getSprites() const;
+    [[nodiscard]] const Animation &getAnimation() const;
+
+    /** Executes the sprite switches when conditions are met.
+     *
+     * @see Animation::animate()
+     *
+     * @return The current sprite to be displayed.
+     */
+    const Sprite &animate();
 };
 
 

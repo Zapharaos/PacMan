@@ -10,7 +10,7 @@
 Cell::Cell() = default;
 
 Cell::Cell(Position position, int size, const CellType &type,
-           const optional<Entity> &entity) :
+           const shared_ptr<Entity> &entity) :
         position_(std::move(position)), size_(size), type_(type), entity_(entity)
 {}
 
@@ -29,14 +29,9 @@ const CellType &Cell::getType() const
     return type_;
 }
 
-const optional<Entity> &Cell::getEntity() const
+const shared_ptr<Entity> &Cell::getEntity() const
 {
     return entity_;
-}
-
-void Cell::setEntity(const Entity &entity)
-{
-    entity_ = entity;
 }
 
 bool Cell::isNeighbor(const Cell &cell) const
@@ -52,11 +47,6 @@ bool Cell::equalsPositionScaled(const Position &position) const
 Position Cell::getPositionScaled() const
 {
     return position_.getPositionScaled(size_);
-}
-
-void Cell::setEnabled(bool enabled)
-{
-    entity_->setEnabled(enabled);
 }
 
 void Cell::print() const

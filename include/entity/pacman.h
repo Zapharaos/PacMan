@@ -12,7 +12,7 @@
  *
  * @see MovingEntity class
  */
-class Pacman : MovingEntity
+class Pacman : public MovingEntity
 {
 
 private:
@@ -27,7 +27,7 @@ private:
     bool dead_ = false;
 
     /** Animations when has died. */
-    vector<Sprite> death_{};
+    Animation death_{};
 
 public:
 
@@ -47,9 +47,9 @@ public:
      * @param death Animations when has died.
      */
     Pacman(const Position &position, const Sprite &sprite, int speed,
-           const vector<Sprite> &left, const vector<Sprite> &right,
-           const vector<Sprite> &up, const vector<Sprite> &down,
-           long time, const vector<Sprite> &death);
+           const Animation &left, const Animation &right,
+           const Animation &up, const Animation &down,
+           long time, Animation death);
 
     /** Setter : Superpower mode is activated. */
     void setSuperpower(bool superpower);
@@ -62,65 +62,6 @@ public:
 
     /** Setter : Has died. */
     void setDead(bool dead);
-
-    /** Getter : Raw position.
-     *
-     * @see MovingEntity::getPosition() override.
-     */
-    [[nodiscard]] const Position &getPosition() const override;
-
-    /** Getter : Image when displayed.
-     *
-     * @see Entity::getSpriteImage() override.
-     */
-    [[nodiscard]] const Sprite &getSprite() const override;
-
-    /** Getter : Sprite's position on the bitmap.
-     *
-     * @see MovingEntity::getSpriteImage() override.
-     */
-    [[nodiscard]] const SDL_Rect &getSpriteImage() const override;
-
-    /** Getter : Sprite's position when displayed on the window.
-     *
-     * @see MovingEntity::getSpritePosition() override.
-     */
-    [[nodiscard]] const SDL_Rect &getSpritePosition() override;
-
-    /** Getter : Previous sprite's index within an animation.
-     *
-     * @see MovingEntity::getPreviousSpriteIndex() override.
-     */
-    [[nodiscard]] const pair<bool, int> &
-    getPreviousSpriteIndex() const override;
-
-    /** Getter : Setter : Previous sprite's index within an animation.
-     *
-     * @see MovingEntity::setPreviousSpriteIndex() override.
-     */
-    void
-    setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex) override;
-
-    /** If legal, moves into a given direction.
-     *
-     * @see MovingEntity::move(Map map, Direction direction)
-     *
-     * @param map The board with all the cells.
-     * @param direction The direction the entity is moving towards to.
-     */
-    void move(const Map &map, const Direction &continuous_direction) override;
-
-    /** If legal, turns towards a direction, else moves towards the original direction.
-     *
-     * @see MovingEntity::move(Map map, Direction direction, Direction turn)
-     *
-     * @param map The board with all the cells.
-     * @param continuous_direction The direction the entity is moving towards to.
-     * @param try_direction The direction the entity wishes to move to.
-     * @return turn if it could change direction, else direction.
-     */
-    Direction move(const Map &map, const Direction &continuous_direction,
-                   const Direction &try_direction) override;
 
     /** Executes the death animation. */
     void animateDeath();

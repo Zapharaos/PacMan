@@ -29,25 +29,28 @@ Map::Map(int width, int height, int cell_size,
     {
         for (int x = 0; x < width; x++)
         {
-            optional<Entity> entity;
+            // shared_ptr<Song> p3(p2)
+            Position position{{x, y}};
             CellType type = cell_types[x + width * y];
             if (type == CellType::PELLET)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                entity = {coordinates, sprite_pellet, true,
-                          (int) Score::PELLET};
+                auto entity = make_shared<Entity>(Entity{coordinates, sprite_pellet, true, (int) Score::PELLET});
+                auto cell = make_shared<Cell>(Cell{position, cell_size, type, entity});
+                cells_.emplace_back(cell);
+                cellsWithEntities_.emplace_back(cell);
             } else if (type == CellType::ENERGIZER)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                entity = {coordinates, sprite_energizer, true,
-                          (int) Score::ENERGIZER};
-            }
-            Position position{{x, y}};
-            auto cell = make_shared<Cell>(
-                    Cell{position, cell_size, type, entity});
-            cells_.emplace_back(cell);
-            if (type == CellType::PELLET || type == CellType::ENERGIZER)
+                auto entity = make_shared<Entity>(Entity{coordinates, sprite_energizer, true, (int) Score::ENERGIZER});
+                entity->count(30); // 60 fps => 15 shown - 15 hidden
+                auto cell = make_shared<Cell>(Cell{position, cell_size, type, entity});
+                cells_.emplace_back(cell);
                 cellsWithEntities_.emplace_back(cell);
+            }
+            else {
+                cells_.emplace_back(make_shared<Cell>(Cell{position, cell_size, type, nullptr}));
+            }
         }
     }
 }
@@ -137,5 +140,5 @@ void Map::reset() const
 {
     // Enables all cell entities back
     for (auto &cell: getCellsWithEntities())
-        cell->setEnabled(true);
+        cell->getEntity()->setEnabled(true);
 }

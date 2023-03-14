@@ -8,7 +8,7 @@
 #include "../include/display/window.h"
 
 Direction last;
-int tick = 1000/60;
+chrono::milliseconds tick (1000/60);
 
 int main(int argc, char** argv)
 {
@@ -61,6 +61,8 @@ int main(int argc, char** argv)
             }
 		}
 
+        auto start = chrono::steady_clock::now();
+
         SDL_PumpEvents(); // Get keys
 
         // Exit
@@ -84,19 +86,13 @@ int main(int argc, char** argv)
         paused = false;
 
         // AFFICHAGE
-
         window_->drawWindow(last);
         SDL_RenderPresent(window_->getRender().get());
-        //SDL_RenderPresent(windowrender.get());
-        //SDL_UpdateWindowSurface(window_->getWindow().get());
 
-        //window_.drawMapInit(game,last);
-
-
-
-		//SDL_UpdateWindowSurface(window_.getWindow().get());
-        // LIMITE A 60 FPS
-		SDL_Delay(tick); // utiliser SDL_GetTicks64() pour plus de precisions
+        // Cap to 60 frames per second.
+        auto finish = chrono::steady_clock::now() - start;
+        if(tick > finish)
+            SDL_Delay(std::chrono::duration_cast<std::chrono::milliseconds> (tick - finish).count());
 	}
     SDL_Quit(); // ON SORT
     window_->freeRessources();

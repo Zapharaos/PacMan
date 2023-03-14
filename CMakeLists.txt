@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.18.4)
 
 project(PacMan LANGUAGES CXX)
 
 
 find_package(SDL2 REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++2a -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -pthread")
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_WIN32_THREADS_INIT 0)
@@ -14,6 +14,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 add_executable(${PROJECT_NAME} ""
 
+		include/display/animation.h
 		include/display/extractor.h
 		include/display/scoreBoard.h
 		include/display/sprite.h
@@ -39,10 +40,11 @@ add_executable(${PROJECT_NAME} ""
 		include/game.h
 		include/saveGame.h
 
-        )
+        include/utils/counter.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 
+		src/display/animation.cpp
 		src/display/extractor.cpp
 		src/display/scoreBoard.cpp
 		src/display/sprite.cpp

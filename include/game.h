@@ -121,8 +121,7 @@ public:
 
     /** Displays all static entities. */
     void drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
-                            std::shared_ptr<SDL_Texture> texture,
-                            bool displayEnergizers);
+                            std::shared_ptr<SDL_Texture> texture);
 
     bool updateHighScore() ;
 

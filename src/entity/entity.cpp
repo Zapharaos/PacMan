@@ -30,11 +30,6 @@ void Entity::setPosition(const Position &position)
     position_ = position;
 }
 
-const Sprite &Entity::getSprite() const
-{
-    return sprite_;
-}
-
 void Entity::setSprite(const Sprite &sprite)
 {
     sprite_ = sprite;
@@ -69,6 +64,14 @@ const SDL_Rect &Entity::getSpritePosition()
 {
     sprite_.updatePosition(position_);
     return sprite_.getPosition();
+}
+
+void Entity::count(long cap) {
+    counter_.start(cap);
+}
+
+bool Entity::countLowerHalf() {
+    return counter_.incrementLowerHalf();
 }
 
 void Entity::print() const

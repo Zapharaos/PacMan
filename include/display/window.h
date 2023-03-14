@@ -39,11 +39,6 @@ private :
 public:
 
     int count_ = 0;
-    int deathTickDelay = 7;
-    int deathTickCount = 0;
-
-    int energizerTickDelay = 30;
-    int energizerTickCount = 0;
 
     int mapSwitchAmount = 14;
     int mapSwitchCount = 0;

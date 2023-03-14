@@ -4,60 +4,36 @@
 
 #include "../../include/entity/movingEntity.h"
 
+#include <utility>
+
 MovingEntity::MovingEntity() = default;
 
 MovingEntity::MovingEntity(const Position &position, const Sprite &sprite,
                            bool enabled, int points, int speed,
-                           const vector<Sprite> &left,
-                           const vector<Sprite> &right,
-                           const vector<Sprite> &up, const vector<Sprite> &down)
+                           Animation left,
+                           Animation right,
+                           Animation up, Animation down)
         :
-        Entity(position, sprite, enabled, points), speed_(speed), left_(left),
-        right_(right), up_(up), down_(down)
+        Entity(position, sprite, enabled, points), speed_(speed), left_(std::move(left)),
+        right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
 
 MovingEntity::MovingEntity(const Position &position, const Sprite &sprite, int speed,
-                           const vector<Sprite> &left,
-                           const vector<Sprite> &right,
-                           const vector<Sprite> &up, const vector<Sprite> &down)
+                           Animation left,
+                           Animation right,
+                           Animation up, Animation down)
         :
-        Entity(position, sprite), speed_(speed), left_(left), right_(right),
-        up_(up), down_(down)
+        Entity(position, sprite), speed_(speed), left_(std::move(left)), right_(std::move(right)),
+        up_(std::move(up)), down_(std::move(down))
 {}
-
-const Position &MovingEntity::getPosition() const
-{
-    return Entity::getPosition();
-}
-
-void MovingEntity::setPosition(const Position &position)
-{
-    Entity::setPosition(position);
-}
-
-const SDL_Rect &MovingEntity::getSpriteImage() const
-{
-    return Entity::getSpriteImage();
-}
-
-const SDL_Rect &MovingEntity::getSpritePosition()
-{
-    return Entity::getSpritePosition();
-}
-
-const pair<bool, int> &MovingEntity::getPreviousSpriteIndex() const
-{
-    return previousSpriteIndex_;
-}
-
-void
-MovingEntity::setPreviousSpriteIndex(const pair<bool, int> &previousSpriteIndex)
-{
-    previousSpriteIndex_ = previousSpriteIndex;
-}
 
 void MovingEntity::move(const Map &map, const Direction &direction)
 {
+    if(counter_.isActive())
+    {
+        counter_.increment();
+        return;
+    }
 
     // Direction must be initialized.
     if (direction.isUninitialized()) return;
@@ -80,9 +56,14 @@ void MovingEntity::move(const Map &map, const Direction &direction)
 Direction MovingEntity::move(const Map &map, const Direction &direction, const Direction &turn)
 {
 
+    if(counter_.isActive())
+    {
+        counter_.increment();
+        return direction;
+    }
+
     // Trivial cases that allows an instant direction change.
-    if (direction.isUninitialized() || direction.isEqual(turn) ||
-        direction.isSameAxis(turn))
+    if (direction.isUninitialized() || direction == turn || direction.isSameAxis(turn))
     {
         move(map, turn);
         return turn;
@@ -109,77 +90,24 @@ Direction MovingEntity::move(const Map &map, const Direction &direction, const D
 
 void MovingEntity::animate(const Direction &direction)
 {
-
     // Nothing to animate yet.
-    if (ticksCount_ != tickRate_ && previousDirection_.isEqual(direction))
-    {
-        ticksCount_++;
-        return;
-    }
-
-    Sprite sprite = getSprite();
-    pair<bool, int> position = previousSpriteIndex_; // default : same sprite
+    bool restart = previousDirection_ != direction;
 
     // Gets the new sprite.
-    if (!left_.empty() && direction.isLeft())
-    {
-        position = getCurrentSprite(direction, left_.size() - 1);
-        sprite = left_.at(position.second);
-    } else if (!right_.empty() && direction.isRight())
-    {
-        position = getCurrentSprite(direction, right_.size() - 1);
-        sprite = right_.at(position.second);
-    } else if (!up_.empty() && direction.isUp())
-    {
-        position = getCurrentSprite(direction, up_.size() - 1);
-        sprite = up_.at(position.second);
-    } else if (!down_.empty() && direction.isDown())
-    {
-        position = getCurrentSprite(direction, down_.size() - 1);
-        sprite = down_.at(position.second);
-    }
-
-    // Updates the display.
-    ticksCount_ = 0;
-    previousSpriteIndex_ = position;
-    setSprite(sprite);
-}
-
-pair<bool, int>
-MovingEntity::getCurrentSprite(const Direction &direction, unsigned max_index)
-{
-
-    if (!previousDirection_.isEqual(direction)) // direction changed => reset
-        return {true, 0};
-
-    if (ticksCount_ != tickRate_) // no changes
-        return previousSpriteIndex_;
-
-    if (max_index == 0) // only one image for this direction
-        return {true, 0};
-
-    bool toRight = previousSpriteIndex_.first; // is moving from start to end
-    int index = previousSpriteIndex_.second; // previous sprite index
-
-    if (toRight)
-    {
-        // at end, switch to backward movement inside images
-        if (index >= max_index)
-            return {false, index - 1};
-        return {toRight, index + 1}; // keep moving towards the end
-    }
-
-    // at start, switch to forward movement inside images
-    if (index == 0)
-        return {true, index + 1};
-    return {toRight, index - 1}; // keep moving towards the start
+    if (direction.isLeft())
+        setSprite(left_.animate(restart));
+    else if (direction.isRight())
+        setSprite(right_.animate(restart));
+    else if (direction.isUp())
+        setSprite(up_.animate(restart));
+    else if (direction.isDown())
+        setSprite(down_.animate(restart));
 }
 
 void MovingEntity::reset(const Position &position)
 {
-    setSprite(left_.at(1)); // default sprite
-    setPosition(position); // reset position
-    previousSpriteIndex_ = {true, 0};
-    ticksCount_ = 0;
     previousDirection_.reset();
+    left_.reset();
+    setSprite(left_.getSprite()); // default sprite
+    setPosition(position); // reset position
 }
