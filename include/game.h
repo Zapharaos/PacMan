@@ -12,6 +12,8 @@
 #include "entity/ghost.h"
 #include "entity/pacman.h"
 #include "entity/fruit.h"
+#include "saveGame.h"
+#include "utils/utils.h"
 
 /** Indicates the game status. */
 enum class StatusType
@@ -38,6 +40,9 @@ private:
 
     /** Current score. */
     int score_ = 0;
+
+    /** Highest score set locally*/
+    int high_score_ = 0 ;
 
     /** Current level. */
     int level_ = 1;
@@ -115,8 +120,22 @@ public:
     void lostLife();
 
     /** Displays all static entities. */
-    void drawStaticEntities(SDL_Surface *plancheSprites, SDL_Surface *win_surf,
+    void drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
+                            std::shared_ptr<SDL_Texture> texture,
                             bool displayEnergizers);
+
+    bool updateHighScore() ;
+
+    /**
+ * getSavedHighScore
+ * Gets the high score set locally from the save.json file
+ * @return high_score_
+ */
+    int getSavedHighScore();
+
+    void setHighScore(int highScore);
+
+    int getHighScore() const;
 
 };
 

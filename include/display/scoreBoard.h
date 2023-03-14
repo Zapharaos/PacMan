@@ -5,70 +5,85 @@
 #ifndef PACMAN_SCOREBOARD_H
 #define PACMAN_SCOREBOARD_H
 #include "extractor.h"
-//#include "window.h"
 #include "../utils/constants.h"
+#include "../utils/utils.h"
 #include "../saveGame.h"
 #include <SDL.h>
 #include <string>
+#include <memory>
 
+/**
+ * Score Board display
+ */
 class ScoreBoard {
 private :
-    int width_ = 0;
-    int height_ = 0;
-    int score_ = 0;
-    int high_score_ = 0 ;
-    int lives_nb_ = 0;
-    int round_nb_ = 0 ;
+    // Window width
+    int width_ = constants::SCORE_BOARD_WIDTH;
+    //Window Height
+    int height_ = 0 ;
 
 
+    // Vector that will hold sprites of all numbers (0 - 9)
     std::vector <SDL_Rect> numbers_;
 public:
+
     ScoreBoard();
 
-    ScoreBoard(int width, int height, int score, int highScore, int livesNb, int roundNb,
-               const std::vector<SDL_Rect> &numbers);
+    ScoreBoard(int width, int height, const vector<SDL_Rect> &numbers);
+
+    /////////// Getters and setters ///////////
 
     [[nodiscard]] int getWidth() const;
 
-    void setWidth(int width);
 
-    [[nodiscard]] int getHeight() const;
+    /**
+     * writeHighScoreText
+     * Will write "High Score" on the scoreboard window
+     * @param win_surf
+     * @param plancheSprites
+     */
+     void writeHighScoreText(  const shared_ptr<SDL_Renderer>& render,
+                               const shared_ptr<SDL_Texture>& texture);
 
-    void setHeight(int height);
-
-    [[nodiscard]] int getScore() const;
-
-    void setScore(int score);
-
-    [[nodiscard]] int getHighScore() const;
-
-    void setHighScore(int highScore);
-
-    [[nodiscard]] int getLivesNb() const;
-
-    void setLivesNb(int livesNb);
-
-    bool updateHighScore();
-
-    void updateScore(int points);
-
-    [[nodiscard]] int getRoundNb() const;
-
-    void setRoundNb(int roundNb);
-
-    //Will write "High Score on Window" another function should handle the points display
-    void writeHighScoreText(SDL_Surface *win_surf , SDL_Surface *plancheSprites);
-
-
+    /**
+     * initNumberSprites
+     * Will get all number sprites from the bitmap and store them in numbers_
+     */
     void initNumberSprites();
 
+    /**
+     * getPointsToPrint
+     * Sets a vector with the sprites to print
+     * @param points
+     * @return vector containing sprites
+     */
     std::vector <SDL_Rect> getPointsToPrint(int points);
 
-    //Write and update high score points
-    void writeHighScorePoints(SDL_Surface *win_surf , SDL_Surface *plancheSprites,int points);
+/**
+* writeHighScorePoints
+* Write and update high score points
+ * @param render
+ * @param texture
+ * @param points
+ */
+    void writeHighScorePoints(  const shared_ptr<SDL_Renderer>& render,
+                                const shared_ptr<SDL_Texture>& texture,
+                                int points);
 
-    void writeScorePoints(SDL_Surface *win_surf , SDL_Surface *plancheSprites,int points);
-
+/**
+ *  Write and update score points
+ * @param render
+ * @param texture
+ * @param points
+ */
+    void writeScorePoints(  const shared_ptr<SDL_Renderer>& render,
+                            const shared_ptr<SDL_Texture>& texture,
+                            int points);
+    /**
+     * getSavedHighScore
+     * Gets the high score set locally from the save.json file
+     * @return high_score_
+     */
     int getSavedHighScore();
 };
 
