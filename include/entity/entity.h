@@ -100,10 +100,16 @@ public:
 
     /** Starts counting the frames until the cap is reached.
      *
+     * @see Counter::start()
      * @param cap Maximum amount of frames.
      */
     void count(long cap);
 
+    /** Starts counting the frames, increments and indicates if the value is low.
+     *
+     * @see Counter::incrementLowerHalf()
+     * @return true if half of the value has yet to be reached, else false.
+     */
     bool countLowerHalf();
 
     /** [Debug] : Prints the entity's members. */

@@ -234,7 +234,7 @@ void Game::handleEntitiesCollisions()
             status_ = StatusType::LEVEL_UP;
 
             // TODO : level up animation
-            // Freeze pacman & ghosts.
+            // Freeze pacman & ghosts : 60 frames
             // After freeze : Map blinking => pacman shown & ghosts hidden.
 
         }

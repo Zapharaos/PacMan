@@ -7,6 +7,7 @@
 
 
 #include "sprite.h"
+#include "../utils/counter.h"
 #include <vector>
 #include <optional>
 
@@ -30,10 +31,11 @@ private:
     /** If going trough the sprite vector from left to right. */
     bool toRight_ = true;
 
-    /** Current amount of ticks. */
-    long ticksCount_ = 0;
-
+    /** if the animation is over. */
     bool over_ = false;
+
+    /** Object used to count frames between each sprite. */
+    Counter counter_ {};
 
 public:
 
