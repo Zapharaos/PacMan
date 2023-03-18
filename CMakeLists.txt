@@ -39,8 +39,7 @@ add_executable(${PROJECT_NAME} ""
 
 		include/game.h
 		include/saveGame.h
-
-        include/utils/counter.h)
+		include/utils/init_sprites.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 

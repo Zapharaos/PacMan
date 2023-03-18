@@ -34,6 +34,7 @@ void Entity::setPosition(const Position &position)
 void Entity::setSprite(const Sprite &sprite)
 {
     sprite_ = sprite;
+    sprite_.updatePosition(position_);
 }
 
 int Entity::getPoints() const

@@ -11,6 +11,7 @@
 #include "../entity/entity.h"
 #include "../utils/direction.h"
 #include "../display/animation.h"
+#include "../utils/init_sprites.h"
 
 /** The board of a game. */
 class Map
