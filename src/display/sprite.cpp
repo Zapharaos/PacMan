@@ -11,7 +11,9 @@ Sprite::Sprite() = default;
 Sprite::Sprite(const SDL_Rect &image, const pair<int, int> &offset,
                const pair<int, int> &size) :
         image_(image), offset_(offset), size_(size)
-{}
+{
+    position_ = {offset_.first, offset_.second, size_.first, size_.second};
+}
 
 const SDL_Rect &Sprite::getImage() const
 {

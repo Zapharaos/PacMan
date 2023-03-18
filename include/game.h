@@ -14,6 +14,7 @@
 #include "entity/fruit.h"
 #include "saveGame.h"
 #include "utils/utils.h"
+#include "display/window.h"
 
 /** Indicates the game status. */
 enum class StatusType
@@ -21,9 +22,11 @@ enum class StatusType
     STOPPED,
     RUNNING,
     PAUSED,
-    INTERRUPTED,
-    LEVEL_UP,
-    LOST_LIFE,
+    LEVEL_UP_FREEZE,
+    LEVEL_UP_ANIMATE,
+    DEATH_FREEZE,
+    DEATH_ANIMATE,
+    EATING_GHOST
 };
 
 /** Game object. */
@@ -34,6 +37,9 @@ private:
 
     /** Map. */
     Map map_;
+
+    /** Window. */
+    Window window_;
 
     /** Number of lives. */
     int lives_ = 0;
@@ -57,13 +63,16 @@ private:
     Pacman pacman_;
 
     /** Ghost entities. */
-    std::vector<Ghost> ghosts_;
+    vector<Ghost> ghosts_;
 
     /** Fruit entities. */
     Fruit fruit_;
 
     /** Current game status. */
     StatusType status_ = {StatusType::RUNNING};
+
+    /** Counts a number of frames. */
+    Counter counter_ {};
 
 public:
 
@@ -81,34 +90,11 @@ public:
     Game(int width, int height, int cell_size, const char *file_path,
          int lives);
 
-    /** Getter : Current score. */
-    [[nodiscard]] int getScore() const;
+    /** Pause/Resume the game. */
+    void togglePause();
 
-    /** Getter : Pacman. */
-    [[nodiscard]] const Pacman &getPacman() const;
-
-    /** Setter : Pacman. */
-    void setPacman(const Pacman &pacman);
-
-    /** Getter : Current game status. */
-    [[nodiscard]] const StatusType &getStatus() const;
-
-    /** Setter : Current game status. */
-    void setStatus(const StatusType &status);
-
-    /** Pacman tries to move & handle collisions.
-     *
-     * @param continuous_direction The direction pacman is moving towards to.
-     */
-    void move(const Direction &continuous_direction);
-
-    /** Pacman tries to turn & handle collisions.
-     *
-     * @param continuous_direction The direction pacman is moving towards to.
-     * @param try_direction he direction pacman wishes to move to.
-     * @return try_direction if it could change direction, else continuous_direction.
-     */
-    Direction move(const Direction &continuous_direction, const Direction &try_direction);
+    /** Handles status. */
+    bool handleStatus();
 
     /** Handles collisions. */
     void handleEntitiesCollisions();
@@ -118,10 +104,6 @@ public:
 
     /** Player died. */
     void lostLife();
-
-    /** Displays all static entities. */
-    void drawStaticEntities(std::shared_ptr<SDL_Renderer> render,
-                            std::shared_ptr<SDL_Texture> texture);
 
     bool updateHighScore() ;
 
@@ -136,6 +118,11 @@ public:
 
     int getHighScore() const;
 
+    void tick(const Direction &direction);
+
+    void display();
+
+    void quit();
 };
 
 

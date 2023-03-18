@@ -156,21 +156,3 @@ SDL_Rect extractNthElementColumnFromMap(int width, int height, int number, int s
     SDL_Rect sprite = {start_x, start_y, width, height};
     return sprite ;
 }
-
-/**
- * drawObject
- * Draws desired sprite in a location
- * @param src
- * @param dst
- * @param src_rect
- * @param dst_rect
- *
- */
-void drawObject( shared_ptr<SDL_Renderer> render
-                 , shared_ptr<SDL_Texture> texture
-                 , SDL_Rect src_rect
-                 , SDL_Rect dst_rect  )
-{
-    SDL_RenderCopy(render.get(), texture.get(), &src_rect, &dst_rect);
-    //SDL_RenderPresent(render.get());
-}

@@ -19,6 +19,19 @@ using namespace std;
 class Entity
 {
 
+protected:
+
+    enum class EntityStatus {
+        VISIBLE,
+        HIDDEN
+    };
+
+    /** Counts a number of frames. */
+    Counter counter_ {};
+
+    /** Entity status. */
+    EntityStatus status_ {EntityStatus::VISIBLE};
+
 private:
 
     /** Raw position. */
@@ -32,11 +45,6 @@ private:
 
     /** Points earned when entity is eaten. */
     int points_{};
-
-protected:
-
-    /** Counts a number of frames. */
-    Counter counter_ {};
 
 public:
 
@@ -96,21 +104,31 @@ public:
      *
      * @see Sprite::getPosition().
      */
-    [[nodiscard]] const SDL_Rect &getSpritePosition();
+    [[nodiscard]] const SDL_Rect &getSpritePosition() const;
 
-    /** Starts counting the frames until the cap is reached.
+    /** Count for a certain amount of frames.
      *
      * @see Counter::start()
-     * @param cap Maximum amount of frames.
+     * @param frames Amount of frames.
      */
-    void count(long cap);
+    void count(long frames);
 
-    /** Starts counting the frames, increments and indicates if the value is low.
-     *
-     * @see Counter::incrementLowerHalf()
-     * @return true if half of the value has yet to be reached, else false.
+    /** Hide entity. */
+    void hide();
+
+    /** Show entity. */
+    void show();
+
+    /** Indicates if the entity is visible.
+     * @return true if visible, else false.
      */
-    bool countLowerHalf();
+    bool isVisible();
+
+    /** Toggles the entity status and its visibility according to the counter member.
+     *
+     * @return true if visible, false if hidden.
+     */
+    bool tickVisibility();
 
     /** [Debug] : Prints the entity's members. */
     void print() const;

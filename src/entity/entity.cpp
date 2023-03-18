@@ -11,14 +11,14 @@ Entity::Entity() = default;
 Entity::Entity(Position position, Sprite sprite, bool enabled, int points)
         : position_(move(position)), sprite_(move(sprite)), enabled_(enabled),
           points_(points)
-{}
+{ sprite_.updatePosition(position_); }
 
 Entity::Entity(Position position, Sprite sprite) : position_(move(position)),
                                                    sprite_(move(sprite))
-{}
+{ sprite_.updatePosition(position_); }
 
 Entity::Entity(Position position) : position_(move(position))
-{}
+{ sprite_.updatePosition(position_); }
 
 const Position &Entity::getPosition() const
 {
@@ -28,6 +28,7 @@ const Position &Entity::getPosition() const
 void Entity::setPosition(const Position &position)
 {
     position_ = position;
+    sprite_.updatePosition(position_);
 }
 
 void Entity::setSprite(const Sprite &sprite)
@@ -60,18 +61,37 @@ const SDL_Rect &Entity::getSpriteImage() const
     return sprite_.getImage();
 }
 
-const SDL_Rect &Entity::getSpritePosition()
+const SDL_Rect &Entity::getSpritePosition() const
 {
-    sprite_.updatePosition(position_);
     return sprite_.getPosition();
 }
 
-void Entity::count(long cap) {
-    counter_.start(cap);
+void Entity::count(long frames) {
+    counter_.start(frames);
 }
 
-bool Entity::countLowerHalf() {
-    return counter_.incrementLowerHalf();
+bool Entity::tickVisibility() {
+
+    if(!counter_.isActive())
+        isVisible() ? hide() : show();
+
+    counter_.increment();
+    return isVisible();
+}
+
+void Entity::hide()
+{
+    status_ = EntityStatus::HIDDEN;
+}
+
+void Entity::show()
+{
+    status_ = EntityStatus::VISIBLE;
+}
+
+bool Entity::isVisible()
+{
+    return status_ == EntityStatus::VISIBLE;
 }
 
 void Entity::print() const

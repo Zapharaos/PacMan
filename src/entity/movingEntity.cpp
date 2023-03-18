@@ -27,65 +27,51 @@ MovingEntity::MovingEntity(const Position &position, const Sprite &sprite, int s
         up_(std::move(up)), down_(std::move(down))
 {}
 
-void MovingEntity::move(const Map &map, const Direction &direction)
+void MovingEntity::move(const Map &map, Direction direction)
 {
-    if(counter_.isActive())
+
+    if(counter_.isActive()) // Entity interrupted
     {
         counter_.increment();
         return;
     }
 
+    // Reset status
+    if(!isVisible()) show();
+
     // Direction must be initialized.
-    if (direction.isUninitialized()) return;
+    if (direction.isUninitialized())
+    {
+        if(previousDirection_.isUninitialized()) return;
+        direction = previousDirection_;
+    }
 
     // Get positions as pixels.
+    optional<Position> position;
     Position origin = getPosition();
-    Position destination = origin.moveIntoDirection(direction, speed_);
 
-    // Checks if the move is legal.
-    auto position = map.moveToCell(origin, destination, direction);
+    // Direction change.
+    if(direction.isTurn(previousDirection_))
+    {
+        Position destination = origin.moveIntoDirection(previousDirection_, speed_);
+        position = map.turnToCell(origin, destination, previousDirection_, direction);
+        if(!position) // Turn is illegal.
+            direction = previousDirection_; // Move into previous direction.
+    }
 
-    if (!position) return; // Move is illegal.
+    // Straight direction (or keeping same direction).
+    if(!direction.isTurn(previousDirection_))
+    {
+        Position destination = origin.moveIntoDirection(direction, speed_);
+        position = map.moveToCell(origin, destination, direction);
+        if (!position)
+            return; // Move is illegal.
+    }
 
     // Move is legal : updates the entity.
     animate(direction);
     setPosition(position.value());
     previousDirection_ = direction;
-}
-
-Direction MovingEntity::move(const Map &map, const Direction &direction, const Direction &turn)
-{
-
-    if(counter_.isActive())
-    {
-        counter_.increment();
-        return direction;
-    }
-
-    // Trivial cases that allows an instant direction change.
-    if (direction.isUninitialized() || direction == turn || direction.isSameAxis(turn))
-    {
-        move(map, turn);
-        return turn;
-    }
-
-    // Get positions as pixels.
-    Position origin = getPosition();
-    Position destination = origin.moveIntoDirection(direction, speed_);
-
-    // Checks if the turn is legal.
-    auto position = map.turnToCell(origin, destination, direction, turn);
-
-    if (!position) // Move is illegal.
-    {
-        move(map, direction); // Move towards to the original direction.
-        return direction;
-    }
-
-    // Turn is legal : updates the entity.
-    animate(turn);
-    setPosition(position.value());
-    return (previousDirection_ = turn);
 }
 
 void MovingEntity::animate(const Direction &direction)
@@ -110,4 +96,5 @@ void MovingEntity::reset(const Position &position)
     left_.reset();
     setSprite(left_.getSprite()); // default sprite
     setPosition(position); // reset position
+    status_ = EntityStatus::VISIBLE;
 }

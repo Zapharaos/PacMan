@@ -85,7 +85,7 @@ void ScoreBoard::writeHighScoreText( const shared_ptr<SDL_Renderer>& render,
     position.w = constants::BMP_CHARACTER_WIDTH * 2.5 ;
     position.h = constants::BMP_CHARACTER_HEIGHT * 2.5 ;
 
-    int offset = position.w + 1 ;
+    /*int offset = position.w + 1 ;
     //write H
     drawObject(render,texture, h_, position);
     //write I
@@ -114,7 +114,7 @@ void ScoreBoard::writeHighScoreText( const shared_ptr<SDL_Renderer>& render,
     drawObject(render,texture, r_, position);
     //write E
     position.x += offset ;
-    drawObject(render,texture, e_, position);
+    drawObject(render,texture, e_, position);*/
 }
 
 void ScoreBoard::initNumberSprites() {
@@ -193,7 +193,7 @@ void ScoreBoard::writeHighScorePoints(  const shared_ptr<SDL_Renderer>& render,
 
     for (SDL_Rect s : points_to_print ){
        // SDL_BlitScaled(plancheSprites.get(), &s, win_surf.get(), &position);
-        drawObject(render,texture,s,position);
+        /*drawObject(render,texture,s,position);*/
         position.x += offset ;
     }
 }
@@ -211,7 +211,7 @@ void ScoreBoard::writeScorePoints(const shared_ptr<SDL_Renderer>& render,
     int offset = constants::BMP_CHARACTER_WIDTH + 8 ;
 
     for (SDL_Rect s : points_to_print ){
-        drawObject(render,texture,s,position);
+        /*drawObject(render,texture,s,position);*/
         position.x += offset ;
     }
 }

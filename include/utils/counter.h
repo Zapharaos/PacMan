@@ -42,20 +42,15 @@ public:
      * @details Stops counting if conditions are met.
      */
     void increment() {
+        if(count_ == 0)
+            active_ = true;
         if((++count_) < cap_) return;
         active_ = false;
         count_ = 0;
     }
 
-    /** Increments and indicate if the current count is low.
-     * @see increment()
-     * @return true if less than half of the value was reached, else false.
-     */
-    bool incrementLowerHalf() {
-        auto isLowerHalf = (count_ < cap_/2);
-        increment();
-        return isLowerHalf;
-    }
+    [[nodiscard]] long getCount() const
+    { return count_;};
 
 };
 
