@@ -29,6 +29,4 @@ static SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
 static SDL_Rect extractNthElementColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
-void drawObject( shared_ptr<SDL_Renderer> render, shared_ptr<SDL_Texture> texture , SDL_Rect src_rect, SDL_Rect dst_rect  );
-
 #endif //PACMAN_UTILS_H

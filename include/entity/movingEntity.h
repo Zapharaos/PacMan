@@ -19,6 +19,15 @@
 class MovingEntity : public Entity
 {
 
+protected:
+
+    enum class MovingEntityStatus : underlying_type_t<EntityStatus> {
+        FROZEN,
+        ANIMATED, // frozen but still animate
+        DEAD // ?
+    };
+    // EntityStatus test = (EntityStatus)MovingEntityStatus::FROZEN;
+
 private:
 
     /** Speed per tick at which the entity is moving. */
@@ -82,16 +91,7 @@ public:
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards to.
      */
-    virtual void move(const Map &map, const Direction &direction);
-
-    /** If legal, turns towards a direction, else moves towards the original direction.
-     *
-     * @param map The board with all the cells.
-     * @param direction The direction the entity is moving towards to.
-     * @param turn The direction the entity wishes to move to.
-     * @return turn if it could change direction, else direction.
-     */
-    virtual Direction move(const Map &map, const Direction &direction, const Direction &turn);
+    void move(const Map &map, Direction direction);
 
     /** Switches between sprites depending on the direction.
      *

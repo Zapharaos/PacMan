@@ -19,37 +19,55 @@ Sprite sprite_energizer{{constants::BMP_POWER_START_X,
                         {0,         0},
                         {7 * 2 * 2, 7 * 2 * 2}};
 
+Sprite sprite_map_default{{constants::BMP_MAP_START_X, constants::BMP_MAP_START_Y,
+                   constants::BMP_MAP_WIDTH, constants::BMP_MAP_HEIGHT},
+                  {0, 0}, {constants::BMP_MAP_WIDTH * 4,
+                           constants::BMP_MAP_HEIGHT * 4}};
+
+Sprite sprite_map_blink{{540, constants::BMP_MAP_START_Y,
+                          constants::BMP_MAP_WIDTH, constants::BMP_MAP_HEIGHT},
+                  {0, 0}, {constants::BMP_MAP_WIDTH * 4,
+                                               constants::BMP_MAP_HEIGHT * 4}};
+
 Map::Map() = default;
 
 Map::Map(int width, int height, int cell_size,
          const vector<CellType> &cell_types) :
         width_(width), height_(height), cell_size_(cell_size)
 {
+    animation_ = {{sprite_map_default, sprite_map_blink}, false, 240/4/2};
+    sprite_ = sprite_map_default;
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            // shared_ptr<Song> p3(p2)
             Position position{{x, y}};
             CellType type = cell_types[x + width * y];
             if (type == CellType::PELLET)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = make_shared<Entity>(Entity{coordinates, sprite_pellet, true, (int) Score::PELLET});
-                auto cell = make_shared<Cell>(Cell{position, cell_size, type, entity});
+                auto entity = make_shared<Entity>(
+                        Entity{coordinates, sprite_pellet, true,
+                               (int) Score::PELLET});
+                auto cell = make_shared<Cell>(
+                        Cell{position, cell_size, type, entity});
                 cells_.emplace_back(cell);
                 cellsWithEntities_.emplace_back(cell);
             } else if (type == CellType::ENERGIZER)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = make_shared<Entity>(Entity{coordinates, sprite_energizer, true, (int) Score::ENERGIZER});
-                entity->count(30); // 60 fps => 15 shown - 15 hidden
-                auto cell = make_shared<Cell>(Cell{position, cell_size, type, entity});
+                auto entity = make_shared<Entity>(
+                        Entity{coordinates, sprite_energizer, true,
+                               (int) Score::ENERGIZER});
+                entity->count(15); // 60 fps => 15 shown - 15 hidden
+                auto cell = make_shared<Cell>(
+                        Cell{position, cell_size, type, entity});
                 cells_.emplace_back(cell);
                 cellsWithEntities_.emplace_back(cell);
-            }
-            else {
-                cells_.emplace_back(make_shared<Cell>(Cell{position, cell_size, type, nullptr}));
+            } else
+            {
+                cells_.emplace_back(make_shared<Cell>(
+                        Cell{position, cell_size, type, nullptr}));
             }
         }
     }
@@ -74,7 +92,8 @@ const vector<shared_ptr<Cell>> &Map::getCellsWithEntities() const
 }
 
 optional<Position>
-Map::turnToCell(const Position &origin, const Position &destination, const Direction &direction,
+Map::turnToCell(const Position &origin, const Position &destination,
+                const Direction &direction,
                 const Direction &turn) const
 {
     // Get cells at origin & destination
@@ -103,7 +122,8 @@ Map::turnToCell(const Position &origin, const Position &destination, const Direc
 }
 
 optional<Position>
-Map::moveToCell(const Position &origin, const Position &destination, const Direction &direction) const
+Map::moveToCell(const Position &origin, const Position &destination,
+                const Direction &direction) const
 {
 
     // Get cells at origin & destination
@@ -141,4 +161,19 @@ void Map::reset() const
     // Enables all cell entities back
     for (auto &cell: getCellsWithEntities())
         cell->getEntity()->setEnabled(true);
+}
+
+const SDL_Rect &Map::getSpriteImage() const
+{
+    return sprite_.getImage();
+}
+
+const SDL_Rect &Map::getSpritePosition() const
+{
+    return sprite_.getPosition();
+}
+
+void Map::animate()
+{
+    sprite_ = animation_.animate();
 }

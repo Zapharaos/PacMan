@@ -49,15 +49,18 @@ void Pacman::setDead(bool dead)
 void Pacman::animateDeath()
 {
 
-    if (death_.isOver())
-    { // end of animation
-        setDead(false);
-        death_.reset();
-        return;
-    }
+    if(!isDead()) return;
 
     // Updates sprite.
     setSprite(death_.animate());
+
+    // Animation is over.
+    if (death_.isOver())
+    {
+        setDead(false);
+        death_.reset();
+        hide();
+    }
 }
 
 void Pacman::reset(const Position &coordinates)

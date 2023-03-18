@@ -8,48 +8,44 @@
 
 #include <utility>
 #include <memory>
-#include "../game.h"
 #include "scoreBoard.h"
 #include "../utils/utils.h"
 
+/** Game visuals. */
 class Window {
+
 private :
 
-    // Width and height of the window
-    int window_width_{} ;
-    int window_height_{} ;
+    /** Window width. */
+    int width_{} ;
 
-    //Main window
-    std::shared_ptr<SDL_Window> window_ ;
-    //Windw surface
-    std::shared_ptr<SDL_Surface> win_surf_ ;
-    //Sprite file
-    std::shared_ptr<SDL_Surface> plancheSprites_ ;
-    //renderer to render our images
-    std::shared_ptr<SDL_Renderer> render_ ;
-    //To load image t graphics hardware memory
-    std::shared_ptr<SDL_Texture> texture_ ;
-    //Window Title
-    std::string title_ ;
-    //ScoreBoard Object
+    /** Window height. */
+    int height_{} ;
+
+    /** Window title. */
+    string title_ {};
+
+    /** Main window. */
+    shared_ptr<SDL_Window> window_ {};
+
+    /** Window surface. */
+    shared_ptr<SDL_Surface> win_surf_ {};
+
+    /** Sprites file. */
+    shared_ptr<SDL_Surface> plancheSprites_ {};
+
+    /** Renderer to display sprites. */
+    shared_ptr<SDL_Renderer> render_ {};
+
+    /** To load image t graphics hardware memory. */
+    shared_ptr<SDL_Texture> texture_ {};
+
+    /** ScoreBoard Object. */
     ScoreBoard scoreBoard_ {};
-
-    std::shared_ptr<Game> game_ ;
 
 public:
 
-    int count_ = 0;
-
-    int mapSwitchAmount = 14;
-    int mapSwitchCount = 0;
-    int mapTickDelay = 15;
-    int mapTickCount = 0;
-
-
-    SDL_Rect map_default = { constants::BMP_MAP_START_X,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
-    SDL_Rect map_switch = { 540,constants::BMP_MAP_START_Y, constants::BMP_MAP_WIDTH,constants::BMP_MAP_HEIGHT }; // x,y, w,h (0,0) en haut a gauche
     SDL_Rect bg_ = { constants::WINDOW_MAP_START_X,constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT }; // ici scale x4
-
     SDL_Rect ghost_scared = { 3,195, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
     SDL_Rect ghost_blinky_r = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
     SDL_Rect ghost_blinky_l = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
@@ -57,29 +53,41 @@ public:
     SDL_Rect ghost_blinky_d = { constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,constants::BMP_ENTITY_GHOST_HEIGHT };
     SDL_Rect ghost_blinky = { 32,32, constants::WINDOW_CELL_WIDTH,constants::WINDOW_CELL_HEIGHT };     // ici scale x2
 
-    Window(int windowWidth, int windowHeight, string title);
+    /** Default Window constructor. */
+    Window();
 
-    void createWindow(shared_ptr<Game> game);
+    /** Window constructor.
+     *
+     * @param width Window width.
+     * @param height Window height.
+     * @param title Window title.
+     */
+    Window(int width, int height, string title);
 
-    // fonction qui met à jour la surface de la fenetre "win_surf"
-    //void drawWindow(Game* game,Direction last);
+    /** Initialize the window. */
+    void init();
+
+    /** Clear the window. */
+    void clear();
+
+    /** Update the window. */
+    void update();
+
+    /** Draw an entity onto the window. */
+    template<typename T>
+    inline void draw(const T &entity)
+    {
+        SDL_Rect image = entity.getSpriteImage();
+        SDL_Rect position = entity.getSpritePosition();
+        SDL_RenderCopy(render_.get(), texture_.get(), &image, &position);
+    }
 
     void writeHighScore();
 
     void updateHighScore(int points);
 
-
-    [[nodiscard]] const shared_ptr<SDL_Window> &getWindow() const;
-
-
-    void drawWindow(Direction last);
-
-    void freeRessources();
-
-    virtual ~Window();
-
-    [[nodiscard]] const shared_ptr<SDL_Renderer> &getRender() const;
-
+    /** Free the window members. */
+    void free();
 };
 
 

@@ -1,100 +1,72 @@
 #include <SDL.h>
 
-#include <iostream>
-#include <memory>
 #include "../include/utils/constants.h"
 #include "../include/game.h"
-#include "../include/saveGame.h"
-#include "../include/display/window.h"
 
-Direction last;
-chrono::milliseconds tick (1000/60);
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    //Save game test
-    SaveGame::saveGameState(50, 50) ;
-    if (SDL_Init(SDL_INIT_VIDEO) != 0 )
-    {
-		std::cerr <<"Echec de l'initialisation de la SDL " << SDL_GetError() << std::endl;
-		return 1;
-    }
+    Game game = Game{constants::MAP_WIDTH, constants::MAP_HEIGHT,
+                     constants::WINDOW_CELL_HEIGHT,
+                     constants::PATH_FILE_PACMAN_MAP, constants::LIVES};
 
+    bool quit = false;
+    chrono::milliseconds tickTime(1000 / 60);
 
-    std::shared_ptr<Window> window_ = std::make_shared<Window> (constants::WINDOW_MAP_WIDTH,
-                                                constants::WINDOW_MAP_HEIGHT,
-                                                "Pacman");
-
-    std::shared_ptr<Game> game = std::make_shared<Game>     (constants::MAP_WIDTH, constants::MAP_HEIGHT,
-                                                             constants::WINDOW_CELL_HEIGHT, constants::PATH_FILE_PACMAN_MAP
-                                                        , constants::LIVES);
-    game->setHighScore( game->getSavedHighScore());
-    window_->createWindow(game);
-
-    // BOUCLE PRINCIPALE
-	bool quit = false;
-    bool paused = false;
+    int nbk;
+    const Uint8 *keys = SDL_GetKeyboardState(&nbk);
     SDL_Event event;
 
-    // Gestion du clavier
-    int nbk;
-    const Uint8* keys = SDL_GetKeyboardState(&nbk);
-
-	while (!quit)
-	{
-		while (SDL_PollEvent(&event))
-		{
-            if(event.type == SDL_QUIT) {
+    while (!quit)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
                 quit = true;
                 break;
-            } else if (event.type == SDL_KEYDOWN) {
-                if(event.key.keysym.sym == SDLK_SPACE && event.key.repeat == 0)
+            } else if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_SPACE && event.key.repeat == 0)
                 {
-                    StatusType statusType = game->getStatus();
-                    if(statusType == StatusType::RUNNING) // Pause
-                        game->setStatus(StatusType::PAUSED);
-                    else if(statusType == StatusType::PAUSED) // Resume
-                        game->setStatus(StatusType::RUNNING);
-                    paused = true;
+                    game.togglePause();
                     break;
                 }
             }
-		}
+        }
 
         auto start = chrono::steady_clock::now();
-
         SDL_PumpEvents(); // Get keys
+        Direction direction;
 
         // Exit
         if (keys[SDL_SCANCODE_ESCAPE])
             quit = true;
 
         // Movements
-        if(!paused && !quit && game->getStatus() == StatusType::RUNNING) {
-            if (keys[SDL_SCANCODE_LEFT])
-                last = game->move(last, Direction{DirectionType::LEFT});
-            else if (keys[SDL_SCANCODE_RIGHT])
-                last = game->move(last, Direction{DirectionType::RIGHT});
-            else if (keys[SDL_SCANCODE_UP])
-                last = game->move(last, Direction{DirectionType::UP});
-            else if (keys[SDL_SCANCODE_DOWN])
-                last = game->move(last, Direction{DirectionType::DOWN});
-            else
-                game->move(last);
-        }
+        if (keys[SDL_SCANCODE_LEFT])
+            direction.setDirection(DirectionType::LEFT);
+        else if (keys[SDL_SCANCODE_RIGHT])
+            direction.setDirection(DirectionType::RIGHT);
+        else if (keys[SDL_SCANCODE_UP])
+            direction.setDirection(DirectionType::UP);
+        else if (keys[SDL_SCANCODE_DOWN])
+            direction.setDirection(DirectionType::DOWN);
 
-        paused = false;
-
-        // AFFICHAGE
-        window_->drawWindow(last);
-        SDL_RenderPresent(window_->getRender().get());
+        // Handle game
+        game.tick(direction);
 
         // Cap to 60 frames per second.
         auto finish = chrono::steady_clock::now() - start;
-        if(tick > finish)
-            SDL_Delay(std::chrono::duration_cast<std::chrono::milliseconds> (tick - finish).count());
-	}
-    SDL_Quit(); // ON SORT
-    window_->freeRessources();
+        if (tickTime > finish)
+            SDL_Delay(chrono::duration_cast<chrono::milliseconds>(
+                    tickTime - finish).count());
+    }
+
+    // Save high score.
+    // TODO : write high score to file
+
+    // Leave game.
+    SDL_Quit();
+    game.quit();
     return 0;
 }

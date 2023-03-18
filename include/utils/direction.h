@@ -95,6 +95,11 @@ public:
                isVertical() == direction.isVertical();
     };
 
+    [[nodiscard]] inline bool isTurn(const Direction &direction) const
+    {
+        return direction_ != direction.direction_ && !isSameAxis(direction);
+    }
+
     /** Resets a direction */
     void reset();
 

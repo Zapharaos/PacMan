@@ -10,6 +10,7 @@
 #include "cell.h"
 #include "../entity/entity.h"
 #include "../utils/direction.h"
+#include "../display/animation.h"
 
 /** The board of a game. */
 class Map
@@ -35,6 +36,12 @@ private:
      * @details Shared with cells_ member.
      */
     vector<shared_ptr<Cell>> cellsWithEntities_;
+
+    /** Current map sprite. */
+    Sprite sprite_ {};
+
+    /** Animation when level up. */
+    Animation animation_ {};
 
 public:
 
@@ -94,8 +101,23 @@ public:
     [[nodiscard]] optional<Position>
     moveToCell(const Position &origin, const Position &destination, const Direction &direction) const;
 
+    /** Getter : Sprite's position on the bitmap.
+     *
+     * @see Sprite::getImage().
+     */
+    [[nodiscard]] const SDL_Rect &getSpriteImage() const;
+
+    /** Getter : Sprite's position when displayed on the window.
+     *
+     * @see Sprite::getPosition().
+     */
+    [[nodiscard]] const SDL_Rect &getSpritePosition() const;
+
     /** Resets the map to its original state */
     void reset() const;
+
+    /** Map blinking animation. */
+    void animate();
 };
 
 
