@@ -4,39 +4,14 @@
 
 #include "../../include/map/map.h"
 
-// TODO : clean up
-Sprite sprite_pellet{{constants::BMP_POINT_START_X,
-                                 constants::BMP_POINT_START_Y,
-                             constants::BMP_POINT_SIZE,
-                             constants::BMP_POINT_SIZE},
-                     {3 * 2 * 2, 3 * 2 * 2},
-                     {2 * 2 * 2, 2 * 2 * 2}};
-
-Sprite sprite_energizer{{constants::BMP_POWER_START_X,
-                                    constants::BMP_POWER_START_Y,
-                                constants::BMP_POWER_SIZE,
-                                constants::BMP_POWER_SIZE},
-                        {0,         0},
-                        {7 * 2 * 2, 7 * 2 * 2}};
-
-Sprite sprite_map_default{{constants::BMP_MAP_START_X, constants::BMP_MAP_START_Y,
-                   constants::BMP_MAP_WIDTH, constants::BMP_MAP_HEIGHT},
-                  {0, 0}, {constants::BMP_MAP_WIDTH * 4,
-                           constants::BMP_MAP_HEIGHT * 4}};
-
-Sprite sprite_map_blink{{540, constants::BMP_MAP_START_Y,
-                          constants::BMP_MAP_WIDTH, constants::BMP_MAP_HEIGHT},
-                  {0, 0}, {constants::BMP_MAP_WIDTH * 4,
-                                               constants::BMP_MAP_HEIGHT * 4}};
-
 Map::Map() = default;
 
 Map::Map(int width, int height, int cell_size,
          const vector<CellType> &cell_types) :
         width_(width), height_(height), cell_size_(cell_size)
 {
-    animation_ = {{sprite_map_default, sprite_map_blink}, false, 240/4/2};
-    sprite_ = sprite_map_default;
+    animation_ = {{map_default, map_blink}, false, 240/4/2};
+    sprite_ = map_default;
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
@@ -47,7 +22,7 @@ Map::Map(int width, int height, int cell_size,
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
                 auto entity = make_shared<Entity>(
-                        Entity{coordinates, sprite_pellet, true,
+                        Entity{coordinates, pellet, true,
                                (int) Score::PELLET});
                 auto cell = make_shared<Cell>(
                         Cell{position, cell_size, type, entity});
@@ -57,7 +32,7 @@ Map::Map(int width, int height, int cell_size,
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
                 auto entity = make_shared<Entity>(
-                        Entity{coordinates, sprite_energizer, true,
+                        Entity{coordinates, energizer, true,
                                (int) Score::ENERGIZER});
                 entity->count(15); // 60 fps => 15 shown - 15 hidden
                 auto cell = make_shared<Cell>(
