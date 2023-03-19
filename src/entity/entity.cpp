@@ -67,6 +67,12 @@ const SDL_Rect &Entity::getSpritePosition() const
     return sprite_.getPosition();
 }
 
+pair<int, int> Entity::getSpriteSize() const
+{
+    auto spritePosition = getSpritePosition();
+    return {spritePosition.w, spritePosition.h};
+}
+
 void Entity::count(long frames) {
     counter_.start(frames);
 }

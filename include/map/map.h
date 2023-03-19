@@ -86,7 +86,7 @@ public:
       * @return the effective destination if the move is legal, else it returns nullptr.
       */
     [[nodiscard]] optional<Position>
-    turnToCell(const Position &origin, const Position &destination, const Direction &direction,
+    turn(const Position &origin, const Position &destination, const Direction &direction,
                const Direction &turn) const;
 
     /** If legal, moves into a direction.
@@ -100,7 +100,23 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] optional<Position>
-    moveToCell(const Position &origin, const Position &destination, const Direction &direction) const;
+    move(const Position &origin, const Position &destination, const Direction &direction) const;
+
+    /** Tries to warp.
+     *
+     * @param destination The destination position.
+     * @param corner The opposite corner of the current position.
+     * @return The position after trying to warp.
+     */
+    [[nodiscard]] optional<Position> warp(Position destination, Position corner) const;
+
+    /** Indicates whether a move is a warp.
+     *
+     * @param origin Position of origin.
+     * @param destination Position of destination.
+     * @return true if warp, else false.
+     */
+    [[nodiscard]] bool isWarping(const Position &origin, const Position &destination) const;
 
     /** Getter : Sprite's position on the bitmap.
      *

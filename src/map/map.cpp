@@ -67,10 +67,15 @@ const vector<shared_ptr<Cell>> &Map::getCellsWithEntities() const
 }
 
 optional<Position>
-Map::turnToCell(const Position &origin, const Position &destination,
+Map::turn(const Position &origin, const Position &destination,
                 const Direction &direction,
                 const Direction &turn) const
 {
+
+    // Can't turn while warping.
+    if(isWarping(origin, destination))
+        return {};
+
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
     auto destination_position = destination.getPositionUnscaled(cell_size_);
@@ -93,11 +98,11 @@ Map::turnToCell(const Position &origin, const Position &destination,
                    origin.getSingleAxisDistance(edge);
 
     // Move into new direction
-    return moveToCell(edge, edge.moveIntoDirection(turn, distance), turn);
+    return move(edge, edge.moveIntoDirection(turn, distance), turn);
 }
 
 optional<Position>
-Map::moveToCell(const Position &origin, const Position &destination,
+Map::move(const Position &origin, const Position &destination,
                 const Direction &direction) const
 {
 
@@ -106,6 +111,10 @@ Map::moveToCell(const Position &origin, const Position &destination,
     auto destination_position = destination.getPositionUnscaled(cell_size_);
     shared_ptr<Cell> origin_cell = getCell(origin_position);
     shared_ptr<Cell> destination_cell = getCell(destination_position);
+
+    // One of the cells is out of bounds : warp cell.
+    if(!origin_cell || !destination_cell)
+        return destination;
 
     // Destination not directly accessible : move illegal
     if (origin_cell != destination_cell &&
@@ -119,8 +128,8 @@ Map::moveToCell(const Position &origin, const Position &destination,
     else
         next_cell = getCell(origin_position.getNeighbor(direction));
 
-    // Not a wall : move to destination
-    if (!next_cell->isWall())
+    // Ouf of bounds (warp) or is not a wall : move to destination
+    if (!next_cell || !next_cell->isWall())
         return destination;
 
     // Facing wall & already in the corner of the cell : can't move further
@@ -129,6 +138,34 @@ Map::moveToCell(const Position &origin, const Position &destination,
 
     // Facing wall & not in the corner yet : get into the corner of the cell
     return origin_cell->getPositionScaled();
+}
+
+optional<Position> Map::warp(Position destination, Position corner) const
+{
+    auto destination_position = destination.getPositionUnscaled(cell_size_);
+    auto corner_position = corner.getPositionUnscaled(cell_size_);
+    shared_ptr<Cell> destination_cell = getCell(destination_position);
+    shared_ptr<Cell> corner_cell = getCell(corner_position);
+
+    // Positions are completely out ouf bounds, time to warp.
+    if(destination_cell == nullptr && corner_cell == nullptr)
+        return destination.getOpposite(width_*cell_size_, height_*cell_size_);
+
+    // Keep moving until the warp position is reached.
+    return destination;
+}
+
+bool Map::isWarping(const Position &origin, const Position &destination) const
+{
+    // Get cells at origin & destination
+    auto origin_position = origin.getPositionUnscaled(cell_size_);
+    auto destination_position = destination.getPositionUnscaled(cell_size_);
+    shared_ptr<Cell> origin_cell = getCell(origin_position);
+    shared_ptr<Cell> destination_cell = getCell(destination_position);
+
+    // Destination must be out of bounds to be considered as a warp.
+    // Origin must be either a warp cell or out of bound as well.
+    return (!origin_cell || origin_cell->isWarp()) && !destination_cell;
 }
 
 void Map::reset() const

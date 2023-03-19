@@ -104,6 +104,24 @@ public:
      */
     [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
 
+    /** Shifts the position by a certain amount.
+     *
+     * @param x Distance on the abscissa axis.
+     * @param y Distance on the ordinate axis.
+     * @return the position shifted.
+     */
+    [[nodiscard]] Position shift(int x, int y) const;
+
+    /** Gets the position's limit at the opposite.
+     *
+     * @pre Position's origin must already be out of bounds.
+     *
+     * @param width The maximum width.
+     * @param height The maximum height.
+     * @return The position at the opposite.
+     */
+    [[nodiscard]] Position getOpposite(int width, int height) const;
+
     /**
      * [Debug] : Prints the position.
      */
