@@ -100,6 +100,28 @@ Position Position::moveIntoDirection(const Direction &direction, int distance) c
     return Position{position};
 }
 
+Position Position::shift(int x, int y) const
+{
+    return Position{{position_.first+x, position_.second+y}};
+}
+
+Position Position::getOpposite(int width, int height) const
+{
+    auto x = position_.first;
+    auto y = position_.second;
+
+    if(x < 0) // Opposite on the right
+        x = width - 1;
+    if (y < 0) // Opposite on the top
+        y = height - 1;
+    if (x > width - 1) // Opposite on the left
+        x = 0;
+    if (y > height - 1) // Opposite on the bottom
+        y = 0;
+
+    return Position{{x, y}};
+}
+
 void Position::print() const
 {
     cout << "(" << position_.first << ", " << position_.second << ")" << endl;

@@ -106,6 +106,12 @@ public:
      */
     [[nodiscard]] const SDL_Rect &getSpritePosition() const;
 
+    /** Getter : Sprite's size when displayed on the window.
+     *
+     * @return the sprite size when displayed on the window.
+     */
+    [[nodiscard]] pair<int, int> getSpriteSize() const;
+
     /** Count for a certain amount of frames.
      *
      * @see Counter::start()

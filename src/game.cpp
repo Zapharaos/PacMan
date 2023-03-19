@@ -186,10 +186,10 @@ void Game::handleEntitiesCollisions()
     auto cell_position = pacman_position.getPositionUnscaled(
             map_.getCellSize());
     auto cell = map_.getCell(cell_position);
-    auto entity = cell->getEntity();
+    shared_ptr<Entity> entity;
 
     // Cell has an active entity that collided with Pacman.
-    if (cell && entity && entity->isEnabled() &&
+    if (cell && (entity = cell->getEntity()) && entity->isEnabled() &&
         SDL_HasIntersection(&pacman, &entity->getSpritePosition()))
     {
         // Disables entity.

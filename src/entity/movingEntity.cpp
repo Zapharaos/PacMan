@@ -43,27 +43,37 @@ void MovingEntity::move(const Map &map, Direction direction)
     if (direction.isUninitialized())
     {
         if(previousDirection_.isUninitialized()) return;
-        direction = previousDirection_;
+        direction = previousDirection_; // Repeat previous movement.
     }
 
     // Get positions as pixels.
     optional<Position> position;
     Position origin = getPosition();
+    Position destination;
 
     // Direction change.
     if(direction.isTurn(previousDirection_))
     {
-        Position destination = origin.moveIntoDirection(previousDirection_, speed_);
-        position = map.turnToCell(origin, destination, previousDirection_, direction);
+        destination = origin.moveIntoDirection(previousDirection_, speed_);
+        position = map.turn(origin, destination, previousDirection_, direction);
         if(!position) // Turn is illegal.
             direction = previousDirection_; // Move into previous direction.
     }
 
-    // Straight direction (or keeping same direction).
-    if(!direction.isTurn(previousDirection_))
+    destination = origin.moveIntoDirection(direction, speed_);
+
+    // Warping.
+    if(map.isWarping(origin, destination) && direction == previousDirection_)
     {
-        Position destination = origin.moveIntoDirection(direction, speed_);
-        position = map.moveToCell(origin, destination, direction);
+        auto size = getSpriteSize();
+        auto corner = destination.shift(size.first, size.second);
+        position = map.warp(destination, corner);
+    }
+
+    // No movements yet : move straight direction (or keeping same direction).
+    if(!position)
+    {
+        position = map.move(origin, destination, direction);
         if (!position)
             return; // Move is illegal.
     }
