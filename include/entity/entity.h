@@ -6,14 +6,14 @@
 #define PEC_MEN_ENTITY_H
 
 #include <SDL.h>
+
 #include <string>
 #include <iostream>
 #include <utility>
-#include "../utils/constants.h"
+
+#include "../config/constants.h"
 #include "../display/sprite.h"
 #include "../utils/counter.h"
-
-using namespace std;
 
 /** An object located on the map. */
 class Entity
@@ -22,15 +22,15 @@ class Entity
 protected:
 
     enum class EntityStatus {
-        VISIBLE,
-        HIDDEN
+        kVisible,
+        kHidden
     };
 
     /** Counts a number of frames. */
     Counter counter_ {};
 
     /** Entity status. */
-    EntityStatus status_ {EntityStatus::VISIBLE};
+    EntityStatus status_ {EntityStatus::kVisible};
 
 private:
 
@@ -110,7 +110,7 @@ public:
      *
      * @return the sprite size when displayed on the window.
      */
-    [[nodiscard]] pair<int, int> getSpriteSize() const;
+    [[nodiscard]] std::pair<int, int> getSpriteSize() const;
 
     /** Count for a certain amount of frames.
      *

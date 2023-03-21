@@ -7,11 +7,12 @@
 
 #include <vector>
 #include <memory>
+
 #include "cell.h"
 #include "../entity/entity.h"
 #include "../utils/direction.h"
 #include "../display/animation.h"
-#include "../utils/init_sprites.h"
+#include "../config/init_sprites.h"
 
 /** The board of a game. */
 class Map
@@ -31,12 +32,12 @@ private:
     /** List of all cells.
      * @details Cells with entities are shared with cellsWithEntities_ member.
      */
-    vector<shared_ptr<Cell>> cells_;
+    std::vector<std::shared_ptr<Cell>> cells_;
 
     /** Sub list of all cells with entities.
      * @details Shared with cells_ member.
      */
-    vector<shared_ptr<Cell>> cellsWithEntities_;
+    std::vector<std::shared_ptr<Cell>> cells_with_entities_;
 
     /** Current map sprite. */
     Sprite sprite_ {};
@@ -59,7 +60,7 @@ public:
      * @param cell_types List of all cells type.
      */
     Map(int width, int height, int cell_size,
-        const vector<CellType> &cell_types);
+        const std::vector<CellType> &cell_types);
 
     /** Getter : Size of a cell. */
     [[nodiscard]] int getCellSize() const;
@@ -69,10 +70,10 @@ public:
      * @param position
      * @return the cell at position.
      */
-    [[nodiscard]] shared_ptr<Cell> getCell(const Position &position) const;
+    [[nodiscard]] std::shared_ptr<Cell> getCell(const Position &position) const;
 
     /** Getter : Sub list of all cells with entities. */
-    [[nodiscard]] const vector<shared_ptr<Cell>> &getCellsWithEntities() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCellsWithEntities() const;
 
     /** If legal, turns into a direction.
       *
@@ -85,7 +86,7 @@ public:
       *
       * @return the effective destination if the move is legal, else it returns nullptr.
       */
-    [[nodiscard]] optional<Position>
+    [[nodiscard]] std::optional<Position>
     turn(const Position &origin, const Position &destination, const Direction &direction,
                const Direction &turn) const;
 
@@ -99,7 +100,7 @@ public:
      *
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
-    [[nodiscard]] optional<Position>
+    [[nodiscard]] std::optional<Position>
     move(const Position &origin, const Position &destination, const Direction &direction) const;
 
     /** Tries to warp.
@@ -108,7 +109,7 @@ public:
      * @param corner The opposite corner of the current position.
      * @return The position after trying to warp.
      */
-    [[nodiscard]] optional<Position> warp(Position destination, Position corner) const;
+    [[nodiscard]] std::optional<Position> warp(Position destination, Position corner) const;
 
     /** Indicates whether a move is a warp.
      *

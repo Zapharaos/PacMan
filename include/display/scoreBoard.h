@@ -4,13 +4,14 @@
 
 #ifndef PACMAN_SCOREBOARD_H
 #define PACMAN_SCOREBOARD_H
-#include "extractor.h"
-#include "../utils/constants.h"
-#include "../utils/utils.h"
-#include "../saveGame.h"
+
 #include <SDL.h>
+
 #include <string>
 #include <memory>
+
+#include "../config/constants.h"
+#include "../utils/utils.h"
 
 /**
  * Score Board display
@@ -29,7 +30,7 @@ public:
 
     ScoreBoard();
 
-    ScoreBoard(int width, int height, const vector<SDL_Rect> &numbers);
+    ScoreBoard(int width, int height, std::vector<SDL_Rect> numbers);
 
     /////////// Getters and setters ///////////
 
@@ -42,8 +43,8 @@ public:
      * @param win_surf
      * @param plancheSprites
      */
-     void writeHighScoreText(  const shared_ptr<SDL_Renderer>& render,
-                               const shared_ptr<SDL_Texture>& texture);
+     void writeHighScoreText(  const std::shared_ptr<SDL_Renderer>& render,
+                               const std::shared_ptr<SDL_Texture>& texture);
 
     /**
      * initNumberSprites
@@ -66,8 +67,8 @@ public:
  * @param texture
  * @param points
  */
-    void writeHighScorePoints(  const shared_ptr<SDL_Renderer>& render,
-                                const shared_ptr<SDL_Texture>& texture,
+    void writeHighScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
+                                const std::shared_ptr<SDL_Texture>& texture,
                                 int points);
 
 /**
@@ -76,8 +77,8 @@ public:
  * @param texture
  * @param points
  */
-    void writeScorePoints(  const shared_ptr<SDL_Renderer>& render,
-                            const shared_ptr<SDL_Texture>& texture,
+    void writeScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
+                            const std::shared_ptr<SDL_Texture>& texture,
                             int points);
     /**
      * getSavedHighScore

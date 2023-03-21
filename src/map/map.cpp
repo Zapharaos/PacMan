@@ -7,41 +7,41 @@
 Map::Map() = default;
 
 Map::Map(int width, int height, int cell_size,
-         const vector<CellType> &cell_types) :
+         const std::vector<CellType> &cell_types) :
         width_(width), height_(height), cell_size_(cell_size)
 {
     animation_ = {{map_default, map_blink}, false, 240/4/2};
     sprite_ = map_default;
-    for (int y = 0; y < height; y++)
+    for (int y = 0; y < height; ++y)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width; ++x)
         {
             Position position{{x, y}};
-            CellType type = cell_types[x + width * y];
-            if (type == CellType::PELLET)
+            auto type = cell_types[x + width * y];
+            if (type == CellType::kPellet)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = make_shared<Entity>(
+                auto entity = std::make_shared<Entity>(
                         Entity{coordinates, pellet, true,
-                               (int) Score::PELLET});
-                auto cell = make_shared<Cell>(
+                               static_cast<int> (Score::kPellet)});
+                auto cell = std::make_shared<Cell>(
                         Cell{position, cell_size, type, entity});
                 cells_.emplace_back(cell);
-                cellsWithEntities_.emplace_back(cell);
-            } else if (type == CellType::ENERGIZER)
+                cells_with_entities_.emplace_back(cell);
+            } else if (type == CellType::kEnergizer)
             {
                 Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = make_shared<Entity>(
+                auto entity = std::make_shared<Entity>(
                         Entity{coordinates, energizer, true,
-                               (int) Score::ENERGIZER});
+                               static_cast<int> (Score::kEnergizer)});
                 entity->count(15); // 60 fps => 15 shown - 15 hidden
-                auto cell = make_shared<Cell>(
+                auto cell = std::make_shared<Cell>(
                         Cell{position, cell_size, type, entity});
                 cells_.emplace_back(cell);
-                cellsWithEntities_.emplace_back(cell);
+                cells_with_entities_.emplace_back(cell);
             } else
             {
-                cells_.emplace_back(make_shared<Cell>(
+                cells_.emplace_back(std::make_shared<Cell>(
                         Cell{position, cell_size, type, nullptr}));
             }
         }
@@ -54,19 +54,19 @@ int Map::getCellSize() const
     return cell_size_;
 }
 
-shared_ptr<Cell> Map::getCell(const Position &position) const
+std::shared_ptr<Cell> Map::getCell(const Position &position) const
 {
     if (position.isOutOfBounds(width_, height_))
         return nullptr;
     return cells_.at(position.getAbscissa() + position.getOrdinate() * width_);
 }
 
-const vector<shared_ptr<Cell>> &Map::getCellsWithEntities() const
+const std::vector<std::shared_ptr<Cell>> &Map::getCellsWithEntities() const
 {
-    return cellsWithEntities_;
+    return cells_with_entities_;
 }
 
-optional<Position>
+std::optional<Position>
 Map::turn(const Position &origin, const Position &destination,
                 const Direction &direction,
                 const Direction &turn) const
@@ -79,8 +79,8 @@ Map::turn(const Position &origin, const Position &destination,
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
     auto destination_position = destination.getPositionUnscaled(cell_size_);
-    shared_ptr<Cell> origin_cell = getCell(origin_position);
-    shared_ptr<Cell> destination_cell = getCell(destination_position);
+    auto origin_cell = getCell(origin_position);
+    auto destination_cell = getCell(destination_position);
 
     // Get turning position (edge)
     Position edge;
@@ -94,14 +94,14 @@ Map::turn(const Position &origin, const Position &destination,
         return {};
 
     // Get the rest of the distance to travel
-    int distance = origin.getSingleAxisDistance(destination) -
+    auto distance = origin.getSingleAxisDistance(destination) -
                    origin.getSingleAxisDistance(edge);
 
     // Move into new direction
     return move(edge, edge.moveIntoDirection(turn, distance), turn);
 }
 
-optional<Position>
+std::optional<Position>
 Map::move(const Position &origin, const Position &destination,
                 const Direction &direction) const
 {
@@ -109,8 +109,8 @@ Map::move(const Position &origin, const Position &destination,
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
     auto destination_position = destination.getPositionUnscaled(cell_size_);
-    shared_ptr<Cell> origin_cell = getCell(origin_position);
-    shared_ptr<Cell> destination_cell = getCell(destination_position);
+    auto origin_cell = getCell(origin_position);
+    auto destination_cell = getCell(destination_position);
 
     // One of the cells is out of bounds : warp cell.
     if(!origin_cell || !destination_cell)
@@ -122,11 +122,7 @@ Map::move(const Position &origin, const Position &destination,
         return {};
 
     // Get next cell : in order to check for walls
-    shared_ptr<Cell> next_cell;
-    if (direction.isLeftOrUp())
-        next_cell = destination_cell;
-    else
-        next_cell = getCell(origin_position.getNeighbor(direction));
+    auto next_cell = direction.isLeftOrUp() ? destination_cell : getCell(origin_position.getNeighbor(direction));
 
     // Ouf of bounds (warp) or is not a wall : move to destination
     if (!next_cell || !next_cell->isWall())
@@ -140,12 +136,12 @@ Map::move(const Position &origin, const Position &destination,
     return origin_cell->getPositionScaled();
 }
 
-optional<Position> Map::warp(Position destination, Position corner) const
+std::optional<Position> Map::warp(Position destination, Position corner) const
 {
     auto destination_position = destination.getPositionUnscaled(cell_size_);
     auto corner_position = corner.getPositionUnscaled(cell_size_);
-    shared_ptr<Cell> destination_cell = getCell(destination_position);
-    shared_ptr<Cell> corner_cell = getCell(corner_position);
+    auto destination_cell = getCell(destination_position);
+    auto corner_cell = getCell(corner_position);
 
     // Positions are completely out ouf bounds, time to warp.
     if(destination_cell == nullptr && corner_cell == nullptr)
@@ -160,8 +156,8 @@ bool Map::isWarping(const Position &origin, const Position &destination) const
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
     auto destination_position = destination.getPositionUnscaled(cell_size_);
-    shared_ptr<Cell> origin_cell = getCell(origin_position);
-    shared_ptr<Cell> destination_cell = getCell(destination_position);
+    auto origin_cell = getCell(origin_position);
+    auto destination_cell = getCell(destination_position);
 
     // Destination must be out of bounds to be considered as a warp.
     // Origin must be either a warp cell or out of bound as well.

@@ -42,28 +42,28 @@ void MovingEntity::move(const Map &map, Direction direction)
     // Direction must be initialized.
     if (direction.isUninitialized())
     {
-        if(previousDirection_.isUninitialized()) return;
-        direction = previousDirection_; // Repeat previous movement.
+        if(previous_direction_.isUninitialized()) return;
+        direction = previous_direction_; // Repeat previous movement.
     }
 
     // Get positions as pixels.
-    optional<Position> position;
-    Position origin = getPosition();
+    std::optional<Position> position;
+    auto origin = getPosition();
     Position destination;
 
     // Direction change.
-    if(direction.isTurn(previousDirection_))
+    if(direction.isTurn(previous_direction_))
     {
-        destination = origin.moveIntoDirection(previousDirection_, speed_);
-        position = map.turn(origin, destination, previousDirection_, direction);
+        destination = origin.moveIntoDirection(previous_direction_, speed_);
+        position = map.turn(origin, destination, previous_direction_, direction);
         if(!position) // Turn is illegal.
-            direction = previousDirection_; // Move into previous direction.
+            direction = previous_direction_; // Move into previous direction.
     }
 
     destination = origin.moveIntoDirection(direction, speed_);
 
     // Warping.
-    if(map.isWarping(origin, destination) && direction == previousDirection_)
+    if(map.isWarping(origin, destination) && direction == previous_direction_)
     {
         auto size = getSpriteSize();
         auto corner = destination.shift(size.first, size.second);
@@ -81,13 +81,13 @@ void MovingEntity::move(const Map &map, Direction direction)
     // Move is legal : updates the entity.
     animate(direction);
     setPosition(position.value());
-    previousDirection_ = direction;
+    previous_direction_ = direction;
 }
 
 void MovingEntity::animate(const Direction &direction)
 {
     // Nothing to animate yet.
-    bool restart = previousDirection_ != direction;
+    bool restart = previous_direction_ != direction;
 
     // Gets the new sprite.
     if (direction.isLeft())
@@ -102,9 +102,9 @@ void MovingEntity::animate(const Direction &direction)
 
 void MovingEntity::reset(const Position &position)
 {
-    previousDirection_.reset();
+    previous_direction_.reset();
     left_.reset();
     setSprite(left_.getSprite()); // default sprite
     setPosition(position); // reset position
-    status_ = EntityStatus::VISIBLE;
+    status_ = EntityStatus::kVisible;
 }

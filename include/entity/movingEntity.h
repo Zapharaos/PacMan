@@ -6,7 +6,9 @@
 #define PACMAN_MOVINGENTITY_H
 
 #include <SDL.h>
+
 #include <vector>
+
 #include "entity.h"
 #include "../map/map.h"
 #include "../utils/direction.h"
@@ -21,10 +23,10 @@ class MovingEntity : public Entity
 
 protected:
 
-    enum class MovingEntityStatus : underlying_type_t<EntityStatus> {
-        FROZEN,
-        ANIMATED, // frozen but still animate
-        DEAD // ?
+    enum class MovingEntityStatus : std::underlying_type_t<EntityStatus> {
+        kFrozen,
+        kAnimated, // frozen but still animate
+        kDead // ?
     };
     // EntityStatus test = (EntityStatus)MovingEntityStatus::FROZEN;
 
@@ -47,7 +49,7 @@ private:
 
     /** Previous direction.
      * @details Used to determine a swap of animation. */
-    Direction previousDirection_{};
+    Direction previous_direction_{};
 
 public:
 

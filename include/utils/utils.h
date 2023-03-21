@@ -7,26 +7,27 @@
 
 #include <utility>
 #include <vector>
-#include "../map/cell.h"
-#include "json.hpp"
 #include <array>
 
-vector<CellType> loadCellTypesFromFile(const string &file_path);
+#include "json.hpp"
+#include "../map/cell.h"
 
-static void saveGameState(int high_score, int round);
-static std::string  getHighScore();
-static std::string getRound();
+std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
-static std::vector <SDL_Rect> extractRowFromMap(int width, int height, int
+void saveGameState(int high_score, int round);
+std::string  getHighScore();
+std::string getRound();
+
+std::vector <SDL_Rect> extractRowFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
-static std::vector <SDL_Rect> extractColumnFromMap(int width, int height, int
+std::vector <SDL_Rect> extractColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
-static SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
+SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
                                             int start_x, int start_y, int offset);
 
-static SDL_Rect extractNthElementColumnFromMap(int width, int height, int
+SDL_Rect extractNthElementColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
 #endif //PACMAN_UTILS_H

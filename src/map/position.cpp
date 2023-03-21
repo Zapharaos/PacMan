@@ -2,13 +2,15 @@
 // Created by mfrei on 10/03/2023.
 //
 
+#include "../../include/map/position.h"
+
 #include <iostream>
 #include <cmath>
-#include "../../include/map/position.h"
+#include <utility>
 
 Position::Position() = default;
 
-Position::Position(const pair<int, int> &position) : position_(position)
+Position::Position(std::pair<int, int> position) : position_(std::move(position))
 {}
 
 bool Position::operator==(const Position &rhs) const
@@ -63,8 +65,8 @@ Position Position::getPositionScaled(int scale) const
 
 Position Position::getPositionUnscaled(int scale) const
 {
-    float x = (float) getAbscissa() / (float) scale;
-    float y = (float) getOrdinate() / (float) scale;
+    auto x = getAbscissa() / scale;
+    auto y = getOrdinate() / scale;
     return Position{{floor(x), floor(y)}};
 }
 
@@ -80,13 +82,13 @@ Position Position::getNeighbor(const Direction &direction) const
 {
     auto position = position_;
     if (direction.isLeft())
-        position.first--;
+        --position.first;
     else if (direction.isRight())
-        position.first++;
+        ++position.first;
     else if (direction.isUp())
-        position.second--;
+        --position.second;
     else if (direction.isDown())
-        position.second++;
+        ++position.second;
     return Position{position};
 }
 
@@ -124,7 +126,7 @@ Position Position::getOpposite(int width, int height) const
 
 void Position::print() const
 {
-    cout << "(" << position_.first << ", " << position_.second << ")" << endl;
+    std::cout << "(" << position_.first << ", " << position_.second << ")" << std::endl;
 }
 
 

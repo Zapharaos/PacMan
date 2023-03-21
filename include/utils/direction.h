@@ -7,16 +7,14 @@
 
 #include <iostream>
 
-using namespace std;
-
 /** Direction something is moving towards to. */
 enum class DirectionType
 {
-    UNINITIALIZED,
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
+    kUninitialized,
+    kLeft,
+    kRight,
+    kUp,
+    kDown
 };
 
 /** Direction something is moving towards to. */
@@ -26,10 +24,10 @@ class Direction
 private:
 
     /** Direction taken. */
-    DirectionType direction_{DirectionType::UNINITIALIZED};
+    DirectionType direction_{DirectionType::kUninitialized};
 
     /** Is moving towards left / top. */
-    bool isLeftOrUp_ = false;
+    bool left_or_up_ = false;
 
 public:
 
@@ -56,36 +54,36 @@ public:
 
     /** Indicates if the direction is uninitialized. */
     [[nodiscard]] inline bool isUninitialized() const
-    { return direction_ == DirectionType::UNINITIALIZED; };
+    { return direction_ == DirectionType::kUninitialized; };
 
     /** Indicates if direction is left. */
     [[nodiscard]] inline bool isLeft() const
-    { return direction_ == DirectionType::LEFT; };
+    { return direction_ == DirectionType::kLeft; };
 
     /** Indicates if direction is right. */
     [[nodiscard]] inline bool isRight() const
-    { return direction_ == DirectionType::RIGHT; };
+    { return direction_ == DirectionType::kRight; };
 
     /** Indicates if direction is up. */
     [[nodiscard]] inline bool isUp() const
-    { return direction_ == DirectionType::UP; };
+    { return direction_ == DirectionType::kUp; };
 
     /** Indicates if direction is down. */
     [[nodiscard]] inline bool isDown() const
-    { return direction_ == DirectionType::DOWN; };
+    { return direction_ == DirectionType::kDown; };
 
     /** Indicates if direction is horizontal. */
     [[nodiscard]] inline bool isHorizontal() const
     {
-        return direction_ == DirectionType::LEFT ||
-               direction_ == DirectionType::RIGHT;
+        return direction_ == DirectionType::kLeft ||
+               direction_ == DirectionType::kRight;
     };
 
     /** Indicates if direction is vertical. */
     [[nodiscard]] inline bool isVertical() const
     {
-        return direction_ == DirectionType::UP ||
-               direction_ == DirectionType::DOWN;
+        return direction_ == DirectionType::kUp ||
+               direction_ == DirectionType::kDown;
     };
 
     /** Indicates if both directions are moving on the same axis (i.e. vertical or horizontal). */

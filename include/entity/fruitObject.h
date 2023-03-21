@@ -8,10 +8,9 @@
 #include <utility>
 #include <set>
 #include <vector>
+
 #include "../display/sprite.h"
 #include "../display/animation.h"
-
-using namespace std;
 
 class FruitObject
 {
@@ -22,7 +21,7 @@ private :
     int points_{};
 
     /** Levels at which the fruit can be displayed. */
-    set<int> levels_{};
+    std::set<int> levels_{};
 
     /** Sprites to switch between when the fruit is displayed. */
     Animation animation_{};
@@ -38,14 +37,14 @@ public:
      * @param levels Levels at which the fruit can be displayed.
      * @param levels Sprites to switch between when the fruit is displayed.
      */
-    FruitObject(int points, const set<int> &levels,
+    FruitObject(int points, std::set<int> levels,
                 Animation animation);
 
     /** Getter : Points awarded when the fruit is eaten. */
     [[nodiscard]] int getPoints() const;
 
     /** Getter : Levels at which the fruit can be displayed. */
-    [[nodiscard]] const set<int> &getLevels() const;
+    [[nodiscard]] const std::set<int> &getLevels() const;
 
     /** Getter : Sprites to switch between when the fruit is displayed. */
     [[nodiscard]] const Animation &getAnimation() const;

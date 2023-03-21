@@ -5,11 +5,11 @@
 #ifndef PACMAN_ANIMATION_H
 #define PACMAN_ANIMATION_H
 
+#include <vector>
+#include <optional>
 
 #include "sprite.h"
 #include "../utils/counter.h"
-#include <vector>
-#include <optional>
 
 /** Sprites to switch between when displayed. */
 class Animation {
@@ -17,19 +17,19 @@ class Animation {
 private:
 
     /** Sprites to switch between when displayed. */
-    vector<Sprite> animation_;
+    std::vector<Sprite> animation_;
 
     /** If the animation should reverse when it reached the end of the sprite vector. */
     bool reverse_ = false;
 
     /** Amount of ticks before the sprite switches. */
-    long ticksCap_ = 0;
+    long ticks_cap_ = 0;
 
     /** Index of the current sprite. */
     int index_ = 0;
 
     /** If going trough the sprite vector from left to right. */
-    bool toRight_ = true;
+    bool to_right_ = true;
 
     /** if the animation is over. */
     bool over_ = false;
@@ -46,9 +46,9 @@ public:
      *
      * @param animation Sprites to switch between when displayed.
      * @param reverse If the animation should reverse when it reached the end of the sprite vector.
-     * @param ticksCap Amount of ticks before the sprite switches.
+     * @param ticks_cap Amount of ticks before the sprite switches.
      */
-    Animation(const vector<Sprite> &animation, bool reverse, long ticksCap);
+    Animation(std::vector<Sprite> animation, bool reverse, long ticks_cap);
 
     /** Executes the sprite switches when conditions are met.
      *

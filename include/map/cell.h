@@ -9,18 +9,19 @@
 #include <array>
 #include <optional>
 #include <memory>
-#include "../utils/constants.h"
+
+#include "../config/constants.h"
 #include "../entity/entity.h"
 #include "position.h"
 
 /** Indicates the cell type (i.e. what it represents). */
 enum class CellType
 {
-    WALL,
-    PELLET,
-    ENERGIZER,
-    PATH,
-    WARP
+    kWall,
+    kPellet,
+    kEnergizer,
+    kPath,
+    kWarp
 };
 
 /** Cell inside on a board. */
@@ -36,12 +37,12 @@ private:
     int size_{};
 
     /** Type of cell. */
-    CellType type_ = CellType::WALL;
+    CellType type_ = CellType::kWall;
 
     /** Entity associated to the cell.
      * @details Optional.
      */
-    shared_ptr<Entity> entity_{};
+    std::shared_ptr<Entity> entity_{};
 
 public:
 
@@ -56,7 +57,7 @@ public:
      * @param entity Entity associated to the cell.
      */
     Cell(Position position, int size, const CellType &type,
-         const shared_ptr<Entity> &entity);
+         std::shared_ptr<Entity> entity);
 
     /** If both cells are equals. */
     bool operator==(const Cell &rhs) const;
@@ -66,11 +67,11 @@ public:
 
     /** If the cell is a wall. */
     [[nodiscard]] inline bool isWall() const
-    { return type_ == CellType::WALL; };
+    { return type_ == CellType::kWall; };
 
     /** If the cell is a warp. */
     [[nodiscard]] inline bool isWarp() const
-    { return type_ == CellType::WARP; };
+    { return type_ == CellType::kWarp; };
 
     /** Getter : Type of cell. */
     [[nodiscard]] const CellType &getType() const;
@@ -78,7 +79,7 @@ public:
     /** Getter : Entity associated to the cell.
      * @return Optional entity.
      */
-    [[nodiscard]] const shared_ptr<Entity> &getEntity() const;
+    [[nodiscard]] const std::shared_ptr<Entity> &getEntity() const;
 
     /** Indicates if a cell is a neighbor.
      *

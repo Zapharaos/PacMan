@@ -6,26 +6,26 @@
 
 Fruit::Fruit() = default;
 
-Fruit::Fruit(Position position, long time, set<int> pelletsCap,
-             vector<FruitObject> fruits) :
-        Entity(position), timer_(time), pelletsCap_(move(pelletsCap)),
+Fruit::Fruit(Position position, long time, std::set<int> pellets_cap,
+             std::vector<FruitObject> fruits) :
+        Entity(position), timer_(time), pellets_cap_(move(pellets_cap)),
         fruits_(move(fruits))
 {}
 
-void Fruit::update(int pelletsEaten, int level)
+void Fruit::update(int pellets_eaten, int level)
 {
     // if a fruit should be displayed
-    if (pelletsCap_.find(pelletsEaten) != pelletsCap_.end())
+    if (pellets_cap_.find(pellets_eaten) != pellets_cap_.end())
     {
         timer_.kill(); // just in case : disable previous fruit timer
 
         index_ = 0;
         for (auto &fruit: fruits_) // find fruit corresponding to level
         {
-            set<int> levels = fruit.getLevels();
+            auto levels = fruit.getLevels();
             if (levels.find(level) != levels.end())
                 break;
-            index_++;
+            ++index_;
         }
 
         setEnabled(true); // enables the entity
