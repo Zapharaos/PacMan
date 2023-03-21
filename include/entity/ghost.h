@@ -6,13 +6,13 @@
 #define PEC_MEN_GHOST_H
 
 #include <SDL.h>
+
 #include <string>
 #include <iostream>
 #include <utility>
-#include "../utils/constants.h"
-#include "entity.h"
 
-using namespace std;
+#include "../config/constants.h"
+#include "entity.h"
 
 class Ghost : public Entity
 {
@@ -38,10 +38,10 @@ private:
     // Ghost states
     enum ghost_states
     {
-        GHOST_DEFAULT = 0,
-        GHOST_SCARED = 1,
-        GHOST_LESS_SCARED = 2,
-        GHOST_INVISIBLE = 3
+        kDefault = 0,
+        kScared = 1,
+        kLessScared = 2,
+        kInvisible = 3
     };
 
 public:

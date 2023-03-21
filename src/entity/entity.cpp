@@ -9,15 +9,15 @@
 Entity::Entity() = default;
 
 Entity::Entity(Position position, Sprite sprite, bool enabled, int points)
-        : position_(move(position)), sprite_(move(sprite)), enabled_(enabled),
+        : position_(std::move(position)), sprite_(std::move(sprite)), enabled_(enabled),
           points_(points)
 { sprite_.updatePosition(position_); }
 
-Entity::Entity(Position position, Sprite sprite) : position_(move(position)),
-                                                   sprite_(move(sprite))
+Entity::Entity(Position position, Sprite sprite) : position_(std::move(position)),
+                                                   sprite_(std::move(sprite))
 { sprite_.updatePosition(position_); }
 
-Entity::Entity(Position position) : position_(move(position))
+Entity::Entity(Position position) : position_(std::move(position))
 { sprite_.updatePosition(position_); }
 
 const Position &Entity::getPosition() const
@@ -67,10 +67,10 @@ const SDL_Rect &Entity::getSpritePosition() const
     return sprite_.getPosition();
 }
 
-pair<int, int> Entity::getSpriteSize() const
+std::pair<int, int> Entity::getSpriteSize() const
 {
-    auto spritePosition = getSpritePosition();
-    return {spritePosition.w, spritePosition.h};
+    auto sprite_position = getSpritePosition();
+    return {sprite_position.w, sprite_position.h};
 }
 
 void Entity::count(long frames) {
@@ -88,21 +88,21 @@ bool Entity::tickVisibility() {
 
 void Entity::hide()
 {
-    status_ = EntityStatus::HIDDEN;
+    status_ = EntityStatus::kHidden;
 }
 
 void Entity::show()
 {
-    status_ = EntityStatus::VISIBLE;
+    status_ = EntityStatus::kVisible;
 }
 
 bool Entity::isVisible()
 {
-    return status_ == EntityStatus::VISIBLE;
+    return status_ == EntityStatus::kVisible;
 }
 
 void Entity::print() const
 {
     position_.print();
-    cout << "points: " << points_ << ", enabled: " << enabled_ << endl;
+    std::cout << "points: " << points_ << ", enabled: " << enabled_ << std::endl;
 }

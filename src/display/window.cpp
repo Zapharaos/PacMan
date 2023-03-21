@@ -2,13 +2,13 @@
 // Created by omar on 01/03/23.
 //
 
-#include <utility>
-
 #include "../../include/display/window.h"
+
+#include <utility>
 
 Window::Window() = default;
 
-Window::Window(int width, int height, string title) : width_(width), height_(height), title_(move(title)) {
+Window::Window(int width, int height, std::string title) : width_(width), height_(height), title_(move(title)) {
     init();
 }
 
@@ -20,40 +20,29 @@ void Window::init() {
     }
 
     // triggers the program that controls graphics hardware and sets flags
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+    auto render_flags = SDL_RENDERER_ACCELERATED;
 
-    window_ = shared_ptr<SDL_Window> (SDL_CreateWindow(&title_[0],
+    window_ = std::shared_ptr<SDL_Window> (SDL_CreateWindow(&title_[0],
                                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                                       width_+ scoreBoard_.getWidth(),
+                                                       width_+ score_board_.getWidth(),
                                                        height_,
                                        SDL_WINDOW_SHOWN),SDL_DestroyWindow);
 
-    win_surf_ = shared_ptr<SDL_Surface> (SDL_GetWindowSurface(window_.get()));
+    renderer_ = std::shared_ptr<SDL_Renderer> (SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
 
-    plancheSprites_ = shared_ptr<SDL_Surface> (SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES));
-
-    render_ = shared_ptr<SDL_Renderer> (SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
-
-    texture_ = shared_ptr<SDL_Texture> (SDL_CreateTextureFromSurface(render_.get(),plancheSprites_.get()),
+    texture_ = std::shared_ptr<SDL_Texture> (SDL_CreateTextureFromSurface(renderer_.get(), SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES)),
                                         SDL_DestroyTexture);
-
-    //SDL_FreeSurface(plancheSprites_.get());
-
-    // connects our texture with dest to control position
-    SDL_QueryTexture(texture_.get(), nullptr, nullptr, &bg_.w, &bg_.h);
-
-    SDL_RenderClear(render_.get());
 }
 
 void Window::clear()
 {
     SDL_QueryTexture(texture_.get(), nullptr, nullptr, &bg_.w, &bg_.h);
-    SDL_RenderClear(render_.get());
+    SDL_RenderClear(renderer_.get());
 }
 
 void Window::update()
 {
-    SDL_RenderPresent(render_.get());
+    SDL_RenderPresent(renderer_.get());
 }
 
 void Window::writeHighScore() {
@@ -69,7 +58,7 @@ void Window::updateHighScore(int points){
 }
 
 void Window::free(){
-    SDL_DestroyRenderer(render_.get());
+    SDL_DestroyRenderer(renderer_.get());
     SDL_DestroyWindow(window_.get());
     SDL_DestroyTexture(texture_.get());
 }

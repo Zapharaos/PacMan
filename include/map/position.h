@@ -7,9 +7,8 @@
 
 #include <utility>
 #include <cstdlib>
-#include "../utils/direction.h"
 
-using namespace std;
+#include "../utils/direction.h"
 
 /** Position as abscissa and ordinate. */
 class Position
@@ -18,7 +17,7 @@ class Position
 private:
 
     /** Position as abscissa and ordinate. */
-    pair<int, int> position_{};
+    std::pair<int, int> position_{};
 
 public:
 
@@ -29,7 +28,7 @@ public:
      *
      * @param position Position as abscissa and ordinate.
      */
-    explicit Position(const pair<int, int> &position);
+    explicit Position(std::pair<int, int> position);
 
     /** Indicates if both positions are equals. */
     bool operator==(const Position &rhs) const;

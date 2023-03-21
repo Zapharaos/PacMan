@@ -8,16 +8,16 @@
 
 using json = nlohmann::json;
 
-vector<CellType> loadCellTypesFromFile(const string &file_path)
+std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
 {
-    vector<CellType> cell_types;
-    ifstream file; // indata is like cin
+    std::vector<CellType> cell_types;
+    std::ifstream file; // indata is like cin
     char value; // variable for input value
 
     file.open(file_path); // opens the file
     if (!file)
     { // file couldn't be opened
-        cerr << "Error: file could not be opened" << endl;
+        std::cerr << "Error: file could not be opened" << std::endl;
         exit(1);
     }
     file >> value;
@@ -89,7 +89,7 @@ std::vector<SDL_Rect> extractRowFromMap(int width, int height, int number, int s
                              int start_y, int offset) {
     //Vector to store sprites
     std::vector<SDL_Rect> tab ;
-    for (int i = 0 ; i < number ; i++ ) {
+    for (int i = 0 ; i < number ; ++i ) {
         tab.push_back({start_x, start_y, width, height});
         start_x += width + offset; //skrrrr
     }
@@ -110,7 +110,7 @@ std::vector<SDL_Rect> extractRowFromMap(int width, int height, int number, int s
 std::vector<SDL_Rect> extractColumnFromMap(int width, int height, int number, int start_x, int start_y, int offset) {
     //Vector to store sprites
     std::vector<SDL_Rect> tab ;
-    for (int i = 0 ; i < number ; i++ ) {
+    for (int i = 0 ; i < number ; ++i ) {
         tab.push_back({start_x, start_y, width, height});
         start_y += height + offset; //skrrrr
     }
@@ -129,7 +129,7 @@ std::vector<SDL_Rect> extractColumnFromMap(int width, int height, int number, in
  * @return
  */
 SDL_Rect extractNthElementRowFromMap(int width, int height, int number, int start_x, int start_y, int offset) {
-    for (int i = 0 ; i < number ; i++ ) {
+    for (int i = 0 ; i < number ; ++i ) {
         start_x += width + offset; //skrrrr
     }
     SDL_Rect sprite = {start_x, start_y, width, height};
@@ -149,7 +149,7 @@ SDL_Rect extractNthElementRowFromMap(int width, int height, int number, int star
  * @return
  */
 SDL_Rect extractNthElementColumnFromMap(int width, int height, int number, int start_x, int start_y, int offset) {
-    for (int i = 0 ; i < number ; i++ ) {
+    for (int i = 0 ; i < number ; ++i ) {
 
         start_y += height + offset; //skrrrr
     }

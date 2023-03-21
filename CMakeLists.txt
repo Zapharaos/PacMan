@@ -14,8 +14,10 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 add_executable(${PROJECT_NAME} ""
 
+		include/config/constants.h
+		include/config/init_sprites.h
+
 		include/display/animation.h
-		include/display/extractor.h
 		include/display/scoreBoard.h
 		include/display/sprite.h
 		include/display/window.h
@@ -31,20 +33,17 @@ add_executable(${PROJECT_NAME} ""
 		include/map/map.h
 		include/map/position.h
 
-		include/utils/constants.h
 		include/utils/json.hpp
 		include/utils/timer.h
 		include/utils/direction.h
 		include/utils/utils.h
 
 		include/game.h
-		include/saveGame.h
-		include/utils/init_sprites.h)
+        )
 
 target_sources(${PROJECT_NAME} PRIVATE
 
 		src/display/animation.cpp
-		src/display/extractor.cpp
 		src/display/scoreBoard.cpp
 		src/display/sprite.cpp
 		src/display/window.cpp
@@ -67,7 +66,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 		src/game.cpp
 		src/main.cpp
-		src/saveGame.cpp
 		)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")

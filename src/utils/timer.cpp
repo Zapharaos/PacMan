@@ -19,8 +19,8 @@ Timer::Timer(const Timer &timer)
 Timer::Timer(long time) : time_(time)
 {}
 
-Timer::Timer(long time, const function<void(void)> &function) :
-        time_(time), function_(function)
+Timer::Timer(long time, std::function<void(void)> function) :
+        time_(time), function_(std::move(function))
 {}
 
 Timer &Timer::operator=(const Timer &timer)
@@ -50,9 +50,8 @@ void Timer::start()
         running_ = true;
     mutex_.unlock();
 
-    thread([&]() {
-        auto delta = chrono::steady_clock::now() + chrono::milliseconds(time_);
-        this_thread::sleep_until(delta);
+    std::thread([&]() {
+        std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(time_));
 
         mutex_.lock();
         if (killed_)
@@ -68,7 +67,7 @@ void Timer::start()
     }).detach();
 }
 
-void Timer::start(const function<void(void)> &function)
+void Timer::start(const std::function<void(void)> &function)
 {
     function_ = function;
     start();

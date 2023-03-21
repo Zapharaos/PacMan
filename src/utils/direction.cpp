@@ -24,39 +24,39 @@ bool Direction::operator!=(const Direction &direction) const
 void Direction::setDirection(const DirectionType &direction)
 {
     direction_ = direction;
-    isLeftOrUp_ =
-            direction == DirectionType::LEFT || direction == DirectionType::UP;
+    left_or_up_ =
+            direction == DirectionType::kLeft || direction == DirectionType::kUp;
 }
 
 bool Direction::isLeftOrUp() const
 {
-    return isLeftOrUp_;
+    return left_or_up_;
 }
 
 void Direction::reset()
 {
-    direction_ = {DirectionType::UNINITIALIZED};
-    isLeftOrUp_ = false;
+    direction_ = {DirectionType::kUninitialized};
+    left_or_up_ = false;
 }
 
 void Direction::print() const
 {
     switch (direction_)
     {
-        case DirectionType::LEFT:
-            cout << "LEFT" << endl;
+        case DirectionType::kLeft:
+            std::cout << "LEFT" << std::endl;
             break;
-        case DirectionType::RIGHT:
-            cout << "RIGHT" << endl;
+        case DirectionType::kRight:
+            std::cout << "RIGHT" << std::endl;
             break;
-        case DirectionType::UP:
-            cout << "UP" << endl;
+        case DirectionType::kUp:
+            std::cout << "UP" << std::endl;
             break;
-        case DirectionType::DOWN:
-            cout << "DOWN" << endl;
+        case DirectionType::kDown:
+            std::cout << "DOWN" << std::endl;
             break;
-        case DirectionType::UNINITIALIZED:
-            cout << "UNINITIALIZED" << endl;
+        case DirectionType::kUninitialized:
+            std::cout << "UNINITIALIZED" << std::endl;
             break;
     }
 }

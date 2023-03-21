@@ -5,9 +5,9 @@
 #ifndef PACMAN_WINDOW_H
 #define PACMAN_WINDOW_H
 
-
 #include <utility>
 #include <memory>
+
 #include "scoreBoard.h"
 #include "../utils/utils.h"
 
@@ -23,25 +23,19 @@ private :
     int height_{} ;
 
     /** Window title. */
-    string title_ {};
+    std::string title_ {};
 
     /** Main window. */
-    shared_ptr<SDL_Window> window_ {};
-
-    /** Window surface. */
-    shared_ptr<SDL_Surface> win_surf_ {};
-
-    /** Sprites file. */
-    shared_ptr<SDL_Surface> plancheSprites_ {};
+    std::shared_ptr<SDL_Window> window_ {};
 
     /** Renderer to display sprites. */
-    shared_ptr<SDL_Renderer> render_ {};
+    std::shared_ptr<SDL_Renderer> renderer_ {};
 
     /** To load image t graphics hardware memory. */
-    shared_ptr<SDL_Texture> texture_ {};
+    std::shared_ptr<SDL_Texture> texture_ {};
 
     /** ScoreBoard Object. */
-    ScoreBoard scoreBoard_ {};
+    ScoreBoard score_board_ {};
 
 public:
 
@@ -62,7 +56,7 @@ public:
      * @param height Window height.
      * @param title Window title.
      */
-    Window(int width, int height, string title);
+    Window(int width, int height, std::string title);
 
     /** Initialize the window. */
     void init();
@@ -79,7 +73,7 @@ public:
     {
         SDL_Rect image = entity.getSpriteImage();
         SDL_Rect position = entity.getSpritePosition();
-        SDL_RenderCopy(render_.get(), texture_.get(), &image, &position);
+        SDL_RenderCopy(renderer_.get(), texture_.get(), &image, &position);
     }
 
     void writeHighScore();

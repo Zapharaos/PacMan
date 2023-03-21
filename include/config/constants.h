@@ -171,22 +171,11 @@ namespace constants
 }
 
 // TODO : will be read from settings file
-// Power up time in seconds
-enum power_up_times
-{
-    POWERUP_TIME_VERY_LONG_PLUS = 6 ,
-    POWERUP_TIME_VERY_LONG = 5 ,
-    POWERUP_TIME_LONG = 3 ,
-    POWERUP_TIME_MEDIUM = 2 ,
-    POWERUP_TIME_SHORT = 1
-};
-
-// TODO : will be read from settings file
 enum class Score
 {
-    PELLET = 10,
-    ENERGIZER = 50,
-    GHOST = 200
+    kPellet = 10,
+    kEnergizer = 50,
+    kGhost = 200
 };
 
 #endif //PACMAN_CONSTANTS_H

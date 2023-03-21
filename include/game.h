@@ -7,26 +7,26 @@
 
 #include <iostream>
 #include <fstream>
+
 #include "map/map.h"
 #include "entity/movingEntity.h"
 #include "entity/ghost.h"
 #include "entity/pacman.h"
 #include "entity/fruit.h"
-#include "saveGame.h"
 #include "utils/utils.h"
 #include "display/window.h"
 
 /** Indicates the game status. */
 enum class StatusType
 {
-    STOPPED,
-    RUNNING,
-    PAUSED,
-    LEVEL_UP_FREEZE,
-    LEVEL_UP_ANIMATE,
-    DEATH_FREEZE,
-    DEATH_ANIMATE,
-    EATING_GHOST
+    kStopped,
+    kRunning,
+    kPaused,
+    kLevelUpFreeze,
+    kLevelUpAnimate,
+    kDeathFreeze,
+    kDeathAnimate,
+    kEatingGhost
 };
 
 /** Game object. */
@@ -63,13 +63,13 @@ private:
     Pacman pacman_;
 
     /** Ghost entities. */
-    vector<Ghost> ghosts_;
+    std::vector<Ghost> ghosts_;
 
     /** Fruit entities. */
     Fruit fruit_;
 
     /** Current game status. */
-    StatusType status_ = {StatusType::RUNNING};
+    StatusType status_ = {StatusType::kRunning};
 
     /** Counts a number of frames. */
     Counter counter_ {};
@@ -81,14 +81,11 @@ public:
 
     /** Game constructor.
      *
-     * @param width Map's width.
-     * @param height Map's height.
-     * @param cell_size Size of a map's cell.
-     * @param file_path Path to the map file.
+     * @param map Map.
+     * @param window Window.
      * @param lives Number of lives.
      */
-    Game(int width, int height, int cell_size, const char *file_path,
-         int lives);
+    Game(Map map, Window window, int lives);
 
     /** Pause/Resume the game. */
     void togglePause();

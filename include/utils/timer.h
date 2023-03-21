@@ -11,8 +11,6 @@
 #include <thread>
 #include <mutex>
 
-using namespace std;
-
 /** Asynchronous timer that calls a function at expiration. */
 class Timer
 {
@@ -20,13 +18,13 @@ class Timer
 private:
 
     /** Function executed as the timer expires. */
-    function<void(void)> function_{};
+    std::function<void(void)> function_{};
 
     /** Time to wait for the timer to expire. */
     long time_{};
 
     /** Protects the variables used by the threads. */
-    mutex mutex_;
+    std::mutex mutex_;
 
     /** Indicates if the timer is running. */
     bool running_ = false;
@@ -56,7 +54,7 @@ public:
      * @param time Time to wait for the timer to expire.
      * @param function Function executed as the timer expires.
      */
-    Timer(long time, const function<void(void)> &function);
+    Timer(long time, std::function<void(void)> function);
 
     /** Copy assignment operator.
      *
@@ -75,7 +73,7 @@ public:
      *
      * @param function Function executed as the timer expires.
      */
-    void start(const function<void(void)> &function);
+    void start(const std::function<void(void)> &function);
 
     /** Kills the current running timer. */
     void kill();
