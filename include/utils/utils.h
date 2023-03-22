@@ -16,7 +16,7 @@
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
 void saveGameState(int high_score, int round);
-std::string  getHighScore();
+std::string  getSavedHighScore();
 std::string getRound();
 
 std::vector <SDL_Rect> extractRowFromMap(int width, int height, int

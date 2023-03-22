@@ -109,11 +109,7 @@ public:
  * Gets the high score set locally from the save.json file
  * @return high_score_
  */
-    int getSavedHighScore();
-
-    void setHighScore(int highScore);
-
-    int getHighScore() const;
+    int getLocalHighScore();
 
     void tick(const Direction &direction);
 

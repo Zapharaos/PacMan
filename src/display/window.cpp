@@ -46,15 +46,19 @@ void Window::update()
 }
 
 void Window::writeHighScore() {
-    /*scoreBoard_.writeHighScoreText(render_,texture_);
-    scoreBoard_.writeHighScorePoints(render_,texture_,game_->getHighScore());*/
+    score_board_.writeHighScoreText(renderer_,texture_);
+    //score_board_.writeHighScorePoints(renderer_,texture_,points);
+}
+void Window::updateHighScore(int points) {
+    score_board_.writeHighScorePoints(renderer_,texture_,points);
 }
 
-void Window::updateHighScore(int points){
-    /*if(game_->getScore()>game_->getHighScore()){
-        scoreBoard_.writeHighScorePoints(render_,texture_,points);
-    }
-    scoreBoard_.writeScorePoints(render_,texture_,points);*/
+void Window::updateScore(int score){
+    score_board_.writeScorePoints(renderer_,texture_,score);
+}
+
+void Window::updateLives(int nb_lives){
+    score_board_.writeLives(renderer_,texture_,nb_lives);
 }
 
 void Window::free(){
@@ -62,6 +66,17 @@ void Window::free(){
     SDL_DestroyWindow(window_.get());
     SDL_DestroyTexture(texture_.get());
 }
+
+
+void Window::updateFruits() {
+    score_board_.updateFruits(renderer_,texture_);
+}
+
+void Window::addFruits(SDL_Rect fruit) {
+    score_board_.addFruits(fruit);
+}
+
+
 
 
 
