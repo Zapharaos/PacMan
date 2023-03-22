@@ -8,9 +8,10 @@
 #include <utility>
 #include <vector>
 #include <array>
-
+#include <unordered_map>
 #include "json.hpp"
 #include "../map/cell.h"
+
 
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
@@ -29,5 +30,7 @@ SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
 
 SDL_Rect extractNthElementColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
+
+static Sprite getPointsSprite(int points);
 
 #endif //PACMAN_UTILS_H
