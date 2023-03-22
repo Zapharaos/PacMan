@@ -75,13 +75,41 @@ public:
         SDL_Rect position = entity.getSpritePosition();
         SDL_RenderCopy(renderer_.get(), texture_.get(), &image, &position);
     }
-
+    /**
+     * display the highscore text
+     */
     void writeHighScore();
 
+    /**
+     * update and display the highscore
+     * @param points
+     */
     void updateHighScore(int points);
+
+    /**
+     * update and display current score
+     * @param score
+     */
+    void updateScore(int score);
 
     /** Free the window members. */
     void free();
+    /**
+     * update and display number of lives
+     * @param nb_lives
+     */
+    void updateLives(int nb_lives) ;
+
+    /**
+     * update the display the fruits and powerups
+     */
+    void updateFruits();
+
+    /**
+     * adds a fruit sprite into the queue in scoreboard
+     * @param fruit
+     */
+    void addFruits(SDL_Rect fruit);
 };
 
 

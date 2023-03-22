@@ -63,6 +63,10 @@ namespace constants
     inline constexpr int BMP_PACMAN_BIG_START_Y {219};
     inline constexpr int BMP_PACMAN_BIG_HEIGHT {30};
     inline constexpr int BMP_PACMAN_BIG_WIDTH {28};
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_X{169};
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_Y {76};
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_WIDTH {10};
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_HEIGHT {12};
 
     // Bottom Row
     inline constexpr int BMP_POWERUP_LONG_START_X {264};
@@ -135,6 +139,8 @@ namespace constants
     inline constexpr int SCORE_BOARD_START_Y { 10 };
     inline constexpr int SCORE_BOARD_POINTS_START_X {WINDOW_MAP_WIDTH  +  160 };
     inline constexpr int SCORE_BOARD_POINTS_START_Y {40};
+    inline constexpr int SCORE_BOARD_LIVES_START_X {SCORE_BOARD_START_X + 150 };
+    inline constexpr int SCORE_BOARD_LIVES_START_Y {SCORE_BOARD_START_Y + 400};
 
 
 

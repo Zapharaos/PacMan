@@ -10,7 +10,7 @@ Game::Game() = default;
 
 Game::Game(Map map, Window window, int lives) : map_(std::move(map)), window_(std::move(window)), lives_(lives)
 {
-
+    getLocalHighScore();
     // Pacman
     pacman_ = Pacman(
             Position{{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}},
@@ -76,6 +76,20 @@ void Game::display()
     // Map.
     window_.draw(map_);
 
+    // Points
+    window_.writeHighScore();
+    updateHighScore();
+    window_.updateHighScore(high_score_);
+    window_.updateScore(score_);
+
+    //Fruits
+    window_.updateFruits();
+
+    //Lives
+    window_.updateLives(lives_);
+
+
+
     // Pacman
     if(pacman_.isDead()) // death animation
         pacman_.animateDeath();
@@ -139,6 +153,8 @@ bool Game::handleStatus()
     // Game level up animation is over.
     if (status_ == StatusType::kLevelUpAnimate)
     {
+        //Fruits
+        window_.addFruits(fruit_.getSpriteImage());
         levelUp();
         return false;
     }
@@ -267,6 +283,7 @@ void Game::levelUp()
     pelletsEaten_ = 0;
     status_ = StatusType::kRunning;
 
+
     // Reset entities.
     map_.reset();
     fruit_.reset();
@@ -298,11 +315,10 @@ void Game::lostLife()
     // TODO : speed and timers : reset
 }
 
-int Game::getSavedHighScore()
+int Game::getLocalHighScore()
 {
-    /*high_score_ = stoi(SaveGame::getHighScore());
-    return high_score_;*/
-    return -1;
+    high_score_ = stoi(getSavedHighScore());
+    return high_score_;
 }
 
 bool Game::updateHighScore()
@@ -314,16 +330,6 @@ bool Game::updateHighScore()
     }
     return false;
 
-}
-
-int Game::getHighScore() const
-{
-    return high_score_;
-}
-
-void Game::setHighScore(int highScore)
-{
-    high_score_ = highScore;
 }
 
 void Game::quit() {
