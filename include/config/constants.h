@@ -59,6 +59,11 @@ namespace constants
     inline constexpr int BMP_GHOST_INKY_START_Y {159};
     inline constexpr int BMP_GHOST_CLIDE_START_X {3};
     inline constexpr int BMP_GHOST_CLIDE_START_Y {177};
+    inline constexpr int BMP_PACMAN_BIG_POS_TWO_START_X {38};
+    inline constexpr int BMP_PACMAN_BIG_START_Y {219};
+    inline constexpr int BMP_PACMAN_BIG_HEIGHT {30};
+    inline constexpr int BMP_PACMAN_BIG_WIDTH {28};
+
     // Bottom Row
     inline constexpr int BMP_POWERUP_LONG_START_X {264};
     inline constexpr int BMP_POWERUP_SHORT_START_X {244};
@@ -81,14 +86,28 @@ namespace constants
     inline constexpr int BMP_NUMBER_START_THIRD_ROW_Y {69};
 
     // Bitmap => points
+    //200 to 800
     inline constexpr int BMP_POINTS_START_ROW_1_X {155};
     inline constexpr int BMP_POINTS_START_ROW_1_Y {176};
-    inline constexpr int BMP_POINTS_START_ROW_2_X {154};
+
+    //100 to 700
+    inline constexpr int BMP_POINTS_START_ROW_2_X {179};
     inline constexpr int BMP_POINTS_START_ROW_2_Y {133};
+
     inline constexpr int BMP_POINTS_WIDTH {16};
     inline constexpr int BMP_POINTS_HEIGHT {7};
-
-
+    inline constexpr int BMP_POINTS_WIDTH_THREE_CHARS {14};
+    inline constexpr int BMP_POINTS_WIDTH_FOUR_CHARS {15};
+    //1600
+    inline constexpr int BMP_POINTS_START_ROW_1_2_X {154};
+    inline constexpr int BMP_POINTS_START_ROW_1_2_Y {203};
+    //Offset between sprites
+    inline constexpr int BMP_POINTS_OFFSET {2};
+    // Offset for scaling
+    inline constexpr int BMP_POINTS_SCALING_OFFSET {2*1};
+    //1000 to 3000
+    inline constexpr int BMP_POINTS_START_ROW_2_2_X {177};
+    inline constexpr int BMP_POINTS_START_ROW_2_2_Y {169};
 
     // Game =>
     inline constexpr int MAP_WIDTH {BMP_MAP_WIDTH / BMP_CELL_WIDTH};
@@ -167,6 +186,8 @@ namespace constants
     //OFFSET FOR Extractor
     inline constexpr int OFFSET_MAP {1};
     inline constexpr int OFFSET_CHAR {1};
+
+
 
 }
 

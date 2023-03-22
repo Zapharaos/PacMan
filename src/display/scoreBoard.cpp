@@ -9,7 +9,7 @@
 ScoreBoard::ScoreBoard() = default;
 
 ScoreBoard::ScoreBoard(int width, int height, std::vector<SDL_Rect> numbers) : width_(width), height_(height),
-                                                                                 numbers_(std::move(numbers)) {}
+                                                                               numbers_(std::move(numbers)) {}
 
 void ScoreBoard::writeHighScoreText( const std::shared_ptr<SDL_Renderer>& render,
                                      const std::shared_ptr<SDL_Texture>& texture) {
@@ -48,12 +48,12 @@ void ScoreBoard::writeHighScoreText( const std::shared_ptr<SDL_Renderer>& render
             constants::OFFSET_CHAR);
     //Get C
     SDL_Rect c_ = extractNthElementRowFromMap(
-             constants::BMP_CHARACTER_WIDTH,
-             constants::BMP_CHARACTER_HEIGHT,
-             2,
-             constants::BMP_NUMBER_START_SECOND_ROW_X,
-             constants::BMP_NUMBER_START_SECOND_ROW_Y,
-             constants::OFFSET_CHAR);
+            constants::BMP_CHARACTER_WIDTH,
+            constants::BMP_CHARACTER_HEIGHT,
+            2,
+            constants::BMP_NUMBER_START_SECOND_ROW_X,
+            constants::BMP_NUMBER_START_SECOND_ROW_Y,
+            constants::OFFSET_CHAR);
     //Get O
     SDL_Rect o_ = extractNthElementRowFromMap(
             constants::BMP_CHARACTER_WIDTH,
@@ -125,14 +125,14 @@ void ScoreBoard::initNumberSprites() {
                                   9,
                                   constants::BMP_NUMBER_START_FIRST_ROW_X,
                                   constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                                             constants::OFFSET_CHAR
-            );
+                                  constants::OFFSET_CHAR
+    );
 
     //extract 0
     SDL_Rect sprite_zero = {constants::BMP_NUMBER_START_ZERO_ROW_X,
-                       constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                       constants::BMP_CHARACTER_WIDTH,
-                       constants::BMP_CHARACTER_HEIGHT};
+                            constants::BMP_NUMBER_START_FIRST_ROW_Y,
+                            constants::BMP_CHARACTER_WIDTH,
+                            constants::BMP_CHARACTER_HEIGHT};
     numbers_.push_back(sprite_zero);
 
     //0 1 2 3 4 5 6 7 8 9
@@ -192,15 +192,15 @@ void ScoreBoard::writeHighScorePoints(  const std::shared_ptr<SDL_Renderer>& ren
     int offset = constants::BMP_CHARACTER_WIDTH + 8 ;
 
     for (SDL_Rect s : points_to_print ){
-       // SDL_BlitScaled(plancheSprites.get(), &s, win_surf.get(), &position);
+        // SDL_BlitScaled(plancheSprites.get(), &s, win_surf.get(), &position);
         /*drawObject(render,texture,s,position);*/
         position.x += offset ;
     }
 }
 
 void ScoreBoard::writeScorePoints(const std::shared_ptr<SDL_Renderer>& render,
-                                const std::shared_ptr<SDL_Texture>& texture,
-                                int points) {
+                                  const std::shared_ptr<SDL_Texture>& texture,
+                                  int points) {
     std::vector <SDL_Rect>  points_to_print = getPointsToPrint(points);
     SDL_Rect position = points_to_print[0] ;
     position.x = constants::SCORE_BOARD_POINTS_START_X ;
