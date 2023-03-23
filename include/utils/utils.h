@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include "json.hpp"
 #include "../map/cell.h"
-
+#include <SDL.h>
 
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
@@ -34,4 +34,6 @@ number, int start_x, int start_y, int offset);
 
 static Sprite getPointsSprite(int points);
 
+void drawObject(const std::shared_ptr<SDL_Renderer>& render, const std::shared_ptr<SDL_Texture>& texture, SDL_Rect src_rect,
+                SDL_Rect dst_rect);
 #endif //PACMAN_UTILS_H
