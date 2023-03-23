@@ -7,7 +7,6 @@
 #include <fstream>
 
 using json = nlohmann::json;
-//TODO put map declaration in .h
 std::unordered_map<int, SDL_Rect> sprite_map;
 
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)

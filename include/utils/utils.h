@@ -15,6 +15,7 @@
 
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
+
 void saveGameState(int high_score, int round);
 std::string  getSavedHighScore();
 std::string getRound();

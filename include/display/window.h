@@ -37,6 +37,8 @@ private :
     /** ScoreBoard Object. */
     ScoreBoard score_board_ {};
 
+    /** hashmap to store all characters */
+    std::unordered_map<char, SDL_Rect> character_map_;
 public:
 
     SDL_Rect bg_ = { constants::WINDOW_MAP_START_X,constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,constants::WINDOW_MAP_HEIGHT }; // ici scale x4
@@ -110,6 +112,8 @@ public:
      * @param fruit
      */
     void addFruits(SDL_Rect fruit);
+
+    void initSpriteMap();
 };
 
 
