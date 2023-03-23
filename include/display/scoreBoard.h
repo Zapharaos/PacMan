@@ -38,15 +38,7 @@ public:
     [[nodiscard]] int getWidth() const;
 
 
-    /**
-     * writeHighScoreText
-     * Will write "High Score" on the scoreboard window
-     * @param win_surf
-     * @param plancheSprites
-     */
-     void writeHighScoreText(  const std::shared_ptr<SDL_Renderer>& render,
-                               const std::shared_ptr<SDL_Texture>& texture,
-                               const std::unordered_map<char, SDL_Rect>& character_map);
+
 
     /**
      * getPointsToPrint
@@ -56,39 +48,6 @@ public:
      */
     std::vector <SDL_Rect> getPointsToPrint(int points,const std::unordered_map<char, SDL_Rect>& character_map);
 
-/**
-* writeHighScorePoints
-* Write and update high score points
- * @param render
- * @param texture
- * @param points
- */
-    void writeHighScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
-                                const std::shared_ptr<SDL_Texture>& texture,
-                                int points,const std::unordered_map<char, SDL_Rect>& character_map);
-
-/**
- *  Write and update score points
- * @param render
- * @param texture
- * @param points
- */
-    void writeScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
-                            const std::shared_ptr<SDL_Texture>& texture,
-                            int points,const std::unordered_map<char, SDL_Rect>& character_map);
-/**
-* drawObject
-* Draws desired sprite in a location
-* @param src
-* @param dst
-* @param src_rect
-* @param dst_rect
-*
-*/
-    void drawObject( std::shared_ptr<SDL_Renderer> render
-            , std::shared_ptr<SDL_Texture> texture
-            , SDL_Rect src_rect
-            , SDL_Rect dst_rect  );
     /**
      * Used to display lives remaining
      * @param render

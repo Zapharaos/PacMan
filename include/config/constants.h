@@ -193,6 +193,12 @@ namespace constants
     inline constexpr int OFFSET_MAP {1};
     inline constexpr int OFFSET_CHAR {1};
 
+    //COLOURS
+    inline constexpr int RED[3] {216,40,0};
+    inline constexpr int CYAN[3] {0,232,216};
+    inline constexpr int PINK[3] {252,196,252};
+    inline constexpr int ORANGE[3] {252,152,56};
+
 
 
 }
