@@ -1,12 +1,10 @@
 //
 // Created by omar on 19/02/23.
 //
-
 #ifndef PACMAN_SCOREBOARD_H
 #define PACMAN_SCOREBOARD_H
 
 #include <SDL.h>
-
 #include <string>
 #include <memory>
 #include <queue>
@@ -26,6 +24,7 @@ private :
     int height_ = 0 ;
     //Fruit queue
     std::vector<SDL_Rect> fruit_queue_ ;
+
     // Vector that will hold sprites of all numbers (0 - 9)
     std::vector <SDL_Rect> numbers_;
 public:
@@ -46,13 +45,8 @@ public:
      * @param plancheSprites
      */
      void writeHighScoreText(  const std::shared_ptr<SDL_Renderer>& render,
-                               const std::shared_ptr<SDL_Texture>& texture);
-
-    /**
-     * initNumberSprites
-     * Will get all number sprites from the bitmap and store them in numbers_
-     */
-    void initNumberSprites();
+                               const std::shared_ptr<SDL_Texture>& texture,
+                               const std::unordered_map<char, SDL_Rect>& character_map);
 
     /**
      * getPointsToPrint
@@ -60,7 +54,7 @@ public:
      * @param points
      * @return vector containing sprites
      */
-    std::vector <SDL_Rect> getPointsToPrint(int points);
+    std::vector <SDL_Rect> getPointsToPrint(int points,const std::unordered_map<char, SDL_Rect>& character_map);
 
 /**
 * writeHighScorePoints
@@ -71,7 +65,7 @@ public:
  */
     void writeHighScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
                                 const std::shared_ptr<SDL_Texture>& texture,
-                                int points);
+                                int points,const std::unordered_map<char, SDL_Rect>& character_map);
 
 /**
  *  Write and update score points
@@ -81,7 +75,7 @@ public:
  */
     void writeScorePoints(  const std::shared_ptr<SDL_Renderer>& render,
                             const std::shared_ptr<SDL_Texture>& texture,
-                            int points);
+                            int points,const std::unordered_map<char, SDL_Rect>& character_map);
 /**
 * drawObject
 * Draws desired sprite in a location
