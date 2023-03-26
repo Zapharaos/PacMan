@@ -1,6 +1,9 @@
-//
-// Created by mfrei on 05/03/2023.
-//
+/**
+ * @file timer.cpp
+ * @brief Implementation of the Timer class which is an asynchronous timer that calls a function at expiration.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 05/03/2023
+ */
 
 #include "../../include/utils/timer.h"
 

@@ -1,6 +1,9 @@
-//
-// Created by omar on 12/02/23.
-//
+/**
+ * @file fruit.h
+ * @brief Defines the Fruit class which represents a fruit that occasionally appears on the board.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 12/03/2023
+*/
 
 #ifndef PEC_MEN_POWERUP_H
 #define PEC_MEN_POWERUP_H
@@ -12,14 +15,15 @@
 #include <vector>
 
 #include "entity.h"
-#include "../config/constants.h"
 #include "../utils/timer.h"
 #include "../entity/fruitObject.h"
+#include "../config/config.h"
+#include "../config/visuals.h"
 
-/** Fruit that occasionally appears on the board.
- *
- * @see Entity class
- */
+/**
+ * @brief Represents a fruit that occasionally appears on the board.
+ * @see Entity
+*/
 class Fruit : public Entity
 {
 
@@ -29,11 +33,11 @@ private:
     Timer timer_{};
 
     /** List of values at which the fruit will be displayed. */
-    std::set<int> pellets_cap_{};
+    Container<unsigned long, config::settings::kFruitsPerLevel> pellets_cap_{};
 
     /** List of fruits that can be displayed.
      * @see Fruit::FruitObject class */
-    std::vector<FruitObject> fruits_{};
+    Container<FruitObject, visuals::fruit::kFruitsSize> fruits_{};
 
     /** Index of the current FruitObject.
      * @details Used to access and animate the fruit. */
@@ -41,45 +45,40 @@ private:
 
 public:
 
-    /** Default Fruit constructor. */
+    /**
+     * @brief Default Fruit constructor.
+     */
     Fruit();
 
-    /** Fruit constructor.
-     *
-     * @param position Raw position when displayed.
-     * @param time Time before the timer expires and disables the fruit.
-     * @param pellets_cap List of values at which the fruit will be displayed.
-     * @param fruits List of fruits that can be displayed.
+    /**
+     * @brief Fruit constructor.
+     * @param total_pellets Total number of pellets.
      */
-    Fruit(Position position, long time, std::set<int> pellets_cap,
-          std::vector<FruitObject> fruits);
+    explicit Fruit(unsigned long total_pellets);
 
-    /** Getter : Tells if the fruit is enabled (i.e. displayed).
-     *
-     * @see Entity::isEnabled() override.
+    /**
+     * @brief Tells if the fruit is enabled (i.e. displayed).
+     * @details Overrides the isEnabled() method in the Entity class.
+     * @return True if the fruit is enabled, false otherwise.
      */
     [[nodiscard]] bool isEnabled();
 
     /**
-     * Update the fruit only if specific conditions are met.
-     *
+     * @brief Update the fruit only if specific conditions are met.
      * @note pelletsEaten must belong to pelletsCap_ for the fruit to be displayed.
-     *
      * @param pellets_eaten Current number of pellets eaten.
      * @param level Current level of the game.
      */
     void update(int pellets_eaten, int level);
 
-    /** Executes the sprite switches when conditions are met.
-     *
+    /**
+     * @brief Executes the sprite switches when conditions are met.
      * @see FruitObject::animate()
-     *
-     * @return The current sprite to be displayed.
      */
     void animate();
 
     /**
-     * Resets the fruit object.
+     * @brief Resets the fruit object.
      */
     void reset();
 };

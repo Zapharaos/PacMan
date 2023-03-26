@@ -1,5 +1,5 @@
 
-image: gcc
+image: stabletec/build-core:ubuntu
 
 stages :
   - build

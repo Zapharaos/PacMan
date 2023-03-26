@@ -1,6 +1,9 @@
-//
-// Created by matthieu on 28/02/2023.
-//
+/**
+ * @file pacman.h
+ * @brief Defines the Pacman class, which is the main entity in the game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 28/02/2023
+*/
 
 #ifndef PACMAN_PACMAN_H
 #define PACMAN_PACMAN_H
@@ -8,14 +11,21 @@
 #include "movingEntity.h"
 #include "../utils/timer.h"
 
-/** Main entity.
- *
- * @see MovingEntity class
- */
+/**
+ * @brief The Pacman entity.
+ * Inherits from the MovingEntity class.
+ * @see MovingEntity
+*/
 class Pacman : public MovingEntity
 {
 
 private:
+
+    /**
+     * This is a static constexpr integer used to copy elements from the configuration files,
+     * making it easier to understand and reference in the code.
+     */
+    static constexpr int kAnimationDeathSize {visuals::pacman::death::kAnimationSize};
 
     /** Superpower mode is activated. */
     bool superpower_ = false;
@@ -27,47 +37,43 @@ private:
     bool dead_ = false;
 
     /** Animations when has died. */
-    Animation death_{};
+    Animation<kAnimationDeathSize> death_{};
 
 public:
 
-    /** Default Pacman constructor. */
+    /**
+     * @brief Default Pacman constructor.
+     */
     Pacman();
 
-    /** Pacman constructor.
-     *
-     * @param position Raw position.
-     * @param sprite Image when displayed.
-     * @param speed Speed per tick at which the entity is moving.
-     * @param left Animations when moving towards the left.
-     * @param right Animations when moving towards the right.
-     * @param up Animations when moving towards the up.
-     * @param down Animations when moving towards the down.
-     * @param time Time before the timer expires and disables the superpower.
-     * @param death Animations when has died.
+    /**
+     * @brief Setter for superpower mode.
      */
-    Pacman(const Position &position, const Sprite &sprite, int speed,
-           const Animation &left, const Animation &right,
-           const Animation &up, const Animation &down,
-           long time, Animation death);
-
-    /** Setter : Superpower mode is activated. */
     void setSuperpower(bool superpower);
 
-    /** Getter : Superpower mode is activated. */
+    /**
+     * @brief Getter for superpower mode.
+     */
     [[nodiscard]] bool isSuperpower();
 
-    /** Getter : Has died. */
+    /**
+     * @brief Getter for "dead" status.
+     */
     [[nodiscard]] bool isDead() const;
 
-    /** Setter : Has died. */
+    /**
+     * @brief Setter for "dead" status.
+     */
     void setDead(bool dead);
 
-    /** Executes the death animation. */
+    /**
+     * @brief Executes the death animation.
+     */
     void animateDeath();
 
     /**
-     * Resets the entity object.
+     * @brief Resets the entity object.
+     * @param coordinates Raw position coordinates.
      * @see MovingEntity::reset()
      */
     void reset(const Position &coordinates) override;

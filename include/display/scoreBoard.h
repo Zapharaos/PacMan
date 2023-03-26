@@ -7,11 +7,11 @@
 #include <SDL.h>
 #include <string>
 #include <memory>
+
 #include <queue>
 #include "../config/constants.h"
 #include "../utils/utils.h"
-#include "../config/init_sprites.h"
-
+#include "../config/config.h"
 
 /**
  * Score Board display
@@ -19,7 +19,7 @@
 class ScoreBoard {
 private :
     // Window width
-    int width_ = constants::SCORE_BOARD_WIDTH;
+    int width_ = config::SCORE_BOARD_WIDTH;
     //Window Height
     int height_ = 0 ;
     //Fruit queue

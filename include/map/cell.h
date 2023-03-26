@@ -1,6 +1,9 @@
-//
-// Created by matthieu on 07/02/2023.
-//
+/**
+ * @file cell.h
+ * @brief Contains the Cell class representing an element on a map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 07/02/2023
+ */
 
 #ifndef PACMAN_CELL_H
 #define PACMAN_CELL_H
@@ -10,21 +13,25 @@
 #include <optional>
 #include <memory>
 
-#include "../config/constants.h"
 #include "../entity/entity.h"
 #include "position.h"
 
-/** Indicates the cell type (i.e. what it represents). */
+/**
+ * @brief Indicates the cell type (i.e. what it represents).
+*/
 enum class CellType
 {
-    kWall,
-    kPellet,
-    kEnergizer,
-    kPath,
-    kWarp
+    kWall, /* Wall type cell */
+    kPellet, /* Pellet type cell */
+    kEnergizer, /* Energizer type cell */
+    kPath, /* Path type cell */
+    kWarp /* Warp type cell */
 };
 
-/** Cell inside on a board. */
+/**
+ * @brief Represents a cell on the game board.
+ * A cell is an element on the game board with a type and position. It can also have an optional entity associated to it.
+*/
 class Cell
 {
 
@@ -33,73 +40,114 @@ private:
     /** Position on the board. */
     Position position_{};
 
-    /** Size in pixels. */
+    /** Size in pixels.
+     * @note width and height are equals. */
     int size_{};
 
     /** Type of cell. */
     CellType type_ = CellType::kWall;
 
     /** Entity associated to the cell.
-     * @details Optional.
-     */
+     * @details Optional. */
     std::shared_ptr<Entity> entity_{};
 
 public:
 
-    /** Default Cell constructor. */
-    Cell();
+    /**
+     * @brief Default constructor for the Cell class.
+     */
+    inline Cell() = default;
 
-    /** Cell constructor.
-     *
+    /**
+     * @brief Constructor for the Cell class.
      * @param position Position on the board.
      * @param size Size in pixels.
      * @param type Type of cell.
-     * @param entity Entity associated to the cell.
+     * @param entity Entity associated with the cell.
      */
     Cell(Position position, int size, const CellType &type,
-         std::shared_ptr<Entity> entity);
+         std::shared_ptr<Entity> entity) :
+            position_(std::move(position)), size_(size), type_(type), entity_(std::move(entity))
+    {};
 
-    /** If both cells are equals. */
-    bool operator==(const Cell &rhs) const;
+    /**
+     * @brief Equality comparison operator.
+     * @param cell Cell to compare with.
+     * @return true if the cells are equal, false otherwise.
+     */
+    inline bool operator==(const Cell &cell) const
+    { return position_ == cell.position_; };
 
-    /** If both cells are different. */
-    bool operator!=(const Cell &rhs) const;
+    /**
+     * @brief Inequality comparison operator.
+     * @param cell Cell to compare with.
+     * @return true if the cells are different, false otherwise.
+     */
+    inline bool operator!=(const Cell &cell) const
+    { return !(cell == *this); };
 
-    /** If the cell is a wall. */
+    /**
+     * @brief Check if the cell is a wall.
+     * @return true if the cell is a wall, false otherwise.
+     */
     [[nodiscard]] inline bool isWall() const
     { return type_ == CellType::kWall; };
 
-    /** If the cell is a warp. */
+    /**
+     * @brief Check if the cell is a warp.
+     * @return true if the cell is a warp, false otherwise.
+     */
     [[nodiscard]] inline bool isWarp() const
     { return type_ == CellType::kWarp; };
 
-    /** Getter : Type of cell. */
-    [[nodiscard]] const CellType &getType() const;
+    /**
+     * @brief Getter for the type of cell.
+     * @return Type of cell.
+     */
+    [[nodiscard]] inline const CellType &getType() const
+    { return type_; };
 
-    /** Getter : Entity associated to the cell.
+    /**
+     * @brief Getter for the entity associated with the cell.
      * @return Optional entity.
      */
-    [[nodiscard]] const std::shared_ptr<Entity> &getEntity() const;
+    [[nodiscard]] inline const std::shared_ptr<Entity> &getEntity() const
+    { return entity_; };
 
-    /** Indicates if a cell is a neighbor.
-     *
-     * @param cell The second cell.
-     * @return true if it's a neighbor, else false.
+    /**
+     * @brief Check if a cell is a neighbor of this cell.
+     * @param cell The cell to check.
+     * @return true if the cell is a neighbor, false otherwise.
      */
-    [[nodiscard]] bool isNeighbor(const Cell &cell) const;
+    [[nodiscard]] inline bool isNeighbor(const Cell &cell) const
+    { return position_.isNeighbor(cell.position_); };
 
-    /** If a position fits perfectly on the cell.
-     *
+    /**
+     * @brief Check if a position fits perfectly on the cell.
      * @param position Position in pixels.
-     * @return true if both pixel positions are equals.
+     * @return true if the position fits perfectly on the cell, false otherwise.
      */
-    [[nodiscard]] bool equalsPositionScaled(const Position &position) const;
+    [[nodiscard]] inline bool equalsPositionScaled(const Position &position) const
+    { return position == getPositionScaled(); };
 
-    /** Returns the cell's position in pixels. */
-    [[nodiscard]] Position getPositionScaled() const;
+    /**
+     * @brief Returns the cell's position in pixels.
+     * @return The cell's position in pixels.
+     */
+    [[nodiscard]] Position getPositionScaled() const
+    { return position_.getPositionScaled(size_); };
 
-    /** [Debug] : Prints the cell's members. */
-    void print() const;
+    /**
+     * @brief Prints the cell's members.
+     * @details This function is intended for debugging purposes.
+     */
+    void print() const
+    {
+        position_.print();
+        position_.getPositionScaled(size_).print();
+        std::cout << static_cast<std::underlying_type<CellType>::type>(type_) << std::endl;
+        entity_->print();
+    };
 };
 
 

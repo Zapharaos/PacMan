@@ -1,6 +1,9 @@
-//
-// Created by matthieu on 08/02/2023.
-//
+/**
+ * @file game.h
+ * @brief Contains the declaration of the `Game` class, which represents the Pac-Man game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 08/02/2023
+ */
 
 #ifndef PACMAN_GAME_H
 #define PACMAN_GAME_H
@@ -16,105 +19,135 @@
 #include "utils/utils.h"
 #include "display/window.h"
 
-/** Indicates the game status. */
+/**
+ * @brief Enumerates the possible statuses of the game.
+ */
 enum class StatusType
 {
-    kStopped,
-    kRunning,
-    kPaused,
-    kLevelUpFreeze,
-    kLevelUpAnimate,
-    kDeathFreeze,
-    kDeathAnimate,
-    kEatingGhost
+    kStopped, /* The game is not running. */
+    kRunning, /* The game is running normally. */
+    kPaused, /* The game is paused. */
+    kLevelUpFreeze, /* The game is freezing before level up. */
+    kLevelUpAnimate, /* The game is animating level up. */
+    kDeathFreeze, /* The game is freezing before death. */
+    kDeathAnimate, /* The game is animating death. */
+    kEatingGhost /* Pacman is eating a ghost. */
 };
 
-/** Game object. */
+/**
+ * @brief Represents the Pac-Man game.
+ *
+ * The `Game` class manages the game state, entities, and mechanics, and interacts with the user
+ * through a `Window` object. It contains methods for updating the game state, handling user input,
+ * and rendering the game objects on the window.
+*/
 class Game
 {
 
 private:
 
-    /** Map. */
+    /** The map object. */
     Map map_;
 
-    /** Window. */
+    /** The window object. */
     Window window_;
 
-    /** Number of lives. */
+    /** The number of lives. */
     int lives_ = 0;
 
-    /** Current score. */
+    /** The current score. */
     int score_ = 0;
 
-    /** Highest score set locally*/
+    /** The highest score stored locally. */
     int high_score_ = 0 ;
 
-    /** Current level. */
+    /** The current level. */
     int level_ = 1;
 
-    /** Current number of pellets eaten. */
-    int pelletsEaten_ = 0;
+    /** The current number of pellets eaten. */
+    int pellets_eaten_ = 0;
 
-    /** Total number of pellets. */
-    static const int pelletsTotal_ = 192;
+    /** The total number of pellets. */
+    unsigned long pellets_total_ = 0;
 
-    /** Pacman. */
+    /** The pacman entity. */
     Pacman pacman_;
 
-    /** Ghost entities. */
+    /** The ghost entities. */
     std::vector<Ghost> ghosts_;
 
-    /** Fruit entities. */
+    /** The fruit entity. */
     Fruit fruit_;
 
-    /** Current game status. */
+    /** The current game status. */
     StatusType status_ = {StatusType::kRunning};
 
-    /** Counts a number of frames. */
+    /** The counter used to count frames. */
     Counter counter_ {};
 
 public:
 
-    /** Default Game constructor. */
+    /**
+     * @brief Default constructor for the Game class.
+     */
     Game();
 
-    /** Game constructor.
-     *
-     * @param map Map.
-     * @param window Window.
-     * @param lives Number of lives.
+    /**
+     * @brief Constructor for the Game class.
+     * @param map The map object.
+     * @param window The window object.
      */
-    Game(Map map, Window window, int lives);
+    Game(const Map &map, Window window);
 
-    /** Pause/Resume the game. */
-    void togglePause();
+    /**
+     * @brief Executes a game tick.
+     * @param direction The user's input direction for pacman.
+     */
+    void tick(const Direction &direction);
 
-    /** Handles status. */
+    /**
+     * @brief Draws all objects onto the window.
+     */
+    void display();
+
+    /**
+     * @brief Handles the game status.
+     * @return True if the game is still running, false otherwise.
+     */
     bool handleStatus();
 
-    /** Handles collisions. */
+    /**
+     * @brief Handles collisions between entities.
+     */
     void handleEntitiesCollisions();
 
-    /** Level's the game up. */
+    /**
+     * @brief Toggles the game's pause status.
+     */
+    void togglePause();
+
+    /**
+     * @brief Levels the game up.
+     */
     void levelUp();
 
-    /** Player died. */
+    /**
+     * @brief Handles the player losing a life.
+     */
     void lostLife();
 
     bool updateHighScore() ;
 
     /**
- * getSavedHighScore
- * Gets the high score set locally from the save.json file
- * @return high_score_
- */
+     * getSavedHighScore
+     * Gets the high score set locally from the save.json file
+     * @return high_score_
+     */
     int getLocalHighScore();
 
-    void tick(const Direction &direction);
-
-    void display();
-
+    /**
+     * @brief Quits the game by setting the game status to kStopped.
+     */
     void quit();
 };
 

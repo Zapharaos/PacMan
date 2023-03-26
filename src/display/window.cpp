@@ -4,17 +4,19 @@
 
 #include "../../include/display/window.h"
 
-#include <utility>
+#include "../../include/config/constants.h"
 
 Window::Window() = default;
 
-Window::Window(int width, int height, std::string title) : width_(width), height_(height), title_(move(title)) {
-    init();
-}
-
 void Window::init() {
 
+    width_ = config::dimensions::kWindowWidth;
+    height_ = config::dimensions::kWindowHeight;
+    title_ = config::settings::kName;
+
+    // TODO : replace
     initSpriteMap();
+
     // returns zero on success else non-zero
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         printf("error initializing SDL: %s\n", SDL_GetError());
@@ -31,9 +33,8 @@ void Window::init() {
 
     renderer_ = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
 
-    texture_ = std::shared_ptr<SDL_Texture>(
-            SDL_CreateTextureFromSurface(renderer_.get(), SDL_LoadBMP(constants::PATH_FILE_PACMAN_SPRITES)),
-            SDL_DestroyTexture);
+    texture_ = std::shared_ptr<SDL_Texture> (SDL_CreateTextureFromSurface(renderer_.get(), SDL_LoadBMP(config::files::kBitmap)),
+                                        SDL_DestroyTexture);
 }
 
 void Window::clear() {

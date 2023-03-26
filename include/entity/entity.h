@@ -1,6 +1,9 @@
-//
-// Created by omar on 08/02/23.
-//
+/**
+ * @file entity.h
+ * @brief Defines the Entity class, an object located on the map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 08/02/2023
+*/
 
 #ifndef PEC_MEN_ENTITY_H
 #define PEC_MEN_ENTITY_H
@@ -11,19 +14,24 @@
 #include <iostream>
 #include <utility>
 
-#include "../config/constants.h"
 #include "../display/sprite.h"
 #include "../utils/counter.h"
 
-/** An object located on the map. */
+/**
+ * @brief An object located on the map.
+ */
 class Entity
 {
 
 protected:
 
+    /*
+     * @brief EntityStatus enumeration.
+     * Defines entity visibility status.
+     */
     enum class EntityStatus {
-        kVisible,
-        kHidden
+        kVisible, /* Entity is visible. */
+        kHidden /* Entity is hidden. */
     };
 
     /** Counts a number of frames. */
@@ -48,95 +56,127 @@ private:
 
 public:
 
-    /** Default Entity constructor. */
+    /**
+     * @brief Default constructor for Entity.
+     */
     Entity();
 
-    /** Entity constructor
-     *
-     * @param position Raw position.
-     * @param sprite Image when displayed.
-     * @param enabled If the entity is active.
-     * @param points Points earned when entity is eaten.
+    /**
+     * @brief Constructor for Entity.
+     * @param position The raw position of the entity.
+     * @param sprite The sprite used to display the entity.
+     * @param enabled Indicates if the entity is enabled.
+     * @param points The number of points earned when the entity is eaten.
      */
     Entity(Position position, Sprite sprite, bool enabled, int points);
 
-    /** Entity constructor
-     *
-     * @param position Raw position.
-     * @param sprite Image when displayed.
+    /**
+     * @brief Constructor for Entity.
+     * @param position The raw position of the entity.
+     * @param sprite The sprite used to display the entity.
      */
     Entity(Position position, Sprite sprite);
 
-    /** Entity constructor
-     *
-     * @param position Raw position.
+    /**
+     * @brief Constructor for Entity.
+     * @param position The raw position of the entity.
      */
     explicit Entity(Position position);
 
-    /** Getter : Raw position. */
-    [[nodiscard]] virtual const Position &getPosition() const;
+    /**
+     * @brief Getter for the raw position of the entity.
+     * @return The raw position of the entity.
+     */
+    [[nodiscard]] const Position &getPosition() const;
 
-    /** Setter : Raw position. */
-    virtual void setPosition(const Position &position);
+    /**
+     * @brief Setter for the raw position of the entity.
+     * @param position The new raw position of the entity.
+     */
+    void setPosition(const Position &position);
 
-    /** Setter : Image when displayed. */
+    /**
+     * @brief Setter for the sprite used to display the entity.
+     * @param sprite The new sprite used to display the entity.
+     */
     void setSprite(const Sprite &sprite);
 
-    /** Getter : Points earned when entity is eaten. */
+    /**
+     * @brief Getter for the number of points earned when the entity is eaten.
+     * @return The number of points earned when the entity is eaten.
+     */
     [[nodiscard]] int getPoints() const;
 
-    /** Setter : Points earned when entity is eaten. */
+    /**
+     * @brief Setter for the number of points earned when the entity is eaten.
+     * @param points The new number of points earned when the entity is eaten.
+     */
     void setPoints(int points);
 
-    /** Getter : If the entity is active. */
+    /**
+     * @brief Getter for whether the entity is enabled.
+     * @return True if the entity is enabled, false otherwise.
+     */
     [[nodiscard]] bool isEnabled() const;
 
-    /** Setter : If the entity is active. */
+    /**
+     * @brief Setter for entity status.
+     * @param enabled Entity status.
+     */
     void setEnabled(bool enabled);
 
-    /** Getter : Sprite's position on the bitmap.
-     *
+    /**
+     * @brief Getter for sprite image position.
+     * @return const SDL_Rect& Sprite's image position on the bitmap.
      * @see Sprite::getImage().
      */
     [[nodiscard]] const SDL_Rect &getSpriteImage() const;
 
-    /** Getter : Sprite's position when displayed on the window.
-     *
+    /**
+     * @brief Getter for sprite's display position.
+     * @return const SDL_Rect& Sprite's position when displayed on the window.
      * @see Sprite::getPosition().
      */
     [[nodiscard]] const SDL_Rect &getSpritePosition() const;
 
-    /** Getter : Sprite's size when displayed on the window.
-     *
-     * @return the sprite size when displayed on the window.
+    /**
+     * @brief Getter for sprite's display size.
+     * @return std::pair<int, int> Sprite's size when displayed on the window.
      */
     [[nodiscard]] std::pair<int, int> getSpriteSize() const;
 
-    /** Count for a certain amount of frames.
-     *
-     * @see Counter::start()
+    /**
+     * @brief Count for a certain amount of frames.
      * @param frames Amount of frames.
+     * @see Counter::start()
      */
     void count(long frames);
 
-    /** Hide entity. */
+    /**
+     * @brief Hide entity.
+     */
     void hide();
 
-    /** Show entity. */
+    /**
+     * @brief Show entity.
+     */
     void show();
 
-    /** Indicates if the entity is visible.
-     * @return true if visible, else false.
+    /**
+     * @brief Indicates if the entity is visible.
+     * @return bool True if visible, else false.
      */
     bool isVisible();
 
-    /** Toggles the entity status and its visibility according to the counter member.
-     *
-     * @return true if visible, false if hidden.
+    /**
+     * @brief Toggles the entity status and its visibility according to the counter member.
+     * @return bool True if visible, false if hidden.
      */
     bool tickVisibility();
 
-    /** [Debug] : Prints the entity's members. */
+    /**
+     * @brief Prints entity's members for debugging purposes.
+     */
     void print() const;
 };
 

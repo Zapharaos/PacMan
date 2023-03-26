@@ -9,7 +9,6 @@
 #include <memory>
 
 #include "scoreBoard.h"
-//#include "../utils/utils.h"
 
 /** Game visuals. */
 class Window {
@@ -41,33 +40,11 @@ private :
     std::unordered_map<char, SDL_Rect> character_map_;
 public:
 
-    SDL_Rect bg_ = {constants::WINDOW_MAP_START_X, constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,
-                    constants::WINDOW_MAP_HEIGHT}; // ici scale x4
-    SDL_Rect ghost_scared = {3, 195, constants::BMP_ENTITY_GHOST_WIDTH, constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_r = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_l = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_u = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_d = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky = {32, 32, constants::WINDOW_CELL_WIDTH, constants::WINDOW_CELL_HEIGHT};     // ici scale x2
+    // TODO : remove
+    SDL_Rect bg_ = { 0,0, config::dimensions::kWindowWidth,config::dimensions::kWindowHeight };
 
     /** Default Window constructor. */
     Window();
-
-    /** Window constructor.
-     *
-     * @param width Window width.
-     * @param height Window height.
-     * @param title Window title.
-     */
-    Window(int width, int height, std::string title);
 
     /** Initialize the window. */
     void init();

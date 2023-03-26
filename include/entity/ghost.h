@@ -11,7 +11,6 @@
 #include <iostream>
 #include <utility>
 
-#include "../config/constants.h"
 #include "entity.h"
 
 class Ghost : public Entity

@@ -1,6 +1,9 @@
-//
-// Created by mfrei on 09/03/2023.
-//
+/**
+ * @file sprite.h
+ * @brief Contains the FruitObject class which represents the fruit object in the Pacman game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 09/03/2023
+*/
 
 #ifndef PACMAN_FRUITOBJECT_H
 #define PACMAN_FRUITOBJECT_H
@@ -9,53 +12,80 @@
 #include <set>
 #include <vector>
 
+#include "../config/config.h"
 #include "../display/sprite.h"
 #include "../display/animation.h"
+
+/**
+ * @brief The FruitObject class represents the fruit object in the Pacman game.
+ * It holds information about the points awarded when the fruit is eaten, the levels at which
+ * the fruit can be displayed, and the sprites to switch between when the fruit is displayed.
+*/
 
 class FruitObject
 {
 
 private :
 
+    /** Copy elements from config files to make it easier to understand here. */
+    static constexpr int kFruitsPerAnimation {config::settings::kFruitsMaximumPerAnimation};
+    static constexpr int kLevelsPerFruit {config::settings::kLevelsMaximumPerFruit};
+
     /** Points awarded when the fruit is eaten. */
     int points_{};
 
     /** Levels at which the fruit can be displayed. */
-    std::set<int> levels_{};
+    Container<int, kLevelsPerFruit> levels_{};
 
     /** Sprites to switch between when the fruit is displayed. */
-    Animation animation_{};
+    Animation<kFruitsPerAnimation> animation_{};
 
 public:
 
-    /** Default FruitObject constructor. */
-    FruitObject();
+    /**
+     * @brief Default constructor for FruitObject.
+     */
+    inline FruitObject() = default;
 
-    /** FruitObject constructor.
-     *
+    /**
+     * @brief Constructs a FruitObject.
      * @param points Points awarded when the fruit is eaten.
      * @param levels Levels at which the fruit can be displayed.
-     * @param levels Sprites to switch between when the fruit is displayed.
+     * @param animation Sprites to switch between when the fruit is displayed.
+    */
+    inline constexpr FruitObject(int points, Container<int, kLevelsPerFruit> levels,
+                                 Animation<kFruitsPerAnimation> animation) :
+            points_(points), levels_(levels), animation_(std::move(animation))
+    {}
+
+    /**
+     * @brief Getter function for points awarded when the fruit is eaten.
+     * @return Points awarded when the fruit is eaten.
      */
-    FruitObject(int points, std::set<int> levels,
-                Animation animation);
+    [[nodiscard]] inline int getPoints() const
+    { return points_; }
 
-    /** Getter : Points awarded when the fruit is eaten. */
-    [[nodiscard]] int getPoints() const;
+    /**
+     * @brief Getter function for levels at which the fruit can be displayed.
+     * @return Levels at which the fruit can be displayed.
+     */
+    [[nodiscard]] inline const Container<int, kLevelsPerFruit> &getLevels() const
+    { return levels_; }
 
-    /** Getter : Levels at which the fruit can be displayed. */
-    [[nodiscard]] const std::set<int> &getLevels() const;
-
-    /** Getter : Sprites to switch between when the fruit is displayed. */
-    [[nodiscard]] const Animation &getAnimation() const;
-
-    /** Executes the sprite switches when conditions are met.
-     *
-     * @see Animation::animate()
-     *
+    /**
+     * @brief Getter function for the current sprite.
      * @return The current sprite to be displayed.
      */
-    const Sprite &animate();
+    [[nodiscard]] inline const Sprite & getSprite()
+    { return animation_.getSprite(); }
+
+    /**
+     * @brief Executes the sprite switches when conditions are met.
+     * @see Animation::animate()
+     * @return The current sprite to be displayed.
+     */
+    inline const Sprite &animate()
+    { return animation_.animate(); }
 };
 
 

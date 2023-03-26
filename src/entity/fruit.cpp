@@ -1,36 +1,41 @@
-//
-// Created by omar on 12/02/23.
-//
+/**
+ * @file fruit.cpp
+ * @brief Implements the Fruit class which represents a fruit that occasionally appears on the board.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 12/03/2023
+*/
 
 #include "../../include/entity/fruit.h"
 
 Fruit::Fruit() = default;
 
-Fruit::Fruit(Position position, long time, std::set<int> pellets_cap,
-             std::vector<FruitObject> fruits) :
-        Entity(position), timer_(time), pellets_cap_(move(pellets_cap)),
-        fruits_(move(fruits))
-{}
+Fruit::Fruit(unsigned long total_pellets) : Entity(Position{{config::positions::kFruitX, config::positions::kFruitY}})
+{
+    timer_ = Timer(config::settings::kDurationFruit);
+    for(auto &percentage : config::settings::kFruitsPercentages)
+        pellets_cap_.emplace(total_pellets * percentage / 100);
+
+    fruits_ = visuals::fruit::kFruits;
+}
 
 void Fruit::update(int pellets_eaten, int level)
 {
     // if a fruit should be displayed
-    if (pellets_cap_.find(pellets_eaten) != pellets_cap_.end())
+    if (pellets_cap_.contains(pellets_eaten))
     {
         timer_.kill(); // just in case : disable previous fruit timer
 
         index_ = 0;
         for (auto &fruit: fruits_) // find fruit corresponding to level
         {
-            auto levels = fruit.getLevels();
-            if (levels.find(level) != levels.end())
+            if (fruit.getLevels().contains(level))
                 break;
             ++index_;
         }
 
         setEnabled(true); // enables the entity
         setPoints(fruits_.at(index_).getPoints()); // update points
-        setSprite(fruits_.at(index_).getAnimation().getSprite()); // update sprite
+        setSprite(fruits_.at(index_).getSprite()); // update sprite
 
         timer_.start([&]() {
             setEnabled(false);
