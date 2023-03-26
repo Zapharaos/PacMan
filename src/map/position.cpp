@@ -1,6 +1,9 @@
-//
-// Created by mfrei on 10/03/2023.
-//
+/**
+ * @file position.cpp
+ * @brief Implementation of the Position class representing a position on a 2D grid.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 10/02/2023
+ */
 
 #include "../../include/map/position.h"
 
@@ -13,14 +16,14 @@ Position::Position() = default;
 Position::Position(std::pair<int, int> position) : position_(std::move(position))
 {}
 
-bool Position::operator==(const Position &rhs) const
+bool Position::operator==(const Position &position) const
 {
-    return position_ == rhs.position_;
+    return position_ == position.position_;
 }
 
-bool Position::operator!=(const Position &rhs) const
+bool Position::operator!=(const Position &position) const
 {
-    return !(rhs == *this);
+    return !(position == *this);
 }
 
 const int &Position::getAbscissa() const

@@ -1,15 +1,23 @@
-//
-// Created by matthieu on 01/03/2023.
-//
+/**
+ * @file sprite.h
+ * @brief Contains the Sprite class which represents an object displayed on the window.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 01/03/2023
+*/
 
 #ifndef PACMAN_SPRITE_H
 #define PACMAN_SPRITE_H
 
 #include <SDL_rect.h>
 
+#include <utility>
+
 #include "../map/position.h"
 
-/** Object displayed on the window. */
+/**
+ * @brief Represents an object displayed on the window.
+ * This class is responsible for defining and updating the position of an object on the screen.
+*/
 class Sprite
 {
 
@@ -29,28 +37,47 @@ private:
 
 public:
 
-    /** Default Sprite constructor. */
-    Sprite();
+    /**
+     * @brief Default constructor for the Sprite class.
+     */
+    inline constexpr Sprite() = default;
 
-    /** Sprite constructor.
-     *
+    /**
+     * @brief Constructor for the Sprite class.
      * @param image Position on the bitmap.
      * @param offset Offset when displayed on the window.
      * @param size Size when displayed on the window.
      */
-    Sprite(const SDL_Rect &image, std::pair<int, int> offset, std::pair<int, int> size);
+    inline constexpr Sprite(SDL_Rect image, std::pair<int, int> offset, std::pair<int, int> size) : image_(image), offset_(std::move(offset)), size_(std::move(size)) {
+        position_ = {offset_.first, offset_.second, size_.first, size_.second};
+    }
 
-    /** Getter : Position on the bitmap. */
-    [[nodiscard]] const SDL_Rect &getImage() const;
-
-    /** Getter : Position when displayed on the window. */
-    [[nodiscard]] const SDL_Rect &getPosition() const;
-
-    /** Updates the position when displayed on the window.
-     *
-     * @param coordinates Raw position when displayed on the window.
+    /**
+     * @brief Getter function for the position of the image on the bitmap.
+     * @return A constant reference to the position of the image on the bitmap.
      */
-    void updatePosition(const Position &coordinates);
+    [[nodiscard]] inline const SDL_Rect &getImage() const
+    { return image_; };
+
+
+    /**
+     * @brief Getter function for the position of the sprite when displayed on the window.
+     * @return A constant reference to the position of the sprite when displayed on the window.
+     */
+    [[nodiscard]] const SDL_Rect &getPosition() const
+    { return position_; };
+
+    /**
+     * @brief Updates the position of the sprite when displayed on the window.
+     * @param coordinates Raw position of the sprite when displayed on the window.
+     */
+    void updatePosition(const Position &coordinates)
+    {
+        position_ = {coordinates.getAbscissa() + offset_.first,
+                     coordinates.getOrdinate() + offset_.second,
+                     size_.first,
+                     size_.second};
+    };
 
 };
 

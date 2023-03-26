@@ -1,32 +1,33 @@
 #include <SDL.h>
 
-#include "../include/config/constants.h"
+#include "../include/config/config.h"
 #include "../include/game.h"
 
 int main(int argc, char **argv)
 {
-    Map map = Map{constants::MAP_WIDTH, constants::MAP_HEIGHT,
-                  constants::WINDOW_CELL_HEIGHT, loadCellTypesFromFile(constants::PATH_FILE_PACMAN_MAP)};
-    Window window = Window{constants::WINDOW_MAP_WIDTH, constants::WINDOW_MAP_HEIGHT, "Pacman"};
-    Game game = Game{map, window, constants::LIVES};
+    // Init things that may crash outside the game constructor.
+    Map map = Map{loadCellTypesFromFile(config::files::kMap)};
+    Window window;
+    window.init();
+    Game game = Game{map, window};
 
-    bool quit = false;
-    std::chrono::milliseconds tickTime(1000 / 60);
-
+    // Prepare reading user's inputs.
     int nbk;
     const Uint8 *keys = SDL_GetKeyboardState(&nbk);
     SDL_Event event;
 
+    bool quit = false;
     while (!quit)
     {
         while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT) // Exit
             {
                 quit = true;
                 break;
             } else if (event.type == SDL_KEYDOWN)
             {
+                // Pause : "space" key repeat as a single input.
                 if (event.key.keysym.sym == SDLK_SPACE && event.key.repeat == 0)
                 {
                     game.togglePause();
@@ -58,9 +59,9 @@ int main(int argc, char **argv)
 
         // Cap to 60 frames per second.
         auto finish = std::chrono::steady_clock::now() - start;
-        if (tickTime > finish)
+        if (config::settings::kTickTime > finish)
             SDL_Delay(std::chrono::duration_cast<std::chrono::milliseconds>(
-                    tickTime - finish).count());
+                    config::settings::kTickTime - finish).count());
     }
 
     // Save high score.

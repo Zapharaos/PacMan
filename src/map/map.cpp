@@ -1,49 +1,57 @@
-//
-// Created by matthieu on 07/02/2023.
-//
+/**
+ * @file map.cpp
+ * @brief Implementation of the the Map class representing a map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 07/02/2023
+ */
 
 #include "../../include/map/map.h"
 
 Map::Map() = default;
 
-Map::Map(int width, int height, int cell_size,
-         const std::vector<CellType> &cell_types) :
-        width_(width), height_(height), cell_size_(cell_size)
+Map::Map(const std::vector<CellType> &cell_types)
 {
-    animation_ = {{map_default, map_blink}, false, 240/4/2};
-    sprite_ = map_default;
-    for (int y = 0; y < height; ++y)
+    width_ = config::dimensions::kMapWidth;
+    height_ = config::dimensions::kMapHeight;
+    cell_size_ = config::dimensions::kWindowCellSize;
+    animation_ = visuals::map::kAnimation;
+    sprite_ = animation_.getSprite();
+
+    for (int y = 0; y < height_; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (int x = 0; x < width_; ++x)
         {
             Position position{{x, y}};
-            auto type = cell_types[x + width * y];
-            if (type == CellType::kPellet)
-            {
-                Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = std::make_shared<Entity>(
-                        Entity{coordinates, pellet, true,
-                               static_cast<int> (Score::kPellet)});
-                auto cell = std::make_shared<Cell>(
-                        Cell{position, cell_size, type, entity});
-                cells_.emplace_back(cell);
-                cells_with_entities_.emplace_back(cell);
-            } else if (type == CellType::kEnergizer)
-            {
-                Position coordinates{{x * cell_size_, y * cell_size_}};
-                auto entity = std::make_shared<Entity>(
-                        Entity{coordinates, energizer, true,
-                               static_cast<int> (Score::kEnergizer)});
-                entity->count(15); // 60 fps => 15 shown - 15 hidden
-                auto cell = std::make_shared<Cell>(
-                        Cell{position, cell_size, type, entity});
-                cells_.emplace_back(cell);
-                cells_with_entities_.emplace_back(cell);
-            } else
+            auto type = cell_types[x + width_ * y];
+
+            // Not a pellet and not an energizer => trivial.
+            if (type != CellType::kPellet && type != CellType::kEnergizer)
             {
                 cells_.emplace_back(std::make_shared<Cell>(
-                        Cell{position, cell_size, type, nullptr}));
+                        Cell{position, cell_size_, type, nullptr}));
+                continue;
             }
+
+            Position coordinates{{x * cell_size_, y * cell_size_}};
+            std::shared_ptr<Entity> entity;
+
+            if (type == CellType::kPellet)
+            {
+                entity = std::make_shared<Entity>(
+                        Entity{coordinates, visuals::pellet::kSprite, true,
+                               static_cast<int> (Score::kPellet)});
+            } else
+            {
+                entity = std::make_shared<Entity>(
+                        Entity{coordinates, visuals::energizer::kSprite, true,
+                               static_cast<int> (Score::kEnergizer)});
+                entity->count(config::settings::kRefreshRateTicksEnergizer);
+            }
+
+            auto cell = std::make_shared<Cell>(
+                    Cell{position, cell_size_, type, entity});
+            cells_.emplace_back(cell);
+            cells_with_entities_.emplace_back(cell);
         }
     }
 }

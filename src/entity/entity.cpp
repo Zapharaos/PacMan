@@ -1,10 +1,11 @@
-//
-// Created by omar on 08/02/23.
-//
+/**
+ * @file entity.h
+ * @brief Implements the Entity class, an object located on the map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 08/02/2023
+*/
 
 #include "../../include/entity/entity.h"
-
-#include <utility>
 
 Entity::Entity() = default;
 

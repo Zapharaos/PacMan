@@ -1,29 +1,29 @@
-//
-// Created by matthieu on 28/02/2023.
-//
+/**
+ * @file movingEntity.h
+ * @brief Implements the movingEntity class, an entity that can move across the map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 28/02/2023
+*/
 
 #include "../../include/entity/movingEntity.h"
 
-#include <utility>
-
 MovingEntity::MovingEntity() = default;
 
-MovingEntity::MovingEntity(const Position &position, const Sprite &sprite,
-                           bool enabled, int points, int speed,
-                           Animation left,
-                           Animation right,
-                           Animation up, Animation down)
-        :
-        Entity(position, sprite, enabled, points), speed_(speed), left_(std::move(left)),
+MovingEntity::MovingEntity(const Position &position, bool enabled, int points, int speed,
+                           Animation<kAnimationLeftSize> left,
+                           Animation<kAnimationRightSize> right,
+                           Animation<kAnimationUpSize> up,
+                           Animation<kAnimationDownSize> down) :
+        Entity(position, left.getSprite(), enabled, points), speed_(speed), left_(std::move(left)),
         right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
 
-MovingEntity::MovingEntity(const Position &position, const Sprite &sprite, int speed,
-                           Animation left,
-                           Animation right,
-                           Animation up, Animation down)
-        :
-        Entity(position, sprite), speed_(speed), left_(std::move(left)), right_(std::move(right)),
+MovingEntity::MovingEntity(const Position &position, int speed,
+                           Animation<kAnimationLeftSize> left,
+                           Animation<kAnimationRightSize> right,
+                           Animation<kAnimationUpSize> up,
+                           Animation<kAnimationDownSize> down) :
+        Entity(position, left.getSprite()), speed_(speed), left_(std::move(left)), right_(std::move(right)),
         up_(std::move(up)), down_(std::move(down))
 {}
 

@@ -1,21 +1,25 @@
-//
-// Created by matthieu on 28/02/2023.
-//
+/**
+ * @file pacman.cpp
+ * @brief Implements the Pacman class, which is the main entity in the game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 28/02/2023
+*/
 
 #include "../../include/entity/pacman.h"
 
-#include <utility>
+#include "../../include/config/visuals.h"
 
-Pacman::Pacman() = default;
-
-Pacman::Pacman(const Position &position, const Sprite &sprite, int speed,
-               const Animation &left, const Animation &right,
-               const Animation &up, const Animation &down, long time,
-               Animation death) : MovingEntity(position, sprite,
-                                                           speed, left, right,
-                                                           up, down),
-                                              timer_(time), death_(std::move(death))
-{}
+Pacman::Pacman() :
+               MovingEntity(Position{{config::positions::kPacmanX, config::positions::kPacmanY}},
+                            config::settings::kSpeedPacman,
+                            visuals::pacman::left::kAnimation,
+                            visuals::pacman::right::kAnimation,
+                            visuals::pacman::up::kAnimation,
+                            visuals::pacman::down::kAnimation)
+{
+    timer_ = Timer(config::settings::kDurationSuperpower);
+    death_ = visuals::pacman::death::kAnimation;
+}
 
 void Pacman::setSuperpower(bool superpower)
 {

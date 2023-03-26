@@ -1,6 +1,9 @@
-//
-// Created by matthieu on 07/02/2023.
-//
+/**
+ * @file map.h
+ * @brief Defines the Map class representing a map.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 07/02/2023
+ */
 
 #ifndef PACMAN_MAP_H
 #define PACMAN_MAP_H
@@ -8,13 +11,15 @@
 #include <vector>
 #include <memory>
 
+#include "../config/visuals.h"
 #include "cell.h"
-#include "../entity/entity.h"
 #include "../utils/direction.h"
 #include "../display/animation.h"
-#include "../config/init_sprites.h"
 
-/** The board of a game. */
+/**
+ * @brief The Map class represents the game board of a Pac-Man game.
+ * This class manages the game board, which consists of a grid of cells.
+*/
 class Map
 {
 
@@ -30,111 +35,114 @@ private:
     int cell_size_ = 0;
 
     /** List of all cells.
-     * @details Cells with entities are shared with cellsWithEntities_ member.
-     */
+     * @details Cells with entities are shared with cellsWithEntities_ member. */
     std::vector<std::shared_ptr<Cell>> cells_;
 
     /** Sub list of all cells with entities.
-     * @details Shared with cells_ member.
-     */
+     * @details Shared with cells_ member. */
     std::vector<std::shared_ptr<Cell>> cells_with_entities_;
 
     /** Current map sprite. */
     Sprite sprite_ {};
 
     /** Animation when level up. */
-    Animation animation_ {};
+    Animation<visuals::map::kAnimationSize> animation_ {};
 
 public:
 
-    /** Default Map constructor. */
+    /**
+     * @brief Default constructor for Map.
+     */
     Map();
 
-    /** Map constructor.
-     *
-     * @note cell_types can be loaded with Game::getCellsTypeFromFile()
-     *
-     * @param width Map's width.
-     * @param height Map's height.
-     * @param cell_size Width/height of the cells.
+    /**
+     * @brief Constructor for Map.
+     * @note cell_types can be loaded with utils.h getCellsTypeFromFile()
      * @param cell_types List of all cells type.
      */
-    Map(int width, int height, int cell_size,
-        const std::vector<CellType> &cell_types);
+    explicit Map(const std::vector<CellType> &cell_types);
 
-    /** Getter : Size of a cell. */
+    /**
+     * @brief Gets the size of a cell.
+     * @return the size of a cell in pixels.
+     */
     [[nodiscard]] int getCellSize() const;
 
-    /** Gets the cell at a given index position.
-     *
-     * @param position
+    /**
+     * @brief Gets the cell at a given index position.
+     * @param position Position of the cell to get.
      * @return the cell at position.
      */
     [[nodiscard]] std::shared_ptr<Cell> getCell(const Position &position) const;
 
-    /** Getter : Sub list of all cells with entities. */
+    /**
+     * @brief Gets the sub list of all cells with entities.
+     * @return the sub list of all cells with entities.
+     */
     [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCellsWithEntities() const;
 
-    /** If legal, turns into a direction.
-      *
-      * @details All positions are in pixels.
-      *
-      * @param origin Position of origin.
-      * @param destination Position of destination.
-      * @param direction Initial direction.
-      * @param turn Direction wished for.
-      *
-      * @return the effective destination if the move is legal, else it returns nullptr.
-      */
+    /**
+     * @brief If legal, turns into a direction.
+     * @details All positions are in pixels.
+     * @param origin Position of origin.
+     * @param destination Position of destination.
+     * @param direction Initial direction.
+     * @param turn Direction wished for.
+     * @return the effective destination if the move is legal, else it returns nullptr.
+     */
     [[nodiscard]] std::optional<Position>
     turn(const Position &origin, const Position &destination, const Direction &direction,
                const Direction &turn) const;
 
-    /** If legal, moves into a direction.
-     *
+    /**
+     * @brief If legal, moves into a direction.
      * @details All positions are in pixels.
-     *
      * @param origin Position of origin.
      * @param destination Position of destination.
      * @param direction Initial direction.
-     *
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
     move(const Position &origin, const Position &destination, const Direction &direction) const;
 
-    /** Tries to warp.
-     *
+    /**
+     * @brief Tries to warp.
      * @param destination The destination position.
      * @param corner The opposite corner of the current position.
      * @return The position after trying to warp.
      */
     [[nodiscard]] std::optional<Position> warp(Position destination, Position corner) const;
 
-    /** Indicates whether a move is a warp.
-     *
+    /**
+     * @brief Checks if a move would result in warping to another part of the map.
      * @param origin Position of origin.
      * @param destination Position of destination.
      * @return true if warp, else false.
      */
     [[nodiscard]] bool isWarping(const Position &origin, const Position &destination) const;
 
-    /** Getter : Sprite's position on the bitmap.
-     *
+    /**
+     * @brief Getter : Sprite's position on the bitmap.
      * @see Sprite::getImage().
+     * @return A const reference to the SDL_Rect representing the sprite's position.
      */
     [[nodiscard]] const SDL_Rect &getSpriteImage() const;
 
-    /** Getter : Sprite's position when displayed on the window.
-     *
+    /**
+     * @brief Getter : Sprite's position when displayed on the window.
      * @see Sprite::getPosition().
+     * @return A const reference to the SDL_Rect representing the sprite's position.
      */
     [[nodiscard]] const SDL_Rect &getSpritePosition() const;
 
-    /** Resets the map to its original state */
+    /**
+     * @brief Resets all cells on the map to their original state.
+     */
     void reset() const;
 
-    /** Map blinking animation. */
+    /**
+     * @brief Animates the Map sprite with a blinking effect to indicate level up.
+     */
     void animate();
 };
 

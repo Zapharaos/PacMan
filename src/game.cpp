@@ -1,46 +1,23 @@
-//
-// Created by matthieu on 08/02/2023.
-//
+/**
+ * @file game.h
+ * @brief Implementation of the `Game` class, which represents the Pac-Man game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 08/02/2023
+ */
 
 #include "../include/game.h"
 
-#include <utility>
-
 Game::Game() = default;
 
-Game::Game(Map map, Window window, int lives) : map_(std::move(map)), window_(std::move(window)), lives_(lives)
+Game::Game(const Map &map, Window window) : map_(map), window_(std::move(window))
 {
+    pellets_total_ = map.getCellsWithEntities().size();
+    lives_ = config::settings::kLives;
+    fruit_ = Fruit{pellets_total_};
+    // Pacman already done initialization.
     getLocalHighScore();
-    // Pacman
-    pacman_ = Pacman(
-            Position{{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}},
-            pacman_left.getSprite(), constants::PACMAN_SPEED, pacman_left,
-            pacman_right, pacman_up, pacman_down, 5000, pacman_death);
-
-    // Fruits
-    std::vector<FruitObject> fruits = {
-            {100, {1}, {{fruit_cherry_1, fruit_cherry_2}, false, 10}},
-            {300, {2}, {{fruit_strawberry_1, fruit_strawberry_2}, false, 10}},
-            {500, {3, 4}, {{fruit_orange_1, fruit_orange_2}, false, 10}},
-            {700, {5, 6}, {{fruit_apple_1, fruit_apple_2}, false, 10}},
-            {1000, {7,  8}, {{fruit_melon_1, fruit_melon_2}, false, 10}},
-            {2000, {9,  10}, {{fruit_flagship_1, fruit_flagship_2}, false, 10}},
-            {3000, {11, 12}, {{fruit_bell_1, fruit_bell_2}, false, 10}},
-            {5000, {13}, {{fruit_key_1, fruit_key_2},  false, 10}}
-    };
-    Position fruit_coordinates{
-            {constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y - 5 * 32}};
-    fruit_ = {fruit_coordinates, 9500, {56, 136}, fruits};
 
     // TODO : setup ghosts
-}
-
-void Game::togglePause()
-{
-    if(status_ == StatusType::kRunning)
-        status_ = StatusType::kPaused;
-    else if(status_ == StatusType::kPaused)
-        status_ = StatusType::kRunning;
 }
 
 void Game::tick(const Direction &direction)
@@ -145,7 +122,7 @@ bool Game::handleStatus()
     {
         // Start level up animation.
         status_ = StatusType::kLevelUpAnimate;
-        counter_.start(240);
+        counter_.start(config::settings::kDurationLevelupBlinking);
         // TODO : hide ghosts
         return false;
     }
@@ -189,7 +166,7 @@ bool Game::handleStatus()
 
 void Game::handleEntitiesCollisions()
 {
-    bool lowScore = score_ < constants::NEW_UP_POINTS_CAP;
+    bool lowScore = score_ < config::settings::kNewLifeAtPoints;
 
     // Get pacman sprite position.
     auto pacman = pacman_.getSpritePosition();
@@ -210,18 +187,18 @@ void Game::handleEntitiesCollisions()
         score_ += entity->getPoints();
 
         // Freeze pacman.
-        pacman_.count(1);
+        pacman_.count(config::settings::kDurationEatenPelletFreeze);
 
         // Updates fruit.
-        ++pelletsEaten_;
-        fruit_.update(pelletsEaten_, level_);
+        ++pellets_eaten_;
+        fruit_.update(pellets_eaten_, level_);
 
         // Updates game.
-        if (pelletsEaten_ == pelletsTotal_) // Level up.
+        if (pellets_eaten_ == pellets_total_) // Level up.
         {
             // Freeze game (60 frames) before the game level up animation.
             status_ = StatusType::kLevelUpFreeze;
-            counter_.start(60);
+            counter_.start(config::settings::kDurationLevelupFreeze);
         } else if (cell->getType() == CellType::kEnergizer) // Superpower.
         {
             pacman_.setSuperpower(true);
@@ -250,7 +227,7 @@ void Game::handleEntitiesCollisions()
             {
                 // Freeze game (60 frames) before the death animation.
                 status_ = StatusType::kDeathFreeze;
-                counter_.start(60);
+                counter_.start(config::settings::kDurationDeathFreeze);
                 // TODO : ghosts status animate
                 continue;
             }
@@ -261,7 +238,7 @@ void Game::handleEntitiesCollisions()
 
             // Eating animation.
             status_ = StatusType::kEatingGhost;
-            counter_.start(60);
+            counter_.start(config::settings::kDurationEatenGhostFreeze);
             pacman_.hide();
 
             // Display points sprite.
@@ -272,15 +249,23 @@ void Game::handleEntitiesCollisions()
     }
 
     // Check if the score has evolved up the new life's limit.
-    if (lowScore && score_ >= constants::NEW_UP_POINTS_CAP)
+    if (lowScore && score_ >= config::settings::kNewLifeAtPoints)
         ++lives_;
+}
+
+void Game::togglePause()
+{
+    if(status_ == StatusType::kRunning)
+        status_ = StatusType::kPaused;
+    else if(status_ == StatusType::kPaused)
+        status_ = StatusType::kRunning;
 }
 
 void Game::levelUp()
 {
     // Update game settings.
     ++level_;
-    pelletsEaten_ = 0;
+    pellets_eaten_ = 0;
     status_ = StatusType::kRunning;
 
 
@@ -288,7 +273,7 @@ void Game::levelUp()
     map_.reset();
     fruit_.reset();
     pacman_.reset(
-            Position{{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}});
+            Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
     // TODO : ghosts reset
     // TODO : speed and timers : up
@@ -298,10 +283,10 @@ void Game::lostLife()
 {
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
-        lives_ = 3; // temp
+        lives_ = config::settings::kLives; // temp
         score_ = 0;
         level_ = 1;
-        pelletsEaten_ = 0;
+        pellets_eaten_ = 0;
         map_.reset();
     }
 
@@ -309,7 +294,7 @@ void Game::lostLife()
     status_ = StatusType::kRunning;
     fruit_.reset();
     pacman_.reset(
-            Position{{constants::WINDOW_PACMAN_X, constants::WINDOW_PACMAN_Y}});
+            Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
     // TODO : ghosts reset
     // TODO : speed and timers : reset

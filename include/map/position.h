@@ -1,6 +1,9 @@
-//
-// Created by mfrei on 10/03/2023.
-//
+/**
+ * @file position.h
+ * @brief Defines the Position class representing a position on a 2D grid.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 10/02/2023
+ */
 
 #ifndef PACMAN_POSITION_H
 #define PACMAN_POSITION_H
@@ -10,7 +13,9 @@
 
 #include "../utils/direction.h"
 
-/** Position as abscissa and ordinate. */
+/**
+ * @brief Represents a position on a 2D grid.
+ */
 class Position
 {
 
@@ -21,100 +26,114 @@ private:
 
 public:
 
-    /** Default position constructor */
+    /**
+     * @brief Default constructor for the Position class.
+     */
     Position();
 
-    /** Position constructor
-     *
-     * @param position Position as abscissa and ordinate.
+    /**
+     * @brief Constructor for the Position class.
+     * @param position A pair representing the abscissa and ordinate of the position.
      */
     explicit Position(std::pair<int, int> position);
 
-    /** Indicates if both positions are equals. */
-    bool operator==(const Position &rhs) const;
+    /**
+     * @brief Overloaded operator for the equality of two Position objects.
+     * @param position The Position object to compare to.
+     * @return True if both positions are equal, else false.
+     */
+    bool operator==(const Position &position) const;
 
-    /** Indicates if both positions are different. */
-    bool operator!=(const Position &rhs) const;
+    /**
+     * @brief Overloaded operator for the inequality of two Position objects.
+     * @param position The Position object to compare to.
+     * @return True if both positions are different, else false.
+     */
+    bool operator!=(const Position &position) const;
 
-    /** Getter : abscissa */
+    /**
+     * @brief Getter for the abscissa of the position.
+     * @return The abscissa of the position.
+     */
     [[nodiscard]] const int &getAbscissa() const;
 
-    /** Getter : ordinate */
+    /**
+     * @brief Getter for the ordinate of the position.
+     * @return The ordinate of the position.
+     */
     [[nodiscard]] const int &getOrdinate() const;
 
-    /** Indicates whether a position is out of bounds or not.
-     *
-     * @param width Width limit.
-     * @param height Height limit.
-     * @return true if the position is out of bounds, else false.
+    /**
+     * @brief Indicates whether the position is out of bounds or not.
+     * @param width The width limit of the grid.
+     * @param height The height limit of the grid.
+     * @return True if the position is out of bounds, else false.
      */
     [[nodiscard]] bool isOutOfBounds(int width, int height) const;
 
-    /** Indicates whether its between two positions or not.
-     *
+    /**
+     * @brief Indicates whether the position is between two other positions or not.
      * @param a The first position.
      * @param b The second position.
-     * @return true if located between both positions, else false.
+     * @return True if the position is located between both positions, else false.
      */
     [[nodiscard]] bool isBetween(const Position &a, const Position &b) const;
 
-    /** The distance on a single axis (horizontal or vertical).
-     *
+    /**
+     * @brief Gets the distance between two positions on a single axis (horizontal or vertical).
      * @pre Both positions must be either horizontally or vertically aligned.
-     *
      * @param position The second position.
-     * @return the distance between both positions.
+     * @return The distance between both positions.
      */
     [[nodiscard]] int getSingleAxisDistance(const Position &position) const;
 
-    /** Scales the position.
-     *
-     * @param scale The scale.
-     * @return Copy of the original object with its position scaled.
+    /**
+     * @brief Scales the position.
+     * @param scale The scale factor.
+     * @return A copy of the original object with its position scaled.
      */
     [[nodiscard]] Position getPositionScaled(int scale) const;
 
-    /** Unscales the position.
-     *
-     * @param scale The scale.
-     * @return Copy of the original object with its position unscaled.
+    /**
+     * @brief Unscales the position.
+     * @param scale The scale factor.
+     * @return A copy of the original object with its position unscaled.
      */
     [[nodiscard]] Position getPositionUnscaled(int scale) const;
 
-    /** Indicates if two positions are neighbors.
-     *
+    /**
+     * @brief Indicates if two positions are neighbors.
      * @param position Second position.
-     * @return true if positions are neighbors, else false.
+     * @return True if positions are neighbors, else false.
      */
     [[nodiscard]] bool isNeighbor(const Position &position) const;
 
-    /** Position's neighbor in a specific direction.
-     *
+    /**
+     * @brief Gets the neighbor of the position in a specific direction.
      * @param direction The direction.
-     * @return the neighbor's position.
+     * @return The neighbor's position.
      */
     [[nodiscard]] Position getNeighbor(const Direction &direction) const;
 
-    /** Moves into a direction.
-     *
+    /**
+     * @brief Moves the position a certain distance into a direction.
      * @param direction The direction of the movement.
      * @param distance The distance of the movement.
      * @return Copy of the original object with its position moved.
      */
     [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
 
-    /** Shifts the position by a certain amount.
-     *
+    /**
+     * @brief Shifts the position by a certain amount.
      * @param x Distance on the abscissa axis.
      * @param y Distance on the ordinate axis.
-     * @return the position shifted.
+     * @return The position shifted.
      */
     [[nodiscard]] Position shift(int x, int y) const;
 
-    /** Gets the position's limit at the opposite.
-     *
-     * @pre Position's origin must already be out of bounds.
-     *
+    /**
+     * @brief Gets the position's limit at the opposite.
+     * @pre The position's origin must already be out of bounds.
      * @param width The maximum width.
      * @param height The maximum height.
      * @return The position at the opposite.
@@ -122,7 +141,7 @@ public:
     [[nodiscard]] Position getOpposite(int width, int height) const;
 
     /**
-     * [Debug] : Prints the position.
+     * @brief Prints the position for debugging purposes.
      */
     void print() const;
 };

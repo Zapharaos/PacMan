@@ -1,6 +1,7 @@
-//
-// Created by mfrei on 11/03/2023.
-//
+/**
+ * @file utils.cpp
+ * @brief Implementation of various utility functions for the Pac-Man game.
+ */
 
 #include "../../include/utils/utils.h"
 

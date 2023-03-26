@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18.4)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(PacMan LANGUAGES CXX)
 
@@ -14,10 +14,10 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 add_executable(${PROJECT_NAME} ""
 
-		include/config/constants.h
-		include/config/init_sprites.h
+		include/config/config.h
+		include/config/visuals.h
 
-		include/display/animation.h
+        include/display/animation.h
 		include/display/scoreBoard.h
 		include/display/sprite.h
 		include/display/window.h
@@ -33,35 +33,30 @@ add_executable(${PROJECT_NAME} ""
 		include/map/map.h
 		include/map/position.h
 
+		include/utils/container.h
 		include/utils/json.hpp
 		include/utils/timer.h
 		include/utils/direction.h
 		include/utils/utils.h
 
 		include/game.h
-        )
+		include/config/config.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 
-		src/display/animation.cpp
 		src/display/scoreBoard.cpp
-		src/display/sprite.cpp
 		src/display/window.cpp
 
 		src/entity/entity.cpp
 		src/entity/fruit.cpp
-		src/entity/fruitObject.cpp
 		src/entity/ghost.cpp
 		src/entity/movingEntity.cpp
 		src/entity/pacman.cpp
 
-		src/map/cell.cpp
 		src/map/map.cpp
 		src/map/position.cpp
 
-
 		src/utils/timer.cpp
-		src/utils/direction.cpp
 		src/utils/utils.cpp
 
 		src/game.cpp

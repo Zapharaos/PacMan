@@ -203,12 +203,4 @@ namespace constants
 
 }
 
-// TODO : will be read from settings file
-enum class Score
-{
-    kPellet = 10,
-    kEnergizer = 50,
-    kGhost = 200
-};
-
 #endif //PACMAN_CONSTANTS_H
