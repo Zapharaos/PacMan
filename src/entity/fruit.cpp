@@ -11,7 +11,7 @@ Fruit::Fruit() = default;
 
 Fruit::Fruit(unsigned long total_pellets) : Entity(Position{{config::positions::kFruitX, config::positions::kFruitY}})
 {
-    timer_ = Timer(config::settings::kDurationFruit);
+    // timer_ = Timer(config::settings::kDurationFruit);
     for(auto &percentage : config::settings::kFruitsPercentages)
         pellets_cap_.emplace(total_pellets * percentage / 100);
 
@@ -23,8 +23,6 @@ void Fruit::update(int pellets_eaten, int level)
     // if a fruit should be displayed
     if (pellets_cap_.contains(pellets_eaten))
     {
-        timer_.kill(); // just in case : disable previous fruit timer
-
         index_ = 0;
         for (auto &fruit: fruits_) // find fruit corresponding to level
         {
@@ -36,25 +34,16 @@ void Fruit::update(int pellets_eaten, int level)
         setEnabled(true); // enables the entity
         setPoints(fruits_.at(index_).getPoints()); // update points
         setSprite(fruits_.at(index_).getSprite()); // update sprite
-
-        timer_.start([&]() {
-            setEnabled(false);
-        }); // only showing fruit for a specific time
+        counter_.start(config::settings::kDurationFruit); // fruit duration
     }
 }
 
-bool Fruit::isEnabled()
+void Fruit::tick()
 {
-    // protecting access : as timer_ expires, it disables the entity
-    timer_.setMutexLock(true);
-    bool result = Entity::isEnabled();
-    timer_.setMutexLock(false);
-    return result;
-}
-
-void Fruit::reset()
-{
-    timer_.kill(); // stop the timer
+    if(counter_.isActive())
+        counter_.increment();
+    else if (isEnabled())
+        setEnabled(false);
 }
 
 void Fruit::animate() {

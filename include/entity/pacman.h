@@ -30,9 +30,6 @@ private:
     /** Superpower mode is activated. */
     bool superpower_ = false;
 
-    /** Timer that disables the superpower mode at expiration. */
-    Timer timer_{};
-
     /** Has died. */
     bool dead_ = false;
 
@@ -54,7 +51,12 @@ public:
     /**
      * @brief Getter for superpower mode.
      */
-    [[nodiscard]] bool isSuperpower();
+    [[nodiscard]] bool isSuperpower() const;
+
+    /**
+     * @brief Update the superpower counter and disable it when it's over.
+     */
+    void tick();
 
     /**
      * @brief Getter for "dead" status.

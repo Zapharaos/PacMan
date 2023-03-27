@@ -18,49 +18,73 @@ enum class Score
 namespace config {
 
     namespace files {
+        /** File path to the bitmap. */
         inline const char *const kBitmap {"./pacman_sprites.bmp"};
+
+        /** File path to the map. */
         inline const char *const kMap {"./pacman_map.txt"};
     }
 
     namespace settings {
+        /** Name of the game, displayed as the window title. */
         inline const char* const kName = {"Pacman"};
-        inline constexpr std::chrono::milliseconds kTickTime {1000/60}; // 60 FPS
 
+        /** Amount of frames per second, the game speed. */
+        inline constexpr int kFramesPerSecond {60};
+
+        /** DO NOT MODIFY : Duration of a tick. */
+        inline constexpr std::chrono::milliseconds kTickTime {1000/kFramesPerSecond};
+
+        /** Amount of ticks between each sprite change. */
         inline constexpr int kRefreshRateTicksMovingEntity {3};
         inline constexpr int kRefreshRateTicksFruit {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
-        inline constexpr int kDurationSuperpower {5000};
-        inline constexpr int kDurationFruit {9500};
+        /** Amount of ticks for each status. */
+        inline constexpr int kDurationSuperpower {kFramesPerSecond * 5};
+        inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
-        inline constexpr int kDurationEatenGhostFreeze {60};
-        inline constexpr int kDurationLevelupFreeze {60};
-        inline constexpr int kDurationLevelupBlinking {60 * 4};
-        inline constexpr int kDurationDeathFreeze {60};
+        inline constexpr int kDurationEatenGhostFreeze {kFramesPerSecond};
+        inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
+        inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
+        inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
+        /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
         inline constexpr int kSpeedGhost {1};
 
+        /** Global game settings. */
         inline constexpr int kLives {3};
         inline constexpr int kNewLifeAtPoints {10000};
 
-        inline constexpr int kFruitsPerLevel {2};
+        /** Maximum amount of sprites per fruit animation. */
         inline constexpr int kFruitsMaximumPerAnimation {2};
+        /** Maximum amount of levels a fruit can appear at. */
         inline constexpr int kLevelsMaximumPerFruit {2};
+        /** How many times a fruit can appear per level. */
+        inline constexpr int kFruitsPerLevel {2};
+        /** After how many eaten pellets does the fruits appear (by level). */
         inline constexpr std::array<int, kFruitsPerLevel> kFruitsPercentages {30, 70};
     }
 
     namespace dimensions {
+        /** Map dimensions (see files:kMap). */
         inline constexpr int kMapWidth {21};
         inline constexpr int kMapHeight {27};
+
+        /** Window cell size. */
         inline constexpr int kWindowCellSize {32};
+
+        /** DO NOT MODIFY : Window dimensions. */
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
         inline constexpr int kWindowHeight {kMapHeight * kWindowCellSize};
     }
 
     namespace positions {
+        /** Pacman default/starting position (in pixels). */
         inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
         inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
+        /** Fruit position (in pixels). */
         inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
         inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
     }
