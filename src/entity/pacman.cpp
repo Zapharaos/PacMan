@@ -17,27 +17,24 @@ Pacman::Pacman() :
                             visuals::pacman::up::kAnimation,
                             visuals::pacman::down::kAnimation)
 {
-    timer_ = Timer(config::settings::kDurationSuperpower);
     death_ = visuals::pacman::death::kAnimation;
 }
 
 void Pacman::setSuperpower(bool superpower)
 {
     if ((superpower_ = superpower))
-    {
-        timer_.kill(); // stop previous superpower if still running
-        timer_.start([&]() {
-            setSuperpower(false);
-        }); // only activating superpower mode for a specific time
-    }
+        counter_.start(config::settings::kDurationSuperpower);
 }
 
-bool Pacman::isSuperpower()
+bool Pacman::isSuperpower() const
 {
-    timer_.setMutexLock(true);
-    bool result = superpower_;
-    timer_.setMutexLock(false);
-    return result;
+    return superpower_;
+}
+
+void Pacman::tick()
+{
+    if (!counter_.isActive() && isSuperpower())
+        setSuperpower(false);
 }
 
 bool Pacman::isDead() const
@@ -70,7 +67,6 @@ void Pacman::animateDeath()
 void Pacman::reset(const Position &coordinates)
 {
     MovingEntity::reset(coordinates);
-    timer_.kill();
     superpower_ = false;
     dead_ = false;
 }

@@ -29,9 +29,6 @@ class Fruit : public Entity
 
 private:
 
-    /** Timer that disables the fruit at expiration. */
-    Timer timer_{};
-
     /** List of values at which the fruit will be displayed. */
     Container<unsigned long, config::settings::kFruitsPerLevel> pellets_cap_{};
 
@@ -57,13 +54,6 @@ public:
     explicit Fruit(unsigned long total_pellets);
 
     /**
-     * @brief Tells if the fruit is enabled (i.e. displayed).
-     * @details Overrides the isEnabled() method in the Entity class.
-     * @return True if the fruit is enabled, false otherwise.
-     */
-    [[nodiscard]] bool isEnabled();
-
-    /**
      * @brief Update the fruit only if specific conditions are met.
      * @note pelletsEaten must belong to pelletsCap_ for the fruit to be displayed.
      * @param pellets_eaten Current number of pellets eaten.
@@ -78,9 +68,9 @@ public:
     void animate();
 
     /**
-     * @brief Resets the fruit object.
+     * @brief Update the fruit counter and disable it when it's over.
      */
-    void reset();
+    void tick();
 };
 
 

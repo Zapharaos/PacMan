@@ -206,15 +206,19 @@ void Game::handleEntitiesCollisions()
         }
     }
 
-    // Fruit is active and collided with Pacman.
-    if (fruit_.isEnabled() &&
-        SDL_HasIntersection(&pacman, &fruit_.getSpritePosition()))
+    // Fruit is active.
+    if (fruit_.isEnabled())
     {
-        // Disables fruit.
-        fruit_.setEnabled(false);
-        score_ += fruit_.getPoints();
-        // Displays points earned.
-        // TODO : display points sprite
+        // Collided with Pacman.
+        if (SDL_HasIntersection(&pacman, &fruit_.getSpritePosition()))
+        {
+            // Disables fruit.
+            fruit_.setEnabled(false);
+            score_ += fruit_.getPoints();
+            // Displays points earned.
+            // TODO : display points sprite
+        }
+        fruit_.tick();
     }
 
     for (auto &ghost: ghosts_)
@@ -248,6 +252,9 @@ void Game::handleEntitiesCollisions()
         }
     }
 
+    if(pacman_.isSuperpower())
+        pacman_.tick();
+
     // Check if the score has evolved up the new life's limit.
     if (lowScore && score_ >= config::settings::kNewLifeAtPoints)
         ++lives_;
@@ -271,7 +278,6 @@ void Game::levelUp()
 
     // Reset entities.
     map_.reset();
-    fruit_.reset();
     pacman_.reset(
             Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
@@ -292,7 +298,6 @@ void Game::lostLife()
 
     // Reset the entities (might only lose a life).
     status_ = StatusType::kRunning;
-    fruit_.reset();
     pacman_.reset(
             Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
