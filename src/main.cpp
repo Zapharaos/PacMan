@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    // Init things that may crash outside the game constructor.
+    // Init things (that may crash) outside from the game constructor.
     Map map = Map{loadCellTypesFromFile(config::files::kMap)};
     Window window;
     window.init();
@@ -69,6 +69,5 @@ int main(int argc, char **argv)
 
     // Leave game.
     SDL_Quit();
-    game.quit();
     return 0;
 }

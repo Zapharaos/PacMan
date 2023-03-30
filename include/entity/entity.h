@@ -23,7 +23,7 @@
 class Entity
 {
 
-protected:
+private:
 
     /*
      * @brief EntityStatus enumeration.
@@ -31,16 +31,9 @@ protected:
      */
     enum class EntityStatus {
         kVisible, /* Entity is visible. */
-        kHidden /* Entity is hidden. */
+        kHidden, /* Entity is hidden. */
+        kFrozen /* Entity is frozen. */
     };
-
-    /** Counts a number of frames. */
-    Counter counter_ {};
-
-    /** Entity status. */
-    EntityStatus status_ {EntityStatus::kVisible};
-
-private:
 
     /** Raw position. */
     Position position_{};
@@ -53,6 +46,12 @@ private:
 
     /** Points earned when entity is eaten. */
     int points_{};
+
+    /** Entity status. */
+    EntityStatus status_ {EntityStatus::kVisible};
+
+    /** Counts a number of frames. */
+    Counter counter_ {};
 
 public:
 
@@ -96,6 +95,12 @@ public:
     void setPosition(const Position &position);
 
     /**
+     * @brief Getter for the sprite used to display the entity.
+     * @return The new sprite used to display the entity.
+     */
+    [[nodiscard]] const Sprite &getSprite() const;
+
+    /**
      * @brief Setter for the sprite used to display the entity.
      * @param sprite The new sprite used to display the entity.
      */
@@ -126,31 +131,23 @@ public:
     void setEnabled(bool enabled);
 
     /**
-     * @brief Getter for sprite image position.
-     * @return const SDL_Rect& Sprite's image position on the bitmap.
-     * @see Sprite::getImage().
-     */
-    [[nodiscard]] const SDL_Rect &getSpriteImage() const;
-
-    /**
-     * @brief Getter for sprite's display position.
-     * @return const SDL_Rect& Sprite's position when displayed on the window.
-     * @see Sprite::getPosition().
-     */
-    [[nodiscard]] const SDL_Rect &getSpritePosition() const;
-
-    /**
-     * @brief Getter for sprite's display size.
-     * @return std::pair<int, int> Sprite's size when displayed on the window.
-     */
-    [[nodiscard]] std::pair<int, int> getSpriteSize() const;
-
-    /**
      * @brief Count for a certain amount of frames.
      * @param frames Amount of frames.
      * @see Counter::start()
      */
     void count(long frames);
+
+    /**
+     * @brief Indicates if the counter is active (i.e. frames are being counted).
+     * @return True if active, else false.
+     */
+    [[nodiscard]] bool isCounterActive() const;
+
+    /**
+     * @brief Increments the counter.
+     * @see Counter::increment()
+     */
+    void counterIncrement();
 
     /**
      * @brief Hide entity.
@@ -163,10 +160,21 @@ public:
     void show();
 
     /**
+     * @brief Freeze entity.
+     */
+    void freeze();
+
+    /**
      * @brief Indicates if the entity is visible.
      * @return bool True if visible, else false.
      */
     bool isVisible();
+
+    /**
+     * @brief Indicates if the entity is hidden.
+     * @return bool True if hidden, else false.
+     */
+    bool isHidden();
 
     /**
      * @brief Toggles the entity status and its visibility according to the counter member.
@@ -178,6 +186,7 @@ public:
      * @brief Prints entity's members for debugging purposes.
      */
     void print() const;
+
 };
 
 #endif //PEC_MEN_ENTITY_H

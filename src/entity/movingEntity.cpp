@@ -27,17 +27,21 @@ MovingEntity::MovingEntity(const Position &position, int speed,
         up_(std::move(up)), down_(std::move(down))
 {}
 
-void MovingEntity::move(const Map &map, Direction direction)
+void MovingEntity::tick(const Map &map, Direction direction)
 {
-
-    if(counter_.isActive()) // Entity interrupted
-    {
-        counter_.increment();
+    if(isCounterActive()) {
+        counterIncrement();
         return;
     }
 
     // Reset status
     if(!isVisible()) show();
+
+    move(map, direction);
+}
+
+void MovingEntity::move(const Map &map, Direction direction)
+{
 
     // Direction must be initialized.
     if (direction.isUninitialized())
@@ -65,7 +69,7 @@ void MovingEntity::move(const Map &map, Direction direction)
     // Warping.
     if(map.isWarping(origin, destination) && direction == previous_direction_)
     {
-        auto size = getSpriteSize();
+        auto size = getSprite().getSize();
         auto corner = destination.shift(size.first, size.second);
         position = map.warp(destination, corner);
     }
@@ -106,5 +110,4 @@ void MovingEntity::reset(const Position &position)
     left_.reset();
     setSprite(left_.getSprite()); // default sprite
     setPosition(position); // reset position
-    status_ = EntityStatus::kVisible;
 }

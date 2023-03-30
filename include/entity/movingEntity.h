@@ -26,18 +26,6 @@
 class MovingEntity : public Entity
 {
 
-protected:
-
-    /**
-     * @brief Enum to indicate the status of the entity while it's moving.
-     */
-    enum class MovingEntityStatus : std::underlying_type_t<EntityStatus> {
-        kFrozen,
-        kAnimated, // frozen but still animate
-        kDead // ?
-    };
-    // EntityStatus test = (EntityStatus)MovingEntityStatus::FROZEN;
-
 private:
 
     /**
@@ -107,6 +95,13 @@ public:
                  Animation<kAnimationRightSize> right,
                  Animation<kAnimationUpSize> up,
                  Animation<kAnimationDownSize> down);
+
+    /**
+     * @brief Handle the moving entity.
+     * @param map The board with all the cells.
+     * @param direction The direction the entity is moving towards.
+     */
+    virtual void tick(const Map &map, Direction direction);
 
     /**
      * @brief Moves the entity in the given direction if it is a legal move.

@@ -66,13 +66,6 @@ void Window::updateLives(int nb_lives) {
     score_board_.writeLives(renderer_, texture_, nb_lives);
 }
 
-void Window::free() {
-    SDL_DestroyRenderer(renderer_.get());
-    SDL_DestroyWindow(window_.get());
-    SDL_DestroyTexture(texture_.get());
-}
-
-
 void Window::updateFruits() {
     score_board_.updateFruits(renderer_, texture_);
 }

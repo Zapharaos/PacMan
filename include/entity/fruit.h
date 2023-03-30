@@ -15,7 +15,6 @@
 #include <vector>
 
 #include "entity.h"
-#include "../utils/timer.h"
 #include "../entity/fruitObject.h"
 #include "../config/config.h"
 #include "../config/visuals.h"

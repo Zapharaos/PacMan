@@ -32,6 +32,11 @@ void Entity::setPosition(const Position &position)
     sprite_.updatePosition(position_);
 }
 
+const Sprite &Entity::getSprite() const
+{
+    return sprite_;
+}
+
 void Entity::setSprite(const Sprite &sprite)
 {
     sprite_ = sprite;
@@ -58,24 +63,16 @@ void Entity::setEnabled(bool enabled)
     enabled_ = enabled;
 }
 
-const SDL_Rect &Entity::getSpriteImage() const
-{
-    return sprite_.getImage();
-}
-
-const SDL_Rect &Entity::getSpritePosition() const
-{
-    return sprite_.getPosition();
-}
-
-std::pair<int, int> Entity::getSpriteSize() const
-{
-    auto sprite_position = getSpritePosition();
-    return {sprite_position.w, sprite_position.h};
-}
-
 void Entity::count(long frames) {
     counter_.start(frames);
+}
+
+bool Entity::isCounterActive() const {
+    return counter_.isActive();
+}
+
+void Entity::counterIncrement() {
+    counter_.increment();
 }
 
 bool Entity::tickVisibility() {
@@ -97,9 +94,19 @@ void Entity::show()
     status_ = EntityStatus::kVisible;
 }
 
+void Entity::freeze()
+{
+    status_ = EntityStatus::kFrozen;
+}
+
 bool Entity::isVisible()
 {
     return status_ == EntityStatus::kVisible;
+}
+
+bool Entity::isHidden()
+{
+    return status_ == EntityStatus::kHidden;
 }
 
 void Entity::print() const
