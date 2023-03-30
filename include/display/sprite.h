@@ -68,6 +68,13 @@ public:
     { return position_; };
 
     /**
+     * @brief Getter for sprite's display size.
+     * @return std::pair<int, int> Sprite's size when displayed on the window.
+     */
+    [[nodiscard]] const std::pair<int, int> &getSize() const
+    { return size_; };
+
+    /**
      * @brief Updates the position of the sprite when displayed on the window.
      * @param coordinates Raw position of the sprite when displayed on the window.
      */

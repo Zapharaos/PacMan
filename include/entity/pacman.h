@@ -9,7 +9,6 @@
 #define PACMAN_PACMAN_H
 
 #include "movingEntity.h"
-#include "../utils/timer.h"
 
 /**
  * @brief The Pacman entity.
@@ -29,6 +28,9 @@ private:
 
     /** Superpower mode is activated. */
     bool superpower_ = false;
+
+    /** Counts the number of frames until the superpower expires. */
+    Counter countSuperpower_ {};
 
     /** Has died. */
     bool dead_ = false;
@@ -54,11 +56,6 @@ public:
     [[nodiscard]] bool isSuperpower() const;
 
     /**
-     * @brief Update the superpower counter and disable it when it's over.
-     */
-    void tick();
-
-    /**
      * @brief Getter for "dead" status.
      */
     [[nodiscard]] bool isDead() const;
@@ -67,6 +64,13 @@ public:
      * @brief Setter for "dead" status.
      */
     void setDead(bool dead);
+
+    /**
+     * @brief Handle the moving entity.
+     * @param map The board with all the cells.
+     * @param direction The direction the entity is moving towards.
+     */
+    void tick(const Map &map, Direction direction) override;
 
     /**
      * @brief Executes the death animation.

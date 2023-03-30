@@ -13,21 +13,19 @@ std::unordered_map<int, SDL_Rect> sprite_map;
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
 {
     std::vector<CellType> cell_types;
-    std::ifstream file; // indata is like cin
-    char value; // variable for input value
 
-    file.open(file_path); // opens the file
+    std::ifstream file(file_path);
     if (!file)
     { // file couldn't be opened
         std::cerr << "Error: file could not be opened" << std::endl;
         exit(1);
     }
-    file >> value;
-    while (!file.eof())
-    { // keep reading until end-of-file
-        cell_types.emplace_back((CellType) strtol(&value, nullptr, 10));
-        file >> value; // sets EOF flag if no value found
+
+    int value;
+    while (file >> value) { // Loop through each integer in the file
+        cell_types.emplace_back((CellType) value);
     }
+
     file.close();
     return cell_types;
 }

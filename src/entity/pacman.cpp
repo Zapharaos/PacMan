@@ -7,8 +7,6 @@
 
 #include "../../include/entity/pacman.h"
 
-#include "../../include/config/visuals.h"
-
 Pacman::Pacman() :
                MovingEntity(Position{{config::positions::kPacmanX, config::positions::kPacmanY}},
                             config::settings::kSpeedPacman,
@@ -23,7 +21,7 @@ Pacman::Pacman() :
 void Pacman::setSuperpower(bool superpower)
 {
     if ((superpower_ = superpower))
-        counter_.start(config::settings::kDurationSuperpower);
+        countSuperpower_.start(config::settings::kDurationSuperpower);
 }
 
 bool Pacman::isSuperpower() const
@@ -31,10 +29,17 @@ bool Pacman::isSuperpower() const
     return superpower_;
 }
 
-void Pacman::tick()
+void Pacman::tick(const Map &map, Direction direction)
 {
-    if (!counter_.isActive() && isSuperpower())
-        setSuperpower(false);
+    if(isSuperpower())
+    {
+        if(countSuperpower_.isActive())
+            countSuperpower_.increment();
+        else
+            setSuperpower(false);
+    }
+
+    MovingEntity::tick(map, direction);
 }
 
 bool Pacman::isDead() const

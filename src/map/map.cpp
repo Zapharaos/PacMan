@@ -74,6 +74,11 @@ const std::vector<std::shared_ptr<Cell>> &Map::getCellsWithEntities() const
     return cells_with_entities_;
 }
 
+const Sprite &Map::getSprite() const
+{
+    return sprite_;
+}
+
 std::optional<Position>
 Map::turn(const Position &origin, const Position &destination,
                 const Direction &direction,
@@ -177,16 +182,6 @@ void Map::reset() const
     // Enables all cell entities back
     for (auto &cell: getCellsWithEntities())
         cell->getEntity()->setEnabled(true);
-}
-
-const SDL_Rect &Map::getSpriteImage() const
-{
-    return sprite_.getImage();
-}
-
-const SDL_Rect &Map::getSpritePosition() const
-{
-    return sprite_.getPosition();
 }
 
 void Map::animate()

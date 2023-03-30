@@ -11,7 +11,6 @@ Fruit::Fruit() = default;
 
 Fruit::Fruit(unsigned long total_pellets) : Entity(Position{{config::positions::kFruitX, config::positions::kFruitY}})
 {
-    // timer_ = Timer(config::settings::kDurationFruit);
     for(auto &percentage : config::settings::kFruitsPercentages)
         pellets_cap_.emplace(total_pellets * percentage / 100);
 
@@ -34,14 +33,14 @@ void Fruit::update(int pellets_eaten, int level)
         setEnabled(true); // enables the entity
         setPoints(fruits_.at(index_).getPoints()); // update points
         setSprite(fruits_.at(index_).getSprite()); // update sprite
-        counter_.start(config::settings::kDurationFruit); // fruit duration
+        count(config::settings::kDurationFruit); // fruit duration
     }
 }
 
 void Fruit::tick()
 {
-    if(counter_.isActive())
-        counter_.increment();
+    if(isCounterActive())
+        counterIncrement();
     else if (isEnabled())
         setEnabled(false);
 }

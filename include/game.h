@@ -20,21 +20,6 @@
 #include "display/window.h"
 
 /**
- * @brief Enumerates the possible statuses of the game.
- */
-enum class StatusType
-{
-    kStopped, /* The game is not running. */
-    kRunning, /* The game is running normally. */
-    kPaused, /* The game is paused. */
-    kLevelUpFreeze, /* The game is freezing before level up. */
-    kLevelUpAnimate, /* The game is animating level up. */
-    kDeathFreeze, /* The game is freezing before death. */
-    kDeathAnimate, /* The game is animating death. */
-    kEatingGhost /* Pacman is eating a ghost. */
-};
-
-/**
  * @brief Represents the Pac-Man game.
  *
  * The `Game` class manages the game state, entities, and mechanics, and interacts with the user
@@ -45,6 +30,21 @@ class Game
 {
 
 private:
+
+    /**
+     * @brief Enumerates the possible statuses of the game.
+     */
+    enum class StatusType
+    {
+        kStopped, /* The game is not running. */
+        kRunning, /* The game is running normally. */
+        kPaused, /* The game is paused. */
+        kLevelUpFreeze, /* The game is freezing before level up. */
+        kLevelUpAnimate, /* The game is animating level up. */
+        kDeathFreeze, /* The game is freezing before death. */
+        kDeathAnimate, /* The game is animating death. */
+        kEatingGhost /* Pacman is eating a ghost. */
+    };
 
     /** The map object. */
     Map map_;
@@ -145,10 +145,6 @@ public:
      */
     int getLocalHighScore();
 
-    /**
-     * @brief Quits the game by setting the game status to kStopped.
-     */
-    void quit();
 };
 
 

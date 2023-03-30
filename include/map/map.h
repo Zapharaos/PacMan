@@ -82,6 +82,12 @@ public:
     [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCellsWithEntities() const;
 
     /**
+     * @brief Getter for the sprite used to display the entity.
+     * @return The new sprite used to display the entity.
+     */
+    [[nodiscard]] const Sprite &getSprite() const;
+
+    /**
      * @brief If legal, turns into a direction.
      * @details All positions are in pixels.
      * @param origin Position of origin.
@@ -120,20 +126,6 @@ public:
      * @return true if warp, else false.
      */
     [[nodiscard]] bool isWarping(const Position &origin, const Position &destination) const;
-
-    /**
-     * @brief Getter : Sprite's position on the bitmap.
-     * @see Sprite::getImage().
-     * @return A const reference to the SDL_Rect representing the sprite's position.
-     */
-    [[nodiscard]] const SDL_Rect &getSpriteImage() const;
-
-    /**
-     * @brief Getter : Sprite's position when displayed on the window.
-     * @see Sprite::getPosition().
-     * @return A const reference to the SDL_Rect representing the sprite's position.
-     */
-    [[nodiscard]] const SDL_Rect &getSpritePosition() const;
 
     /**
      * @brief Resets all cells on the map to their original state.

@@ -31,7 +31,7 @@ void Game::tick(const Direction &direction)
     if(handleStatus())
     {
         // Move entities and handle collisions.
-        pacman_.move(map_, direction);
+        pacman_.tick(map_, direction);
         // TODO : move ghosts
         handleEntitiesCollisions();
     }
@@ -70,7 +70,7 @@ void Game::display()
     // Pacman
     if(pacman_.isDead()) // death animation
         pacman_.animateDeath();
-    if(pacman_.isVisible())
+    if(!pacman_.isHidden())
         window_.draw(pacman_);
 
     // TODO : ghosts
@@ -131,7 +131,7 @@ bool Game::handleStatus()
     if (status_ == StatusType::kLevelUpAnimate)
     {
         //Fruits
-        window_.addFruits(fruit_.getSpriteImage());
+        window_.addFruits(fruit_.getSprite().getImage());
         levelUp();
         return false;
     }
@@ -169,7 +169,7 @@ void Game::handleEntitiesCollisions()
     bool lowScore = score_ < config::settings::kNewLifeAtPoints;
 
     // Get pacman sprite position.
-    auto pacman = pacman_.getSpritePosition();
+    auto pacman = pacman_.getSprite().getPosition();
 
     // Get pacman current cell.
     auto pacman_position = Position{{pacman.x, pacman.y}};
@@ -180,13 +180,14 @@ void Game::handleEntitiesCollisions()
 
     // Cell has an active entity that collided with Pacman.
     if (cell && (entity = cell->getEntity()) && entity->isEnabled() &&
-        SDL_HasIntersection(&pacman, &entity->getSpritePosition()))
+        SDL_HasIntersection(&pacman, &entity->getSprite().getPosition()))
     {
         // Disables entity.
         entity->setEnabled(false);
         score_ += entity->getPoints();
 
         // Freeze pacman.
+        pacman_.freeze();
         pacman_.count(config::settings::kDurationEatenPelletFreeze);
 
         // Updates fruit.
@@ -210,7 +211,7 @@ void Game::handleEntitiesCollisions()
     if (fruit_.isEnabled())
     {
         // Collided with Pacman.
-        if (SDL_HasIntersection(&pacman, &fruit_.getSpritePosition()))
+        if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
         {
             // Disables fruit.
             fruit_.setEnabled(false);
@@ -225,7 +226,7 @@ void Game::handleEntitiesCollisions()
     {
         // Ghost is active and collided with Pacman.
         if (ghost.isEnabled() &&
-            SDL_HasIntersection(&pacman, &ghost.getSpritePosition()))
+            SDL_HasIntersection(&pacman, &ghost.getSprite().getPosition()))
         {
             if (!pacman_.isSuperpower()) // Superpower disabled : death.
             {
@@ -251,9 +252,6 @@ void Game::handleEntitiesCollisions()
             // TODO : ghost going back to home
         }
     }
-
-    if(pacman_.isSuperpower())
-        pacman_.tick();
 
     // Check if the score has evolved up the new life's limit.
     if (lowScore && score_ >= config::settings::kNewLifeAtPoints)
@@ -320,8 +318,4 @@ bool Game::updateHighScore()
     }
     return false;
 
-}
-
-void Game::quit() {
-    window_.free();
 }
