@@ -8,6 +8,8 @@
 
 Window::Window() = default;
 
+
+
 void Window::init() {
 
     width_ = config::dimensions::kWindowWidth;
@@ -27,7 +29,7 @@ void Window::init() {
 
     window_ = std::shared_ptr<SDL_Window>(SDL_CreateWindow(&title_[0],
                                                            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                                           width_ + score_board_.getWidth(),
+                                                           width_ ,
                                                            height_,
                                                            SDL_WINDOW_SHOWN), SDL_DestroyWindow);
 
@@ -38,7 +40,7 @@ void Window::init() {
 }
 
 void Window::clear() {
-    SDL_QueryTexture(texture_.get(), nullptr, nullptr, &bg_.w, &bg_.h);
+    SDL_QueryTexture(texture_.get(), nullptr, nullptr, &width_, &height_);
     SDL_RenderClear(renderer_.get());
 }
 
@@ -47,19 +49,27 @@ void Window::update() {
 }
 
 void Window::writeHighScore() {
-    writeHighScoreText(constants::SCORE_BOARD_START_X + 50,
-                       constants::SCORE_BOARD_START_Y);
+
+    writeWord("1UP",
+              config::positions::kScoreBoardOneUpTextX ,
+              config::positions::kScoreBoardOneUpTextY ,
+              2,visuals::kScaleCell);
+
+    writeWord("HIGH SCORE ",
+              config::positions::kScoreBoardHighScoreTextX ,
+              config::positions::kScoreBoardHighScoreTextY ,
+            2,visuals::kScaleCell);
 }
 
 void Window::updateHighScore(int points) {
-    writeScorePoints(points, constants::SCORE_BOARD_POINTS_START_X,
-                     constants::SCORE_BOARD_POINTS_START_Y);
+    writeScorePoints(points, config::positions::kScoreBoardHighScoreX,
+                     config::positions::kScoreBoardHighScoreY);
 }
 
 void Window::updateScore(int score) {
     writeScorePoints(score,
-                     constants::SCORE_BOARD_POINTS_START_X,
-                     constants::SCORE_BOARD_POINTS_START_Y + 50);
+                     config::positions::kScoreBoardScoreX,
+                     config::positions::kScoreBoardScoreY);
 }
 
 void Window::updateLives(int nb_lives) {
@@ -76,325 +86,82 @@ void Window::addFruits(SDL_Rect fruit) {
 
 void Window::initSpriteMap() {
     /** Numbers */
-    std::vector<SDL_Rect> numbers;
-    numbers = extractRowFromMap(constants::BMP_CHARACTER_WIDTH,
-                                constants::BMP_CHARACTER_HEIGHT,
-                                9,
-                                constants::BMP_NUMBER_START_FIRST_ROW_X,
-                                constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                                constants::OFFSET_CHAR
-    );
-    int i = 1;
-    for (auto x: numbers) {
-        std::string c = std::to_string(i);
-        character_map_.insert({c[0], x});
-        i++;
-    }
-    //extract 0
-    SDL_Rect sprite_zero = {constants::BMP_NUMBER_START_ZERO_ROW_X,
-                            constants::BMP_NUMBER_START_FIRST_ROW_Y,
-                            constants::BMP_CHARACTER_WIDTH,
-                            constants::BMP_CHARACTER_HEIGHT};
-
-    character_map_.insert({'0', sprite_zero});
+    //TODO change to array
+    character_map_.insert({'1', characters::numbers::one::kSprite.getImage()});
+    character_map_.insert({'2', characters::numbers::two::kSprite.getImage()});
+    character_map_.insert({'3', characters::numbers::three::kSprite.getImage()});
+    character_map_.insert({'4', characters::numbers::four::kSprite.getImage()});
+    character_map_.insert({'5', characters::numbers::five::kSprite.getImage()});
+    character_map_.insert({'6', characters::numbers::six::kSprite.getImage()});
+    character_map_.insert({'7', characters::numbers::seven::kSprite.getImage()});
+    character_map_.insert({'8', characters::numbers::eight::kSprite.getImage()});
+    character_map_.insert({'9', characters::numbers::nine::kSprite.getImage()});
+    character_map_.insert({'0', characters::numbers::zero::kSprite.getImage()});
 
     /** letters **/
-    SDL_Rect letter;
     //Get A
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            0,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'A', letter});
+    character_map_.insert({'A',characters::letters::a::kSprite.getImage() });
     //Get B
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            1,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'B', letter});
+    character_map_.insert({'B', characters::letters::b::kSprite.getImage()});
     //Get C
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            2,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'C', letter});
+    character_map_.insert({'C', characters::letters::c::kSprite.getImage()});
     //Get D
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            3,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'D', letter});
+    character_map_.insert({'D', characters::letters::d::kSprite.getImage()});
     //Get E
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            4,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'E', letter});
+    character_map_.insert({'E', characters::letters::e::kSprite.getImage()});
     //Get F
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            5,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'F', letter});
+    character_map_.insert({'F', characters::letters::f::kSprite.getImage()});
     //Get G
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            6,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'G', letter});
+    character_map_.insert({'G', characters::letters::g::kSprite.getImage()});
     //Get H
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            7,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'H', letter});
+    character_map_.insert({'H', characters::letters::h::kSprite.getImage()});
     //Get I
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            8,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'I', letter});
+    character_map_.insert({'I', characters::letters::i::kSprite.getImage()});
     //Get j
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            9,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'J', letter});
+    character_map_.insert({'J', characters::letters::j::kSprite.getImage()});
     //Get K
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            10,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'K', letter});
+    character_map_.insert({'K', characters::letters::k::kSprite.getImage()});
     //Get L
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            11,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'L', letter});
+    character_map_.insert({'L', characters::letters::l::kSprite.getImage()});
     //Get M
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            12,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'M', letter});
+    character_map_.insert({'M', characters::letters::m::kSprite.getImage()});
     //Get N
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            13,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'N', letter});
+    character_map_.insert({'N', characters::letters::n::kSprite.getImage()});
     //Get O
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            14,
-            constants::BMP_NUMBER_START_SECOND_ROW_X,
-            constants::BMP_NUMBER_START_SECOND_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'O', letter});
+    character_map_.insert({'O', characters::letters::o::kSprite.getImage()});
     //Get P
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            0,
-            constants::BMP_NUMBER_START_THIRD_ROW_X,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'P', letter});
-    //Get P
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            1,
-            constants::BMP_NUMBER_START_THIRD_ROW_X,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'P', letter});
+    character_map_.insert({'P', characters::letters::p::kSprite.getImage()});
+    //Get Q
+    character_map_.insert({'Q', characters::letters::q::kSprite.getImage()});
     //Get R
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            2,
-            constants::BMP_NUMBER_START_THIRD_ROW_X,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'R', letter});
+    character_map_.insert({'R', characters::letters::r::kSprite.getImage()});
     //Get S
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            3,
-            constants::BMP_NUMBER_START_THIRD_ROW_X,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'S', letter});
+    character_map_.insert({'S', characters::letters::s::kSprite.getImage()});
     //Get T
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            4,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'T', letter});
+    character_map_.insert({'T', characters::letters::t::kSprite.getImage()});
     //Get U
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            5,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'U', letter});
+    character_map_.insert({'U', characters::letters::u::kSprite.getImage()});
     //Get V
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            6,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'V', letter});
+    character_map_.insert({'V', characters::letters::v::kSprite.getImage()});
     //Get W
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            7,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'W', letter});
+    character_map_.insert({'W', characters::letters::w::kSprite.getImage()});
     //Get X
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            8,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'X', letter});
+    character_map_.insert({'X', characters::letters::x::kSprite.getImage()});
     //Get Y
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            9,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'Y', letter});
+    character_map_.insert({'Y', characters::letters::y::kSprite.getImage()});
     //Get Z
-    letter = extractNthElementRowFromMap(
-            constants::BMP_CHARACTER_WIDTH,
-            constants::BMP_CHARACTER_HEIGHT,
-            10,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'Z', letter});
+    character_map_.insert({'Z', characters::letters::z::kSprite.getImage()});
     /** Extra Characters */
     //Get .
-    letter = extractNthElementRowFromMap(
-            2,
-            2,
-            11,
-            constants::BMP_NUMBER_START_THIRD_ROW_X + 1,
-            constants::BMP_NUMBER_START_THIRD_ROW_Y + 1,
-            constants::OFFSET_CHAR);
-    character_map_.insert({'.', letter});
+    character_map_.insert({'.', characters::special::dot::kSprite.getImage()});
     // Get /
-    letter = {93, 54, 5, 5};
-    character_map_.insert({'/', letter});
+    character_map_.insert({'/', characters::special::slash::kSprite.getImage()});
     // Get '
-    letter = {125, 69, 5, 4};
-    character_map_.insert({'\'', letter});
+    character_map_.insert({'\'', characters::special::apostrophe::kSprite.getImage()});
     // Get corporation logo C saved in map as `
-    letter = {116, 69, 8, 8};
-    character_map_.insert({'`', letter});
-}
-
-
-void Window::writeHighScoreText(int pos_x, int pos_y) {
-
-
-    SDL_Rect position;
-    position.x = pos_x;
-    position.y = pos_y;
-    position.w = constants::BMP_CHARACTER_WIDTH * 2.5;
-    position.h = constants::BMP_CHARACTER_HEIGHT * 2.5;
-
-    int offset = position.w + 1;
-    //write H
-    drawObject(renderer_, texture_, character_map_.at('H'), position);
-    //write I
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('I'), position);
-    //write G
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('G'), position);
-    //write H
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('H'), position);
-    //space
-    position.x += 5;
-
-    //write S
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('S'), position);
-    //write C
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('C'), position);
-    //write O
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('O'), position);
-    //write R
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('R'), position);
-    //write E
-    position.x += offset;
-    drawObject(renderer_, texture_, character_map_.at('E'), position);
+    character_map_.insert({'`', characters::special::corp::kSprite.getImage()});
+    // Get -
+    character_map_.insert({'-', characters::special::dash::kSprite.getImage()});
 }
 
 
@@ -403,32 +170,74 @@ void Window::writeScorePoints(int points, int pos_x, int pos_y) {
     SDL_Rect position = points_to_print[0];
     position.x = pos_x;
     position.y = pos_y;
-    position.w = constants::BMP_CHARACTER_WIDTH * 2;
-    position.h = constants::BMP_CHARACTER_HEIGHT * 2;
+    position.w = characters::numbers::kBitmapWidth * characters::kScale;
+    position.h = characters::numbers::kBitmapWidth * characters::kScale;
 
-    int offset = constants::BMP_CHARACTER_WIDTH + 8;
-
+    int offset = characters::numbers::kBitmapWidth  * characters::kScale;
     for (SDL_Rect s: points_to_print) {
         drawObject(renderer_, texture_, s, position);
-        position.x += offset;
+        position.x += offset + 5;
     }
 }
 
-void Window::writeWord(const std::string &word, int pos_x, int pos_y, int w, int h,
-                       int offset, std::tuple<int, int, int> colour) {
+void Window::writeWord(const std::string &word, int pos_x, int pos_y,int offset, int scale , std::tuple<int, int, int> colour) {
     SDL_Rect dest;
     dest.x = pos_x;
     dest.y = pos_y;
-    dest.w = w;
-    dest.h = h;
 
-    colour ={ constants::RED[0], constants::RED[1],constants::RED[2]};
+
+    if (colour!=colours::kWhite){
+        SDL_SetTextureColorMod(texture_.get(),
+                               std::get<0>(colour),
+                               std::get<1>(colour),
+                               std::get<2>(colour));
+    }
 
     for (char c: word) {
-        drawObject(renderer_, texture_,
-                   character_map_.at(c),
-                   dest);
-        dest.x += dest.w + offset ;
+        if(!std::isspace(c)){
+
+            SDL_Rect src = character_map_.at(c) ;
+            dest.w = src.w * scale  ;
+            dest.h = src.h * scale  ;
+            drawObject(renderer_, texture_,
+                       character_map_.at(c),
+                       dest);
+        }
+        dest.x += dest.w + offset;
     }
+    if (colour!=colours::kWhite){
+        SDL_SetTextureColorMod(texture_.get(),
+                               std::get<0>(colours::kWhite),
+                               std::get<1>(colours::kWhite),
+                               std::get<2>(colours::kWhite));
+    }
+
 }
 
+const std::shared_ptr<SDL_Renderer> &Window::getRenderer() const {
+    return renderer_;
+}
+
+const std::shared_ptr<SDL_Texture> &Window::getTexture() const {
+    return texture_;
+}
+
+const std::string &Window::getTitle() const {
+    return title_;
+}
+
+const SDL_Rect &Window::getGhostBlinkyR() const {
+    return ghost_blinky_r;
+}
+
+const SDL_Rect &Window::getGhostPinkyR() const {
+    return ghost_pinky_r;
+}
+
+const SDL_Rect &Window::getGhostInkyR() const {
+    return ghost_inky_r;
+}
+
+const SDL_Rect &Window::getGhostClydeR() const {
+    return ghost_clyde_r;
+}

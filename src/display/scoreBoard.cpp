@@ -33,17 +33,12 @@ int ScoreBoard::getWidth() const {
 void ScoreBoard::writeLives(const std::shared_ptr<SDL_Renderer> &render,
                             const std::shared_ptr<SDL_Texture> &texture,
                             int livesNb) {
-    SDL_Rect life_sprite = {
-            constants::BMP_PACMAN_SCORE_BOARD_START_X,
-            constants::BMP_PACMAN_SCORE_BOARD_START_Y,
-            constants::BMP_PACMAN_SCORE_BOARD_WIDTH,
-            constants::BMP_PACMAN_SCORE_BOARD_HEIGHT
-    };
+    SDL_Rect life_sprite = visuals::pacman::sprite_score_board::kSprite.getImage();
     SDL_Rect lives_start;
-    lives_start.w = life_sprite.w * 2.5;
-    lives_start.h = life_sprite.h * 2.5;
-    lives_start.x = constants::SCORE_BOARD_LIVES_START_X;
-    lives_start.y = constants::SCORE_BOARD_LIVES_START_Y;
+    lives_start.w = life_sprite.w * characters::kScale;
+    lives_start.h = life_sprite.h * characters::kScale;
+    lives_start.x = config::positions::kScoreBoardLivesX;
+    lives_start.y = config::positions::kScoreBoardLivesY;
 
     for (int i = 0; i < livesNb; i++) {
         drawObject(render, texture, life_sprite, lives_start);
@@ -55,11 +50,11 @@ void
 ScoreBoard::updateFruits(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture) {
 
     SDL_Rect position;
-    position.x = constants::SCORE_BOARD_POINTS_START_X;
-    position.y = constants::SCORE_BOARD_POINTS_START_Y + 100;
-    position.w = 24;
-    position.h = 24;
-    int offset = 24 + 5;
+    position.x = config::positions::kScoreBoardFruitsX;
+    position.y = config::positions::kScoreBoardFruitsY;
+    position.w = visuals::fruit::cherry::sprite_1::kBitmapWidth * visuals::fruit::kScale;
+    position.h = visuals::fruit::cherry::sprite_1::kBitmapHeight * visuals::fruit::kScale;;
+    int offset = position.w ;
 
     for (SDL_Rect s: fruit_queue_) {
         drawObject(render, texture, s, position);
