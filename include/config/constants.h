@@ -24,8 +24,8 @@ namespace constants
 
     // Bitmap => Entity
     inline constexpr int BMP_ENTITY_BORDER_WIDTH {1};
-    inline constexpr int BMP_ENTITY_GHOST_WIDTH {16};
-    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {16};
+    inline constexpr int BMP_ENTITY_GHOST_WIDTH {14};
+    inline constexpr int BMP_ENTITY_GHOST_HEIGHT {14};
     inline constexpr int BMP_ENTITY_GHOST_TOTAL_WIDTH {BMP_ENTITY_GHOST_WIDTH + BMP_ENTITY_BORDER_WIDTH};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_RIGHT_IMG {0};
     inline constexpr int BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG {2 * BMP_ENTITY_GHOST_TOTAL_WIDTH};
@@ -51,22 +51,22 @@ namespace constants
     inline constexpr int BMP_POWER_START_X {9};
     inline constexpr int BMP_POWER_START_Y {79};
     inline constexpr int BMP_POWER_SIZE {7};
-    inline constexpr int BMP_GHOST_BLINKY_START_X {3};
-    inline constexpr int BMP_GHOST_BLINKY_START_Y {123};
-    inline constexpr int BMP_GHOST_PINKY_START_X {3};
-    inline constexpr int BMP_GHOST_PINKY_START_Y {141};
-    inline constexpr int BMP_GHOST_INKY_START_X {3};
-    inline constexpr int BMP_GHOST_INKY_START_Y {159};
-    inline constexpr int BMP_GHOST_CLIDE_START_X {3};
-    inline constexpr int BMP_GHOST_CLIDE_START_Y {177};
+    inline constexpr int BMP_GHOST_BLINKY_START_X {4};
+    inline constexpr int BMP_GHOST_BLINKY_START_Y {124};
+    inline constexpr int BMP_GHOST_PINKY_START_X {4};
+    inline constexpr int BMP_GHOST_PINKY_START_Y {142};
+    inline constexpr int BMP_GHOST_INKY_START_X {4};
+    inline constexpr int BMP_GHOST_INKY_START_Y {160};
+    inline constexpr int BMP_GHOST_CLYDE_START_X {4};
+    inline constexpr int BMP_GHOST_CLYDE_START_Y {178};
     inline constexpr int BMP_PACMAN_BIG_POS_TWO_START_X {38};
     inline constexpr int BMP_PACMAN_BIG_START_Y {219};
     inline constexpr int BMP_PACMAN_BIG_HEIGHT {30};
     inline constexpr int BMP_PACMAN_BIG_WIDTH {28};
-    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_X{169};
-    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_Y {76};
-    inline constexpr int BMP_PACMAN_SCORE_BOARD_WIDTH {10};
-    inline constexpr int BMP_PACMAN_SCORE_BOARD_HEIGHT {12};
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_X{169};//
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_START_Y {76};//
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_WIDTH {10};//
+    inline constexpr int BMP_PACMAN_SCORE_BOARD_HEIGHT {12};//
 
     // Bottom Row
     inline constexpr int BMP_POWERUP_LONG_START_X {264};
@@ -192,13 +192,6 @@ namespace constants
     //OFFSET FOR Extractor
     inline constexpr int OFFSET_MAP {1};
     inline constexpr int OFFSET_CHAR {1};
-
-    //COLOURS
-    inline constexpr int RED[3] {216,40,0};
-    inline constexpr int CYAN[3] {0,232,216};
-    inline constexpr int PINK[3] {252,196,252};
-    inline constexpr int ORANGE[3] {252,152,56};
-
 
 
 }

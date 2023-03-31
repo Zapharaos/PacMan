@@ -18,7 +18,7 @@
 #include "entity/fruit.h"
 #include "utils/utils.h"
 #include "display/window.h"
-
+#include "config/visuals.h"
 /**
  * @brief Represents the Pac-Man game.
  *
@@ -43,7 +43,8 @@ private:
         kLevelUpAnimate, /* The game is animating level up. */
         kDeathFreeze, /* The game is freezing before death. */
         kDeathAnimate, /* The game is animating death. */
-        kEatingGhost /* Pacman is eating a ghost. */
+        kEatingGhost, /* Pacman is eating a ghost. */
+        kWelcomeScreen
     };
 
     /** The map object. */
@@ -145,6 +146,12 @@ public:
      */
     int getLocalHighScore();
 
+
+    void displayWelcomeScreen();
+    /**
+     * @brief Quits the game by setting the game status to kStopped.
+     */
+    void quit();
 };
 
 

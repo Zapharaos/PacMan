@@ -22,7 +22,10 @@ Game::Game(const Map &map, Window window) : map_(map), window_(std::move(window)
 
 void Game::tick(const Direction &direction)
 {
-
+    // Display Welcome screen
+    if(status_ == StatusType::kWelcomeScreen){
+        displayWelcomeScreen();
+    }
     // Game is paused, nothing to do.
     if(status_ == StatusType::kPaused)
         return;
@@ -38,7 +41,9 @@ void Game::tick(const Direction &direction)
 
     // Update game visuals.
     display();
+    //displayWelcomeScreen();
 }
+
 
 void Game::display()
 {
@@ -51,7 +56,7 @@ void Game::display()
     // TODO : scores
 
     // Map.
-    window_.draw(map_);
+    window_.draw(map_,config::dimensions::kScoreBoardHeight);
 
     // Points
     window_.writeHighScore();
@@ -71,7 +76,7 @@ void Game::display()
     if(pacman_.isDead()) // death animation
         pacman_.animateDeath();
     if(!pacman_.isHidden())
-        window_.draw(pacman_);
+        window_.draw(pacman_,config::dimensions::kScoreBoardHeight);
 
     // TODO : ghosts
 
@@ -90,7 +95,7 @@ void Game::display()
             continue;
 
         // Display entity
-        window_.draw(*entity);
+        window_.draw(*entity,config::dimensions::kScoreBoardHeight);
     }
 
     // Fruit
@@ -98,7 +103,7 @@ void Game::display()
     {
         // Display entity
         fruit_.animate();
-        window_.draw(fruit_);
+        window_.draw(fruit_,config::dimensions::kScoreBoardHeight);
     }
 
     window_.update();
@@ -319,3 +324,54 @@ bool Game::updateHighScore()
     return false;
 
 }
+void Game::displayWelcomeScreen() {
+
+    int scale = 3 ;
+    int pos_x = 0 ;
+    int pos_y = 5 ;
+    window_.writeWord("1UP    HIGH SCORE    2UP",pos_x,pos_y,1,scale);
+
+
+    pos_x = 100 ;
+    pos_y = 50 ;
+    window_.writeWord("CHARACTER  /  NICKNAME ",pos_x,pos_y,1,scale);
+
+    pos_x = 10 ;
+    pos_y += constants::BMP_CHARACTER_WIDTH * scale + 5 ;
+
+    //Draw blinky
+    SDL_Rect dst ;
+    dst.x = pos_x;
+    dst.y = pos_y;
+    dst.h = window_.getGhostBlinkyR().h * scale;
+    dst.w = window_.getGhostBlinkyR().w * scale;
+    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostBlinkyR(),dst);
+
+    pos_x = 100 ;
+    window_.writeWord("- SHADOW     ' BLINKY ' ",pos_x,dst.y,1,scale,colours::kRed);
+
+    //Draw pinky
+    dst.y += dst.h + 4 ;
+    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostPinkyR(),dst);
+    window_.writeWord("- SPEEDY     ' PINKY ' ",pos_x,dst.y,1,scale,colours::kPink);
+
+    //Draw inky
+    dst.y += dst.h + 4 ;
+    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostInkyR(),dst);
+    window_.writeWord("- BASHFUL     ' INKY  ' ",pos_x ,dst.y,1,scale,colours::kCyan);
+
+    //Draw clyde
+    dst.y += dst.h + 4 ;
+    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostClydeR(),dst);
+    window_.writeWord("- POKEY     ' CLYDE ' ",pos_x + 10 ,dst.y,1,scale,colours::kOrange);
+    window_.update();
+
+}
+
+
+//TODO
+void Game::quit() {
+    window_.clear();
+}
+
+

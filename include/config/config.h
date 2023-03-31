@@ -8,6 +8,7 @@
 #include <chrono>
 #include <array>
 
+
 enum class Score
 {
     kPellet = 10,
@@ -38,6 +39,7 @@ namespace config {
         /** Amount of ticks between each sprite change. */
         inline constexpr int kRefreshRateTicksMovingEntity {3};
         inline constexpr int kRefreshRateTicksFruit {15};
+        inline constexpr int kRefreshRateTicksCharacters {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
         /** Amount of ticks for each status. */
@@ -72,22 +74,46 @@ namespace config {
         inline constexpr int kMapWidth {21};
         inline constexpr int kMapHeight {27};
 
+        /** Score Board height(top and bottom), width as same as map */
+        inline constexpr int kScoreBoardHeight{128};
+
         /** Window cell size. */
         inline constexpr int kWindowCellSize {32};
 
+
         /** DO NOT MODIFY : Window dimensions. */
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
-        inline constexpr int kWindowHeight {kMapHeight * kWindowCellSize};
+        inline constexpr int kWindowHeight {  kScoreBoardHeight * 2 + kMapHeight * kWindowCellSize};
+
     }
 
     namespace positions {
         /** Pacman default/starting position (in pixels). */
         inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
         inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
+
+
         /** Fruit position (in pixels). */
         inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
         inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
+
+        /**Score Board Positions*/
+        inline constexpr int kScoreBoardX {0};
+        inline constexpr int kScoreBoardY {0};
+        inline constexpr int kScoreBoardOneUpTextX {50};
+        inline constexpr int kScoreBoardOneUpTextY {10};
+        inline constexpr int kScoreBoardScoreX {kScoreBoardOneUpTextX + 60};
+        inline constexpr int kScoreBoardScoreY {84};
+        inline constexpr int kScoreBoardHighScoreTextX {200};
+        inline constexpr int kScoreBoardHighScoreTextY {10};
+        inline constexpr int kScoreBoardHighScoreX {271};
+        inline constexpr int kScoreBoardHighScoreY {84};
+        inline constexpr int kScoreBoardLivesX {30};
+        inline constexpr int kScoreBoardLivesY{ dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+        inline constexpr int kScoreBoardFruitsX {dimensions::kWindowWidth - 30 };
+        inline constexpr int kScoreBoardFruitsY {dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
     }
+
 
     // Bitmap => Letters and numbers
     inline constexpr int BMP_CHARACTER_WIDTH {7};

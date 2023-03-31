@@ -12,6 +12,7 @@
 #include "../config/constants.h"
 #include "../utils/utils.h"
 #include "../config/config.h"
+#include "../config/visuals.h"
 
 /**
  * Score Board display
