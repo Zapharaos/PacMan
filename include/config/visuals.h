@@ -151,6 +151,9 @@ namespace visuals {
 
             /** DO NOT MODIFY : Sprite. */
             inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+
+            /** DO NOT MODIFY : Scale from bitmap to window. */
+            inline constexpr auto kScale {2.5};
         }
 
         namespace left {
@@ -1691,6 +1694,22 @@ namespace characters {
             /** DO NOT MODIFY : Sprite. */
             inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
         }
+        namespace exclamation {
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {5};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {102};
+            inline constexpr int kBitmapPositionY {52};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+        }
     }
 }
 
@@ -1700,6 +1719,7 @@ namespace colours{
     inline const  std::tuple<int, int, int> kOrange = std::make_tuple(252, 152, 56);
     inline const  std::tuple<int, int, int> kWhite = std::make_tuple(252, 252, 252);
     inline const  std::tuple<int, int, int> kRed = std::make_tuple(216, 43, 0);
+    inline const  std::tuple<int, int, int> kYellow = std::make_tuple(240, 188, 60);
 }
 
 

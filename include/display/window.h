@@ -175,7 +175,7 @@ public:
      * @param pos_y
      * @return
      */
-    void writeScorePoints(int point, int pos_x, int pos_y);
+    void writeScorePoints(int point, int pos_x, int pos_y, float scale);
 
     /**
      * Writes a word at a given position and size
@@ -188,7 +188,7 @@ public:
      * @param colour
      */
     void writeWord(const std::string &word, int pos_x, int pos_y,
-                   int offset, int scale =  1 , std::tuple<int, int, int> colour = colours::kWhite);
+                   int offset, float scale =  1 , std::tuple<int, int, int> colour = colours::kWhite);
 
 };
 

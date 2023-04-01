@@ -63,13 +63,13 @@ void Window::writeHighScore() {
 
 void Window::updateHighScore(int points) {
     writeScorePoints(points, config::positions::kScoreBoardHighScoreX,
-                     config::positions::kScoreBoardHighScoreY);
+                     config::positions::kScoreBoardHighScoreY, 3.0);
 }
 
 void Window::updateScore(int score) {
     writeScorePoints(score,
                      config::positions::kScoreBoardScoreX,
-                     config::positions::kScoreBoardScoreY);
+                     config::positions::kScoreBoardScoreY, 3.0);
 }
 
 void Window::updateLives(int nb_lives) {
@@ -162,29 +162,30 @@ void Window::initSpriteMap() {
     character_map_.insert({'`', characters::special::corp::kSprite.getImage()});
     // Get -
     character_map_.insert({'-', characters::special::dash::kSprite.getImage()});
+    // Get !
+    character_map_.insert({'!', characters::special::exclamation::kSprite.getImage()});
 }
 
 
-void Window::writeScorePoints(int points, int pos_x, int pos_y) {
+void Window::writeScorePoints(int points, int pos_x, int pos_y, float scale) {
     std::vector<SDL_Rect> points_to_print = score_board_.getPointsToPrint(points, character_map_);
     SDL_Rect position = points_to_print[0];
     position.x = pos_x;
     position.y = pos_y;
-    position.w = characters::numbers::kBitmapWidth * characters::kScale;
-    position.h = characters::numbers::kBitmapWidth * characters::kScale;
+    position.w = characters::numbers::kBitmapWidth * scale;
+    position.h = characters::numbers::kBitmapWidth * scale;
 
-    int offset = characters::numbers::kBitmapWidth  * characters::kScale;
+    int offset = characters::numbers::kBitmapWidth  * scale;
     for (SDL_Rect s: points_to_print) {
-        drawObject(renderer_, texture_, s, position);
+        drawObject(renderer_, texture_, s, position, 1);
         position.x += offset + 5;
     }
 }
 
-void Window::writeWord(const std::string &word, int pos_x, int pos_y,int offset, int scale , std::tuple<int, int, int> colour) {
+void Window::writeWord(const std::string &word, int pos_x, int pos_y, int offset, float scale , std::tuple<int, int, int> colour) {
     SDL_Rect dest;
     dest.x = pos_x;
     dest.y = pos_y;
-
 
     if (colour!=colours::kWhite){
         SDL_SetTextureColorMod(texture_.get(),
@@ -192,18 +193,19 @@ void Window::writeWord(const std::string &word, int pos_x, int pos_y,int offset,
                                std::get<1>(colour),
                                std::get<2>(colour));
     }
-
     for (char c: word) {
         if(!std::isspace(c)){
-
             SDL_Rect src = character_map_.at(c) ;
             dest.w = src.w * scale  ;
             dest.h = src.h * scale  ;
             drawObject(renderer_, texture_,
                        character_map_.at(c),
-                       dest);
+                       dest, 1);
+            dest.x += dest.w + offset;
+        }else{
+            dest.x += dest.w + offset;
         }
-        dest.x += dest.w + offset;
+
     }
     if (colour!=colours::kWhite){
         SDL_SetTextureColorMod(texture_.get(),
