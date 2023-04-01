@@ -9,30 +9,29 @@
 
 Game::Game() = default;
 
-Game::Game(const Map &map, Window window) : map_(map), window_(std::move(window))
-{
+Game::Game(const Map &map, Window window) : map_(map), window_(std::move(window)) {
     pellets_total_ = map.getCellsWithEntities().size();
     lives_ = config::settings::kLives;
     fruit_ = Fruit{pellets_total_};
     // Pacman already done initialization.
     getLocalHighScore();
-
+    status_ = StatusType::kGameStartFreeze;
     // TODO : setup ghosts
+
+
 }
 
-void Game::tick(const Direction &direction)
-{
+void Game::tick(const Direction &direction) {
     // Display Welcome screen
-    if(status_ == StatusType::kWelcomeScreen){
+    if (status_ == StatusType::kWelcomeScreen) {
         displayWelcomeScreen();
     }
     // Game is paused, nothing to do.
-    if(status_ == StatusType::kPaused)
+    if (status_ == StatusType::kPaused)
         return;
 
     // Handle status.
-    if(handleStatus())
-    {
+    if (handleStatus()) {
         // Move entities and handle collisions.
         pacman_.tick(map_, direction);
         // TODO : move ghosts
@@ -40,23 +39,22 @@ void Game::tick(const Direction &direction)
     }
 
     // Update game visuals.
+
     display();
     //displayWelcomeScreen();
 }
 
 
-void Game::display()
-{
+void Game::display() {
     // couleur transparente
     //SDL_SetColorKey(plancheSprites_, true, 0);
     //TODO Changer transparence avec SDL2
-
     window_.clear();
 
     // TODO : scores
 
     // Map.
-    window_.draw(map_,config::dimensions::kScoreBoardHeight);
+    window_.draw(map_, config::dimensions::kScoreBoardHeight);
 
     // Points
     window_.writeHighScore();
@@ -70,19 +68,22 @@ void Game::display()
     //Lives
     window_.updateLives(lives_);
 
-
-
     // Pacman
-    if(pacman_.isDead()) // death animation
+    if (pacman_.isDead()) // death animation
         pacman_.animateDeath();
-    if(!pacman_.isHidden())
-        window_.draw(pacman_,config::dimensions::kScoreBoardHeight);
+    if (!pacman_.isHidden())
+        window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
+
+    if (status_ == StatusType::kGameStartAnimate) {
+        window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
+        window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
+    }
+
 
     // TODO : ghosts
 
     // Pellets
-    for (auto &cell: map_.getCellsWithEntities())
-    {
+    for (auto &cell: map_.getCellsWithEntities()) {
         auto entity = cell->getEntity();
 
         // Blinking energizer (homogenize counter even if disabled)
@@ -95,36 +96,40 @@ void Game::display()
             continue;
 
         // Display entity
-        window_.draw(*entity,config::dimensions::kScoreBoardHeight);
+        window_.draw(*entity, config::dimensions::kScoreBoardHeight);
     }
 
     // Fruit
-    if (fruit_.isEnabled())
-    {
+    if (fruit_.isEnabled()) {
         // Display entity
         fruit_.animate();
-        window_.draw(fruit_,config::dimensions::kScoreBoardHeight);
+        window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
     }
 
     window_.update();
 }
 
-bool Game::handleStatus()
-{
+bool Game::handleStatus() {
     // Processing animations.
-    if (counter_.isActive())
-    {
+    if (counter_.isActive()) {
         // Map blinking
         if (status_ == StatusType::kLevelUpAnimate)
             map_.animate();
 
+        if (status_ == StatusType::kGameStartAnimate) {
+            if (counter_.getCount() >= config::settings::kDurationGameStartFreeze) {
+                pacman_.show();
+            } else {
+                pacman_.hide();
+            }
+
+        }
         counter_.increment();
         return false;
     }
 
     // Game level up freeze is over.
-    if (status_ == StatusType::kLevelUpFreeze)
-    {
+    if (status_ == StatusType::kLevelUpFreeze) {
         // Start level up animation.
         status_ = StatusType::kLevelUpAnimate;
         counter_.start(config::settings::kDurationLevelupBlinking);
@@ -132,9 +137,23 @@ bool Game::handleStatus()
         return false;
     }
 
+    // Game is begining freeze
+    if (status_ == StatusType::kGameStartFreeze) {
+        // Draw pacman and ghosts
+        status_ = StatusType::kGameStartAnimate;
+        // Start level up animation.
+        counter_.start(config::settings::kDurationGameStartFreeze * 2);
+
+
+        return false;
+    }
+
+    if ((status_ == StatusType::kGameStartAnimate) && !counter_.isActive()) {
+        status_ = StatusType::kRunning;
+    }
+
     // Game level up animation is over.
-    if (status_ == StatusType::kLevelUpAnimate)
-    {
+    if (status_ == StatusType::kLevelUpAnimate) {
         //Fruits
         window_.addFruits(fruit_.getSprite().getImage());
         levelUp();
@@ -142,8 +161,7 @@ bool Game::handleStatus()
     }
 
     // Death freeze is over.
-    if(status_ == StatusType::kDeathFreeze)
-    {
+    if (status_ == StatusType::kDeathFreeze) {
         status_ = StatusType::kDeathAnimate;
         pacman_.setDead(true);
         // TODO : hide ghosts
@@ -151,15 +169,13 @@ bool Game::handleStatus()
     }
 
     // Death animation is over.
-    if(status_ == StatusType::kDeathAnimate && !pacman_.isDead())
-    {
+    if (status_ == StatusType::kDeathAnimate && !pacman_.isDead()) {
         lostLife();
         return false;
     }
 
     // Eating ghost animation is over.
-    if(status_ == StatusType::kEatingGhost)
-    {
+    if (status_ == StatusType::kEatingGhost) {
         status_ = StatusType::kRunning;
         pacman_.show();
         return true;
@@ -169,8 +185,7 @@ bool Game::handleStatus()
     return (status_ == StatusType::kRunning);
 }
 
-void Game::handleEntitiesCollisions()
-{
+void Game::handleEntitiesCollisions() {
     bool lowScore = score_ < config::settings::kNewLifeAtPoints;
 
     // Get pacman sprite position.
@@ -185,8 +200,7 @@ void Game::handleEntitiesCollisions()
 
     // Cell has an active entity that collided with Pacman.
     if (cell && (entity = cell->getEntity()) && entity->isEnabled() &&
-        SDL_HasIntersection(&pacman, &entity->getSprite().getPosition()))
-    {
+        SDL_HasIntersection(&pacman, &entity->getSprite().getPosition())) {
         // Disables entity.
         entity->setEnabled(false);
         score_ += entity->getPoints();
@@ -213,11 +227,9 @@ void Game::handleEntitiesCollisions()
     }
 
     // Fruit is active.
-    if (fruit_.isEnabled())
-    {
+    if (fruit_.isEnabled()) {
         // Collided with Pacman.
-        if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
-        {
+        if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition())) {
             // Disables fruit.
             fruit_.setEnabled(false);
             score_ += fruit_.getPoints();
@@ -227,12 +239,10 @@ void Game::handleEntitiesCollisions()
         fruit_.tick();
     }
 
-    for (auto &ghost: ghosts_)
-    {
+    for (auto &ghost: ghosts_) {
         // Ghost is active and collided with Pacman.
         if (ghost.isEnabled() &&
-            SDL_HasIntersection(&pacman, &ghost.getSprite().getPosition()))
-        {
+            SDL_HasIntersection(&pacman, &ghost.getSprite().getPosition())) {
             if (!pacman_.isSuperpower()) // Superpower disabled : death.
             {
                 // Freeze game (60 frames) before the death animation.
@@ -263,16 +273,14 @@ void Game::handleEntitiesCollisions()
         ++lives_;
 }
 
-void Game::togglePause()
-{
-    if(status_ == StatusType::kRunning)
+void Game::togglePause() {
+    if (status_ == StatusType::kRunning)
         status_ = StatusType::kPaused;
-    else if(status_ == StatusType::kPaused)
+    else if (status_ == StatusType::kPaused)
         status_ = StatusType::kRunning;
 }
 
-void Game::levelUp()
-{
+void Game::levelUp() {
     // Update game settings.
     ++level_;
     pellets_eaten_ = 0;
@@ -288,8 +296,7 @@ void Game::levelUp()
     // TODO : speed and timers : up
 }
 
-void Game::lostLife()
-{
+void Game::lostLife() {
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
         lives_ = config::settings::kLives; // temp
@@ -308,66 +315,86 @@ void Game::lostLife()
     // TODO : speed and timers : reset
 }
 
-int Game::getLocalHighScore()
-{
+int Game::getLocalHighScore() {
     high_score_ = stoi(getSavedHighScore());
     return high_score_;
 }
 
-bool Game::updateHighScore()
-{
-    if (score_ > high_score_)
-    {
+bool Game::updateHighScore() {
+    if (score_ > high_score_) {
         high_score_ = score_;
         return true;
     }
     return false;
 
 }
+
 void Game::displayWelcomeScreen() {
 
-    int scale = 3 ;
-    int pos_x = 0 ;
-    int pos_y = 5 ;
-    window_.writeWord("1UP    HIGH SCORE    2UP",pos_x,pos_y,1,scale);
+    int scale = 3;
+    int pos_x = 0;
+    int pos_y = 5;
+    window_.writeWord("1UP    HIGH SCORE    2UP", pos_x, pos_y, 1, scale);
 
 
-    pos_x = 100 ;
-    pos_y = 50 ;
-    window_.writeWord("CHARACTER  /  NICKNAME ",pos_x,pos_y,1,scale);
+    pos_x = 100;
+    pos_y = 50;
+    window_.writeWord("CHARACTER  /  NICKNAME ", pos_x, pos_y, 1, scale);
 
-    pos_x = 10 ;
-    pos_y += constants::BMP_CHARACTER_WIDTH * scale + 5 ;
+    pos_x = 10;
+    pos_y += constants::BMP_CHARACTER_WIDTH * scale + 5;
 
     //Draw blinky
-    SDL_Rect dst ;
+    SDL_Rect dst;
     dst.x = pos_x;
     dst.y = pos_y;
     dst.h = window_.getGhostBlinkyR().h * scale;
     dst.w = window_.getGhostBlinkyR().w * scale;
-    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostBlinkyR(),dst);
+    drawObject(window_.getRenderer(), window_.getTexture(), window_.getGhostBlinkyR(), dst, 1);
 
-    pos_x = 100 ;
-    window_.writeWord("- SHADOW     ' BLINKY ' ",pos_x,dst.y,1,scale,colours::kRed);
+    pos_x = 100;
+    window_.writeWord("- SHADOW     ' BLINKY ' ", pos_x, dst.y, 1, scale, colours::kRed);
 
     //Draw pinky
-    dst.y += dst.h + 4 ;
-    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostPinkyR(),dst);
-    window_.writeWord("- SPEEDY     ' PINKY ' ",pos_x,dst.y,1,scale,colours::kPink);
+    dst.y += dst.h + 4;
+    drawObject(window_.getRenderer(), window_.getTexture(), window_.getGhostPinkyR(), dst, 1);
+    window_.writeWord("- SPEEDY     ' PINKY ' ", pos_x, dst.y, 1, scale, colours::kPink);
 
     //Draw inky
-    dst.y += dst.h + 4 ;
-    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostInkyR(),dst);
-    window_.writeWord("- BASHFUL     ' INKY  ' ",pos_x ,dst.y,1,scale,colours::kCyan);
+    dst.y += dst.h + 4;
+    drawObject(window_.getRenderer(), window_.getTexture(), window_.getGhostInkyR(), dst, 1);
+    window_.writeWord("- BASHFUL     ' INKY  ' ", pos_x, dst.y, 1, scale, colours::kCyan);
 
     //Draw clyde
-    dst.y += dst.h + 4 ;
-    drawObject(window_.getRenderer(),window_.getTexture(),window_.getGhostClydeR(),dst);
-    window_.writeWord("- POKEY     ' CLYDE ' ",pos_x + 10 ,dst.y,1,scale,colours::kOrange);
+    dst.y += dst.h + 4;
+    drawObject(window_.getRenderer(), window_.getTexture(), window_.getGhostClydeR(), dst, 1);
+    window_.writeWord("- POKEY     ' CLYDE ' ", pos_x + 10, dst.y, 1, scale, colours::kOrange);
     window_.update();
 
 }
 
+void Game::gameStart() {
+    //Display Player one in Cyan
+    //Display Ready in Yellow
+    window_.clear();
+    // Map.
+    window_.draw(map_, config::dimensions::kScoreBoardHeight);
+
+    // Points
+    window_.writeHighScore();
+    updateHighScore();
+    window_.updateHighScore(high_score_);
+    window_.updateScore(score_);
+    //Lives
+    window_.updateLives(lives_);
+
+
+    window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
+    window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
+    window_.update();
+
+
+}
 
 //TODO
 void Game::quit() {

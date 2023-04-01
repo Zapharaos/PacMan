@@ -35,13 +35,13 @@ void ScoreBoard::writeLives(const std::shared_ptr<SDL_Renderer> &render,
                             int livesNb) {
     SDL_Rect life_sprite = visuals::pacman::sprite_score_board::kSprite.getImage();
     SDL_Rect lives_start;
-    lives_start.w = life_sprite.w * characters::kScale;
-    lives_start.h = life_sprite.h * characters::kScale;
+    lives_start.w = life_sprite.w * visuals::pacman::sprite_score_board::kScale;
+    lives_start.h = life_sprite.h * visuals::pacman::sprite_score_board::kScale;
     lives_start.x = config::positions::kScoreBoardLivesX;
     lives_start.y = config::positions::kScoreBoardLivesY;
 
     for (int i = 0; i < livesNb; i++) {
-        drawObject(render, texture, life_sprite, lives_start);
+        drawObject(render, texture, life_sprite, lives_start, 1);
         lives_start.x += lives_start.w + 5;
     }
 }
@@ -57,7 +57,7 @@ ScoreBoard::updateFruits(const std::shared_ptr<SDL_Renderer> &render, const std:
     int offset = position.w ;
 
     for (SDL_Rect s: fruit_queue_) {
-        drawObject(render, texture, s, position);
+        drawObject(render, texture, s, position, 1);
         position.x += offset;
     }
 }

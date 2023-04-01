@@ -49,6 +49,7 @@ namespace config {
         inline constexpr int kDurationEatenGhostFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
+        inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
         /** Amount of pixels the entities are moving (per tick). */
@@ -112,6 +113,12 @@ namespace config {
         inline constexpr int kScoreBoardLivesY{ dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
         inline constexpr int kScoreBoardFruitsX {dimensions::kWindowWidth - 30 };
         inline constexpr int kScoreBoardFruitsY {dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+
+        /**Game Start display positions*/
+        inline constexpr int kReadyTextX {10 * dimensions::kWindowCellSize};
+        inline constexpr int kReadyTextY {15 * dimensions::kWindowCellSize};
+        inline constexpr int kPlayerOneTextX {0};
+        inline constexpr int kPlayerOneTextY {0};
     }
 
 

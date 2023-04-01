@@ -44,7 +44,9 @@ private:
         kDeathFreeze, /* The game is freezing before death. */
         kDeathAnimate, /* The game is animating death. */
         kEatingGhost, /* Pacman is eating a ghost. */
-        kWelcomeScreen
+        kWelcomeScreen, /*Initial Screen with animations */
+        kGameStartFreeze, /* The game is frozen before starting*/
+        kGameStartAnimate
     };
 
     /** The map object. */
@@ -148,6 +150,9 @@ public:
 
 
     void displayWelcomeScreen();
+
+    void gameStart();
+
     /**
      * @brief Quits the game by setting the game status to kStopped.
      */

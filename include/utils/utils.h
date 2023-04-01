@@ -68,6 +68,7 @@ number, int start_x, int start_y, int offset);
 
 static Sprite getPointsSprite(int points);
 
-void drawObject(const std::shared_ptr<SDL_Renderer>& render, const std::shared_ptr<SDL_Texture>& texture, SDL_Rect src_rect,
-                SDL_Rect dst_rect);
+void
+drawObject(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
+           SDL_Rect dst_rect, float scale);
 #endif //PACMAN_UTILS_H
