@@ -23,34 +23,26 @@
  * additional functionality for movement, speed and animations.
  * @see Entity class
 */
+template<std::size_t L=0, std::size_t R=0, std::size_t U=0, std::size_t D=0>
 class MovingEntity : public Entity
 {
 
 private:
 
-    /**
-     * This is a static constexpr integer used to copy elements from the configuration files,
-     * making it easier to understand and reference in the code.
-     */
-    static constexpr int kAnimationLeftSize {visuals::pacman::left::kAnimationSize};
-    static constexpr int kAnimationRightSize {visuals::pacman::right::kAnimationSize};
-    static constexpr int kAnimationUpSize {visuals::pacman::up::kAnimationSize};
-    static constexpr int kAnimationDownSize {visuals::pacman::down::kAnimationSize};
-
     /** Speed per tick at which the entity is moving. */
     int speed_{};
 
     /** Animations when moving towards the left. */
-    Animation<kAnimationLeftSize> left_{};
+    Animation<L> left_{};
 
     /** Animations when moving towards the right. */
-    Animation<kAnimationRightSize> right_{};
+    Animation<R> right_{};
 
     /** Animations when moving towards the top. */
-    Animation<kAnimationUpSize> up_{};
+    Animation<U> up_{};
 
     /** Animations when moving towards the bottom. */
-    Animation<kAnimationDownSize> down_{};
+    Animation<D> down_{};
 
     /** Previous direction.
      * @details Used to determine a swap of animation. */
@@ -62,7 +54,7 @@ public:
      * @brief Default MovingEntity constructor.
      * This is the default constructor for the MovingEntity class.
      */
-    MovingEntity();
+    inline MovingEntity() = default;
 
     /**
      * @brief Constructs a MovingEntity object with the given position, enabled state, points, speed, and animations.
@@ -75,11 +67,11 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    MovingEntity(const Position &position, bool enabled, int points, int speed,
-                 Animation<kAnimationLeftSize> left,
-                 Animation<kAnimationRightSize> right,
-                 Animation<kAnimationUpSize> up,
-                 Animation<kAnimationDownSize> down);
+    inline MovingEntity(const Position &position, bool enabled, int points, int speed,
+                 Animation<L> left, Animation<R> right, Animation<U> up, Animation<D> down) :
+            Entity(position, left.getSprite(), enabled, points), speed_(speed), left_(std::move(left)),
+            right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
+    {}
 
     /**
      * @brief Constructs a MovingEntity object with the given position, speed, and animations.
@@ -90,25 +82,82 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    MovingEntity(const Position &position, int speed,
-                 Animation<kAnimationLeftSize> left,
-                 Animation<kAnimationRightSize> right,
-                 Animation<kAnimationUpSize> up,
-                 Animation<kAnimationDownSize> down);
+    inline MovingEntity(const Position &position, int speed, Animation<L> left,
+                 Animation<R> right, Animation<U> up, Animation<D> down) :
+            Entity(position, left.getSprite()), speed_(speed), left_(std::move(left)),
+            right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
+    {}
 
     /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
      */
-    virtual void tick(const Map &map, Direction direction);
+    inline virtual void tick(const Map &map, Direction direction)
+    {
+        if(isCounterActive()) {
+            counterIncrement();
+            return;
+        }
+
+        // Reset status
+        if(!isVisible()) show();
+
+        move(map, direction);
+    };
 
     /**
      * @brief Moves the entity in the given direction if it is a legal move.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
      */
-    void move(const Map &map, Direction direction);
+    void move(const Map &map, Direction direction)
+    {
+
+        // Direction must be initialized.
+        if (direction.isUninitialized())
+        {
+            if(previous_direction_.isUninitialized()) return;
+            direction = previous_direction_; // Repeat previous movement.
+        }
+
+        // Get positions as pixels.
+        std::optional<Position> position;
+        auto origin = getPosition();
+        Position destination;
+
+        // Direction change.
+        if(direction.isTurn(previous_direction_))
+        {
+            destination = origin.moveIntoDirection(previous_direction_, speed_);
+            position = map.turn(origin, destination, previous_direction_, direction);
+            if(!position) // Turn is illegal.
+                direction = previous_direction_; // Move into previous direction.
+        }
+
+        destination = origin.moveIntoDirection(direction, speed_);
+
+        // Warping.
+        if(map.isWarping(origin, destination) && direction == previous_direction_)
+        {
+            auto size = getSprite().getSize();
+            auto corner = destination.shift(size.first, size.second);
+            position = map.warp(destination, corner);
+        }
+
+        // No movements yet : move straight direction (or keeping same direction).
+        if(!position)
+        {
+            position = map.move(origin, destination, direction);
+            if (!position)
+                return; // Move is illegal.
+        }
+
+        // Move is legal : updates the entity.
+        animate(direction);
+        setPosition(position.value());
+        previous_direction_ = direction;
+    };
 
     /**
      * @brief Switches between sprites depending on the direction of the current move.
@@ -116,13 +165,33 @@ public:
      * Uses the Animation::animate() method to switch between the different animations.
      * @param direction The direction of the current move.
      */
-    void animate(const Direction &direction);
+    inline void animate(const Direction &direction)
+    {
+        // Nothing to animate yet.
+        bool restart = previous_direction_ != direction;
+
+        // Gets the new sprite.
+        if (direction.isLeft())
+            setSprite(left_.animate(restart));
+        else if (direction.isRight())
+            setSprite(right_.animate(restart));
+        else if (direction.isUp())
+            setSprite(up_.animate(restart));
+        else if (direction.isDown())
+            setSprite(down_.animate(restart));
+    };
 
     /**
      * @brief Resets the entity to the given coordinates.
      * @param coordinates The new position of the entity.
      */
-    virtual void reset(const Position &coordinates);
+    inline virtual void reset(const Position &coordinates)
+    {
+        previous_direction_.reset();
+        left_.reset();
+        setSprite(left_.getSprite()); // default sprite
+        setPosition(coordinates); // reset position
+    };
 };
 
 

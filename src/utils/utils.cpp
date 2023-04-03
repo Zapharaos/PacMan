@@ -54,7 +54,7 @@ void saveGameState(int high_score, int round) {
  * get highest score ereached locally
  * @return
  */
-std::string  getSavedHighScore() {
+std::string getSavedHighScore() {
     std::ifstream f("../resources/save.json");
     json data  = json::parse(f);
     std::string high_score = data.value("High Score","Not found");

@@ -7,5 +7,29 @@
 
 #include "../../include/entity/ghost.h"
 
-Ghost::Ghost() = default;
+Ghost::Ghost() : MovingEntity(Position{{config::positions::kPacmanX, config::positions::kPacmanY}},
+                              config::settings::kSpeedPacman,
+                              visuals::pacman::left::kAnimation,
+                              visuals::pacman::right::kAnimation,
+                              visuals::pacman::up::kAnimation,
+                              visuals::pacman::down::kAnimation)
+{}
 
+Ghost::Ghost(Ghost::GhostType type) : Ghost() {
+    type_ = type;
+}
+
+void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
+
+    // TODO : might need to handle ghost status
+
+    // TODO : get direction from pathfinding
+    Direction direction;
+    MovingEntity::tick(map, direction);
+}
+
+void Ghost::reset(const Position &coordinates)
+{
+    MovingEntity::reset(coordinates);
+    status_ = GhostStatus::kDefault;
+}

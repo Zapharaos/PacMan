@@ -50,7 +50,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/entity/entity.cpp
 		src/entity/fruit.cpp
 		src/entity/ghost.cpp
-		src/entity/movingEntity.cpp
 		src/entity/pacman.cpp
 
 		src/map/map.cpp

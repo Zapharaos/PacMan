@@ -21,7 +21,7 @@ Pacman::Pacman() :
 void Pacman::setSuperpower(bool superpower)
 {
     if ((superpower_ = superpower))
-        countSuperpower_.start(config::settings::kDurationSuperpower);
+        count_superpower_.start(config::settings::kDurationSuperpower);
 }
 
 bool Pacman::isSuperpower() const
@@ -33,8 +33,8 @@ void Pacman::tick(const Map &map, Direction direction)
 {
     if(isSuperpower())
     {
-        if(countSuperpower_.isActive())
-            countSuperpower_.increment();
+        if(count_superpower_.isActive())
+            count_superpower_.increment();
         else
             setSuperpower(false);
     }

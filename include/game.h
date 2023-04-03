@@ -59,10 +59,10 @@ private:
     int lives_ = 0;
 
     /** The current score. */
-    int score_ = 0;
+    unsigned long score_ = 0;
 
     /** The highest score stored locally. */
-    int high_score_ = 0 ;
+    unsigned long high_score_ = 0 ;
 
     /** The current level. */
     int level_ = 1;
@@ -99,8 +99,9 @@ public:
      * @brief Constructor for the Game class.
      * @param map The map object.
      * @param window The window object.
+     * @param high_score The local saved high score.
      */
-    Game(const Map &map, Window window);
+    Game(const Map &map, Window window, unsigned long high_score);
 
     /**
      * @brief Executes a game tick.
@@ -121,8 +122,9 @@ public:
 
     /**
      * @brief Handles collisions between entities.
+     * @param pacman Pacman position (in pixels).
      */
-    void handleEntitiesCollisions();
+    void handleEntitiesCollisions(const SDL_Rect &pacman);
 
     /**
      * @brief Toggles the game's pause status.

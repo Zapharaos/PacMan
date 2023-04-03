@@ -15,7 +15,11 @@
  * Inherits from the MovingEntity class.
  * @see MovingEntity
 */
-class Pacman : public MovingEntity
+class Pacman : public MovingEntity<
+        visuals::pacman::left::kAnimationSize,
+        visuals::pacman::right::kAnimationSize,
+        visuals::pacman::up::kAnimationSize,
+        visuals::pacman::down::kAnimationSize>
 {
 
 private:
@@ -30,7 +34,7 @@ private:
     bool superpower_ = false;
 
     /** Counts the number of frames until the superpower expires. */
-    Counter countSuperpower_ {};
+    Counter count_superpower_ {};
 
     /** Has died. */
     bool dead_ = false;

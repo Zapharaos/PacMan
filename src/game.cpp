@@ -9,16 +9,18 @@
 
 Game::Game() = default;
 
-Game::Game(const Map &map, Window window) : map_(map), window_(std::move(window)) {
+Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map), window_(std::move(window)), high_score_(high_score) {
+
     pellets_total_ = map.getCellsWithEntities().size();
     lives_ = config::settings::kLives;
-    fruit_ = Fruit{pellets_total_};
-    // Pacman already done initialization.
-    getLocalHighScore();
     status_ = StatusType::kGameStartFreeze;
-    // TODO : setup ghosts
 
-
+    // Pacman already done at compilation (default).
+    fruit_ = Fruit{pellets_total_};
+    ghosts_.emplace_back(Ghost(Ghost::GhostType::kBlinky));
+    ghosts_.emplace_back(Ghost(Ghost::GhostType::kPinky));
+    ghosts_.emplace_back(Ghost(Ghost::GhostType::kInky));
+    ghosts_.emplace_back(Ghost(Ghost::GhostType::kClyde));
 }
 
 void Game::tick(const Direction &direction) {
@@ -32,10 +34,17 @@ void Game::tick(const Direction &direction) {
 
     // Handle status.
     if (handleStatus()) {
-        // Move entities and handle collisions.
+
+        // Get pacman sprite position.
+        auto pacman = pacman_.getSprite().getPosition();
+
+        // Move entities.
         pacman_.tick(map_, direction);
-        // TODO : move ghosts
-        handleEntitiesCollisions();
+        for(auto &ghost : ghosts_)
+            ghost.tick(map_, pacman);
+
+        // Handle collisions.
+        handleEntitiesCollisions(pacman);
     }
 
     // Update game visuals.
@@ -185,11 +194,8 @@ bool Game::handleStatus() {
     return (status_ == StatusType::kRunning);
 }
 
-void Game::handleEntitiesCollisions() {
+void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
     bool lowScore = score_ < config::settings::kNewLifeAtPoints;
-
-    // Get pacman sprite position.
-    auto pacman = pacman_.getSprite().getPosition();
 
     // Get pacman current cell.
     auto pacman_position = Position{{pacman.x, pacman.y}};
@@ -291,8 +297,10 @@ void Game::levelUp() {
     map_.reset();
     pacman_.reset(
             Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+    for(auto &ghost : ghosts_)
+        ghost.reset(
+                Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
-    // TODO : ghosts reset
     // TODO : speed and timers : up
 }
 
@@ -310,14 +318,11 @@ void Game::lostLife() {
     status_ = StatusType::kRunning;
     pacman_.reset(
             Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+    for(auto &ghost : ghosts_)
+        ghost.reset(
+                Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
 
-    // TODO : ghosts reset
     // TODO : speed and timers : reset
-}
-
-int Game::getLocalHighScore() {
-    high_score_ = stoi(getSavedHighScore());
-    return high_score_;
 }
 
 bool Game::updateHighScore() {

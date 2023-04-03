@@ -9,7 +9,8 @@ int main(int argc, char **argv)
     Map map = Map{loadCellTypesFromFile(config::files::kMap)};
     Window window;
     window.init();
-    Game game = Game{map, window};
+    auto high_score = stoul(getSavedHighScore());
+    Game game = Game{map, window, high_score};
 
     // Prepare reading user's inputs.
     int nbk;
