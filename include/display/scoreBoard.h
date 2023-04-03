@@ -47,7 +47,7 @@ public:
      * @param points
      * @return vector containing sprites
      */
-    std::vector <SDL_Rect> getPointsToPrint(int points,const std::unordered_map<char, SDL_Rect>& character_map);
+    std::vector <SDL_Rect> getPointsToPrint(unsigned long points,const std::unordered_map<char, SDL_Rect>& character_map);
 
     /**
      * Used to display lives remaining

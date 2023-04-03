@@ -45,7 +45,7 @@ private:
     bool enabled_ = false;
 
     /** Points earned when entity is eaten. */
-    int points_{};
+    unsigned long points_{};
 
     /** Entity status. */
     EntityStatus status_ {EntityStatus::kVisible};
@@ -110,13 +110,13 @@ public:
      * @brief Getter for the number of points earned when the entity is eaten.
      * @return The number of points earned when the entity is eaten.
      */
-    [[nodiscard]] int getPoints() const;
+    [[nodiscard]] unsigned long getPoints() const;
 
     /**
      * @brief Setter for the number of points earned when the entity is eaten.
      * @param points The new number of points earned when the entity is eaten.
      */
-    void setPoints(int points);
+    void setPoints(unsigned long points);
 
     /**
      * @brief Getter for whether the entity is enabled.

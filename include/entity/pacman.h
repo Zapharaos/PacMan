@@ -30,12 +30,6 @@ private:
      */
     static constexpr int kAnimationDeathSize {visuals::pacman::death::kAnimationSize};
 
-    /** Superpower mode is activated. */
-    bool superpower_ = false;
-
-    /** Counts the number of frames until the superpower expires. */
-    Counter count_superpower_ {};
-
     /** Has died. */
     bool dead_ = false;
 
@@ -50,16 +44,6 @@ public:
     Pacman();
 
     /**
-     * @brief Setter for superpower mode.
-     */
-    void setSuperpower(bool superpower);
-
-    /**
-     * @brief Getter for superpower mode.
-     */
-    [[nodiscard]] bool isSuperpower() const;
-
-    /**
      * @brief Getter for "dead" status.
      */
     [[nodiscard]] bool isDead() const;
@@ -68,13 +52,6 @@ public:
      * @brief Setter for "dead" status.
      */
     void setDead(bool dead);
-
-    /**
-     * @brief Handle the moving entity.
-     * @param map The board with all the cells.
-     * @param direction The direction the entity is moving towards.
-     */
-    void tick(const Map &map, Direction direction) override;
 
     /**
      * @brief Executes the death animation.

@@ -18,30 +18,6 @@ Pacman::Pacman() :
     death_ = visuals::pacman::death::kAnimation;
 }
 
-void Pacman::setSuperpower(bool superpower)
-{
-    if ((superpower_ = superpower))
-        count_superpower_.start(config::settings::kDurationSuperpower);
-}
-
-bool Pacman::isSuperpower() const
-{
-    return superpower_;
-}
-
-void Pacman::tick(const Map &map, Direction direction)
-{
-    if(isSuperpower())
-    {
-        if(count_superpower_.isActive())
-            count_superpower_.increment();
-        else
-            setSuperpower(false);
-    }
-
-    MovingEntity::tick(map, direction);
-}
-
 bool Pacman::isDead() const
 {
     return dead_;
@@ -72,6 +48,5 @@ void Pacman::animateDeath()
 void Pacman::reset(const Position &coordinates)
 {
     MovingEntity::reset(coordinates);
-    superpower_ = false;
     dead_ = false;
 }

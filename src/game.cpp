@@ -17,10 +17,10 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
 
     // Pacman already done at compilation (default).
     fruit_ = Fruit{pellets_total_};
-    ghosts_.emplace_back(Ghost(Ghost::GhostType::kBlinky));
-    ghosts_.emplace_back(Ghost(Ghost::GhostType::kPinky));
-    ghosts_.emplace_back(Ghost(Ghost::GhostType::kInky));
-    ghosts_.emplace_back(Ghost(Ghost::GhostType::kClyde));
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky, Position{{0, 0}}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky, Position{{0, 0}}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky, Position{{0, 0}}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde, Position{{0, 0}}});
 }
 
 void Game::tick(const Direction &direction) {
@@ -121,6 +121,13 @@ void Game::display() {
 bool Game::handleStatus() {
     // Processing animations.
     if (counter_.isActive()) {
+
+        counter_.increment();
+
+        // Superpower active
+        if(status_ == StatusType::kSuperpower)
+            return true;
+
         // Map blinking
         if (status_ == StatusType::kLevelUpAnimate)
             map_.animate();
@@ -131,9 +138,8 @@ bool Game::handleStatus() {
             } else {
                 pacman_.hide();
             }
-
         }
-        counter_.increment();
+
         return false;
     }
 
@@ -190,7 +196,14 @@ bool Game::handleStatus() {
         return true;
     }
 
-    // Game is not read to run yet.
+    if(status_ == StatusType::kSuperpower)
+    {
+        status_ = StatusType::kRunning;
+        for(auto &ghost : ghosts_)
+            ghost.toggleFrightened();
+    }
+
+    // Game is not ready to run yet.
     return (status_ == StatusType::kRunning);
 }
 
@@ -222,13 +235,16 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         // Updates game.
         if (pellets_eaten_ == pellets_total_) // Level up.
         {
-            // Freeze game (60 frames) before the game level up animation.
+            // Freeze game before the game level up animation.
             status_ = StatusType::kLevelUpFreeze;
             counter_.start(config::settings::kDurationLevelupFreeze);
         } else if (cell->getType() == CellType::kEnergizer) // Superpower.
         {
-            pacman_.setSuperpower(true);
-            // TODO : ghost scared (timer) into ghost blinking (ticks)
+            status_ = StatusType::kSuperpower;
+            counter_.start(config::settings::kDurationSuperpower);
+            ghosts_eaten = 0;
+            for(auto &ghost : ghosts_)
+                ghost.toggleFrightened();
         }
     }
 
@@ -249,7 +265,8 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         // Ghost is active and collided with Pacman.
         if (ghost.isEnabled() &&
             SDL_HasIntersection(&pacman, &ghost.getSprite().getPosition())) {
-            if (!pacman_.isSuperpower()) // Superpower disabled : death.
+            // Not dead yet && superpower disabled : death.
+            if (!pacman_.isDead() && status_ != StatusType::kSuperpower)
             {
                 // Freeze game (60 frames) before the death animation.
                 status_ = StatusType::kDeathFreeze;
@@ -260,7 +277,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
 
             // Disables ghost & updates game.
             ghost.setEnabled(false);
-            score_ += ghost.getPoints();
+            score_ += ghost.getPoints() * (1 << (ghosts_eaten++));
 
             // Eating animation.
             status_ = StatusType::kEatingGhost;

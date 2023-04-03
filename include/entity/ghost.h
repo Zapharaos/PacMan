@@ -38,7 +38,12 @@ public:
      */
     Ghost();
 
-    explicit Ghost(Ghost::GhostType type);
+    /**
+     * @brief Constructs a Ghost entity with the given type and position.
+     * @param type Which type of ghosts.
+     * @param position Raw position.
+     */
+    Ghost(Ghost::GhostType type, const Position &position);
 
     /**
      * @brief Handle the moving entity.
@@ -46,6 +51,11 @@ public:
      * @param pacman The position this entity is targeting.
      */
     void tick(const Map &map, const SDL_Rect &pacman);
+
+    /**
+     * @brief Toggle the frightened mode.
+     */
+    void toggleFrightened();
 
     /**
      * @brief Resets the entity object.
@@ -60,13 +70,14 @@ private:
 
     enum class GhostStatus
     {
-        kDefault,
-        kScared,
-        kLessScared,
-        kInvisible
+        kChase,
+        kScatter,
+        kFrightened
     };
 
-    GhostStatus status_ {GhostStatus::kDefault};
+    GhostStatus status_ {GhostStatus::kScatter};
+
+    GhostStatus previous_status_ {};
 
     Counter counter_ {};
 };

@@ -46,7 +46,8 @@ private:
         kEatingGhost, /* Pacman is eating a ghost. */
         kWelcomeScreen, /*Initial Screen with animations */
         kGameStartFreeze, /* The game is frozen before starting*/
-        kGameStartAnimate
+        kGameStartAnimate,
+        kSuperpower, /* The pacman ate an energizer. */
     };
 
     /** The map object. */
@@ -66,6 +67,9 @@ private:
 
     /** The current level. */
     int level_ = 1;
+
+    /** The current number of ghosts eaten while in superpower mode. */
+    int ghosts_eaten = 0;
 
     /** The current number of pellets eaten. */
     int pellets_eaten_ = 0;
