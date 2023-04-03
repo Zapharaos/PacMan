@@ -25,7 +25,8 @@ enum class CellType
     kPellet, /* Pellet type cell */
     kEnergizer, /* Energizer type cell */
     kPath, /* Path type cell */
-    kWarp /* Warp type cell */
+    kWarp, /* Warp type cell */
+    kDoor /* Door type cell */
 };
 
 /**

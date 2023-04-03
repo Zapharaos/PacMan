@@ -17,10 +17,10 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
 
     // Pacman already done at compilation (default).
     fruit_ = Fruit{pellets_total_};
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky, Position{{0, 0}}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky, Position{{0, 0}}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky, Position{{0, 0}}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde, Position{{0, 0}}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky, Position{0, 0}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky, Position{0, 0}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky, Position{0, 0}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde, Position{0, 0}});
 }
 
 void Game::tick(const Direction &direction) {
@@ -211,7 +211,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
     bool lowScore = score_ < config::settings::kNewLifeAtPoints;
 
     // Get pacman current cell.
-    auto pacman_position = Position{{pacman.x, pacman.y}};
+    auto pacman_position = Position{pacman.x, pacman.y};
     auto cell_position = pacman_position.getPositionUnscaled(
             map_.getCellSize());
     auto cell = map_.getCell(cell_position);
@@ -313,10 +313,10 @@ void Game::levelUp() {
     // Reset entities.
     map_.reset();
     pacman_.reset(
-            Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+            Position{config::positions::kPacmanX, config::positions::kPacmanY});
     for(auto &ghost : ghosts_)
         ghost.reset(
-                Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+                Position{config::positions::kPacmanX, config::positions::kPacmanY});
 
     // TODO : speed and timers : up
 }
@@ -334,10 +334,10 @@ void Game::lostLife() {
     // Reset the entities (might only lose a life).
     status_ = StatusType::kRunning;
     pacman_.reset(
-            Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+            Position{config::positions::kPacmanX, config::positions::kPacmanY});
     for(auto &ghost : ghosts_)
         ghost.reset(
-                Position{{config::positions::kPacmanX, config::positions::kPacmanY}});
+                Position{config::positions::kPacmanX, config::positions::kPacmanY});
 
     // TODO : speed and timers : reset
 }

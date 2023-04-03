@@ -16,6 +16,9 @@ Position::Position() = default;
 Position::Position(std::pair<int, int> position) : position_(std::move(position))
 {}
 
+Position::Position(int abscissa, int ordinate) : position_({abscissa, ordinate})
+{}
+
 bool Position::operator==(const Position &position) const
 {
     return position_ == position.position_;
@@ -63,14 +66,14 @@ int Position::getSingleAxisDistance(const Position &position) const
 
 Position Position::getPositionScaled(int scale) const
 {
-    return Position({position_.first * scale, position_.second * scale});
+    return Position{position_.first * scale, position_.second * scale};
 }
 
 Position Position::getPositionUnscaled(int scale) const
 {
     auto x = getAbscissa() / scale;
     auto y = getOrdinate() / scale;
-    return Position{{floor(x), floor(y)}};
+    return Position{static_cast<int>(floor(x)), static_cast<int>(floor(y))};
 }
 
 bool Position::isNeighbor(const Position &position) const
@@ -107,7 +110,7 @@ Position Position::moveIntoDirection(const Direction &direction, int distance) c
 
 Position Position::shift(int x, int y) const
 {
-    return Position{{position_.first+x, position_.second+y}};
+    return Position{position_.first+x, position_.second+y};
 }
 
 Position Position::getOpposite(int width, int height) const
@@ -124,12 +127,10 @@ Position Position::getOpposite(int width, int height) const
     if (y > height - 1) // Opposite on the bottom
         y = 0;
 
-    return Position{{x, y}};
+    return Position{x, y};
 }
 
 void Position::print() const
 {
     std::cout << "(" << position_.first << ", " << position_.second << ")" << std::endl;
 }
-
-

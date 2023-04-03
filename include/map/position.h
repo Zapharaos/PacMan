@@ -38,6 +38,13 @@ public:
     explicit Position(std::pair<int, int> position);
 
     /**
+     * @brief Constructor for the Position class.
+     * @param abscissa The abscissa of the position.
+     * @param ordinate The ordinate of the position.
+     */
+    Position(int abscissa, int ordinate);
+
+    /**
      * @brief Overloaded operator for the equality of two Position objects.
      * @param position The Position object to compare to.
      * @return True if both positions are equal, else false.

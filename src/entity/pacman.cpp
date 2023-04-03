@@ -8,7 +8,7 @@
 #include "../../include/entity/pacman.h"
 
 Pacman::Pacman() :
-               MovingEntity(Position{{config::positions::kPacmanX, config::positions::kPacmanY}},
+               MovingEntity(Position{config::positions::kPacmanX, config::positions::kPacmanY},
                             config::settings::kSpeedPacman,
                             visuals::pacman::left::kAnimation,
                             visuals::pacman::right::kAnimation,
