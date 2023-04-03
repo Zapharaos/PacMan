@@ -20,7 +20,30 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position) :
 
 void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
 
-    // TODO : might need to handle ghost status
+    // Handle ghost status
+    if(counter_.isActive()) {
+        counter_.increment();
+    } else {
+        // TODO : Timers
+        switch(status_)
+        {
+            case GhostStatus::kStart:
+                status_ = GhostStatus::kScatter;
+                break;
+            case GhostStatus::kFrightened:
+                status_ = GhostStatus::kFrightenedBlinking;
+                break;
+            case GhostStatus::kScatter:
+                status_ = GhostStatus::kChase;
+                break;
+            case GhostStatus::kChase:
+                status_ = GhostStatus::kScatter;
+                break;
+            default: // unreachable
+                status_ = previous_status_;
+                break;
+        }
+    }
 
     // TODO : get direction from pathfinding
     Direction direction;
@@ -29,17 +52,23 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
 
 void Ghost::toggleFrightened()
 {
-    if(status_ == GhostStatus::kFrightened)
+    switch(status_)
     {
-        status_ = previous_status_;
-    } else {
-        previous_status_ = status_;
-        status_ = GhostStatus::kFrightened;
+        case GhostStatus::kFrightened:
+        case GhostStatus::kFrightenedBlinking:
+            status_ = previous_status_;
+            break;
+        default:
+            previous_status_ = status_;
+            status_ = GhostStatus::kFrightened;
+            // TODO : start timer
+            break;
     }
 }
 
 void Ghost::reset(const Position &coordinates)
 {
     MovingEntity::reset(coordinates);
-    status_ = GhostStatus::kScatter;
+    status_ = GhostStatus::kStart;
+    counter_.stop();
 }

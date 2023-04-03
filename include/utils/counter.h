@@ -56,17 +56,26 @@ public:
     {
         if(count_ == 0)
             active_ = true;
-        if((++count_) < cap_) return;
-        active_ = false;
-        count_ = 0;
+        if((++count_) < cap_)
+            return;
+        stop();
     };
 
     /**
      * @brief Getter for the current count value.
      * @return The current count value.
      */
-    [[nodiscard]] long getCount() const
+    [[nodiscard]] inline long getCount() const
     { return count_;};
+
+    /**
+     * Stops the current count.
+     */
+    inline void stop()
+    {
+        active_ = false;
+        count_ = 0;
+    }
 
 };
 

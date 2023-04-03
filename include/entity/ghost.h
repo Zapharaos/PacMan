@@ -70,12 +70,14 @@ private:
 
     enum class GhostStatus
     {
+        kStart,
         kChase,
         kScatter,
-        kFrightened
+        kFrightened,
+        kFrightenedBlinking
     };
 
-    GhostStatus status_ {GhostStatus::kScatter};
+    GhostStatus status_ {GhostStatus::kStart};
 
     GhostStatus previous_status_ {};
 
