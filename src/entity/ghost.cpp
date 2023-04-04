@@ -17,7 +17,10 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
     type_(type), target_(std::move(target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
-{}
+{
+    frightened_ = visuals::ghosts::frightened::kAnimation;
+    frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
+}
 
 void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
 
@@ -34,6 +37,9 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
             case GhostStatus::kFrightened:
                 status_ = GhostStatus::kFrightenedBlinking;
                 break;
+            case GhostStatus::kFrightenedBlinking:
+                counter_.restart();
+                break;
             case GhostStatus::kScatter:
                 status_ = GhostStatus::kChase;
                 break;
@@ -47,9 +53,21 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
 
     // TODO : get direction from pathfinding
     Direction direction;
+    // TODO : update tick method to call move and animate separately ?
     MovingEntity::tick(map, direction);
 
-    // TODO : animate
+    switch(status_)
+    {
+        case GhostStatus::kFrightened:
+            setSprite(frightened_.animate());
+            break;
+        case GhostStatus::kFrightenedBlinking:
+            setSprite(frightened_blinking_.animate());
+            break;
+        default:
+            // TODO : call virtual animate method
+            break;
+    }
 }
 
 void Ghost::toggleFrightened()
@@ -59,15 +77,19 @@ void Ghost::toggleFrightened()
         case GhostStatus::kFrightened:
         case GhostStatus::kFrightenedBlinking:
             status_ = previous_status_;
+            setSprite(previous_sprite_); // TODO : temp, to be removed
             break;
         default:
             previous_status_ = status_;
-            if(true) // TODO : if amount of frames for frightened is 0
+            previous_sprite_ = getSprite(); // TODO : temp, to be removed
+            if(true) // TODO : if amount of frames for frightened is not 0
             {
                 status_ = GhostStatus::kFrightened;
-                // TODO : start timer
+                setSprite(frightened_.getSprite());
+                counter_.start(60 * 1); // TODO : temp value
             } else {
                 status_ = GhostStatus::kFrightenedBlinking;
+                setSprite(frightened_blinking_.getSprite());
             }
             break;
     }

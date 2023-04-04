@@ -80,7 +80,13 @@ private:
 
     GhostStatus previous_status_ {};
 
+    Sprite previous_sprite_ {};
+
     Counter counter_ {};
+
+    Animation frightened_ {};
+
+    Animation frightened_blinking_ {};
 };
 
 

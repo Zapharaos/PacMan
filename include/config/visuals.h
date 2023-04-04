@@ -111,7 +111,7 @@ namespace visuals {
     namespace pacman {
 
         /** Amount of frames for which the current sprite is shown. */
-        inline constexpr int kAnimationRefreshRate {config::settings::kRefreshRateTicksMovingEntity};
+        inline constexpr int kAnimationRefreshRate {config::settings::kRefreshRateTicksPacman};
 
         /** Width and height of a bitmap pacman (in pixels). */
         inline constexpr int kBitmapSize {16};
@@ -996,7 +996,7 @@ namespace visuals {
     namespace ghosts {
 
         /** Amount of frames for which the current sprite is shown. */
-        inline constexpr int kAnimationRefreshRate {config::settings::kRefreshRateTicksMovingEntity};
+        inline constexpr int kAnimationRefreshRate {config::settings::kRefreshRateTicksGhost};
 
         /** Width and height of a bitmap pacman (in pixels). */
         inline constexpr int kBitmapSize {16};
@@ -1706,6 +1706,92 @@ namespace visuals {
                 inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
             }
 
+        }
+
+        namespace frightened {
+
+            namespace sprite_1 {
+                /** Sprite dimensions (in pixels). */
+                inline constexpr int kBitmapWidth {14};
+                inline constexpr int kBitmapHeight {14};
+
+                /** Sprite positions (in pixels). */
+                inline constexpr int kBitmapPositionX {4};
+                inline constexpr int kBitmapPositionY {196};
+
+                /** Sprite positions offset (in pixels). */
+                inline constexpr int kBitmapOffsetX {1};
+                inline constexpr int kBitmapOffsetY {1};
+
+                /** DO NOT MODIFY : Sprite. */
+                inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+            }
+
+            namespace sprite_2 {
+                /** Sprite dimensions (in pixels). */
+                inline constexpr int kBitmapWidth {14};
+                inline constexpr int kBitmapHeight {14};
+
+                /** Sprite positions (in pixels). */
+                inline constexpr int kBitmapPositionX {21};
+                inline constexpr int kBitmapPositionY {196};
+
+                /** Sprite positions offset (in pixels). */
+                inline constexpr int kBitmapOffsetX {1};
+                inline constexpr int kBitmapOffsetY {1};
+
+                /** DO NOT MODIFY : Sprite. */
+                inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+            }
+
+            /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+            inline constexpr bool kAnimationReverse {true};
+
+            /** DO NOT MODIFY : Pacman left animation. */
+            inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+        }
+
+        namespace frightened_blinking {
+
+            namespace sprite_1 {
+                /** Sprite dimensions (in pixels). */
+                inline constexpr int kBitmapWidth {14};
+                inline constexpr int kBitmapHeight {14};
+
+                /** Sprite positions (in pixels). */
+                inline constexpr int kBitmapPositionX {38};
+                inline constexpr int kBitmapPositionY {196};
+
+                /** Sprite positions offset (in pixels). */
+                inline constexpr int kBitmapOffsetX {1};
+                inline constexpr int kBitmapOffsetY {1};
+
+                /** DO NOT MODIFY : Sprite. */
+                inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+            }
+
+            namespace sprite_2 {
+                /** Sprite dimensions (in pixels). */
+                inline constexpr int kBitmapWidth {14};
+                inline constexpr int kBitmapHeight {14};
+
+                /** Sprite positions (in pixels). */
+                inline constexpr int kBitmapPositionX {55};
+                inline constexpr int kBitmapPositionY {196};
+
+                /** Sprite positions offset (in pixels). */
+                inline constexpr int kBitmapOffsetX {1};
+                inline constexpr int kBitmapOffsetY {1};
+
+                /** DO NOT MODIFY : Sprite. */
+                inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+            }
+
+            /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+            inline constexpr bool kAnimationReverse {false};
+
+            /** DO NOT MODIFY : Pacman left animation. */
+            inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite, frightened::sprite_1::kSprite, frightened::sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
         }
 
     }

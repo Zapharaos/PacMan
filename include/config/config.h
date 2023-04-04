@@ -38,7 +38,8 @@ namespace config {
         inline constexpr std::chrono::milliseconds kTickTime {1000/kFramesPerSecond};
 
         /** Amount of ticks between each sprite change. */
-        inline constexpr int kRefreshRateTicksMovingEntity {3};
+        inline constexpr int kRefreshRateTicksPacman {3};
+        inline constexpr int kRefreshRateTicksGhost {10};
         inline constexpr int kRefreshRateTicksFruit {15};
         inline constexpr int kRefreshRateTicksCharacters {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
@@ -106,7 +107,7 @@ namespace config {
             namespace pinky {
                 /** Ghost default/starting (in pixels). */
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
-                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {13 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
                 inline constexpr int kTargetX {0};

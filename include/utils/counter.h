@@ -77,6 +77,16 @@ public:
         count_ = 0;
     }
 
+    /**
+     * @brief Restarts the counter.
+     * @pre cap must have been set beforehand.
+     */
+    inline void restart()
+    {
+        active_ = true;
+        count_ = 0;
+    };
+
 };
 
 
