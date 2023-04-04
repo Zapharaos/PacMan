@@ -7,16 +7,18 @@
 
 #include "../../include/entity/ghost.h"
 
+#include <utility>
+
 Ghost::Ghost() = default;
 
 // TODO : update to have dynamic animations
-Ghost::Ghost(Ghost::GhostType type, const Position &position) :
+Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target) :
+    type_(type), target_(std::move(target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost),
                  config::settings::kSpeedGhost, visuals::pacman::left::kAnimation,
                  visuals::pacman::right::kAnimation, visuals::pacman::up::kAnimation,
-                 visuals::pacman::down::kAnimation) {
-    type_ = type;
-}
+                 visuals::pacman::down::kAnimation)
+{}
 
 void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
 
@@ -40,7 +42,6 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
                 status_ = GhostStatus::kScatter;
                 break;
             default: // unreachable
-                status_ = previous_status_;
                 break;
         }
     }
@@ -48,6 +49,8 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
     // TODO : get direction from pathfinding
     Direction direction;
     MovingEntity::tick(map, direction);
+
+    // TODO : animate
 }
 
 void Ghost::toggleFrightened()
@@ -60,15 +63,20 @@ void Ghost::toggleFrightened()
             break;
         default:
             previous_status_ = status_;
-            status_ = GhostStatus::kFrightened;
-            // TODO : start timer
+            if(true) // TODO : if amount of frames for frightened is 0
+            {
+                status_ = GhostStatus::kFrightened;
+                // TODO : start timer
+            } else {
+                status_ = GhostStatus::kFrightenedBlinking;
+            }
             break;
     }
 }
 
-void Ghost::reset(const Position &coordinates)
+void Ghost::reset()
 {
-    MovingEntity::reset(coordinates);
+    MovingEntity::reset();
     status_ = GhostStatus::kStart;
     counter_.stop();
 }

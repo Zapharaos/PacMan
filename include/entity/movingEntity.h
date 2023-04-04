@@ -29,6 +29,9 @@ class MovingEntity : public Entity
 
 private:
 
+    /** Starting position / default position (in pixels). */
+    Position start_ {};
+
     /** Speed per tick at which the entity is moving. */
     int speed_{};
 
@@ -69,8 +72,8 @@ public:
      */
     inline MovingEntity(const Position &position, bool enabled, int points, int speed,
                  Animation<L> left, Animation<R> right, Animation<U> up, Animation<D> down) :
-            Entity(position, left.getSprite(), enabled, points), speed_(speed), left_(std::move(left)),
-            right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
+            Entity(position, left.getSprite(), enabled, points), start_(position), speed_(speed),
+            left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
     {}
 
     /**
@@ -84,8 +87,8 @@ public:
      */
     inline MovingEntity(const Position &position, int speed, Animation<L> left,
                  Animation<R> right, Animation<U> up, Animation<D> down) :
-            Entity(position, left.getSprite()), speed_(speed), left_(std::move(left)),
-            right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
+            Entity(position, left.getSprite()), start_(position), speed_(speed),
+            left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
     {}
 
     /**
@@ -183,14 +186,13 @@ public:
 
     /**
      * @brief Resets the entity to the given coordinates.
-     * @param coordinates The new position of the entity.
      */
-    inline virtual void reset(const Position &coordinates)
+    inline virtual void reset()
     {
         previous_direction_.reset();
         left_.reset();
         setSprite(left_.getSprite()); // default sprite
-        setPosition(coordinates); // reset position
+        setPosition(start_); // reset position
     };
 };
 

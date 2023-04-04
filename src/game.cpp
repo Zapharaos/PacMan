@@ -17,10 +17,26 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
 
     // Pacman already done at compilation (default).
     fruit_ = Fruit{pellets_total_};
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky, Position{0, 0}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky, Position{0, 0}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky, Position{0, 0}});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde, Position{0, 0}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky,
+                               Position{config::positions::entities::blinky::kDefaultX,
+                                        config::positions::entities::blinky::kDefaultY},
+                               Position{config::positions::entities::blinky::kTargetX,
+                                        config::positions::entities::blinky::kTargetY}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
+                               Position{config::positions::entities::pinky::kDefaultX,
+                                        config::positions::entities::pinky::kDefaultY},
+                               Position{config::positions::entities::pinky::kTargetX,
+                                        config::positions::entities::pinky::kTargetY}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky,
+                               Position{config::positions::entities::inky::kDefaultX,
+                                        config::positions::entities::inky::kDefaultY},
+                               Position{config::positions::entities::inky::kTargetX,
+                                        config::positions::entities::inky::kTargetY}});
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde,
+                               Position{config::positions::entities::clyde::kDefaultX,
+                                        config::positions::entities::clyde::kDefaultY},
+                               Position{config::positions::entities::clyde::kTargetX,
+                                        config::positions::entities::clyde::kTargetY}});
 }
 
 void Game::tick(const Direction &direction) {
@@ -90,6 +106,10 @@ void Game::display() {
 
 
     // TODO : ghosts
+    for(auto &ghost : ghosts_)
+        if(!ghost.isHidden())
+            window_.draw(ghost, config::dimensions::kScoreBoardHeight);
+
 
     // Pellets
     for (auto &cell: map_.getCellsWithEntities()) {
@@ -312,11 +332,9 @@ void Game::levelUp() {
 
     // Reset entities.
     map_.reset();
-    pacman_.reset(
-            Position{config::positions::kPacmanX, config::positions::kPacmanY});
+    pacman_.reset();
     for(auto &ghost : ghosts_)
-        ghost.reset(
-                Position{config::positions::kPacmanX, config::positions::kPacmanY});
+        ghost.reset();
 
     // TODO : speed and timers : up
 }
@@ -333,11 +351,9 @@ void Game::lostLife() {
 
     // Reset the entities (might only lose a life).
     status_ = StatusType::kRunning;
-    pacman_.reset(
-            Position{config::positions::kPacmanX, config::positions::kPacmanY});
+    pacman_.reset();
     for(auto &ghost : ghosts_)
-        ghost.reset(
-                Position{config::positions::kPacmanX, config::positions::kPacmanY});
+        ghost.reset();
 
     // TODO : speed and timers : reset
 }

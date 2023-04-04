@@ -89,14 +89,56 @@ namespace config {
     }
 
     namespace positions {
-        /** Pacman default/starting position (in pixels). */
-        inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
-        inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
 
+        namespace entities {
+            /** Pacman default/starting position (in pixels). */
+            inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
+            inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
 
-        /** Fruit position (in pixels). */
-        inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
-        inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
+            /** Fruit position (in pixels). */
+            inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
+            inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
+
+            namespace blinky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {dimensions::kWindowWidth};
+            }
+
+            namespace pinky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {0};
+            }
+
+            namespace inky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {9 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {dimensions::kWindowHeight};
+                inline constexpr int kTargetY {dimensions::kWindowWidth};
+            }
+
+            namespace clyde {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {11 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {dimensions::kWindowHeight};
+                inline constexpr int kTargetY {0};
+            }
+        }
 
         /**Score Board Positions*/
         inline constexpr int kScoreBoardX {0};

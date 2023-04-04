@@ -42,8 +42,9 @@ public:
      * @brief Constructs a Ghost entity with the given type and position.
      * @param type Which type of ghosts.
      * @param position Raw position.
+     * @param target The position the ghost is targeting while in scatter mode.
      */
-    Ghost(Ghost::GhostType type, const Position &position);
+    Ghost(Ghost::GhostType type, const Position &position, Position target);
 
     /**
      * @brief Handle the moving entity.
@@ -59,12 +60,13 @@ public:
 
     /**
      * @brief Resets the entity object.
-     * @param coordinates Raw position coordinates.
      * @see MovingEntity::reset()
      */
-    void reset(const Position &coordinates) override;
+    void reset() override;
 
 private:
+
+    Position target_ {};
 
     GhostType type_ {GhostType::kUndefined};
 

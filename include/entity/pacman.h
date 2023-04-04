@@ -60,10 +60,9 @@ public:
 
     /**
      * @brief Resets the entity object.
-     * @param coordinates Raw position coordinates.
      * @see MovingEntity::reset()
      */
-    void reset(const Position &coordinates) override;
+    void reset() override;
 };
 
 

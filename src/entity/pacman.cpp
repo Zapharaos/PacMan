@@ -8,7 +8,7 @@
 #include "../../include/entity/pacman.h"
 
 Pacman::Pacman() :
-               MovingEntity(Position{config::positions::kPacmanX, config::positions::kPacmanY},
+               MovingEntity(Position{config::positions::entities::kPacmanX, config::positions::entities::kPacmanY},
                             config::settings::kSpeedPacman,
                             visuals::pacman::left::kAnimation,
                             visuals::pacman::right::kAnimation,
@@ -45,8 +45,8 @@ void Pacman::animateDeath()
     }
 }
 
-void Pacman::reset(const Position &coordinates)
+void Pacman::reset()
 {
-    MovingEntity::reset(coordinates);
+    MovingEntity::reset();
     dead_ = false;
 }
