@@ -50,6 +50,7 @@ namespace config {
         inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
         inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
+        inline constexpr int kDurationFruitPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
         /** Amount of pixels the entities are moving (per tick). */
@@ -97,6 +98,8 @@ namespace config {
         /** Fruit position (in pixels). */
         inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
         inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
+        inline constexpr int kFruitPointsX{350};
+        inline constexpr int kFruitPointsY{490};
 
         /**Score Board Positions*/
         inline constexpr int kScoreBoardX {0};
@@ -113,6 +116,7 @@ namespace config {
         inline constexpr int kScoreBoardLivesY{ dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
         inline constexpr int kScoreBoardFruitsX {dimensions::kWindowWidth - 30 };
         inline constexpr int kScoreBoardFruitsY {dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+
 
         /**Game Start display positions*/
         inline constexpr int kReadyTextX {10 * dimensions::kWindowCellSize};

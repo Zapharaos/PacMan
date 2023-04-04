@@ -63,7 +63,7 @@ int main(int argc, char **argv)
             SDL_Delay(std::chrono::duration_cast<std::chrono::milliseconds>(
                     config::settings::kTickTime - finish).count());
     }
-
+    saveGameState(game.getHighScore(),game.getLevel());
     // Save high score.
     // TODO : write high score to file
 
