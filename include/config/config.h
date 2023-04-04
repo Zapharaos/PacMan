@@ -81,7 +81,6 @@ namespace config {
         /** Window cell size. */
         inline constexpr int kWindowCellSize {32};
 
-
         /** DO NOT MODIFY : Window dimensions. */
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
         inline constexpr int kWindowHeight {  kScoreBoardHeight * 2 + kMapHeight * kWindowCellSize};
@@ -105,8 +104,8 @@ namespace config {
                 inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
-                inline constexpr int kTargetX {0};
-                inline constexpr int kTargetY {dimensions::kWindowWidth};
+                inline constexpr int kTargetX {dimensions::kWindowWidth};
+                inline constexpr int kTargetY {0};
             }
 
             namespace pinky {
@@ -125,8 +124,8 @@ namespace config {
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kWindowHeight};
-                inline constexpr int kTargetY {dimensions::kWindowWidth};
+                inline constexpr int kTargetX {dimensions::kWindowWidth};
+                inline constexpr int kTargetY {dimensions::kWindowHeight};
             }
 
             namespace clyde {
@@ -135,8 +134,8 @@ namespace config {
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kWindowHeight};
-                inline constexpr int kTargetY {0};
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {dimensions::kWindowHeight};
             }
         }
 

@@ -14,9 +14,10 @@ Ghost::Ghost() = default;
 // TODO : update to have dynamic animations
 Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target) :
     type_(type), target_(std::move(target)),
-    MovingEntity(position, true, static_cast<int>(Score::kGhost),
-                 config::settings::kSpeedGhost, visuals::pacman::left::kAnimation,
-                 visuals::pacman::right::kAnimation, visuals::pacman::up::kAnimation,
+    MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
+                 visuals::pacman::left::kAnimation,
+                 visuals::pacman::right::kAnimation,
+                 visuals::pacman::up::kAnimation,
                  visuals::pacman::down::kAnimation)
 {}
 

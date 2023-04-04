@@ -66,9 +66,9 @@ public:
 
 private:
 
-    Position target_ {};
-
     GhostType type_ {GhostType::kUndefined};
+
+    Position target_ {};
 
     enum class GhostStatus
     {
