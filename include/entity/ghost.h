@@ -48,7 +48,7 @@ public:
      * @param map The board with all the cells.
      * @param pacman The position this entity is targeting.
      */
-    void tick(const Map &map, const SDL_Rect &pacman);
+    void tick(const Map &map, const Position &pacman);
 
     /**
      * @brief Toggle the frightened mode.
@@ -79,8 +79,6 @@ private:
     GhostStatus status_ {GhostStatus::kStart};
 
     GhostStatus previous_status_ {};
-
-    Sprite previous_sprite_ {};
 
     Counter counter_ {};
 

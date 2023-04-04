@@ -72,8 +72,9 @@ void Game::tick(const Direction &direction) {
 
         // Move entities.
         pacman_.tick(map_, direction);
+        Position pacman_position {pacman.x, pacman.y};
         for(auto &ghost : ghosts_)
-            ghost.tick(map_, pacman);
+            ghost.tick(map_, pacman_position);
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);

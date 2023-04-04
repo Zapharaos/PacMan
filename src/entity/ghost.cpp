@@ -22,7 +22,7 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
 }
 
-void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
+void Ghost::tick(const Map &map, const Position &pacman) {
 
     // Handle ghost status
     if(counter_.isActive()) {
@@ -32,7 +32,11 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
         switch(status_)
         {
             case GhostStatus::kStart:
+            case GhostStatus::kChase:
                 status_ = GhostStatus::kScatter;
+                break;
+            case GhostStatus::kScatter:
+                status_ = GhostStatus::kChase;
                 break;
             case GhostStatus::kFrightened:
                 status_ = GhostStatus::kFrightenedBlinking;
@@ -40,34 +44,20 @@ void Ghost::tick(const Map &map, const SDL_Rect &pacman) {
             case GhostStatus::kFrightenedBlinking:
                 counter_.restart();
                 break;
-            case GhostStatus::kScatter:
-                status_ = GhostStatus::kChase;
-                break;
-            case GhostStatus::kChase:
-                status_ = GhostStatus::kScatter;
-                break;
             default: // unreachable
                 break;
         }
     }
 
     // TODO : get direction from pathfinding
-    Direction direction;
-    // TODO : update tick method to call move and animate separately ?
+//    Direction direction = map_.findPath(status_ == GhostStatus::kChase ? pacman : target_);
+    Direction direction; direction.setDirection(DirectionType::kLeft);
     MovingEntity::tick(map, direction);
 
-    switch(status_)
-    {
-        case GhostStatus::kFrightened:
-            setSprite(frightened_.animate());
-            break;
-        case GhostStatus::kFrightenedBlinking:
-            setSprite(frightened_blinking_.animate());
-            break;
-        default:
-            // TODO : call virtual animate method
-            break;
-    }
+    if(status_ == GhostStatus::kFrightened)
+        setSprite(frightened_.animate());
+    else if(status_ == GhostStatus::kFrightenedBlinking)
+        setSprite(frightened_blinking_.animate());
 }
 
 void Ghost::toggleFrightened()
@@ -77,11 +67,9 @@ void Ghost::toggleFrightened()
         case GhostStatus::kFrightened:
         case GhostStatus::kFrightenedBlinking:
             status_ = previous_status_;
-            setSprite(previous_sprite_); // TODO : temp, to be removed
             break;
         default:
             previous_status_ = status_;
-            previous_sprite_ = getSprite(); // TODO : temp, to be removed
             if(true) // TODO : if amount of frames for frightened is not 0
             {
                 status_ = GhostStatus::kFrightened;
