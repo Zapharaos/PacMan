@@ -148,10 +148,11 @@ public:
      */
     int getLocalHighScore();
 
+    int getHighScore() const;
+
+    int getLevel() const;
 
     void displayWelcomeScreen();
-
-    void gameStart();
 
     /**
      * @brief Quits the game by setting the game status to kStopped.

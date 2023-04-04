@@ -32,8 +32,6 @@ private :
     /** hashmap to store all characters */
     std::unordered_map<char, SDL_Rect> character_map_;
 
-    std::shared_ptr<SDL_Texture> texture_stream_{};
-
 
 protected:
 
@@ -175,7 +173,7 @@ public:
      * @param pos_y
      * @return
      */
-    void writeScorePoints(int point, int pos_x, int pos_y, float scale);
+    void writeScorePoints(int point, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour = colours::kWhite);
 
     /**
      * Writes a word at a given position and size

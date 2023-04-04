@@ -46,13 +46,7 @@ void Game::tick(const Direction &direction) {
 
 
 void Game::display() {
-    // couleur transparente
-    //SDL_SetColorKey(plancheSprites_, true, 0);
-    //TODO Changer transparence avec SDL2
     window_.clear();
-
-    // TODO : scores
-
     // Map.
     window_.draw(map_, config::dimensions::kScoreBoardHeight);
 
@@ -104,6 +98,17 @@ void Game::display() {
         // Display entity
         fruit_.animate();
         window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
+    }else if (fruit_.isCounterActive()) {
+        fruit_.counterIncrement();
+        //TODO better way to center
+        if (fruit_.getPoints() >= 1000) {
+            window_.writeScorePoints(1000, config::positions::kFruitPointsX+5, config::positions::kFruitPointsY + config::dimensions::kScoreBoardHeight,
+                                     visuals::fruit::kScale, colours::kPink);
+        } else {
+            window_.writeScorePoints(fruit_.getPoints(), config::positions::kFruitPointsX,
+                                     config::positions::kFruitPointsY + config::dimensions::kScoreBoardHeight,
+                                     visuals::fruit::kScale, colours::kPink);
+        }
     }
 
     window_.update();
@@ -122,7 +127,6 @@ bool Game::handleStatus() {
             } else {
                 pacman_.hide();
             }
-
         }
         counter_.increment();
         return false;
@@ -232,9 +236,8 @@ void Game::handleEntitiesCollisions() {
         if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition())) {
             // Disables fruit.
             fruit_.setEnabled(false);
+            fruit_.count(config::settings::kDurationFruitPoints);
             score_ += fruit_.getPoints();
-            // Displays points earned.
-            // TODO : display points sprite
         }
         fruit_.tick();
     }
@@ -373,32 +376,17 @@ void Game::displayWelcomeScreen() {
 
 }
 
-void Game::gameStart() {
-    //Display Player one in Cyan
-    //Display Ready in Yellow
-    window_.clear();
-    // Map.
-    window_.draw(map_, config::dimensions::kScoreBoardHeight);
-
-    // Points
-    window_.writeHighScore();
-    updateHighScore();
-    window_.updateHighScore(high_score_);
-    window_.updateScore(score_);
-    //Lives
-    window_.updateLives(lives_);
-
-
-    window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
-    window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
-    window_.update();
-
-
-}
-
 //TODO
 void Game::quit() {
     window_.clear();
+}
+
+int Game::getHighScore() const {
+    return high_score_;
+}
+
+int Game::getLevel() const {
+    return level_;
 }
 
 
