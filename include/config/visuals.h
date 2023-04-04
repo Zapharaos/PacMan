@@ -993,6 +993,723 @@ namespace visuals {
         inline std::vector<FruitObject> kFruits {cherry::kFruit, strawberry::kFruit, orange::kFruit, apple::kFruit, melon::kFruit, flagship::kFruit, bell::kFruit, key::kFruit};
     }
 
+    namespace ghosts {
+
+        /** Amount of frames for which the current sprite is shown. */
+        inline constexpr int kAnimationRefreshRate {config::settings::kRefreshRateTicksMovingEntity};
+
+        /** Width and height of a bitmap pacman (in pixels). */
+        inline constexpr int kBitmapSize {16};
+
+        /** DO NOT MODIFY : Scale from bitmap to window. */
+        inline constexpr auto kScale {getScale(config::dimensions::kWindowCellSize, kBitmapSize)};
+
+        namespace blinky {
+
+            namespace left {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {38};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {55};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace right {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {4};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {21};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace up {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {72};
+                    inline constexpr int kBitmapPositionY {125};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {89};
+                    inline constexpr int kBitmapPositionY {125};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace down {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {106};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {123};
+                    inline constexpr int kBitmapPositionY {124};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+        }
+
+        namespace pinky {
+
+            namespace left {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {38};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {55};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace right {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {4};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {21};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace up {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {72};
+                    inline constexpr int kBitmapPositionY {143};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {89};
+                    inline constexpr int kBitmapPositionY {143};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace down {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {106};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {123};
+                    inline constexpr int kBitmapPositionY {142};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+        }
+
+        namespace inky {
+
+            namespace left {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {38};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {55};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace right {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {4};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {21};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace up {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {72};
+                    inline constexpr int kBitmapPositionY {161};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {89};
+                    inline constexpr int kBitmapPositionY {161};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace down {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {106};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {123};
+                    inline constexpr int kBitmapPositionY {160};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+        }
+
+        namespace clyde {
+
+            namespace left {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {38};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {55};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace right {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {4};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {21};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace up {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {72};
+                    inline constexpr int kBitmapPositionY {179};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {13};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {89};
+                    inline constexpr int kBitmapPositionY {179};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {2};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace down {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {106};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                namespace sprite_2 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {14};
+                    inline constexpr int kBitmapHeight {14};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {123};
+                    inline constexpr int kBitmapPositionY {178};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {1};
+                    inline constexpr int kBitmapOffsetY {1};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {true};
+
+                /** DO NOT MODIFY : Pacman left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+        }
+
+    }
+
 }
 namespace characters {
 

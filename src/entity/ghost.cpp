@@ -12,13 +12,11 @@
 Ghost::Ghost() = default;
 
 // TODO : update to have dynamic animations
-Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target) :
+Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
+             Animation left, Animation right, Animation up, Animation down) :
     type_(type), target_(std::move(target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
-                 visuals::pacman::left::kAnimation,
-                 visuals::pacman::right::kAnimation,
-                 visuals::pacman::up::kAnimation,
-                 visuals::pacman::down::kAnimation)
+                 std::move(left), std::move(right), std::move(up), std::move(down))
 {}
 
 void Ghost::tick(const Map &map, const SDL_Rect &pacman) {

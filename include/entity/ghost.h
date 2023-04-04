@@ -40,7 +40,8 @@ public:
      * @param position Raw position.
      * @param target The position the ghost is targeting while in scatter mode.
      */
-    Ghost(Ghost::GhostType type, const Position &position, Position target);
+    Ghost(Ghost::GhostType type, const Position &position, Position target,
+          Animation left, Animation right, Animation up, Animation down);
 
     /**
      * @brief Handle the moving entity.
