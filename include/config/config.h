@@ -6,6 +6,7 @@
 #define PACMAN_CONFIG_H
 
 #include <chrono>
+#include <set>
 #include <array>
 
 
@@ -60,14 +61,8 @@ namespace config {
         inline constexpr int kLives {3};
         inline constexpr int kNewLifeAtPoints {10000};
 
-        /** Maximum amount of sprites per fruit animation. */
-        inline constexpr int kFruitsMaximumPerAnimation {2};
-        /** Maximum amount of levels a fruit can appear at. */
-        inline constexpr int kLevelsMaximumPerFruit {2};
-        /** How many times a fruit can appear per level. */
-        inline constexpr int kFruitsPerLevel {2};
         /** After how many eaten pellets does the fruits appear (by level). */
-        inline constexpr std::array<int, kFruitsPerLevel> kFruitsPercentages {30, 70};
+        inline std::set<int> kFruitsPercentages {30, 70};
     }
 
     namespace dimensions {

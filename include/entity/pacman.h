@@ -15,26 +15,16 @@
  * Inherits from the MovingEntity class.
  * @see MovingEntity
 */
-class Pacman : public MovingEntity<
-        visuals::pacman::left::kAnimationSize,
-        visuals::pacman::right::kAnimationSize,
-        visuals::pacman::up::kAnimationSize,
-        visuals::pacman::down::kAnimationSize>
+class Pacman : public MovingEntity
 {
 
 private:
-
-    /**
-     * This is a static constexpr integer used to copy elements from the configuration files,
-     * making it easier to understand and reference in the code.
-     */
-    static constexpr int kAnimationDeathSize {visuals::pacman::death::kAnimationSize};
 
     /** Has died. */
     bool dead_ = false;
 
     /** Animations when has died. */
-    Animation<kAnimationDeathSize> death_{};
+    Animation death_{};
 
 public:
 

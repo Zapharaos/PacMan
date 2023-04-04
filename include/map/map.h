@@ -46,7 +46,7 @@ private:
     Sprite sprite_ {};
 
     /** Animation when level up. */
-    Animation<visuals::map::kAnimationSize> animation_ {};
+    Animation animation_ {};
 
 public:
 

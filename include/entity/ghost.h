@@ -15,11 +15,7 @@
  * Inherits from the MovingEntity class.
  * @see MovingEntity
 */
-class Ghost : public MovingEntity<
-        visuals::pacman::left::kAnimationSize,
-        visuals::pacman::right::kAnimationSize,
-        visuals::pacman::up::kAnimationSize,
-        visuals::pacman::down::kAnimationSize>
+class Ghost : public MovingEntity
 {
 
 public:
