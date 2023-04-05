@@ -26,7 +26,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::blinky::right::kAnimation,
                                visuals::ghosts::blinky::up::kAnimation,
                                visuals::ghosts::blinky::down::kAnimation});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
+    /*ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
                                Position{config::positions::entities::pinky::kDefaultX,
                                         config::positions::entities::pinky::kDefaultY},
                                Position{config::positions::entities::pinky::kTargetX,
@@ -52,7 +52,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::clyde::left::kAnimation,
                                visuals::ghosts::clyde::right::kAnimation,
                                visuals::ghosts::clyde::up::kAnimation,
-                               visuals::ghosts::clyde::down::kAnimation});
+                               visuals::ghosts::clyde::down::kAnimation});*/
 }
 
 void Game::tick(const Direction &direction) {

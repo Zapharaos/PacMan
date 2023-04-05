@@ -24,9 +24,10 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
 
 void Ghost::handleStatusChange() {
 
-    if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase
-        && status_ == GhostStatus::kFrightened) {
-        status_ = GhostStatus::kFrightenedBlinking;
+    if(status_changes_ >= config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    {
+        if(status_ == GhostStatus::kFrightened)
+            status_ = GhostStatus::kFrightenedBlinking;
         return;
     }
 
@@ -45,6 +46,9 @@ void Ghost::handleStatusChange() {
             // TODO : reverse direction when reaches next cell
             if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
                 counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+            break;
+        case GhostStatus::kFrightened:
+            status_ = GhostStatus::kFrightenedBlinking;
             break;
         default: // unreachable
             break;
@@ -66,17 +70,20 @@ void Ghost::tick(const Map &map, const Position &pacman) {
     else
         handleStatusChange();
 
+    // if frightened && atIntersection => randomize direction
+
     // TODO : get direction from pathfinding
     // Direction direction = map_.findPath(status_ == GhostStatus::kChase ? pacman : target_);
-    Direction direction; direction.setDirection(DirectionType::kLeft);
-    MovingEntity::tick(map, direction);
+    MovingEntity::tick(map, Direction::randomize());
 
     animate();
 }
 
 void Ghost::frightened()
 {
-    previous_status_ = status_;
+    if(status_ != GhostStatus::kFrightened && status_ != GhostStatus::kFrightenedBlinking)
+        previous_status_ = status_;
+
     // TODO : reverse direction when reaches next cell
 
     if(status_timers.at(1) == 0)

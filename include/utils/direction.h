@@ -9,6 +9,7 @@
 #define PACMAN_DIRECTION_H
 
 #include <iostream>
+#include <random>
 
 /**
  * @brief Represents the direction something is moving towards to.
@@ -39,6 +40,12 @@ public:
      * @brief Default constructor.
      */
     inline Direction() = default;
+
+    /**
+     * @brief Constructor with direction.
+     * @param direction DirectionType direction.
+     */
+    inline explicit Direction(DirectionType direction) : direction_(direction) {};
 
     /**
      * @brief Indicates if both directions are equal.
@@ -154,6 +161,26 @@ public:
      */
     inline void reset()
     { direction_ = {DirectionType::kUninitialized}; };
+
+    [[nodiscard]] inline static Direction randomize()
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, 3);
+        switch (dis(gen)) {
+            case 0:
+                return static_cast<Direction>(DirectionType::kLeft);
+            case 1:
+                return static_cast<Direction>(DirectionType::kRight);
+            case 2:
+                return static_cast<Direction>(DirectionType::kUp);
+            case 3:
+                return static_cast<Direction>(DirectionType::kDown);
+            default: // unreachable
+                return static_cast<Direction>(DirectionType::kUninitialized);
+        }
+
+    };
 
     /**
      * @brief Prints the direction for debugging purposes.
