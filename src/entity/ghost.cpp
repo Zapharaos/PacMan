@@ -27,16 +27,22 @@ void Ghost::tick(const Map &map, const Position &pacman) {
     // Handle ghost status
     if(counter_.isActive()) {
         counter_.increment();
-    } else {
-        // TODO : Timers
+    } else if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase) {
         switch(status_)
         {
-            case GhostStatus::kStart:
             case GhostStatus::kChase:
+                status_changes_++;
+            // TODO : reverse direction when reaches next cell
+            case GhostStatus::kStart:
                 status_ = GhostStatus::kScatter;
+                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
                 break;
             case GhostStatus::kScatter:
+                status_changes_++;
                 status_ = GhostStatus::kChase;
+                // TODO : reverse direction when reaches next cell
+                if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
+                    counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
                 break;
             case GhostStatus::kFrightened:
                 status_ = GhostStatus::kFrightenedBlinking;
@@ -60,27 +66,23 @@ void Ghost::tick(const Map &map, const Position &pacman) {
         setSprite(frightened_blinking_.animate());
 }
 
-void Ghost::toggleFrightened()
+void Ghost::frightened()
 {
-    switch(status_)
-    {
-        case GhostStatus::kFrightened:
-        case GhostStatus::kFrightenedBlinking:
-            status_ = previous_status_;
-            break;
-        default:
-            previous_status_ = status_;
-            if(true) // TODO : if amount of frames for frightened is not 0
-            {
-                status_ = GhostStatus::kFrightened;
-                setSprite(frightened_.getSprite());
-                counter_.start(60 * 1); // TODO : temp value
-            } else {
-                status_ = GhostStatus::kFrightenedBlinking;
-                setSprite(frightened_blinking_.getSprite());
-            }
-            break;
+    previous_status_ = status_;
+    // TODO : reverse direction when reaches next cell
+    if (status_timers.at(1) != 0) {
+        status_ = GhostStatus::kFrightened;
+        counter_.start(
+                status_timers.at(1) * config::settings::kFramesPerSecond);
+    } else {
+        status_ = GhostStatus::kFrightenedBlinking;
     }
+}
+
+void Ghost::unfrightened()
+{
+    status_ = previous_status_;
+    // TODO : reverse direction when reaches next cell
 }
 
 void Ghost::reset()
@@ -88,4 +90,5 @@ void Ghost::reset()
     MovingEntity::reset();
     status_ = GhostStatus::kStart;
     counter_.stop();
+    status_changes_ = 1;
 }

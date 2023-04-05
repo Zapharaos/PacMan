@@ -51,9 +51,14 @@ public:
     void tick(const Map &map, const Position &pacman);
 
     /**
-     * @brief Toggle the frightened mode.
+     * @brief Start the frightened mode.
      */
-    void toggleFrightened();
+    void frightened();
+
+    /**
+     * @brief Quit the frightened mode.
+     */
+    void unfrightened();
 
     /**
      * @brief Resets the entity object.
@@ -81,6 +86,10 @@ private:
     GhostStatus previous_status_ {};
 
     Counter counter_ {};
+
+    size_t status_changes_ = 1;
+
+    std::array<int, 8> status_timers {5, 7, 20, 7, 20, 5, 20, 5};
 
     Animation frightened_ {};
 

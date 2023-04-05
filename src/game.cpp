@@ -237,7 +237,7 @@ bool Game::handleStatus() {
     {
         status_ = StatusType::kRunning;
         for(auto &ghost : ghosts_)
-            ghost.toggleFrightened();
+            ghost.unfrightened();
     }
 
     // Game is not ready to run yet.
@@ -281,7 +281,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             counter_.start(config::settings::kDurationSuperpower);
             ghosts_eaten = 0;
             for(auto &ghost : ghosts_)
-                ghost.toggleFrightened();
+                ghost.frightened();
         }
     }
 

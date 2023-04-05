@@ -45,7 +45,7 @@ namespace config {
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
         /** Amount of ticks for each status. */
-        inline constexpr int kDurationSuperpower {kFramesPerSecond * 5};
+        inline constexpr int kDurationSuperpower {kFramesPerSecond * 10};
         inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
         inline constexpr int kDurationEatenGhostFreeze {kFramesPerSecond};
@@ -53,6 +53,8 @@ namespace config {
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
         inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
+
+        inline constexpr int kGhostStatusChangesBeforeInfiniteChase {6 + 1};
 
         /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
