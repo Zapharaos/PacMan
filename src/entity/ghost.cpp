@@ -22,67 +22,74 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
 }
 
-void Ghost::tick(const Map &map, const Position &pacman) {
+void Ghost::handleStatusChange() {
 
-    // Handle ghost status
-    if(counter_.isActive()) {
-        counter_.increment();
-    } else if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase) {
-        switch(status_)
-        {
-            case GhostStatus::kChase:
-                status_changes_++;
-            // TODO : reverse direction when reaches next cell
-            case GhostStatus::kStart:
-                status_ = GhostStatus::kScatter;
-                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-                break;
-            case GhostStatus::kScatter:
-                status_changes_++;
-                status_ = GhostStatus::kChase;
-                // TODO : reverse direction when reaches next cell
-                if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
-                    counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-                break;
-            case GhostStatus::kFrightened:
-                status_ = GhostStatus::kFrightenedBlinking;
-                break;
-            case GhostStatus::kFrightenedBlinking:
-                counter_.restart();
-                break;
-            default: // unreachable
-                break;
-        }
+    if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase
+        && status_ == GhostStatus::kFrightened) {
+        status_ = GhostStatus::kFrightenedBlinking;
+        return;
     }
 
-    // TODO : get direction from pathfinding
-//    Direction direction = map_.findPath(status_ == GhostStatus::kChase ? pacman : target_);
-    Direction direction; direction.setDirection(DirectionType::kLeft);
-    MovingEntity::tick(map, direction);
+    switch(status_)
+    {
+        case GhostStatus::kChase:
+            status_changes_++;
+            // TODO : reverse direction when reaches next cell
+        case GhostStatus::kStart:
+            status_ = GhostStatus::kScatter;
+            counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+            break;
+        case GhostStatus::kScatter:
+            status_changes_++;
+            status_ = GhostStatus::kChase;
+            // TODO : reverse direction when reaches next cell
+            if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
+                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+            break;
+        default: // unreachable
+            break;
+    }
+}
 
+void Ghost::animate() {
     if(status_ == GhostStatus::kFrightened)
         setSprite(frightened_.animate());
     else if(status_ == GhostStatus::kFrightenedBlinking)
         setSprite(frightened_blinking_.animate());
 }
 
+void Ghost::tick(const Map &map, const Position &pacman) {
+
+    // Handle ghost status
+    if(counter_.isActive())
+        counter_.increment();
+    else
+        handleStatusChange();
+
+    // TODO : get direction from pathfinding
+    // Direction direction = map_.findPath(status_ == GhostStatus::kChase ? pacman : target_);
+    Direction direction; direction.setDirection(DirectionType::kLeft);
+    MovingEntity::tick(map, direction);
+
+    animate();
+}
+
 void Ghost::frightened()
 {
     previous_status_ = status_;
     // TODO : reverse direction when reaches next cell
-    if (status_timers.at(1) != 0) {
-        status_ = GhostStatus::kFrightened;
-        counter_.start(
-                status_timers.at(1) * config::settings::kFramesPerSecond);
-    } else {
+
+    if(status_timers.at(1) == 0)
         status_ = GhostStatus::kFrightenedBlinking;
+    else {
+        status_ = GhostStatus::kFrightened;
+        counter_.start(status_timers.at(1)*config::settings::kFramesPerSecond);
     }
 }
 
 void Ghost::unfrightened()
 {
     status_ = previous_status_;
-    // TODO : reverse direction when reaches next cell
 }
 
 void Ghost::reset()

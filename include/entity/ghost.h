@@ -94,6 +94,10 @@ private:
     Animation frightened_ {};
 
     Animation frightened_blinking_ {};
+
+    void handleStatusChange();
+
+    void animate();
 };
 
 
