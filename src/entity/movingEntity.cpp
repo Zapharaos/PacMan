@@ -21,6 +21,15 @@ MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
         left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
 
+
+int MovingEntity::getSpeed() const {
+    return speed_;
+}
+
+const Direction &MovingEntity::getPreviousDirection() const {
+    return previous_direction_;
+}
+
 void MovingEntity::tick(const Map &map, Direction direction)
 {
     if(isCounterActive()) {

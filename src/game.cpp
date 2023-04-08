@@ -277,6 +277,10 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             counter_.start(config::settings::kDurationLevelupFreeze);
         } else if (cell->getType() == CellType::kEnergizer) // Superpower.
         {
+            // Freeze pacman.
+            pacman_.freeze();
+            pacman_.count(config::settings::kDurationEatenEnergizerFreeze);
+
             status_ = StatusType::kSuperpower;
             counter_.start(config::settings::kDurationSuperpower);
             ghosts_eaten = 0;

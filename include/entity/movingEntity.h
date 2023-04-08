@@ -84,6 +84,14 @@ public:
     MovingEntity(const Position &position, int speed, Animation left,
                  Animation right, Animation up, Animation down);
 
+    int getSpeed() const;
+
+    /**
+     * @brief Getter for the previous direction.
+     * @return The previous direction.
+     */
+    [[nodiscard]] const Direction &getPreviousDirection() const;
+
     /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.

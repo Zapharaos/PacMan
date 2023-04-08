@@ -156,6 +156,23 @@ public:
         return direction_ != direction.direction_ && !isSameAxis(direction);
     }
 
+    [[nodiscard]] inline Direction reverse() const
+    {
+        switch(direction_)
+        {
+            case DirectionType::kLeft:
+                return Direction{DirectionType::kRight};
+            case DirectionType::kRight:
+                return Direction{DirectionType::kLeft};
+            case DirectionType::kUp:
+                return Direction{DirectionType::kDown};
+            case DirectionType::kDown:
+                return Direction{DirectionType::kUp};
+            default:
+                return Direction{DirectionType::kUninitialized};
+        }
+    }
+
     /**
      * @brief Resets the direction to uninitialized.
      */

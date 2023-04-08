@@ -91,13 +91,17 @@ private:
 
     std::array<int, 8> status_timers {5, 7, 20, 7, 20, 5, 20, 5};
 
+    Direction next_direction_{};
+
     Animation frightened_ {};
 
     Animation frightened_blinking_ {};
 
     void handleStatusChange();
 
-    void animate();
+    Direction getNextDirection(const Map &map);
+
+    bool isFrightened();
 };
 
 

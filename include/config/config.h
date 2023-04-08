@@ -48,6 +48,7 @@ namespace config {
         inline constexpr int kDurationSuperpower {kFramesPerSecond * 10};
         inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
+        inline constexpr int kDurationEatenEnergizerFreeze {3};
         inline constexpr int kDurationEatenGhostFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
