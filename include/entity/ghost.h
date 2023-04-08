@@ -93,6 +93,8 @@ private:
 
     Direction next_direction_{};
 
+    bool direction_reverse_ {false};
+
     Animation frightened_ {};
 
     Animation frightened_blinking_ {};

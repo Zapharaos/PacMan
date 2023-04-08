@@ -79,6 +79,21 @@ const Sprite &Map::getSprite() const
     return sprite_;
 }
 
+std::set<Direction>
+Map::getAvailableDirections(const Position &position, const Direction &direction) const
+{
+    std::set<Direction> directions;
+    for(auto &element : Direction::directions)
+    {
+        Direction element_direction = Direction{element};
+        if(element_direction == direction.reverse()) continue;
+        auto cell = getCell(position.getNeighbor(element_direction));
+        if(cell && !cell->isWall())
+            directions.emplace(element_direction);
+    }
+    return directions;
+}
+
 std::optional<Position>
 Map::turn(const Position &origin, const Position &destination,
                 const Direction &direction,

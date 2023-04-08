@@ -9,6 +9,7 @@
 #define PACMAN_DIRECTION_H
 
 #include <iostream>
+#include <array>
 #include <random>
 
 /**
@@ -36,6 +37,10 @@ private:
 
 public:
 
+    /** List of all legal directions. */
+    static constexpr std::array<DirectionType, 4> directions {
+            DirectionType::kLeft, DirectionType::kRight, DirectionType::kUp, DirectionType::kDown};
+
     /**
      * @brief Default constructor.
      */
@@ -62,6 +67,9 @@ public:
      */
     inline bool operator!=(const Direction &direction) const
     { return !(direction == *this); };
+
+    inline bool operator<(const Direction& other) const
+    { return direction_ < other.direction_; }
 
     /**
      * @brief Updates the direction type.
@@ -178,26 +186,6 @@ public:
      */
     inline void reset()
     { direction_ = {DirectionType::kUninitialized}; };
-
-    [[nodiscard]] inline static Direction randomize()
-    {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(0, 3);
-        switch (dis(gen)) {
-            case 0:
-                return static_cast<Direction>(DirectionType::kLeft);
-            case 1:
-                return static_cast<Direction>(DirectionType::kRight);
-            case 2:
-                return static_cast<Direction>(DirectionType::kUp);
-            case 3:
-                return static_cast<Direction>(DirectionType::kDown);
-            default: // unreachable
-                return static_cast<Direction>(DirectionType::kUninitialized);
-        }
-
-    };
 
     /**
      * @brief Prints the direction for debugging purposes.

@@ -35,7 +35,7 @@ void Ghost::handleStatusChange() {
     {
         case GhostStatus::kChase:
             status_changes_++;
-            next_direction_ = getPreviousDirection().reverse();
+            direction_reverse_ = true;
         case GhostStatus::kStart:
             status_ = GhostStatus::kScatter;
             counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
@@ -43,7 +43,7 @@ void Ghost::handleStatusChange() {
         case GhostStatus::kScatter:
             status_changes_++;
             status_ = GhostStatus::kChase;
-            next_direction_ = getPreviousDirection().reverse();
+            direction_reverse_ = true;
             if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
                 counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
             break;
@@ -57,36 +57,48 @@ void Ghost::handleStatusChange() {
 
 Direction Ghost::getNextDirection(const Map &map)
 {
-    auto current_position = getPosition().getPositionUnscaled(map.getCellSize());
-    auto current_cell = map.getCell(current_position);
-
-    auto next_position = current_position.moveIntoDirection(getPreviousDirection(), getSpeed());
-    auto next_cell = map.getCell(next_position);
+    auto current_unscaled = getPosition();
+    auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
 
     // TODO : temp
-    if(getPreviousDirection().isUninitialized())
-        return Direction::randomize();
+    if(next_direction_.isUninitialized())
+        return (next_direction_ = Direction{DirectionType::kRight});
+
+    auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
+    auto next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
+
+    auto current_cell = map.getCell(current_position);
+    auto next_cell = map.getCell(next_position);
 
     if(current_cell == next_cell)
-        return {};
+        return next_direction_;
 
-    if(!next_direction_.isUninitialized())
+    if(direction_reverse_)
     {
-        Direction direction;
-        direction = next_direction_;
-        next_direction_.reset();
-        return direction;
+        direction_reverse_ = false;
+        return (next_direction_ = next_direction_.reverse());
     }
 
-    return {};
+    auto directions = map.getAvailableDirections(next_position, next_direction_);
 
-    /*
-    else if(atIntersection)
+    if(directions.empty())
     {
-        if(isFrightened())
-            return Direction::randomize();
-//        return map.findPath(status_ == GhostStatus::kChase ? pacman : target_);
-    }*/
+        if(current_cell->isWarp() || next_cell->isWarp())
+            return next_direction_;
+        return (next_direction_ = getPreviousDirection().reverse());
+    }
+
+    if(directions.size() == 1)
+        return (next_direction_ = *(directions.begin()));
+
+    // else : intersection
+
+    if(isFrightened()) // direction_changed_ = true;
+        return (next_direction_ = Direction{getRandomElementFromSet(directions)});
+
+//    return map.findPath(status_ == GhostStatus::kChase ? pacman : target_);
+
+    return next_direction_;
 }
 
 void Ghost::tick(const Map &map, const Position &pacman) {
@@ -116,7 +128,7 @@ void Ghost::frightened()
     if(!isFrightened())
         previous_status_ = status_;
 
-    next_direction_ = getPreviousDirection().reverse();
+    direction_reverse_ = true;
 
     if(status_timers.at(1) == 0)
         status_ = GhostStatus::kFrightenedBlinking;

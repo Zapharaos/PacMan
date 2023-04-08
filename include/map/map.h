@@ -136,6 +136,10 @@ public:
      * @brief Animates the Map sprite with a blinking effect to indicate level up.
      */
     void animate();
+
+    [[nodiscard]] std::set<Direction>
+    getAvailableDirections(const Position &position,
+                           const Direction &direction) const;
 };
 
 
