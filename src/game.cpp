@@ -26,9 +26,9 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::blinky::right::kAnimation,
                                visuals::ghosts::blinky::up::kAnimation,
                                visuals::ghosts::blinky::down::kAnimation});
-    /*ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
-                               Position{config::positions::entities::pinky::kDefaultX,
-                                        config::positions::entities::pinky::kDefaultY},
+    ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
+                               Position{config::positions::entities::blinky::kDefaultX,
+                                        config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::pinky::kTargetX,
                                         config::positions::entities::pinky::kTargetY},
                                visuals::ghosts::pinky::left::kAnimation,
@@ -36,8 +36,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::pinky::up::kAnimation,
                                visuals::ghosts::pinky::down::kAnimation});
     ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky,
-                               Position{config::positions::entities::inky::kDefaultX,
-                                        config::positions::entities::inky::kDefaultY},
+                               Position{config::positions::entities::blinky::kDefaultX,
+                                        config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::inky::kTargetX,
                                         config::positions::entities::inky::kTargetY},
                                visuals::ghosts::inky::left::kAnimation,
@@ -45,14 +45,14 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::inky::up::kAnimation,
                                visuals::ghosts::inky::down::kAnimation});
     ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde,
-                               Position{config::positions::entities::clyde::kDefaultX,
-                                        config::positions::entities::clyde::kDefaultY},
+                               Position{config::positions::entities::blinky::kDefaultX,
+                                        config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::clyde::kTargetX,
                                         config::positions::entities::clyde::kTargetY},
                                visuals::ghosts::clyde::left::kAnimation,
                                visuals::ghosts::clyde::right::kAnimation,
                                visuals::ghosts::clyde::up::kAnimation,
-                               visuals::ghosts::clyde::down::kAnimation});*/
+                               visuals::ghosts::clyde::down::kAnimation});
 }
 
 void Game::tick(const Direction &direction) {
@@ -72,7 +72,7 @@ void Game::tick(const Direction &direction) {
 
         // Move entities.
         pacman_.tick(map_, direction);
-        Position pacman_position {pacman.x, pacman.y};
+        auto pacman_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
         for(auto &ghost : ghosts_)
             ghost.tick(map_, pacman_position);
 

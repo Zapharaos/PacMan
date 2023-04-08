@@ -55,7 +55,7 @@ void Ghost::handleStatusChange() {
     }
 }
 
-Direction Ghost::getNextDirection(const Map &map)
+Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 {
     auto current_unscaled = getPosition();
     auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
@@ -96,7 +96,19 @@ Direction Ghost::getNextDirection(const Map &map)
     if(isFrightened()) // direction_changed_ = true;
         return (next_direction_ = Direction{getRandomElementFromSet(directions)});
 
-//    return map.findPath(status_ == GhostStatus::kChase ? pacman : target_);
+    auto target = status_ == GhostStatus::kChase ? pacman : target_;
+    double min_distance = std::numeric_limits<double>::max();
+
+    for(auto &element : directions)
+    {
+        auto position = next_position.getNeighbor(Direction{element});
+        double distance = target.getDistance(position);
+        if(distance < min_distance)
+        {
+            min_distance = distance;
+            next_direction_ = Direction{element};
+        }
+    }
 
     return next_direction_;
 }
@@ -109,7 +121,7 @@ void Ghost::tick(const Map &map, const Position &pacman) {
     else
         handleStatusChange();
 
-    MovingEntity::tick(map, getNextDirection(map));
+    MovingEntity::tick(map, getNextDirection(map, pacman));
 
     // Override MovingEntity::animate() in special cases.
     if(status_ == GhostStatus::kFrightened)

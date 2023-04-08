@@ -39,6 +39,12 @@ const int &Position::getOrdinate() const
     return position_.second;
 }
 
+double Position::getDistance(const Position& position) const {
+    int dx = position.getAbscissa() - position_.first;
+    int dy = position.getOrdinate() - position_.second;
+    return std::sqrt(dx * dx + dy * dy);
+}
+
 bool Position::isOutOfBounds(int width, int height) const
 {
     return (position_.first < 0 || position_.first >= width ||

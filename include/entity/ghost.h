@@ -101,7 +101,7 @@ private:
 
     void handleStatusChange();
 
-    Direction getNextDirection(const Map &map);
+    Direction getNextDirection(const Map &map, const Position &pacman);
 
     bool isFrightened();
 };

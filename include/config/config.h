@@ -103,7 +103,7 @@ namespace config {
                 inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kWindowWidth};
+                inline constexpr int kTargetX {dimensions::kMapWidth};
                 inline constexpr int kTargetY {0};
             }
 
@@ -123,8 +123,8 @@ namespace config {
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
                 /** Ghost target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kWindowWidth};
-                inline constexpr int kTargetY {dimensions::kWindowHeight};
+                inline constexpr int kTargetX {dimensions::kMapWidth};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
             }
 
             namespace clyde {
@@ -134,7 +134,7 @@ namespace config {
 
                 /** Ghost target (in pixels). */
                 inline constexpr int kTargetX {0};
-                inline constexpr int kTargetY {dimensions::kWindowHeight};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
             }
         }
 

@@ -71,6 +71,13 @@ public:
     [[nodiscard]] const int &getOrdinate() const;
 
     /**
+     * @brief Gets the Euclidean distance between two positions.
+     * @param position The second position.
+     * @return The Euclidean distance between both positions.
+     */
+    [[nodiscard]] double getDistance(const Position& position) const;
+
+    /**
      * @brief Indicates whether the position is out of bounds or not.
      * @param width The width limit of the grid.
      * @param height The height limit of the grid.
