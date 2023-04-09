@@ -59,55 +59,69 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 {
     auto current_unscaled = getPosition();
     auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
-
-    // TODO : temp
-    if(next_direction_.isUninitialized())
-        return (next_direction_ = Direction{DirectionType::kRight});
-
-    auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
-    auto next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
-
     auto current_cell = map.getCell(current_position);
-    auto next_cell = map.getCell(next_position);
 
-    if(current_cell == next_cell)
-        return next_direction_;
+    // default, next = current
+    auto next_position = current_position;
+    auto next_cell = current_cell;
 
-    if(direction_reverse_)
+    Direction reverse = next_direction_.reverse();
+
+    if(!next_direction_.isUninitialized()) // only false at start
     {
-        direction_reverse_ = false;
-        return (next_direction_ = next_direction_.reverse());
+        // effective next cell
+        auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
+        next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
+        next_cell = map.getCell(next_position);
+
+        if(current_cell == next_cell) // ignore : only update on cell change
+            return next_direction_;
+
+        if(direction_reverse_) // reverse
+        {
+            next_position = current_position;
+            next_direction_ = reverse;
+        }
     }
 
     auto directions = map.getAvailableDirections(next_position, next_direction_);
 
-    if(directions.empty())
+    if(directions.empty()) // nothing available
     {
         if(current_cell->isWarp() || next_cell->isWarp())
             return next_direction_;
-        return (next_direction_ = getPreviousDirection().reverse());
+        next_direction_ = reverse;
+    }
+    else if(directions.size() == 1) // one way
+    {
+        next_direction_ = *(directions.begin());
+    }
+    else if(isFrightened()) // intersection : random
+    {
+        next_direction_ = Direction{getRandomElementFromSet(directions)};
+    }
+    else // intersection : pathfinding
+    {
+        // TODO : get pacman target
+        auto target = status_ == GhostStatus::kChase ? pacman : target_;
+        double min_distance = std::numeric_limits<double>::max();
+
+        for(auto &element : directions)
+        {
+            auto position = next_position.getNeighbor(Direction{element});
+            double distance = target.getDistance(position);
+            if(distance < min_distance)
+            {
+                min_distance = distance;
+                next_direction_ = Direction{element};
+            }
+        }
     }
 
-    if(directions.size() == 1)
-        return (next_direction_ = *(directions.begin()));
-
-    // else : intersection
-
-    if(isFrightened()) // direction_changed_ = true;
-        return (next_direction_ = Direction{getRandomElementFromSet(directions)});
-
-    auto target = status_ == GhostStatus::kChase ? pacman : target_;
-    double min_distance = std::numeric_limits<double>::max();
-
-    for(auto &element : directions)
+    if(direction_reverse_) // reverse
     {
-        auto position = next_position.getNeighbor(Direction{element});
-        double distance = target.getDistance(position);
-        if(distance < min_distance)
-        {
-            min_distance = distance;
-            next_direction_ = Direction{element};
-        }
+        direction_reverse_ = false;
+        return reverse;
     }
 
     return next_direction_;
@@ -138,9 +152,10 @@ bool Ghost::isFrightened()
 void Ghost::frightened()
 {
     if(!isFrightened())
+    {
         previous_status_ = status_;
-
-    direction_reverse_ = true;
+        direction_reverse_ = true;
+    }
 
     if(status_timers.at(1) == 0)
         status_ = GhostStatus::kFrightenedBlinking;

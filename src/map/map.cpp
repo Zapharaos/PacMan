@@ -89,7 +89,7 @@ Map::getAvailableDirections(const Position &position, const Direction &direction
         if(element_direction == direction.reverse()) continue;
         auto cell = getCell(position.getNeighbor(element_direction));
         if(cell && !cell->isWall())
-            directions.emplace(element_direction);
+            directions.insert(directions.end(), element_direction);
     }
     return directions;
 }

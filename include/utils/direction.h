@@ -18,10 +18,10 @@
 enum class DirectionType
 {
     kUninitialized, /**< The direction is not initialized. */
-    kLeft, /**< The direction is left. */
-    kRight, /**< The direction is right. */
     kUp, /**< The direction is up. */
-    kDown /**< The direction is down. */
+    kLeft, /**< The direction is left. */
+    kDown, /**< The direction is down. */
+    kRight /**< The direction is right. */
 };
 
 /**
@@ -39,7 +39,7 @@ public:
 
     /** List of all legal directions. */
     static constexpr std::array<DirectionType, 4> directions {
-            DirectionType::kLeft, DirectionType::kRight, DirectionType::kUp, DirectionType::kDown};
+            DirectionType::kUp, DirectionType::kLeft, DirectionType::kDown, DirectionType::kRight};
 
     /**
      * @brief Default constructor.
