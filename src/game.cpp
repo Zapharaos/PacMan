@@ -110,24 +110,6 @@ void Game::display() {
     //Lives
     window_.updateLives(lives_);
 
-    // Pacman
-    if (pacman_.isDead()) // death animation
-        pacman_.animateDeath();
-    if (!pacman_.isHidden())
-        window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
-
-    if (status_ == StatusType::kGameStartAnimate) {
-        window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
-        window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
-    }
-
-
-    // TODO : ghosts
-    for(auto &ghost : ghosts_)
-        if(!ghost.isHidden())
-            window_.draw(ghost, config::dimensions::kScoreBoardHeight);
-
-
     // Pellets
     for (auto &cell: map_.getCellsWithEntities()) {
         auto entity = cell->getEntity();
@@ -150,6 +132,22 @@ void Game::display() {
         // Display entity
         fruit_.animate();
         window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
+    }
+
+    // Ghosts
+    for(auto &ghost : ghosts_)
+        if(!ghost.isHidden())
+            window_.draw(ghost, config::dimensions::kScoreBoardHeight);
+
+    // Pacman
+    if (pacman_.isDead()) // death animation
+        pacman_.animateDeath();
+    if (!pacman_.isHidden())
+        window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
+
+    if (status_ == StatusType::kGameStartAnimate) {
+        window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
+        window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
     }
 
     window_.update();
@@ -195,8 +193,6 @@ bool Game::handleStatus() {
         status_ = StatusType::kGameStartAnimate;
         // Start level up animation.
         counter_.start(config::settings::kDurationGameStartFreeze * 2);
-
-
         return false;
     }
 
@@ -228,8 +224,9 @@ bool Game::handleStatus() {
 
     // Eating ghost animation is over.
     if (status_ == StatusType::kEatingGhost) {
-        status_ = StatusType::kRunning;
         pacman_.show();
+        counter_.loadSave();
+        status_ = counter_.isActive() ? StatusType::kSuperpower : StatusType::kRunning;
         return true;
     }
 
@@ -313,7 +310,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
                 status_ = StatusType::kDeathFreeze;
                 counter_.start(config::settings::kDurationDeathFreeze);
                 // TODO : ghosts status animate
-                continue;
+                break;
             }
 
             // Disables ghost & updates game.
@@ -322,6 +319,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
 
             // Eating animation.
             status_ = StatusType::kEatingGhost;
+            counter_.save();
             counter_.start(config::settings::kDurationEatenGhostFreeze);
             pacman_.hide();
 
