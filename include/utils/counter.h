@@ -112,15 +112,25 @@ public:
 
     /**
      * @brief Loads the saved values as the current ones.
+     * @param Optional : time difference added to the saved counter.
      */
-    inline void loadSave()
+    inline void loadSave(long difference = 0)
     {
         active_ = true;
-        count_ = count_save_ + count_difference_; // Time saved + time elapsed
+        count_ = count_save_ + difference; // Time saved + time difference
         cap_ = cap_save_;
         save_ = false;
         if(count_ >= cap_)
             stop();
+    }
+
+    /**
+     * @brief Loads the saved values as the current ones
+     * (with active time difference, aka time elapsed since the save).
+     */
+    inline void loadSaveWithDifference()
+    {
+        loadSave(count_difference_);
     }
 
 };

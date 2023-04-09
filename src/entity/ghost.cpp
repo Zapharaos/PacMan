@@ -129,6 +129,13 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
 void Ghost::tick(const Map &map, const Position &pacman) {
 
+    if(!isEnabled())
+    {
+        setEnabled(true);
+        MovingEntity::reset();
+        unfrightened();
+    }
+
     // Handle ghost status
     if(counter_.isActive())
         counter_.increment();
@@ -161,12 +168,15 @@ void Ghost::frightened()
         status_ = GhostStatus::kFrightenedBlinking;
     else {
         status_ = GhostStatus::kFrightened;
-        counter_.start(status_timers.at(1)*config::settings::kFramesPerSecond);
+        counter_.save();
+        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
     }
 }
 
 void Ghost::unfrightened()
 {
+    if(status_ == GhostStatus::kFrightened && counter_.isActive())
+        counter_.loadSave();
     status_ = previous_status_;
 }
 
