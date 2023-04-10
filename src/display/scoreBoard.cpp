@@ -50,7 +50,7 @@ void
 ScoreBoard::updateFruits(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture) {
 
     SDL_Rect position;
-    position.x = config::positions::kScoreBoardFruitsX;
+    position.x = config::positions::kScoreBoardFruitsX ;
     position.y = config::positions::kScoreBoardFruitsY;
     position.w = visuals::fruit::cherry::sprite_1::kBitmapWidth * visuals::fruit::kScale;
     position.h = visuals::fruit::cherry::sprite_1::kBitmapHeight * visuals::fruit::kScale;;
@@ -58,7 +58,7 @@ ScoreBoard::updateFruits(const std::shared_ptr<SDL_Renderer> &render, const std:
 
     for (SDL_Rect s: fruit_queue_) {
         drawObject(render, texture, s, position, 1);
-        position.x += offset;
+        position.x -= offset;
     }
 }
 

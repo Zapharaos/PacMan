@@ -35,8 +35,17 @@ void Window::init() {
 
     renderer_ = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
 
-    texture_ = std::shared_ptr<SDL_Texture> (SDL_CreateTextureFromSurface(renderer_.get(), SDL_LoadBMP(config::files::kBitmap)),
+    std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
+
+    //surface_.get() = SDL_LoadBMP(config::files::kBitmap) ;
+    surface_ = std::shared_ptr<SDL_Surface>(SDL_LoadBMP((config::files::kBitmap) ));
+    Uint32 black = SDL_MapRGB(surface_->format, 0, 0, 0); // Get the pixel value for black
+    SDL_SetColorKey(surface_.get(), SDL_TRUE, black); // Set black as the transparent color
+
+    texture_ = std::shared_ptr<SDL_Texture> (SDL_CreateTextureFromSurface(renderer_.get(), surface_.get()),
                                         SDL_DestroyTexture);
+    // Set the blend mode to blend the texture with the background
+    SDL_SetTextureBlendMode(texture_.get(), SDL_BLENDMODE_BLEND);
 }
 
 void Window::clear() {
@@ -167,18 +176,32 @@ void Window::initSpriteMap() {
 }
 
 
-void Window::writeScorePoints(unsigned long points, int pos_x, int pos_y, float scale) {
+void Window::writeScorePoints(unsigned long points, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour) {
     std::vector<SDL_Rect> points_to_print = score_board_.getPointsToPrint(points, character_map_);
+
     SDL_Rect position = points_to_print[0];
-    position.x = pos_x;
+    position.x = pos_x - (points_to_print.size() * characters::numbers::kBitmapWidth * scale );
     position.y = pos_y;
     position.w = characters::numbers::kBitmapWidth * scale;
     position.h = characters::numbers::kBitmapWidth * scale;
 
+    if (colour!=colours::kWhite){
+        SDL_SetTextureColorMod(texture_.get(),
+                               std::get<0>(colour),
+                               std::get<1>(colour),
+                               std::get<2>(colour));
+    }
+
     int offset = characters::numbers::kBitmapWidth  * scale;
     for (SDL_Rect s: points_to_print) {
         drawObject(renderer_, texture_, s, position, 1);
-        position.x += offset + 5;
+        position.x += offset + 5  ;
+    }
+    if (colour!=colours::kWhite){
+        SDL_SetTextureColorMod(texture_.get(),
+                               std::get<0>(colours::kWhite),
+                               std::get<1>(colours::kWhite),
+                               std::get<2>(colours::kWhite));
     }
 }
 
