@@ -133,6 +133,7 @@ void Ghost::tick(const Map &map, const Position &pacman) {
         setEnabled(true);
         MovingEntity::reset();
         unfrightened();
+        next_direction_.reset();
     }
 
     // Handle ghost status
