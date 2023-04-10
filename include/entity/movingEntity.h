@@ -95,7 +95,7 @@ public:
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
      */
-    virtual void tick(const Map &map, Direction direction);
+    void tick(const Map &map, Direction direction);
 
     /**
      * @brief Handle the status.

@@ -94,6 +94,11 @@ void Entity::show()
     status_ = EntityStatus::kVisible;
 }
 
+void Entity::kill()
+{
+    status_ = EntityStatus::kDead;
+}
+
 void Entity::freeze()
 {
     status_ = EntityStatus::kFrozen;
@@ -108,6 +113,12 @@ bool Entity::isHidden()
 {
     return status_ == EntityStatus::kHidden;
 }
+
+bool Entity::isDead()
+{
+    return status_ == EntityStatus::kDead;
+}
+
 
 void Entity::print() const
 {
