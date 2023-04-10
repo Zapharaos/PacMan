@@ -53,6 +53,7 @@ void Ghost::unfrightened()
     if(status_ == GhostStatus::kFrightened && counter_.isActive())
         counter_.loadSave();
     status_ = previous_status_;
+    next_direction_.reset();
 }
 
 void Ghost::reset()
@@ -76,7 +77,6 @@ void Ghost::handleStatus()
         setEnabled(true);
         MovingEntity::reset();
         unfrightened();
-        next_direction_.reset();
     }
 
     // Handle ghost status.
