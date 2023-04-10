@@ -67,7 +67,7 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = map.calculateDestination(origin, previous_direction_, tunnel_slow_, speed_);
+    Position destination = map.calculateDestination(origin, previous_direction_, tunnel_slow_, isDead() ? speed_*2 : speed_);
 
     // Direction change.
     if(direction.isTurn(previous_direction_))

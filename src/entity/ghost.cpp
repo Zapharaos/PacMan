@@ -19,6 +19,10 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position scatter_t
 {
     frightened_ = visuals::ghosts::frightened::kAnimation;
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
+    dead_left_ = visuals::ghosts::dead::left::kAnimation;
+    dead_right_ = visuals::ghosts::dead::right::kAnimation;
+    dead_up_ = visuals::ghosts::dead::up::kAnimation;
+    dead_down_ = visuals::ghosts::dead::down::kAnimation;
 }
 
 void Ghost::tick(const Map &map, const Position &pacman) {
@@ -31,7 +35,7 @@ void Ghost::tick(const Map &map, const Position &pacman) {
 
 void Ghost::frightened()
 {
-    if(status_ == GhostStatus::kDead || status_ == GhostStatus::kHouse)
+    if(isDead() || status_ == GhostStatus::kHouse)
         return;
 
     if(!isFrightened())
@@ -89,7 +93,7 @@ void Ghost::handleStatusChange() {
 
     if(!isEnabled())
     {
-        if(status_ == GhostStatus::kDead) // Death.
+        if(isDead()) // Death.
         {
             if (getPosition() == house_target_)
             {
@@ -144,8 +148,19 @@ void Ghost::animate(const Direction &direction)
         setSprite(frightened_.animate());
     else if(status_ == GhostStatus::kFrightenedBlinking)
         setSprite(frightened_blinking_.animate());
-    else
+    else if(!isDead())
         MovingEntity::animate(direction);
+    else
+    {
+        if(direction.isLeft())
+            setSprite(dead_left_.animate());
+        else if(direction.isRight())
+            setSprite(dead_right_.animate());
+        else if(direction.isUp())
+            setSprite(dead_up_.animate());
+        else if(direction.isDown())
+            setSprite(dead_down_.animate());
+    }
 }
 
 Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
@@ -163,7 +178,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     if(!next_direction_.isUninitialized()) // only false at start or reset
     {
         // effective next cell
-        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), getSpeed());
+        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), isDead() ? getSpeed()*2 : getSpeed());
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 

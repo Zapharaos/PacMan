@@ -133,6 +133,18 @@ private:
     /** Animations when moving frightened + blinking. */
     Animation frightened_blinking_ {};
 
+    /** Animations when dead and moving towards the left. */
+    Animation dead_left_{};
+
+    /** Animations when dead and moving towards the right. */
+    Animation dead_right_{};
+
+    /** Animations when dead and moving towards the top. */
+    Animation dead_up_{};
+
+    /** Animations when dead and moving towards the bottom. */
+    Animation dead_down_{};
+
     /**
      * @brief Checks whether or not the Ghost is currently in frightened mode.
      * @return True if the Ghost is frightened, false otherwise.
