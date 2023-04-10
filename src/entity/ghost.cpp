@@ -11,7 +11,6 @@
 
 Ghost::Ghost() = default;
 
-// TODO : update to have dynamic animations
 Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
              Animation left, Animation right, Animation up, Animation down) :
     type_(type), target_(std::move(target)),
