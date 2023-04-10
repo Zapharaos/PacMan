@@ -175,6 +175,8 @@ void Ghost::frightened()
 
 void Ghost::unfrightened()
 {
+    if(!isFrightened())
+        return;
     if(status_ == GhostStatus::kFrightened && counter_.isActive())
         counter_.loadSave();
     status_ = previous_status_;
@@ -186,4 +188,5 @@ void Ghost::reset()
     status_ = GhostStatus::kStart;
     counter_.stop();
     status_changes_ = 1;
+    next_direction_.reset();
 }
