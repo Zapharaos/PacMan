@@ -40,7 +40,10 @@ void Fruit::update(int pellets_eaten, int level)
 void Fruit::tick()
 {
     if(isCounterActive())
+    {
         counterIncrement();
+        animate();
+    }
     else if (isEnabled())
         setEnabled(false);
 }

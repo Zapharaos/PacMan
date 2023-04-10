@@ -70,6 +70,8 @@ void Game::tick(const Direction &direction) {
         // Get pacman sprite position.
         auto pacman = pacman_.getSprite().getPosition();
 
+        fruit_.tick();
+
         // Move entities.
         pacman_.tick(map_, direction);
         auto pacman_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
@@ -124,9 +126,8 @@ void Game::display() {
     // Fruit
     if (fruit_.isEnabled()) {
         // Display entity
-        fruit_.animate();
         window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
-    }else if (fruit_.isCounterActive()) {
+    } else if (fruit_.isCounterActive()) {
         fruit_.counterIncrement();
         //TODO better way to center
         if (fruit_.getPoints() >= 1000) {
@@ -300,7 +301,6 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             fruit_.count(config::settings::kDurationFruitPoints);
             score_ += fruit_.getPoints();
         }
-        fruit_.tick();
     }
 
     for (auto &ghost: ghosts_) {
