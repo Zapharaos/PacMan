@@ -25,7 +25,8 @@ Map::Map(const std::vector<CellType> &cell_types)
             auto type = cell_types[x + width_ * y];
 
             // Not a pellet and not an energizer => trivial.
-            if (type != CellType::kPellet && type != CellType::kEnergizer)
+            if (type != CellType::kPellet && type != CellType::kEnergizer
+                    && type != CellType::kGhostNoTurnAndPellet)
             {
                 cells_.emplace_back(std::make_shared<Cell>(
                         Cell{position, cell_size_, type, nullptr}));
@@ -35,7 +36,7 @@ Map::Map(const std::vector<CellType> &cell_types)
             Position coordinates{{x * cell_size_, y * cell_size_}};
             std::shared_ptr<Entity> entity;
 
-            if (type == CellType::kPellet)
+            if (type == CellType::kPellet || type == CellType::kGhostNoTurnAndPellet)
             {
                 entity = std::make_shared<Entity>(
                         Entity{coordinates, visuals::pellet::kSprite, true,

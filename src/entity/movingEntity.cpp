@@ -26,30 +26,35 @@ int MovingEntity::getSpeed() const {
     return speed_;
 }
 
-const Direction &MovingEntity::getPreviousDirection() const {
-    return previous_direction_;
-}
-
 void MovingEntity::tick(const Map &map, Direction direction)
 {
-    if(isCounterActive()) {
+    handleStatus();
+
+    if(move(map, direction)) // Move legal.
+        animate(previous_direction_);
+}
+
+void MovingEntity::handleStatus()
+{
+    // Changes ongoing.
+    if(isCounterActive())
+    {
         counterIncrement();
         return;
     }
 
-    // Reset status
+    // Reset status.
     if(!isVisible()) show();
-
-    move(map, direction);
 }
 
-void MovingEntity::move(const Map &map, Direction direction)
+bool MovingEntity::move(const Map &map, Direction direction)
 {
 
     // Direction must be initialized.
     if (direction.isUninitialized())
     {
-        if(previous_direction_.isUninitialized()) return;
+        if(previous_direction_.isUninitialized()) // No available movement.
+            return false;
         direction = previous_direction_; // Repeat previous movement.
     }
 
@@ -82,13 +87,13 @@ void MovingEntity::move(const Map &map, Direction direction)
     {
         position = map.move(origin, destination, direction);
         if (!position)
-            return; // Move is illegal.
+            return false; // Move is illegal.
     }
 
     // Move is legal : updates the entity.
-    animate(direction);
     setPosition(position.value());
     previous_direction_ = direction;
+    return true;
 }
 
 void MovingEntity::animate(const Direction &direction)

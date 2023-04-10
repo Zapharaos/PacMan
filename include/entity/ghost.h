@@ -99,11 +99,15 @@ private:
 
     Animation frightened_blinking_ {};
 
+    bool isFrightened();
+
+    void handleStatus() override;
+
     void handleStatusChange();
 
-    Direction getNextDirection(const Map &map, const Position &pacman);
+    void animate(const Direction &direction) override;
 
-    bool isFrightened();
+    Direction getNextDirection(const Map &map, const Position &pacman);
 };
 
 

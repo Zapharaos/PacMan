@@ -84,13 +84,11 @@ public:
     MovingEntity(const Position &position, int speed, Animation left,
                  Animation right, Animation up, Animation down);
 
-    int getSpeed() const;
-
     /**
-     * @brief Getter for the previous direction.
-     * @return The previous direction.
+     * @brief Getter for the speed.
+     * @return The speed per tick at which the entity is moving.
      */
-    [[nodiscard]] const Direction &getPreviousDirection() const;
+    [[nodiscard]] int getSpeed() const;
 
     /**
      * @brief Handle the moving entity.
@@ -100,11 +98,17 @@ public:
     virtual void tick(const Map &map, Direction direction);
 
     /**
+     * @brief Handle the status.
+     */
+    virtual void handleStatus();
+
+    /**
      * @brief Moves the entity in the given direction if it is a legal move.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
+     * @return True if the move is legal, otherwise false.
      */
-    void move(const Map &map, Direction direction);
+    bool move(const Map &map, Direction direction);
 
     /**
      * @brief Switches between sprites depending on the direction of the current move.
@@ -112,7 +116,7 @@ public:
      * Uses the Animation::animate() method to switch between the different animations.
      * @param direction The direction of the current move.
      */
-    void animate(const Direction &direction);
+    virtual void animate(const Direction &direction);
 
     /**
      * @brief Resets the entity to the given coordinates.

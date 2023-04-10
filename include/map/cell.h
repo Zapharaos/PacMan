@@ -26,7 +26,10 @@ enum class CellType
     kEnergizer, /* Energizer type cell */
     kPath, /* Path type cell */
     kWarp, /* Warp type cell */
-    kDoor /* Door type cell */
+    kTunnel, /* Tunnel type cell */
+    kGhostHouseDoor, /* Ghost house door type cell */
+    kGhostNoTurn, /* Ghost no turn type cell */
+    kGhostNoTurnAndPellet /* Pellet & Ghost no turn type cell */
 };
 
 /**
