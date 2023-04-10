@@ -154,10 +154,6 @@ public:
      */
     [[nodiscard]] Position getOpposite(int width, int height) const;
 
-    /**
-     * @brief Prints the position for debugging purposes.
-     */
-    void print() const;
 };
 
 

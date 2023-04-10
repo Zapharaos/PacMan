@@ -118,10 +118,3 @@ bool Entity::isDead()
 {
     return status_ == EntityStatus::kDead;
 }
-
-
-void Entity::print() const
-{
-    position_.print();
-    std::cout << "points: " << points_ << ", enabled: " << enabled_ << std::endl;
-}

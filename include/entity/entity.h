@@ -194,11 +194,6 @@ public:
      */
     bool tickVisibility();
 
-    /**
-     * @brief Prints entity's members for debugging purposes.
-     */
-    void print() const;
-
 };
 
 #endif //PEC_MEN_ENTITY_H

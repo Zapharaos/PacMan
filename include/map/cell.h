@@ -141,18 +141,6 @@ public:
     [[nodiscard]] Position getPositionScaled() const
     { return position_.getPositionScaled(size_); };
 
-    /**
-     * @brief Prints the cell's members.
-     * @details This function is intended for debugging purposes.
-     */
-    void print() const
-    {
-        position_.print();
-        position_.getPositionScaled(size_).print();
-        std::cout << static_cast<std::underlying_type<CellType>::type>(type_) << std::endl;
-        if(entity_)
-            entity_->print();
-    };
 };
 
 
