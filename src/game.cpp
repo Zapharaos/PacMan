@@ -152,8 +152,10 @@ void Game::display() {
         window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
 
     if (status_ == StatusType::kGameStartAnimate) {
-        window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
         window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
+        if (counter_.getCount() <= config::settings::kDurationGameStartFreeze && counter_.isActive()) {
+            window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
+        }
     }
 
     window_.update();
@@ -176,8 +178,13 @@ bool Game::handleStatus() {
         if (status_ == StatusType::kGameStartAnimate) {
             if (counter_.getCount() >= config::settings::kDurationGameStartFreeze) {
                 pacman_.show();
+                for(auto &ghost : ghosts_)
+                    ghost.show();
             } else {
                 pacman_.hide();
+                for(auto &ghost : ghosts_)
+                    ghost.hide();
+
             }
         }
 
