@@ -50,7 +50,7 @@ void MovingEntity::handleStatus()
     }
 
     // Reset status : show entity.
-    if(!isVisible()) show();
+    if(isHidden()) show();
 }
 
 bool MovingEntity::move(const Map &map, Direction direction)

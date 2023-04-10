@@ -13,7 +13,7 @@ Ghost::Ghost() = default;
 
 Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
              Animation left, Animation right, Animation up, Animation down) :
-    type_(type), target_(std::move(target)),
+    type_(type), scatter_target_(std::move(target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
@@ -72,13 +72,6 @@ bool Ghost::isFrightened()
 
 void Ghost::handleStatus()
 {
-    if(!isEnabled()) // Death.
-    {
-        setEnabled(true);
-        MovingEntity::reset();
-        unfrightened();
-    }
-
     // Handle ghost status.
     if(counter_.isActive())
         counter_.increment();
@@ -91,12 +84,35 @@ void Ghost::handleStatus()
 
 void Ghost::handleStatusChange() {
 
-    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    if(!isEnabled())
     {
-        if(status_ == GhostStatus::kFrightened)
-            status_ = GhostStatus::kFrightenedBlinking;
+        if(status_ == GhostStatus::kDead) // Death.
+        {
+            if (getPosition() == house_target_)
+            {
+                status_ = GhostStatus::kHouse;
+                next_direction_.reset();
+                show();
+            }
+        }
+        else if(status_ == GhostStatus::kHouse)// Ghost house.
+        {
+            setEnabled(true);
+            counter_.loadSave();
+            status_ = previous_status_;
+            next_direction_.reset();
+        }
         return;
     }
+
+    if (status_ == GhostStatus::kFrightened)
+    {
+        status_ = GhostStatus::kFrightenedBlinking;
+        return;
+    }
+
+    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
+        return;
 
     switch(status_)
     {
@@ -106,19 +122,16 @@ void Ghost::handleStatusChange() {
         case GhostStatus::kStart:
             status_ = GhostStatus::kScatter;
             counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            break;
+            return;
         case GhostStatus::kScatter:
             status_changes_++;
             status_ = GhostStatus::kChase;
             direction_reverse_ = true;
             if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
                 counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            break;
-        case GhostStatus::kFrightened:
-            status_ = GhostStatus::kFrightenedBlinking;
-            break;
+            return;
         default: // unreachable
-            break;
+            return;
     }
 }
 
@@ -164,7 +177,10 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
     bool forbid_ghost_vertical = false;
 
-    if(!isFrightened())
+    if(status_ == GhostStatus::kDead)
+        forbid_ghost_vertical = false;
+
+    if(!isFrightened() && status_ != GhostStatus::kDead)
         forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
     auto directions = map.getAvailableDirections(next_position, next_direction_, forbid_ghost_vertical);
 
@@ -184,8 +200,20 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     }
     else // intersection : pathfinding
     {
-        // TODO : get pacman target
-        auto target = status_ == GhostStatus::kChase ? pacman : target_;
+        Position target;
+        switch(status_)
+        {
+            case GhostStatus::kChase:
+                target = pacman; // TODO : get pacman target per ghost
+                break;
+            case GhostStatus::kScatter:
+                target = scatter_target_;
+                break;
+            case GhostStatus::kDead:
+            default:
+                target = house_target_;
+                break;
+        }
         double min_distance = std::numeric_limits<double>::max();
 
         for(auto &element : directions)
@@ -207,4 +235,16 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     }
 
     return next_direction_;
+}
+
+void Ghost::kill() {
+    if(!isFrightened())
+    {
+        previous_status_ = status_;
+        counter_.save();
+    }
+    status_ = GhostStatus::kDead;
+    counter_.stop();
+    next_direction_.reset();
+    Entity::kill();
 }

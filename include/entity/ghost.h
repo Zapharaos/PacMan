@@ -72,6 +72,11 @@ public:
      */
     void reset() override;
 
+    /**
+     * @brief Kill entity.
+     */
+    void kill() override;
+
 private:
 
     /** The type of ghost. */
@@ -83,7 +88,9 @@ private:
         kChase,
         kScatter,
         kFrightened,
-        kFrightenedBlinking
+        kFrightenedBlinking,
+        kDead,
+        kHouse
     };
 
     /** The current status. */
@@ -108,7 +115,10 @@ private:
     Counter counter_ {};
 
     /** The position the Ghost is targeting while in scatter mode. */
-    Position target_ {};
+    Position scatter_target_ {};
+
+    /** The position the Ghost is returning to when killed. */
+    Position house_target_ {config::positions::entities::kGhostHouseX, config::positions::entities::kGhostHouseY};
 
     /** The direction the Ghost will take when he reach the next cell. */
     Direction next_direction_{};

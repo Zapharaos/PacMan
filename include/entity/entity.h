@@ -163,7 +163,7 @@ public:
     /**
      * @brief Kill entity.
      */
-    void kill();
+    virtual void kill();
 
     /**
      * @brief Freeze entity.

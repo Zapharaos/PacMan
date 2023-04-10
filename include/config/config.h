@@ -100,6 +100,10 @@ namespace config {
             inline constexpr int kFruitPointsX{350};
             inline constexpr int kFruitPointsY{490};
 
+            /** Ghost target (in pixels). */
+            inline constexpr int kGhostHouseX {10};
+            inline constexpr int kGhostHouseY {12};
+
             namespace blinky {
                 /** Ghost default/starting (in pixels). */
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};

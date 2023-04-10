@@ -21,6 +21,9 @@ Map::Map(const std::vector<CellType> &cell_types) {
             Position position{{x, y}};
             auto type = cell_types[x + width_ * y];
 
+            if(type == CellType::kGhostOnlyHorizontalAndPellet || type == CellType::kGhostOnlyHorizontal)
+                type = type;
+
             // Not a pellet and not an energizer => trivial.
             if (type != CellType::kPellet && type != CellType::kEnergizer
                 && type != CellType::kGhostOnlyHorizontalAndPellet) {
