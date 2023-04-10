@@ -109,14 +109,15 @@ public:
      * @return true if not enabled, false otherwise.
      */
     [[nodiscard]] inline bool isTunnel() const
-    { return type_ == CellType::kWarp || type_ == CellType::kTunnel; };
+    { return isWarp() || type_ == CellType::kTunnel; };
 
     /**
      * @brief Check if the cell is forbids the ghost to turn into vertical direction.
      * @return true if not enabled, false otherwise.
      */
     [[nodiscard]] inline bool isGhostHorizontal() const
-    { return type_ == CellType::kGhostOnlyHorizontal || type_ == CellType::kGhostOnlyHorizontalAndPellet; };
+    { return type_ == CellType::kGhostOnlyHorizontal ||
+             type_ == CellType::kGhostOnlyHorizontalAndPellet; };
 
     /**
      * @brief Getter for the type of cell.

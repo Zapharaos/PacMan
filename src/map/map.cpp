@@ -71,23 +71,6 @@ const Sprite &Map::getSprite() const {
     return sprite_;
 }
 
-std::set<Direction>
-Map::getAvailableDirections(const Position &position,
-                            const Direction &direction,
-                            bool forbid_ghost_vertical) const {
-    std::set<Direction> directions;
-    for (auto &element: Direction::directions) {
-        Direction element_direction = Direction{element};
-        if (element_direction == direction.reverse())
-            continue;
-        auto cell = getCell(position.getNeighbor(element_direction));
-        if (!cell || cell->isWall() || (forbid_ghost_vertical && !element_direction.isHorizontal()))
-            continue;
-        directions.insert(directions.end(), element_direction);
-    }
-    return directions;
-}
-
 std::optional<Position>
 Map::turn(const Position &origin, const Position &destination,
           const Direction &direction,
@@ -192,4 +175,29 @@ void Map::reset() const {
 
 void Map::animate() {
     sprite_ = animation_.animate();
+}
+
+std::set<Direction>
+Map::getAvailableDirections(const Position &position, const Direction &direction,
+                            bool forbid_ghost_vertical) const {
+    std::set<Direction> directions;
+    for (auto &element: Direction::directions) {
+        Direction element_direction = Direction{element};
+        if (element_direction == direction.reverse()) // Instant reverse not allowed
+            continue;
+        auto cell = getCell(position.getNeighbor(element_direction));
+        // Cell not reachable or special zone where ghosts only move horizontally
+        if (!cell || cell->isWall() || (forbid_ghost_vertical && !element_direction.isHorizontal()))
+            continue;
+        directions.insert(directions.end(), element_direction);
+    }
+    return directions;
+}
+
+
+Position Map::calculateDestination(const Position &origin, const Direction &direction, bool tunnel_slow, int speed) const
+{
+    auto cell = getCell(origin.getPositionUnscaled(cell_size_));
+    speed = tunnel_slow && cell && cell->isTunnel() ? speed/2 : speed;
+    return origin.moveIntoDirection(direction, speed);
 }

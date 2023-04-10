@@ -12,8 +12,7 @@
 
 /**
  * @brief The Pacman entity.
- * Inherits from the MovingEntity class.
- * @see MovingEntity
+ * @extends MovingEntity
 */
 class Pacman : public MovingEntity
 {

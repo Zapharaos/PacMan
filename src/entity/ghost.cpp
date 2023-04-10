@@ -145,10 +145,10 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
     Direction reverse = next_direction_.reverse();
 
-    if(!next_direction_.isUninitialized()) // only false at start
+    if(!next_direction_.isUninitialized()) // only false at start or reset
     {
         // effective next cell
-        auto next_unscaled = calculateDestination(map, current_unscaled, next_direction_);
+        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), getSpeed());
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 
@@ -163,9 +163,6 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     }
 
     bool forbid_ghost_vertical = false;
-
-    if(current_position.getAbscissa() == 9 && current_position.getOrdinate() == 20)
-        forbid_ghost_vertical = false;
 
     if(!isFrightened())
         forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();

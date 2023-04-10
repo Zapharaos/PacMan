@@ -14,7 +14,7 @@ MovingEntity::MovingEntity(const Position &position, bool enabled, int points, i
         Entity(position, left.getSprite(), enabled, points), start_(position), speed_(speed),
         left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {
-    tunnel_slow_ = true;
+    tunnel_slow_ = true; // Ghosts are slowed down inside tunnels.
 }
 
 MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
@@ -23,11 +23,20 @@ MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
         left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
 
+int MovingEntity::getSpeed() const {
+    return speed_;
+}
+
+bool MovingEntity::isTunnelSlow() const {
+    return tunnel_slow_;
+}
+
 void MovingEntity::tick(const Map &map, Direction direction)
 {
+    // Handle status.
     handleStatus();
 
-    if(move(map, direction)) // Move legal.
+    if(move(map, direction)) // Move legal => animate.
         animate(previous_direction_);
 }
 
@@ -40,7 +49,7 @@ void MovingEntity::handleStatus()
         return;
     }
 
-    // Reset status.
+    // Reset status : show entity.
     if(!isVisible()) show();
 }
 
@@ -58,7 +67,7 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = calculateDestination(map, origin, previous_direction_);
+    Position destination = map.calculateDestination(origin, previous_direction_, tunnel_slow_, speed_);
 
     // Direction change.
     if(direction.isTurn(previous_direction_))
@@ -104,12 +113,6 @@ void MovingEntity::animate(const Direction &direction)
         setSprite(up_.animate(restart));
     else if (direction.isDown())
         setSprite(down_.animate(restart));
-}
-
-Position MovingEntity::calculateDestination(const Map &map, const Position &origin, const Direction &direction) const
-{
-    auto cell = map.getCell(origin.getPositionUnscaled(map.getCellSize()));
-    return origin.moveIntoDirection(direction, tunnel_slow_ && cell && cell->isTunnel() ? speed_/2 : speed_);
 }
 
 void MovingEntity::reset()
