@@ -148,7 +148,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     if(!next_direction_.isUninitialized()) // only false at start
     {
         // effective next cell
-        auto next_unscaled = getDestination(current_unscaled, next_direction_);
+        auto next_unscaled = calculateDestination(map, current_unscaled, next_direction_);
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 

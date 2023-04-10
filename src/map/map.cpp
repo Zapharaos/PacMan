@@ -78,7 +78,8 @@ Map::getAvailableDirections(const Position &position,
     std::set<Direction> directions;
     for (auto &element: Direction::directions) {
         Direction element_direction = Direction{element};
-        if (element_direction == direction.reverse()) continue;
+        if (element_direction == direction.reverse())
+            continue;
         auto cell = getCell(position.getNeighbor(element_direction));
         if (!cell || cell->isWall() || (forbid_ghost_vertical && !element_direction.isHorizontal()))
             continue;
@@ -118,7 +119,7 @@ Map::turn(const Position &origin, const Position &destination,
                     origin.getSingleAxisDistance(edge);
 
     // Move into new direction
-    return move(edge, edge.moveIntoDirection(turn, distance, false), turn);
+    return move(edge, edge.moveIntoDirection(turn, distance), turn);
 }
 
 std::optional<Position>

@@ -132,10 +132,9 @@ public:
     /**
      * @brief Moves the position a certain distance into a direction.
      * @param direction The direction of the movement.
-     * @param distance The distance of the movement.
      * @return Copy of the original object with its position moved.
      */
-    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance, bool slow) const;
+    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
 
     /**
      * @brief Shifts the position by a certain amount.

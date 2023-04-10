@@ -119,7 +119,7 @@ public:
      */
     virtual void reset();
 
-    [[nodiscard]] Position getDestination(Position origin, Direction direction) const;
+    [[nodiscard]] Position calculateDestination(const Map &map, const Position &origin, const Direction &direction) const;
 };
 
 

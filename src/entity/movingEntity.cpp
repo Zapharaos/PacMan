@@ -58,7 +58,7 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = getDestination(origin, previous_direction_);
+    Position destination = calculateDestination(map, origin, previous_direction_);
 
     // Direction change.
     if(direction.isTurn(previous_direction_))
@@ -106,9 +106,10 @@ void MovingEntity::animate(const Direction &direction)
         setSprite(down_.animate(restart));
 }
 
-Position MovingEntity::getDestination(Position origin, Direction direction) const
+Position MovingEntity::calculateDestination(const Map &map, const Position &origin, const Direction &direction) const
 {
-    return origin.moveIntoDirection(direction, speed_, tunnel_slow_);
+    auto cell = map.getCell(origin.getPositionUnscaled(map.getCellSize()));
+    return origin.moveIntoDirection(direction, tunnel_slow_ && cell && cell->isTunnel() ? speed_/2 : speed_);
 }
 
 void MovingEntity::reset()
