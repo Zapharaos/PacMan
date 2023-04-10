@@ -32,6 +32,7 @@ private:
     enum class EntityStatus {
         kVisible, /* Entity is visible. */
         kHidden, /* Entity is hidden. */
+        kDead, /* Entity is dead. */
         kFrozen /* Entity is frozen. */
     };
 
@@ -160,6 +161,11 @@ public:
     void show();
 
     /**
+     * @brief Kill entity.
+     */
+    void kill();
+
+    /**
      * @brief Freeze entity.
      */
     void freeze();
@@ -177,15 +183,16 @@ public:
     bool isHidden();
 
     /**
+     * @brief Indicates if the entity is dead.
+     * @return bool True if dead, else false.
+     */
+    bool isDead();
+
+    /**
      * @brief Toggles the entity status and its visibility according to the counter member.
      * @return bool True if visible, false if hidden.
      */
     bool tickVisibility();
-
-    /**
-     * @brief Prints entity's members for debugging purposes.
-     */
-    void print() const;
 
 };
 

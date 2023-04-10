@@ -135,8 +135,3 @@ Position Position::getOpposite(int width, int height) const
 
     return Position{x, y};
 }
-
-void Position::print() const
-{
-    std::cout << "(" << position_.first << ", " << position_.second << ")" << std::endl;
-}

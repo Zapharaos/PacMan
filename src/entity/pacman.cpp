@@ -18,20 +18,8 @@ Pacman::Pacman() :
     death_ = visuals::pacman::death::kAnimation;
 }
 
-bool Pacman::isDead() const
+void Pacman::death()
 {
-    return dead_;
-}
-
-void Pacman::setDead(bool dead)
-{
-    Pacman::dead_ = dead;
-}
-
-void Pacman::animateDeath()
-{
-
-    if(!isDead()) return;
 
     // Updates sprite.
     setSprite(death_.animate());
@@ -39,14 +27,7 @@ void Pacman::animateDeath()
     // Animation is over.
     if (death_.isOver())
     {
-        setDead(false);
         death_.reset();
         hide();
     }
-}
-
-void Pacman::reset()
-{
-    MovingEntity::reset();
-    dead_ = false;
 }

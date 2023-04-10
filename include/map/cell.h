@@ -26,7 +26,10 @@ enum class CellType
     kEnergizer, /* Energizer type cell */
     kPath, /* Path type cell */
     kWarp, /* Warp type cell */
-    kDoor /* Door type cell */
+    kTunnel, /* Tunnel type cell */
+    kGhostHouseDoor, /* Ghost house door type cell */
+    kGhostOnlyHorizontal, /* Ghost only horizontal type cell */
+    kGhostOnlyHorizontalAndPellet /* Pellet & Ghost only horizontal type cell */
 };
 
 /**
@@ -102,6 +105,21 @@ public:
     { return type_ == CellType::kWarp; };
 
     /**
+     * @brief Check if the cell is forbids the ghost to turn into vertical direction.
+     * @return true if not enabled, false otherwise.
+     */
+    [[nodiscard]] inline bool isTunnel() const
+    { return isWarp() || type_ == CellType::kTunnel; };
+
+    /**
+     * @brief Check if the cell is forbids the ghost to turn into vertical direction.
+     * @return true if not enabled, false otherwise.
+     */
+    [[nodiscard]] inline bool isGhostHorizontal() const
+    { return type_ == CellType::kGhostOnlyHorizontal ||
+             type_ == CellType::kGhostOnlyHorizontalAndPellet; };
+
+    /**
      * @brief Getter for the type of cell.
      * @return Type of cell.
      */
@@ -138,18 +156,6 @@ public:
     [[nodiscard]] Position getPositionScaled() const
     { return position_.getPositionScaled(size_); };
 
-    /**
-     * @brief Prints the cell's members.
-     * @details This function is intended for debugging purposes.
-     */
-    void print() const
-    {
-        position_.print();
-        position_.getPositionScaled(size_).print();
-        std::cout << static_cast<std::underlying_type<CellType>::type>(type_) << std::endl;
-        if(entity_)
-            entity_->print();
-    };
 };
 
 

@@ -65,14 +65,19 @@ void Game::tick(const Direction &direction) {
         return;
 
     // Handle status.
-    if (handleStatus()) {
+    bool running = handleStatus();
 
+    if (!running && pacman_.isDead()) // Death animation still ongoing.
+    {
+        pacman_.death();
+    }
+    else if (running)
+    {
         // Get pacman sprite position.
         auto pacman = pacman_.getSprite().getPosition();
 
+        // Tick entities.
         fruit_.tick();
-
-        // Move entities.
         pacman_.tick(map_, direction);
         auto pacman_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
         for(auto &ghost : ghosts_)
@@ -83,9 +88,7 @@ void Game::tick(const Direction &direction) {
     }
 
     // Update game visuals.
-
     display();
-    //displayWelcomeScreen();
 }
 
 
@@ -146,8 +149,6 @@ void Game::display() {
             window_.draw(ghost, config::dimensions::kScoreBoardHeight);
 
     // Pacman
-    if (pacman_.isDead()) // death animation
-        pacman_.animateDeath();
     if (!pacman_.isHidden())
         window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
 
@@ -209,7 +210,7 @@ bool Game::handleStatus() {
         return false;
     }
 
-    if ((status_ == StatusType::kGameStartAnimate) && !counter_.isActive()) {
+    if (status_ == StatusType::kGameStartAnimate && !counter_.isActive()) {
         status_ = StatusType::kRunning;
     }
 
@@ -224,14 +225,16 @@ bool Game::handleStatus() {
     // Death freeze is over.
     if (status_ == StatusType::kDeathFreeze) {
         status_ = StatusType::kDeathAnimate;
-        pacman_.setDead(true);
+        pacman_.kill();
         // TODO : hide ghosts
         return false;
     }
 
     // Death animation is over.
-    if (status_ == StatusType::kDeathAnimate && !pacman_.isDead()) {
-        lostLife();
+    if (status_ == StatusType::kDeathAnimate)
+    {
+        if (!pacman_.isDead())
+            lostLife();
         return false;
     }
 

@@ -21,7 +21,7 @@
  * @brief An entity that can move across the map.
  * This class represents an entity that is capable of moving across the game board. It inherits from the Entity class and has
  * additional functionality for movement, speed and animations.
- * @see Entity class
+ * @extends Entity
 */
 class MovingEntity : public Entity
 {
@@ -50,6 +50,9 @@ private:
      * @details Used to determine a swap of animation. */
     Direction previous_direction_{};
 
+    /** If the entity is slowed down while moving inside tunnels. */
+    bool tunnel_slow_ {false};
+
 public:
 
     /**
@@ -60,6 +63,7 @@ public:
 
     /**
      * @brief Constructs a MovingEntity object with the given position, enabled state, points, speed, and animations.
+     * @details Mainly used as the ghost constructor.
      * @param position Raw position.
      * @param enabled If the entity is active.
      * @param points Points earned when entity is eaten.
@@ -74,6 +78,7 @@ public:
 
     /**
      * @brief Constructs a MovingEntity object with the given position, speed, and animations.
+     * @details Mainly used as the pacman constructor.
      * @param position Raw position.
      * @param speed Speed per tick at which the entity is moving.
      * @param left Animations when moving towards the left.
@@ -84,27 +89,37 @@ public:
     MovingEntity(const Position &position, int speed, Animation left,
                  Animation right, Animation up, Animation down);
 
-    int getSpeed() const;
+    /**
+     * @brief Gets the speed per tick at which the entity is moving.
+     * @return speed per tick at which the entity is moving.
+     */
+    [[nodiscard]] int getSpeed() const;
 
     /**
-     * @brief Getter for the previous direction.
-     * @return The previous direction.
+     * @brief Gets if the entity is slowed down while moving inside tunnels.
+     * @return True if the entity is slowed down while moving inside tunnels, otherwise false.
      */
-    [[nodiscard]] const Direction &getPreviousDirection() const;
+    [[nodiscard]] bool isTunnelSlow() const;
 
     /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
      */
-    virtual void tick(const Map &map, Direction direction);
+    void tick(const Map &map, Direction direction);
+
+    /**
+     * @brief Handle the status.
+     */
+    virtual void handleStatus();
 
     /**
      * @brief Moves the entity in the given direction if it is a legal move.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
+     * @return True if the move is legal, otherwise false.
      */
-    void move(const Map &map, Direction direction);
+    bool move(const Map &map, Direction direction);
 
     /**
      * @brief Switches between sprites depending on the direction of the current move.
@@ -112,12 +127,13 @@ public:
      * Uses the Animation::animate() method to switch between the different animations.
      * @param direction The direction of the current move.
      */
-    void animate(const Direction &direction);
+    virtual void animate(const Direction &direction);
 
     /**
      * @brief Resets the entity to the given coordinates.
      */
     virtual void reset();
+
 };
 
 

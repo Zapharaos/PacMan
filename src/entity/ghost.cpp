@@ -21,9 +21,77 @@ Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
 }
 
+void Ghost::tick(const Map &map, const Position &pacman) {
+
+    handleStatus();
+
+    if(move(map, getNextDirection(map, pacman))) // Move legal.
+        animate(next_direction_);
+}
+
+void Ghost::frightened()
+{
+    if(!isFrightened())
+    {
+        previous_status_ = status_;
+        direction_reverse_ = true;
+    }
+
+    if(status_timers.at(1) == 0)
+        status_ = GhostStatus::kFrightenedBlinking;
+    else {
+        status_ = GhostStatus::kFrightened;
+        counter_.save();
+        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
+    }
+}
+
+void Ghost::unfrightened()
+{
+    if(!isFrightened())
+        return;
+    if(status_ == GhostStatus::kFrightened && counter_.isActive())
+        counter_.loadSave();
+    status_ = previous_status_;
+    next_direction_.reset();
+}
+
+void Ghost::reset()
+{
+    MovingEntity::reset();
+    status_ = GhostStatus::kStart;
+    counter_.stop();
+    status_changes_ = 1;
+    next_direction_.reset();
+}
+
+bool Ghost::isFrightened()
+{
+    return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
+}
+
+void Ghost::handleStatus()
+{
+    if(!isEnabled()) // Death.
+    {
+        setEnabled(true);
+        MovingEntity::reset();
+        unfrightened();
+    }
+
+    // Handle ghost status.
+    if(counter_.isActive())
+        counter_.increment();
+    else
+        handleStatusChange();
+
+    // Handle parent moving entity status.
+    MovingEntity::handleStatus();
+}
+
 void Ghost::handleStatusChange() {
 
-    if(status_changes_ >= config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
     {
         if(status_ == GhostStatus::kFrightened)
             status_ = GhostStatus::kFrightenedBlinking;
@@ -54,6 +122,17 @@ void Ghost::handleStatusChange() {
     }
 }
 
+void Ghost::animate(const Direction &direction)
+{
+    // Override MovingEntity::animate() in special cases.
+    if(status_ == GhostStatus::kFrightened)
+        setSprite(frightened_.animate());
+    else if(status_ == GhostStatus::kFrightenedBlinking)
+        setSprite(frightened_blinking_.animate());
+    else
+        MovingEntity::animate(direction);
+}
+
 Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 {
     auto current_unscaled = getPosition();
@@ -66,10 +145,10 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
     Direction reverse = next_direction_.reverse();
 
-    if(!next_direction_.isUninitialized()) // only false at start
+    if(!next_direction_.isUninitialized()) // only false at start or reset
     {
         // effective next cell
-        auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
+        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), getSpeed());
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 
@@ -83,7 +162,11 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
         }
     }
 
-    auto directions = map.getAvailableDirections(next_position, next_direction_);
+    bool forbid_ghost_vertical = false;
+
+    if(!isFrightened())
+        forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
+    auto directions = map.getAvailableDirections(next_position, next_direction_, forbid_ghost_vertical);
 
     if(directions.empty()) // nothing available
     {
@@ -124,69 +207,4 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     }
 
     return next_direction_;
-}
-
-void Ghost::tick(const Map &map, const Position &pacman) {
-
-    if(!isEnabled())
-    {
-        setEnabled(true);
-        MovingEntity::reset();
-        unfrightened();
-        next_direction_.reset();
-    }
-
-    // Handle ghost status
-    if(counter_.isActive())
-        counter_.increment();
-    else
-        handleStatusChange();
-
-    MovingEntity::tick(map, getNextDirection(map, pacman));
-
-    // Override MovingEntity::animate() in special cases.
-    if(status_ == GhostStatus::kFrightened)
-        setSprite(frightened_.animate());
-    else if(status_ == GhostStatus::kFrightenedBlinking)
-        setSprite(frightened_blinking_.animate());
-}
-
-bool Ghost::isFrightened()
-{
-    return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
-}
-
-void Ghost::frightened()
-{
-    if(!isFrightened())
-    {
-        previous_status_ = status_;
-        direction_reverse_ = true;
-    }
-
-    if(status_timers.at(1) == 0)
-        status_ = GhostStatus::kFrightenedBlinking;
-    else {
-        status_ = GhostStatus::kFrightened;
-        counter_.save();
-        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
-    }
-}
-
-void Ghost::unfrightened()
-{
-    if(!isFrightened())
-        return;
-    if(status_ == GhostStatus::kFrightened && counter_.isActive())
-        counter_.loadSave();
-    status_ = previous_status_;
-}
-
-void Ghost::reset()
-{
-    MovingEntity::reset();
-    status_ = GhostStatus::kStart;
-    counter_.stop();
-    status_changes_ = 1;
-    next_direction_.reset();
 }

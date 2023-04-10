@@ -12,16 +12,12 @@
 
 /**
  * @brief The Pacman entity.
- * Inherits from the MovingEntity class.
- * @see MovingEntity
+ * @extends MovingEntity
 */
 class Pacman : public MovingEntity
 {
 
 private:
-
-    /** Has died. */
-    bool dead_ = false;
 
     /** Animations when has died. */
     Animation death_{};
@@ -34,25 +30,10 @@ public:
     Pacman();
 
     /**
-     * @brief Getter for "dead" status.
-     */
-    [[nodiscard]] bool isDead() const;
+    * @brief Executes the death animation.
+    */
+    void death();
 
-    /**
-     * @brief Setter for "dead" status.
-     */
-    void setDead(bool dead);
-
-    /**
-     * @brief Executes the death animation.
-     */
-    void animateDeath();
-
-    /**
-     * @brief Resets the entity object.
-     * @see MovingEntity::reset()
-     */
-    void reset() override;
 };
 
 

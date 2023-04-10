@@ -21,7 +21,7 @@
 
 /**
  * @brief Represents a fruit that occasionally appears on the board.
- * @see Entity
+ * @extends Entity
 */
 class Fruit : public Entity
 {

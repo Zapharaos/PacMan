@@ -68,8 +68,14 @@ public:
     inline bool operator!=(const Direction &direction) const
     { return !(direction == *this); };
 
-    inline bool operator<(const Direction& other) const
-    { return direction_ < other.direction_; }
+    /**
+     * @brief Indicates if the directions is smaller than the other.
+     * Used to iterate over a container of Direction type.
+     * @param direction The direction to compare.
+     * @return true if smaller, else false.
+     */
+    inline bool operator<(const Direction& direction) const
+    { return direction_ < direction.direction_; }
 
     /**
      * @brief Updates the direction type.
@@ -187,30 +193,6 @@ public:
     inline void reset()
     { direction_ = {DirectionType::kUninitialized}; };
 
-    /**
-     * @brief Prints the direction for debugging purposes.
-     */
-    inline void print() const
-    {
-        switch (direction_)
-        {
-            case DirectionType::kLeft:
-                std::cout << "LEFT" << std::endl;
-                break;
-            case DirectionType::kRight:
-                std::cout << "RIGHT" << std::endl;
-                break;
-            case DirectionType::kUp:
-                std::cout << "UP" << std::endl;
-                break;
-            case DirectionType::kDown:
-                std::cout << "DOWN" << std::endl;
-                break;
-            case DirectionType::kUninitialized:
-                std::cout << "UNINITIALIZED" << std::endl;
-                break;
-        }
-    };
 };
 
 

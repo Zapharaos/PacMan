@@ -117,7 +117,8 @@ public:
      * @param corner The opposite corner of the current position.
      * @return The position after trying to warp.
      */
-    [[nodiscard]] std::optional<Position> warp(Position destination, Position corner) const;
+    [[nodiscard]] std::optional<Position>
+    warp(Position destination, Position corner) const;
 
     /**
      * @brief Checks if a move would result in warping to another part of the map.
@@ -125,7 +126,8 @@ public:
      * @param destination Position of destination.
      * @return true if warp, else false.
      */
-    [[nodiscard]] bool isWarping(const Position &origin, const Position &destination) const;
+    [[nodiscard]] bool
+    isWarping(const Position &origin, const Position &destination) const;
 
     /**
      * @brief Resets all cells on the map to their original state.
@@ -137,9 +139,28 @@ public:
      */
     void animate();
 
+    /**
+     * @brief Indicates all available directions from a specific position.
+     * @param position The current position.
+     * @param direction The current direction (to reach the current position).
+     * @param forbid_ghost_vertical True if the current position is located within the special zone.
+     * @return Set of Direction.
+     */
     [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const Position &position,
-                           const Direction &direction) const;
+    getAvailableDirections(const Position &position, const Direction &direction,
+                           bool forbid_ghost_vertical) const;
+
+    /**
+     * @brief Calculates the destination from a position into a direction.
+     * @param origin The initial position.
+     * @param direction The direction to move towards to.
+     * @param tunnel_slow True if slowed down inside tunnels, otherwise false.
+     * @param speed The initial speed value.
+     * @return The position of destination.
+     */
+    [[nodiscard]] Position
+    calculateDestination(const Position &origin, const Direction &direction,
+                         bool tunnel_slow, int speed) const;
 };
 
 
