@@ -104,8 +104,9 @@ Position Position::getNeighbor(const Direction &direction) const
     return Position{position};
 }
 
-Position Position::moveIntoDirection(const Direction &direction, int distance) const
+Position Position::moveIntoDirection(const Direction &direction, int distance, bool slow) const
 {
+    if(slow) distance /= 2;
     auto position = position_;
     if (direction.isLeft()) position.first -= distance;
     else if (direction.isRight()) position.first += distance;

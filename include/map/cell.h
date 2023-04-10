@@ -28,8 +28,8 @@ enum class CellType
     kWarp, /* Warp type cell */
     kTunnel, /* Tunnel type cell */
     kGhostHouseDoor, /* Ghost house door type cell */
-    kGhostNoTurn, /* Ghost no turn type cell */
-    kGhostNoTurnAndPellet /* Pellet & Ghost no turn type cell */
+    kGhostOnlyHorizontal, /* Ghost only horizontal type cell */
+    kGhostOnlyHorizontalAndPellet /* Pellet & Ghost only horizontal type cell */
 };
 
 /**
@@ -103,6 +103,13 @@ public:
      */
     [[nodiscard]] inline bool isWarp() const
     { return type_ == CellType::kWarp; };
+
+    /**
+     * @brief Check if the cell is forbids the ghost to turn into vertical direction.
+     * @return true if not enabled, false otherwise.
+     */
+    [[nodiscard]] inline bool isGhostHorizontal() const
+    { return type_ == CellType::kGhostOnlyHorizontal || type_ == CellType::kGhostOnlyHorizontalAndPellet; };
 
     /**
      * @brief Getter for the type of cell.

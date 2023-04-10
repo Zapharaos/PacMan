@@ -135,7 +135,7 @@ public:
      * @param distance The distance of the movement.
      * @return Copy of the original object with its position moved.
      */
-    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
+    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance, bool slow) const;
 
     /**
      * @brief Shifts the position by a certain amount.

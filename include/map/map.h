@@ -139,7 +139,8 @@ public:
 
     [[nodiscard]] std::set<Direction>
     getAvailableDirections(const Position &position,
-                           const Direction &direction) const;
+                           const Direction &direction,
+                           bool forbid_ghost_vertical) const;
 };
 
 

@@ -50,6 +50,8 @@ private:
      * @details Used to determine a swap of animation. */
     Direction previous_direction_{};
 
+    bool tunnel_slow_ {false};
+
 public:
 
     /**
@@ -85,12 +87,6 @@ public:
                  Animation right, Animation up, Animation down);
 
     /**
-     * @brief Getter for the speed.
-     * @return The speed per tick at which the entity is moving.
-     */
-    [[nodiscard]] int getSpeed() const;
-
-    /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
@@ -122,6 +118,8 @@ public:
      * @brief Resets the entity to the given coordinates.
      */
     virtual void reset();
+
+    [[nodiscard]] Position getDestination(Position origin, Direction direction) const;
 };
 
 

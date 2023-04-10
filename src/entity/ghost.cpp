@@ -148,7 +148,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     if(!next_direction_.isUninitialized()) // only false at start
     {
         // effective next cell
-        auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
+        auto next_unscaled = getDestination(current_unscaled, next_direction_);
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 
@@ -162,7 +162,14 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
         }
     }
 
-    auto directions = map.getAvailableDirections(next_position, next_direction_);
+    bool forbid_ghost_vertical = false;
+
+    if(current_position.getAbscissa() == 9 && current_position.getOrdinate() == 20)
+        forbid_ghost_vertical = false;
+
+    if(!isFrightened())
+        forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
+    auto directions = map.getAvailableDirections(next_position, next_direction_, forbid_ghost_vertical);
 
     if(directions.empty()) // nothing available
     {

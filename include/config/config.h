@@ -60,7 +60,7 @@ namespace config {
 
         /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
-        inline constexpr int kSpeedGhost {1};
+        inline constexpr int kSpeedGhost {2};
 
         /** Global game settings. */
         inline constexpr int kLives {3};
