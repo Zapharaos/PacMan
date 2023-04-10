@@ -143,12 +143,13 @@ public:
      * @brief Indicates all available directions from a specific position.
      * @param position The current position.
      * @param direction The current direction (to reach the current position).
+     * @param ghost_dead True if the ghost is dead (enables to move in/out the ghost house), otherwise false.
      * @param forbid_ghost_vertical True if the current position is located within the special zone.
      * @return Set of Direction.
      */
     [[nodiscard]] std::set<Direction>
     getAvailableDirections(const Position &position, const Direction &direction,
-                           bool forbid_ghost_vertical) const;
+                           bool ghost_dead, bool forbid_ghost_vertical) const;
 
     /**
      * @brief Calculates the destination from a position into a direction.

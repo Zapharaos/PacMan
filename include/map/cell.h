@@ -98,6 +98,13 @@ public:
     { return type_ == CellType::kWall; };
 
     /**
+     * @brief Check if the cell is the ghost house door.
+     * @return true if the cell is the ghost house door, false otherwise.
+     */
+    [[nodiscard]] inline bool isGhostHouseDoor() const
+    { return type_ == CellType::kGhostHouseDoor; };
+
+    /**
      * @brief Check if the cell is a warp.
      * @return true if the cell is a warp, false otherwise.
      */

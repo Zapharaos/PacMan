@@ -182,7 +182,7 @@ void Map::animate() {
 
 std::set<Direction>
 Map::getAvailableDirections(const Position &position, const Direction &direction,
-                            bool forbid_ghost_vertical) const {
+                            bool ghost_dead, bool forbid_ghost_vertical) const {
     std::set<Direction> directions;
     for (auto &element: Direction::directions) {
         Direction element_direction = Direction{element};
@@ -190,7 +190,9 @@ Map::getAvailableDirections(const Position &position, const Direction &direction
             continue;
         auto cell = getCell(position.getNeighbor(element_direction));
         // Cell not reachable or special zone where ghosts only move horizontally
-        if (!cell || cell->isWall() || (forbid_ghost_vertical && !element_direction.isHorizontal()))
+        if (!cell || cell->isWall() ||
+                (!ghost_dead && cell->isGhostHouseDoor()) ||
+                (forbid_ghost_vertical && !element_direction.isHorizontal()))
             continue;
         directions.insert(directions.end(), element_direction);
     }

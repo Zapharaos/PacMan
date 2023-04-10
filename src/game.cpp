@@ -22,6 +22,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::blinky::kTargetX,
                                         config::positions::entities::blinky::kTargetY},
+                               Position{config::positions::entities::blinky::kHouseX,
+                                        config::positions::entities::blinky::kHouseY},
                                visuals::ghosts::blinky::left::kAnimation,
                                visuals::ghosts::blinky::right::kAnimation,
                                visuals::ghosts::blinky::up::kAnimation,
@@ -31,6 +33,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::pinky::kTargetX,
                                         config::positions::entities::pinky::kTargetY},
+                               Position{config::positions::entities::pinky::kHouseX,
+                                        config::positions::entities::pinky::kHouseY},
                                visuals::ghosts::pinky::left::kAnimation,
                                visuals::ghosts::pinky::right::kAnimation,
                                visuals::ghosts::pinky::up::kAnimation,
@@ -40,6 +44,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::inky::kTargetX,
                                         config::positions::entities::inky::kTargetY},
+                               Position{config::positions::entities::inky::kHouseX,
+                                        config::positions::entities::inky::kHouseY},
                                visuals::ghosts::inky::left::kAnimation,
                                visuals::ghosts::inky::right::kAnimation,
                                visuals::ghosts::inky::up::kAnimation,
@@ -49,6 +55,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::clyde::kTargetX,
                                         config::positions::entities::clyde::kTargetY},
+                               Position{config::positions::entities::clyde::kHouseX,
+                                        config::positions::entities::clyde::kHouseY},
                                visuals::ghosts::clyde::left::kAnimation,
                                visuals::ghosts::clyde::right::kAnimation,
                                visuals::ghosts::clyde::up::kAnimation,
@@ -79,9 +87,8 @@ void Game::tick(const Direction &direction) {
         // Tick entities.
         fruit_.tick();
         pacman_.tick(map_, direction);
-        auto pacman_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
         for(auto &ghost : ghosts_)
-            ghost.tick(map_, pacman_position);
+            ghost.tick(map_, pacman_.getPosition());
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);

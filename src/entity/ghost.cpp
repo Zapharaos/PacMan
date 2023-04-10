@@ -11,9 +11,9 @@
 
 Ghost::Ghost() = default;
 
-Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
-             Animation left, Animation right, Animation up, Animation down) :
-    type_(type), scatter_target_(std::move(target)),
+Ghost::Ghost(Ghost::GhostType type, const Position &position, Position scatter_target,
+             Position house_target, Animation left, Animation right, Animation up, Animation down) :
+    type_(type), scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
@@ -31,6 +31,9 @@ void Ghost::tick(const Map &map, const Position &pacman) {
 
 void Ghost::frightened()
 {
+    if(status_ == GhostStatus::kDead || status_ == GhostStatus::kHouse)
+        return;
+
     if(!isFrightened())
     {
         previous_status_ = status_;
@@ -90,17 +93,16 @@ void Ghost::handleStatusChange() {
         {
             if (getPosition() == house_target_)
             {
-                status_ = GhostStatus::kHouse;
+                setEnabled(true);
+                counter_.loadSave();
+                status_ = previous_status_;
                 next_direction_.reset();
                 show();
             }
         }
         else if(status_ == GhostStatus::kHouse)// Ghost house.
         {
-            setEnabled(true);
-            counter_.loadSave();
-            status_ = previous_status_;
-            next_direction_.reset();
+            // TODO : ghost house status
         }
         return;
     }
@@ -177,12 +179,12 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
     bool forbid_ghost_vertical = false;
 
-    if(status_ == GhostStatus::kDead)
+    if(current_position.getAbscissa() == 11 && current_position.getOrdinate() == 10)
         forbid_ghost_vertical = false;
 
     if(!isFrightened() && status_ != GhostStatus::kDead)
         forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
-    auto directions = map.getAvailableDirections(next_position, next_direction_, forbid_ghost_vertical);
+    auto directions = map.getAvailableDirections(next_position, next_direction_, status_ == GhostStatus::kDead, forbid_ghost_vertical);
 
     if(directions.empty()) // nothing available
     {
@@ -218,7 +220,8 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
         for(auto &element : directions)
         {
-            auto position = next_position.getNeighbor(Direction{element});
+            auto position_scaled = next_position.getNeighbor(Direction{element});
+            auto position = position_scaled.getPositionScaled(map.getCellSize());
             double distance = target.getDistance(position);
             if(distance < min_distance)
             {
