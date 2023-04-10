@@ -29,11 +29,11 @@ class Fruit : public Entity
 private:
 
     /** List of values at which the fruit will be displayed. */
-    Container<unsigned long, config::settings::kFruitsPerLevel> pellets_cap_{};
+    std::set<unsigned long> pellets_cap_{};
 
     /** List of fruits that can be displayed.
      * @see Fruit::FruitObject class */
-    Container<FruitObject, visuals::fruit::kFruitsSize> fruits_{};
+    std::vector<FruitObject> fruits_{};
 
     /** Index of the current FruitObject.
      * @details Used to access and animate the fruit. */

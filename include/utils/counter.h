@@ -25,6 +25,16 @@ private:
     /** Value to reach. */
     long cap_ = 0;
 
+    bool save_ = false;
+
+    long count_difference_ = 0;
+
+    /** Save current value. */
+    long count_save_ = 0;
+
+    /** Save value to reach/ */
+    long cap_save_ = 0;
+
 public:
 
     /** Default Counter constructor. */
@@ -36,6 +46,13 @@ public:
     */
     [[nodiscard]] inline bool isActive() const
     { return active_; };
+
+    /**
+     * @brief Getter for the current count value.
+     * @return The current count value.
+     */
+    [[nodiscard]] inline long getCount() const
+    { return count_; };
 
     /**
      * @brief Starts the counter with a given value to reach.
@@ -56,17 +73,65 @@ public:
     {
         if(count_ == 0)
             active_ = true;
-        if((++count_) < cap_) return;
+        if(save_)
+            ++count_difference_;
+        if((++count_) < cap_)
+            return;
+        stop();
+    };
+
+    /**
+     * Stops the current count.
+     */
+    inline void stop()
+    {
         active_ = false;
+        count_ = 0;
+    }
+
+    /**
+     * @brief Restarts the counter.
+     * @pre cap must have been set beforehand.
+     */
+    inline void restart()
+    {
+        active_ = true;
         count_ = 0;
     };
 
     /**
-     * @brief Getter for the current count value.
-     * @return The current count value.
+     * @brief Saves the current counter state.
      */
-    [[nodiscard]] long getCount() const
-    { return count_;};
+     inline void save()
+    {
+        count_save_ = count_;
+        cap_save_ = cap_;
+        count_difference_ = 0;
+        save_ = true;
+    }
+
+    /**
+     * @brief Loads the saved values as the current ones.
+     * @param Optional : time difference added to the saved counter.
+     */
+    inline void loadSave(long difference = 0)
+    {
+        active_ = true;
+        count_ = count_save_ + difference; // Time saved + time difference
+        cap_ = cap_save_;
+        save_ = false;
+        if(count_ >= cap_)
+            stop();
+    }
+
+    /**
+     * @brief Loads the saved values as the current ones
+     * (with active time difference, aka time elapsed since the save).
+     */
+    inline void loadSaveWithDifference()
+    {
+        loadSave(count_difference_);
+    }
 
 };
 

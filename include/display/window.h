@@ -133,13 +133,13 @@ public:
      * update and display the highscore
      * @param points
      */
-    void updateHighScore(int points);
+    void updateHighScore(unsigned long points);
 
     /**
      * update and display current score
      * @param score
      */
-    void updateScore(int score);
+    void updateScore(unsigned long score);
 
     /**
      * update and display number of lives
@@ -173,7 +173,7 @@ public:
      * @param pos_y
      * @return
      */
-    void writeScorePoints(int point, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour = colours::kWhite);
+    void writeScorePoints(unsigned long point, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour = colours::kWhite);
 
     /**
      * Writes a word at a given position and size

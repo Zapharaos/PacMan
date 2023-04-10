@@ -8,7 +8,7 @@
 #include "../../include/entity/pacman.h"
 
 Pacman::Pacman() :
-               MovingEntity(Position{{config::positions::kPacmanX, config::positions::kPacmanY}},
+               MovingEntity(Position{config::positions::entities::kPacmanX, config::positions::entities::kPacmanY},
                             config::settings::kSpeedPacman,
                             visuals::pacman::left::kAnimation,
                             visuals::pacman::right::kAnimation,
@@ -16,30 +16,6 @@ Pacman::Pacman() :
                             visuals::pacman::down::kAnimation)
 {
     death_ = visuals::pacman::death::kAnimation;
-}
-
-void Pacman::setSuperpower(bool superpower)
-{
-    if ((superpower_ = superpower))
-        countSuperpower_.start(config::settings::kDurationSuperpower);
-}
-
-bool Pacman::isSuperpower() const
-{
-    return superpower_;
-}
-
-void Pacman::tick(const Map &map, Direction direction)
-{
-    if(isSuperpower())
-    {
-        if(countSuperpower_.isActive())
-            countSuperpower_.increment();
-        else
-            setSuperpower(false);
-    }
-
-    MovingEntity::tick(map, direction);
 }
 
 bool Pacman::isDead() const
@@ -69,9 +45,8 @@ void Pacman::animateDeath()
     }
 }
 
-void Pacman::reset(const Position &coordinates)
+void Pacman::reset()
 {
-    MovingEntity::reset(coordinates);
-    superpower_ = false;
+    MovingEntity::reset();
     dead_ = false;
 }

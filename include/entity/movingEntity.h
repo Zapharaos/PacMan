@@ -28,29 +28,23 @@ class MovingEntity : public Entity
 
 private:
 
-    /**
-     * This is a static constexpr integer used to copy elements from the configuration files,
-     * making it easier to understand and reference in the code.
-     */
-    static constexpr int kAnimationLeftSize {visuals::pacman::left::kAnimationSize};
-    static constexpr int kAnimationRightSize {visuals::pacman::right::kAnimationSize};
-    static constexpr int kAnimationUpSize {visuals::pacman::up::kAnimationSize};
-    static constexpr int kAnimationDownSize {visuals::pacman::down::kAnimationSize};
+    /** Starting position / default position (in pixels). */
+    Position start_ {};
 
     /** Speed per tick at which the entity is moving. */
     int speed_{};
 
     /** Animations when moving towards the left. */
-    Animation<kAnimationLeftSize> left_{};
+    Animation left_{};
 
     /** Animations when moving towards the right. */
-    Animation<kAnimationRightSize> right_{};
+    Animation right_{};
 
     /** Animations when moving towards the top. */
-    Animation<kAnimationUpSize> up_{};
+    Animation up_{};
 
     /** Animations when moving towards the bottom. */
-    Animation<kAnimationDownSize> down_{};
+    Animation down_{};
 
     /** Previous direction.
      * @details Used to determine a swap of animation. */
@@ -76,10 +70,7 @@ public:
      * @param down Animations when moving towards the down.
      */
     MovingEntity(const Position &position, bool enabled, int points, int speed,
-                 Animation<kAnimationLeftSize> left,
-                 Animation<kAnimationRightSize> right,
-                 Animation<kAnimationUpSize> up,
-                 Animation<kAnimationDownSize> down);
+                 Animation left, Animation right, Animation up, Animation down);
 
     /**
      * @brief Constructs a MovingEntity object with the given position, speed, and animations.
@@ -90,11 +81,16 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    MovingEntity(const Position &position, int speed,
-                 Animation<kAnimationLeftSize> left,
-                 Animation<kAnimationRightSize> right,
-                 Animation<kAnimationUpSize> up,
-                 Animation<kAnimationDownSize> down);
+    MovingEntity(const Position &position, int speed, Animation left,
+                 Animation right, Animation up, Animation down);
+
+    int getSpeed() const;
+
+    /**
+     * @brief Getter for the previous direction.
+     * @return The previous direction.
+     */
+    [[nodiscard]] const Direction &getPreviousDirection() const;
 
     /**
      * @brief Handle the moving entity.
@@ -120,9 +116,8 @@ public:
 
     /**
      * @brief Resets the entity to the given coordinates.
-     * @param coordinates The new position of the entity.
      */
-    virtual void reset(const Position &coordinates);
+    virtual void reset();
 };
 
 

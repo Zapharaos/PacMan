@@ -1,140 +1,192 @@
-//
-// Created by omar on 07/02/23.
-//
+/**
+ * @file ghost.cpp
+ * @brief Implements the Ghost class, which is the second entity in the game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 03/04/2023
+*/
 
 #include "../../include/entity/ghost.h"
 
-Ghost::Ghost(const SDL_Rect &right, const SDL_Rect &left, const SDL_Rect &down,
-             const SDL_Rect &up,
-             const SDL_Rect &scared, const SDL_Rect &lessScared,
-             const SDL_Rect &invisUp, const SDL_Rect &invisDown,
-             const SDL_Rect &invisRight, const SDL_Rect &invisLeft,
-             const SDL_Rect &starting, int state)
-        : right(right), left(left), down(down), up(up), scared(scared),
-          less_scared(lessScared), invis_up(invisUp), invis_down(invisDown),
-          invis_right(invisRight), invis_left(invisLeft), starting(starting),
-          state(state)
-{}
+#include <utility>
 
-const SDL_Rect &Ghost::getRight() const
+Ghost::Ghost() = default;
+
+Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
+             Animation left, Animation right, Animation up, Animation down) :
+    type_(type), target_(std::move(target)),
+    MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
+                 std::move(left), std::move(right), std::move(up), std::move(down))
 {
-    return right;
+    frightened_ = visuals::ghosts::frightened::kAnimation;
+    frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
 }
 
-void Ghost::setRight(const SDL_Rect &right_)
-{
-    Ghost::right = right_;
+void Ghost::handleStatusChange() {
+
+    if(status_changes_ >= config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    {
+        if(status_ == GhostStatus::kFrightened)
+            status_ = GhostStatus::kFrightenedBlinking;
+        return;
+    }
+
+    switch(status_)
+    {
+        case GhostStatus::kChase:
+            status_changes_++;
+            direction_reverse_ = true;
+        case GhostStatus::kStart:
+            status_ = GhostStatus::kScatter;
+            counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+            break;
+        case GhostStatus::kScatter:
+            status_changes_++;
+            status_ = GhostStatus::kChase;
+            direction_reverse_ = true;
+            if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
+                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+            break;
+        case GhostStatus::kFrightened:
+            status_ = GhostStatus::kFrightenedBlinking;
+            break;
+        default: // unreachable
+            break;
+    }
 }
 
-const SDL_Rect &Ghost::getLeft() const
+Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 {
-    return left;
+    auto current_unscaled = getPosition();
+    auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
+    auto current_cell = map.getCell(current_position);
+
+    // default, next = current
+    auto next_position = current_position;
+    auto next_cell = current_cell;
+
+    Direction reverse = next_direction_.reverse();
+
+    if(!next_direction_.isUninitialized()) // only false at start
+    {
+        // effective next cell
+        auto next_unscaled = current_unscaled.moveIntoDirection(next_direction_, getSpeed());
+        next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
+        next_cell = map.getCell(next_position);
+
+        if(current_cell == next_cell) // ignore : only update on cell change
+            return next_direction_;
+
+        if(direction_reverse_) // reverse
+        {
+            next_position = current_position;
+            next_direction_ = reverse;
+        }
+    }
+
+    auto directions = map.getAvailableDirections(next_position, next_direction_);
+
+    if(directions.empty()) // nothing available
+    {
+        if(current_cell->isWarp() || next_cell->isWarp())
+            return next_direction_;
+        next_direction_ = reverse;
+    }
+    else if(directions.size() == 1) // one way
+    {
+        next_direction_ = *(directions.begin());
+    }
+    else if(isFrightened()) // intersection : random
+    {
+        next_direction_ = Direction{getRandomElementFromSet(directions)};
+    }
+    else // intersection : pathfinding
+    {
+        // TODO : get pacman target
+        auto target = status_ == GhostStatus::kChase ? pacman : target_;
+        double min_distance = std::numeric_limits<double>::max();
+
+        for(auto &element : directions)
+        {
+            auto position = next_position.getNeighbor(Direction{element});
+            double distance = target.getDistance(position);
+            if(distance < min_distance)
+            {
+                min_distance = distance;
+                next_direction_ = Direction{element};
+            }
+        }
+    }
+
+    if(direction_reverse_) // reverse
+    {
+        direction_reverse_ = false;
+        return reverse;
+    }
+
+    return next_direction_;
 }
 
-void Ghost::setLeft(const SDL_Rect &left_)
-{
-    Ghost::left = left_;
+void Ghost::tick(const Map &map, const Position &pacman) {
+
+    if(!isEnabled())
+    {
+        setEnabled(true);
+        MovingEntity::reset();
+        unfrightened();
+        next_direction_.reset();
+    }
+
+    // Handle ghost status
+    if(counter_.isActive())
+        counter_.increment();
+    else
+        handleStatusChange();
+
+    MovingEntity::tick(map, getNextDirection(map, pacman));
+
+    // Override MovingEntity::animate() in special cases.
+    if(status_ == GhostStatus::kFrightened)
+        setSprite(frightened_.animate());
+    else if(status_ == GhostStatus::kFrightenedBlinking)
+        setSprite(frightened_blinking_.animate());
 }
 
-const SDL_Rect &Ghost::getDown() const
+bool Ghost::isFrightened()
 {
-    return down;
+    return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
 }
 
-void Ghost::setDown(const SDL_Rect &down_)
+void Ghost::frightened()
 {
-    Ghost::down = down_;
+    if(!isFrightened())
+    {
+        previous_status_ = status_;
+        direction_reverse_ = true;
+    }
+
+    if(status_timers.at(1) == 0)
+        status_ = GhostStatus::kFrightenedBlinking;
+    else {
+        status_ = GhostStatus::kFrightened;
+        counter_.save();
+        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
+    }
 }
 
-const SDL_Rect &Ghost::getUp() const
+void Ghost::unfrightened()
 {
-    return up;
+    if(!isFrightened())
+        return;
+    if(status_ == GhostStatus::kFrightened && counter_.isActive())
+        counter_.loadSave();
+    status_ = previous_status_;
 }
 
-void Ghost::setUp(const SDL_Rect &up_)
+void Ghost::reset()
 {
-    Ghost::up = up_;
+    MovingEntity::reset();
+    status_ = GhostStatus::kStart;
+    counter_.stop();
+    status_changes_ = 1;
+    next_direction_.reset();
 }
-
-const SDL_Rect &Ghost::getScared() const
-{
-    return scared;
-}
-
-void Ghost::setScared(const SDL_Rect &scared_)
-{
-    Ghost::scared = scared_;
-}
-
-const SDL_Rect &Ghost::getLessScared() const
-{
-    return less_scared;
-}
-
-void Ghost::setLessScared(const SDL_Rect &lessScared)
-{
-    less_scared = lessScared;
-}
-
-const SDL_Rect &Ghost::getInvisUp() const
-{
-    return invis_up;
-}
-
-void Ghost::setInvisUp(const SDL_Rect &invisUp)
-{
-    invis_up = invisUp;
-}
-
-const SDL_Rect &Ghost::getInvisDown() const
-{
-    return invis_down;
-}
-
-void Ghost::setInvisDown(const SDL_Rect &invisDown)
-{
-    invis_down = invisDown;
-}
-
-const SDL_Rect &Ghost::getInvisRight() const
-{
-    return invis_right;
-}
-
-void Ghost::setInvisRight(const SDL_Rect &invisRight)
-{
-    invis_right = invisRight;
-}
-
-const SDL_Rect &Ghost::getInvisLeft() const
-{
-    return invis_left;
-}
-
-void Ghost::setInvisLeft(const SDL_Rect &invisLeft)
-{
-    invis_left = invisLeft;
-}
-
-const SDL_Rect &Ghost::getStarting() const
-{
-    return starting;
-}
-
-void Ghost::setStarting(const SDL_Rect &starting_)
-{
-    Ghost::starting = starting_;
-}
-
-
-int Ghost::getState() const
-{
-    return state;
-}
-
-void Ghost::setState(int state_)
-{
-    Ghost::state = state_;
-}
-
-

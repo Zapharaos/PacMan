@@ -38,6 +38,13 @@ public:
     explicit Position(std::pair<int, int> position);
 
     /**
+     * @brief Constructor for the Position class.
+     * @param abscissa The abscissa of the position.
+     * @param ordinate The ordinate of the position.
+     */
+    Position(int abscissa, int ordinate);
+
+    /**
      * @brief Overloaded operator for the equality of two Position objects.
      * @param position The Position object to compare to.
      * @return True if both positions are equal, else false.
@@ -62,6 +69,13 @@ public:
      * @return The ordinate of the position.
      */
     [[nodiscard]] const int &getOrdinate() const;
+
+    /**
+     * @brief Gets the Euclidean distance between two positions.
+     * @param position The second position.
+     * @return The Euclidean distance between both positions.
+     */
+    [[nodiscard]] double getDistance(const Position& position) const;
 
     /**
      * @brief Indicates whether the position is out of bounds or not.

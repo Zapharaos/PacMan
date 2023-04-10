@@ -27,18 +27,14 @@ class FruitObject
 
 private :
 
-    /** Copy elements from config files to make it easier to understand here. */
-    static constexpr int kFruitsPerAnimation {config::settings::kFruitsMaximumPerAnimation};
-    static constexpr int kLevelsPerFruit {config::settings::kLevelsMaximumPerFruit};
-
     /** Points awarded when the fruit is eaten. */
     int points_{};
 
     /** Levels at which the fruit can be displayed. */
-    Container<int, kLevelsPerFruit> levels_{};
+    std::set<int> levels_{};
 
     /** Sprites to switch between when the fruit is displayed. */
-    Animation<kFruitsPerAnimation> animation_{};
+    Animation animation_{};
 
 public:
 
@@ -53,9 +49,8 @@ public:
      * @param levels Levels at which the fruit can be displayed.
      * @param animation Sprites to switch between when the fruit is displayed.
     */
-    inline constexpr FruitObject(int points, Container<int, kLevelsPerFruit> levels,
-                                 Animation<kFruitsPerAnimation> animation) :
-            points_(points), levels_(levels), animation_(std::move(animation))
+    inline FruitObject(int points, std::set<int> levels, Animation animation) :
+            points_(points), levels_(std::move(levels)), animation_(std::move(animation))
     {}
 
     /**
@@ -69,7 +64,7 @@ public:
      * @brief Getter function for levels at which the fruit can be displayed.
      * @return Levels at which the fruit can be displayed.
      */
-    [[nodiscard]] inline const Container<int, kLevelsPerFruit> &getLevels() const
+    [[nodiscard]] inline const std::set<int> &getLevels() const
     { return levels_; }
 
     /**

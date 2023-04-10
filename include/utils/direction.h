@@ -9,6 +9,8 @@
 #define PACMAN_DIRECTION_H
 
 #include <iostream>
+#include <array>
+#include <random>
 
 /**
  * @brief Represents the direction something is moving towards to.
@@ -16,10 +18,10 @@
 enum class DirectionType
 {
     kUninitialized, /**< The direction is not initialized. */
-    kLeft, /**< The direction is left. */
-    kRight, /**< The direction is right. */
     kUp, /**< The direction is up. */
-    kDown /**< The direction is down. */
+    kLeft, /**< The direction is left. */
+    kDown, /**< The direction is down. */
+    kRight /**< The direction is right. */
 };
 
 /**
@@ -35,10 +37,20 @@ private:
 
 public:
 
+    /** List of all legal directions. */
+    static constexpr std::array<DirectionType, 4> directions {
+            DirectionType::kUp, DirectionType::kLeft, DirectionType::kDown, DirectionType::kRight};
+
     /**
      * @brief Default constructor.
      */
     inline Direction() = default;
+
+    /**
+     * @brief Constructor with direction.
+     * @param direction DirectionType direction.
+     */
+    inline explicit Direction(DirectionType direction) : direction_(direction) {};
 
     /**
      * @brief Indicates if both directions are equal.
@@ -55,6 +67,9 @@ public:
      */
     inline bool operator!=(const Direction &direction) const
     { return !(direction == *this); };
+
+    inline bool operator<(const Direction& other) const
+    { return direction_ < other.direction_; }
 
     /**
      * @brief Updates the direction type.
@@ -147,6 +162,23 @@ public:
     [[nodiscard]] inline bool isTurn(const Direction &direction) const
     {
         return direction_ != direction.direction_ && !isSameAxis(direction);
+    }
+
+    [[nodiscard]] inline Direction reverse() const
+    {
+        switch(direction_)
+        {
+            case DirectionType::kLeft:
+                return Direction{DirectionType::kRight};
+            case DirectionType::kRight:
+                return Direction{DirectionType::kLeft};
+            case DirectionType::kUp:
+                return Direction{DirectionType::kDown};
+            case DirectionType::kDown:
+                return Direction{DirectionType::kUp};
+            default:
+                return Direction{DirectionType::kUninitialized};
+        }
     }
 
     /**

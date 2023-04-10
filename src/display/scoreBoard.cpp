@@ -12,7 +12,7 @@ ScoreBoard::ScoreBoard(int width, int height, std::vector<SDL_Rect> numbers) : w
                                                                                numbers_(std::move(numbers)) {}
 
 
-std::vector<SDL_Rect> ScoreBoard::getPointsToPrint(int points, const std::unordered_map<char,
+std::vector<SDL_Rect> ScoreBoard::getPointsToPrint(unsigned long points, const std::unordered_map<char,
         SDL_Rect> &character_map) {
 
     std::string c = std::to_string(points);

@@ -43,12 +43,12 @@ void Entity::setSprite(const Sprite &sprite)
     sprite_.updatePosition(position_);
 }
 
-int Entity::getPoints() const
+unsigned long Entity::getPoints() const
 {
     return points_;
 }
 
-void Entity::setPoints(int points)
+void Entity::setPoints(unsigned long points)
 {
     points_ = points;
 }

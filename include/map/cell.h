@@ -25,7 +25,8 @@ enum class CellType
     kPellet, /* Pellet type cell */
     kEnergizer, /* Energizer type cell */
     kPath, /* Path type cell */
-    kWarp /* Warp type cell */
+    kWarp, /* Warp type cell */
+    kDoor /* Door type cell */
 };
 
 /**
@@ -146,7 +147,8 @@ public:
         position_.print();
         position_.getPositionScaled(size_).print();
         std::cout << static_cast<std::underlying_type<CellType>::type>(type_) << std::endl;
-        entity_->print();
+        if(entity_)
+            entity_->print();
     };
 };
 

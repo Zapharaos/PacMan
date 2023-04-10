@@ -6,6 +6,7 @@
 #define PACMAN_CONFIG_H
 
 #include <chrono>
+#include <set>
 #include <array>
 
 
@@ -37,21 +38,25 @@ namespace config {
         inline constexpr std::chrono::milliseconds kTickTime {1000/kFramesPerSecond};
 
         /** Amount of ticks between each sprite change. */
-        inline constexpr int kRefreshRateTicksMovingEntity {3};
+        inline constexpr int kRefreshRateTicksPacman {3};
+        inline constexpr int kRefreshRateTicksGhost {10};
         inline constexpr int kRefreshRateTicksFruit {15};
         inline constexpr int kRefreshRateTicksCharacters {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
         /** Amount of ticks for each status. */
-        inline constexpr int kDurationSuperpower {kFramesPerSecond * 5};
+        inline constexpr int kDurationSuperpower {kFramesPerSecond * 10};
         inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
+        inline constexpr int kDurationEatenEnergizerFreeze {3};
         inline constexpr int kDurationEatenGhostFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
         inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
         inline constexpr int kDurationFruitPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
+
+        inline constexpr int kGhostStatusChangesBeforeInfiniteChase {6 + 1};
 
         /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
@@ -61,14 +66,8 @@ namespace config {
         inline constexpr int kLives {3};
         inline constexpr int kNewLifeAtPoints {10000};
 
-        /** Maximum amount of sprites per fruit animation. */
-        inline constexpr int kFruitsMaximumPerAnimation {2};
-        /** Maximum amount of levels a fruit can appear at. */
-        inline constexpr int kLevelsMaximumPerFruit {2};
-        /** How many times a fruit can appear per level. */
-        inline constexpr int kFruitsPerLevel {2};
         /** After how many eaten pellets does the fruits appear (by level). */
-        inline constexpr std::array<int, kFruitsPerLevel> kFruitsPercentages {30, 70};
+        inline std::set<int> kFruitsPercentages {30, 70};
     }
 
     namespace dimensions {
@@ -82,7 +81,6 @@ namespace config {
         /** Window cell size. */
         inline constexpr int kWindowCellSize {32};
 
-
         /** DO NOT MODIFY : Window dimensions. */
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
         inline constexpr int kWindowHeight {  kScoreBoardHeight * 2 + kMapHeight * kWindowCellSize};
@@ -90,16 +88,58 @@ namespace config {
     }
 
     namespace positions {
-        /** Pacman default/starting position (in pixels). */
-        inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
-        inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
 
+        namespace entities {
+            /** Pacman default/starting position (in pixels). */
+            inline constexpr int kPacmanX {10 * dimensions::kWindowCellSize};
+            inline constexpr int kPacmanY {20 * dimensions::kWindowCellSize};
 
-        /** Fruit position (in pixels). */
-        inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
-        inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
-        inline constexpr int kFruitPointsX{350};
-        inline constexpr int kFruitPointsY{490};
+            /** Fruit position (in pixels). */
+            inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
+            inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
+            inline constexpr int kFruitPointsX{350};
+            inline constexpr int kFruitPointsY{490};
+
+            namespace blinky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {dimensions::kMapWidth};
+                inline constexpr int kTargetY {0};
+            }
+
+            namespace pinky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {13 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {0};
+            }
+
+            namespace inky {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {9 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {dimensions::kMapWidth};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
+            }
+
+            namespace clyde {
+                /** Ghost default/starting (in pixels). */
+                inline constexpr int kDefaultX {11 * dimensions::kWindowCellSize};
+                inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
+
+                /** Ghost target (in pixels). */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
+            }
+        }
 
         /**Score Board Positions*/
         inline constexpr int kScoreBoardX {0};

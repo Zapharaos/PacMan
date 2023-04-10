@@ -10,22 +10,25 @@
 MovingEntity::MovingEntity() = default;
 
 MovingEntity::MovingEntity(const Position &position, bool enabled, int points, int speed,
-                           Animation<kAnimationLeftSize> left,
-                           Animation<kAnimationRightSize> right,
-                           Animation<kAnimationUpSize> up,
-                           Animation<kAnimationDownSize> down) :
-        Entity(position, left.getSprite(), enabled, points), speed_(speed), left_(std::move(left)),
-        right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
+                           Animation left, Animation right, Animation up, Animation down) :
+        Entity(position, left.getSprite(), enabled, points), start_(position), speed_(speed),
+        left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
 
-MovingEntity::MovingEntity(const Position &position, int speed,
-                           Animation<kAnimationLeftSize> left,
-                           Animation<kAnimationRightSize> right,
-                           Animation<kAnimationUpSize> up,
-                           Animation<kAnimationDownSize> down) :
-        Entity(position, left.getSprite()), speed_(speed), left_(std::move(left)), right_(std::move(right)),
-        up_(std::move(up)), down_(std::move(down))
+MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
+                           Animation right, Animation up, Animation down) :
+        Entity(position, left.getSprite()), start_(position), speed_(speed),
+        left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {}
+
+
+int MovingEntity::getSpeed() const {
+    return speed_;
+}
+
+const Direction &MovingEntity::getPreviousDirection() const {
+    return previous_direction_;
+}
 
 void MovingEntity::tick(const Map &map, Direction direction)
 {
@@ -104,10 +107,10 @@ void MovingEntity::animate(const Direction &direction)
         setSprite(down_.animate(restart));
 }
 
-void MovingEntity::reset(const Position &position)
+void MovingEntity::reset()
 {
     previous_direction_.reset();
     left_.reset();
     setSprite(left_.getSprite()); // default sprite
-    setPosition(position); // reset position
+    setPosition(start_); // reset position
 }

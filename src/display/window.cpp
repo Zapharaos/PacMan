@@ -70,12 +70,12 @@ void Window::writeHighScore() {
             2,visuals::kScaleCell);
 }
 
-void Window::updateHighScore(int points) {
+void Window::updateHighScore(unsigned long points) {
     writeScorePoints(points, config::positions::kScoreBoardHighScoreX,
                      config::positions::kScoreBoardHighScoreY, 3.0);
 }
 
-void Window::updateScore(int score) {
+void Window::updateScore(unsigned long score) {
     writeScorePoints(score,
                      config::positions::kScoreBoardScoreX,
                      config::positions::kScoreBoardScoreY, 3.0);
@@ -176,7 +176,7 @@ void Window::initSpriteMap() {
 }
 
 
-void Window::writeScorePoints(int points, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour) {
+void Window::writeScorePoints(unsigned long points, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour) {
     std::vector<SDL_Rect> points_to_print = score_board_.getPointsToPrint(points, character_map_);
 
     SDL_Rect position = points_to_print[0];

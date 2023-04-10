@@ -16,6 +16,23 @@
 #include "../config/constants.h"
 #include <SDL.h>
 
+
+template<typename T>
+const T &getRandomElementFromSet(std::set<T> elements)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, elements.size() - 1);
+
+    // Iterate through the set until we reach the element at the random index
+    auto it = elements.begin();
+    auto index = dis(gen);
+    std::advance(it, index);
+
+    // Extract the element at the random index
+    return *it;
+}
+
 /**
  * @brief Returns the maximum number of objects of type T that can be stored.
  * @tparam T Object type.
