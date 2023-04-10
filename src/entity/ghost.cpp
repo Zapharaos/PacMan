@@ -91,7 +91,7 @@ void Ghost::handleStatus()
 
 void Ghost::handleStatusChange() {
 
-    if(status_changes_ >= config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
     {
         if(status_ == GhostStatus::kFrightened)
             status_ = GhostStatus::kFrightenedBlinking;
