@@ -29,7 +29,7 @@ void Ghost::tick(const Map &map, const Position &pacman) {
 
     handleStatus();
 
-    // TODO : map.findPath()
+    // TODO : MovingEntity::findPath() appelle fonctions de map avant d'appeler move()
     if(move(map, getNextDirection(map, pacman))) // Move legal.
         animate(getPreviousDirection());
 }
@@ -179,8 +179,6 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     auto next_position = current_position;
     auto next_cell = current_cell;
 
-    Direction reverse = next_direction_.reverse();
-
     if(!next_direction_.isUninitialized()) // only false at start or reset
     {
         // effective next cell
@@ -193,18 +191,20 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
         if(direction_reverse_) // reverse
         {
+            direction_reverse_ = false;
             next_position = current_position;
-            next_direction_ = reverse;
+            next_direction_ = getPreviousDirection().reverse();
         }
     }
 
-    auto directions = map.getAvailableDirections(next_cell, next_direction_, isZoneHorizontalOnly(), isGhostHouseDoorAccess());
+    auto current_direction = next_direction_;
+    auto directions = map.getAvailableDirections(next_cell, current_direction, isZoneHorizontalOnly(), isGhostHouseDoorAccess());
 
     if(directions.empty()) // nothing available
     {
         if(current_cell->isWarp() || next_cell->isWarp())
             return next_direction_;
-        next_direction_ = reverse;
+        direction_reverse_ = true;
     }
     else if(directions.size() == 1) // one way
     {
@@ -244,13 +244,9 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
         }
     }
 
-    if(direction_reverse_) // reverse
-    {
-        direction_reverse_ = false;
-        return reverse;
-    }
-
-    return next_direction_;
+    if(current_direction.isUninitialized())
+        return next_direction_;
+    return current_direction;
 }
 
 void Ghost::kill() {

@@ -174,19 +174,19 @@ public:
      * @brief Indicates if the entity is visible.
      * @return bool True if visible, else false.
      */
-    bool isVisible();
+    [[nodiscard]] bool isVisible() const;
 
     /**
      * @brief Indicates if the entity is hidden.
      * @return bool True if hidden, else false.
      */
-    bool isHidden();
+    [[nodiscard]] bool isHidden() const;
 
     /**
      * @brief Indicates if the entity is dead.
      * @return bool True if dead, else false.
      */
-    bool isDead();
+    [[nodiscard]] bool isDead() const;
 
     /**
      * @brief Toggles the entity status and its visibility according to the counter member.

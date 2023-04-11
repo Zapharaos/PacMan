@@ -213,6 +213,6 @@ Position Map::calculateDestination(const Position &origin, const Direction &dire
 {
     auto cell = getCell(origin.scaleDown(cell_size_));
     if(cell && cell->isTunnel() && zone_tunnel_slow)
-        speed /= 2;
+        speed /= config::settings::kSpeedDownRatio;
     return origin.moveIntoDirection(direction, speed);
 }

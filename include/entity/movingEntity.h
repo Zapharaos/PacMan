@@ -53,6 +53,7 @@ private:
     bool zone_tunnel_slow_ {false};
     bool zone_horizontal_only_ {false};
     bool ghost_house_door_access {false};
+    bool dead_speed_up {false};
 
 public:
 
@@ -141,7 +142,8 @@ public:
 
     void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
 
-    const Direction &getPreviousDirection() const;
+    [[nodiscard]] const Direction &getPreviousDirection() const;
+
 };
 
 

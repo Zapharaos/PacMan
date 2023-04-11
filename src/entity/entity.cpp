@@ -104,17 +104,17 @@ void Entity::freeze()
     status_ = EntityStatus::kFrozen;
 }
 
-bool Entity::isVisible()
+bool Entity::isVisible() const
 {
     return status_ == EntityStatus::kVisible;
 }
 
-bool Entity::isHidden()
+bool Entity::isHidden() const
 {
     return status_ == EntityStatus::kHidden;
 }
 
-bool Entity::isDead()
+bool Entity::isDead() const
 {
     return status_ == EntityStatus::kDead;
 }

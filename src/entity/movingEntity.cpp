@@ -16,6 +16,7 @@ MovingEntity::MovingEntity(const Position &position, bool enabled, int points, i
 {
     zone_tunnel_slow_ = true;
     zone_horizontal_only_ = true;
+    dead_speed_up = true;
 }
 
 MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
@@ -25,6 +26,8 @@ MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
 {}
 
 int MovingEntity::getSpeed() const {
+    if(isDead() && dead_speed_up)
+        return speed_ * config::settings::kSpeedUpRatio;
     return speed_;
 }
 
@@ -64,7 +67,7 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = map.calculateDestination(origin, previous_direction_, speed_, zone_tunnel_slow_);
+    Position destination = map.calculateDestination(origin, previous_direction_, getSpeed(), zone_tunnel_slow_);
 
     // Direction change.
     if(direction.isTurn(previous_direction_))
