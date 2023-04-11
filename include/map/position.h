@@ -106,14 +106,14 @@ public:
      * @param scale The scale factor.
      * @return A copy of the original object with its position scaled.
      */
-    [[nodiscard]] Position getPositionScaled(int scale) const;
+    [[nodiscard]] Position scaleUp(int scale) const;
 
     /**
-     * @brief Unscales the position.
+     * @brief Scales the position down.
      * @param scale The scale factor.
      * @return A copy of the original object with its position unscaled.
      */
-    [[nodiscard]] Position getPositionUnscaled(int scale) const;
+    [[nodiscard]] Position scaleDown(int scale) const;
 
     /**
      * @brief Indicates if two positions are neighbors.

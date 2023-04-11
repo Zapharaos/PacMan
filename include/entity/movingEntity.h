@@ -124,6 +124,8 @@ public:
      */
     virtual void animate(const Direction &direction);
 
+    void animate();
+
     /**
      * @brief Resets the entity to the given coordinates.
      */

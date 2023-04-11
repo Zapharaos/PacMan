@@ -84,17 +84,17 @@ Map::turn(const Position &origin, const Position &destination,
         return {};
 
     // Get cells at origin & destination
-    auto origin_position = origin.getPositionUnscaled(cell_size_);
-    auto destination_position = destination.getPositionUnscaled(cell_size_);
+    auto origin_position = origin.scaleDown(cell_size_);
+    auto destination_position = destination.scaleDown(cell_size_);
     auto origin_cell = getCell(origin_position);
     auto destination_cell = getCell(destination_position);
 
     // Get turning position (edge)
     Position edge;
     if (direction.isLeftOrUp())
-        edge = origin_cell->getPositionScaled();
+        edge = origin_cell->positionToPixels();
     else
-        edge = destination_cell->getPositionScaled();
+        edge = destination_cell->positionToPixels();
 
     // Edge not between origin & destination : turn is illegal
     if (!edge.isBetween(origin, destination))
@@ -117,8 +117,8 @@ Map::move(const Position &origin, const Position &destination,
         return destination;
 
     // Get cells at origin & destination
-    auto origin_position = origin.getPositionUnscaled(cell_size_);
-    auto destination_position = destination.getPositionUnscaled(cell_size_);
+    auto origin_position = origin.scaleDown(cell_size_);
+    auto destination_position = destination.scaleDown(cell_size_);
     auto origin_cell = getCell(origin_position);
     auto destination_cell = getCell(destination_position);
 
@@ -142,16 +142,16 @@ Map::move(const Position &origin, const Position &destination,
             return destination;
 
     // Facing wall & already in the corner of the cell : can't move further
-    if (origin_cell->equalsPositionScaled(origin))
+    if (origin == origin_cell->positionToPixels())
         return {};
 
     // Facing wall & not in the corner yet : get into the corner of the cell
-    return origin_cell->getPositionScaled();
+    return origin_cell->positionToPixels();
 }
 
 std::optional<Position> Map::warp(Position destination, Position corner) const {
-    auto destination_position = destination.getPositionUnscaled(cell_size_);
-    auto corner_position = corner.getPositionUnscaled(cell_size_);
+    auto destination_position = destination.scaleDown(cell_size_);
+    auto corner_position = corner.scaleDown(cell_size_);
     auto destination_cell = getCell(destination_position);
     auto corner_cell = getCell(corner_position);
 
@@ -166,8 +166,8 @@ std::optional<Position> Map::warp(Position destination, Position corner) const {
 
 bool Map::isWarping(const Position &origin, const Position &destination) const {
     // Get cells at origin & destination
-    auto origin_position = origin.getPositionUnscaled(cell_size_);
-    auto destination_position = destination.getPositionUnscaled(cell_size_);
+    auto origin_position = origin.scaleDown(cell_size_);
+    auto destination_position = destination.scaleDown(cell_size_);
     auto origin_cell = getCell(origin_position);
     auto destination_cell = getCell(destination_position);
 
@@ -211,7 +211,7 @@ Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &
 
 Position Map::calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const
 {
-    auto cell = getCell(origin.getPositionUnscaled(cell_size_));
+    auto cell = getCell(origin.scaleDown(cell_size_));
     if(cell && cell->isTunnel() && zone_tunnel_slow)
         speed /= 2;
     return origin.moveIntoDirection(direction, speed);

@@ -112,6 +112,11 @@ void MovingEntity::animate(const Direction &direction)
         setSprite(down_.animate(restart));
 }
 
+void MovingEntity::animate()
+{
+    MovingEntity::animate(previous_direction_);
+}
+
 void MovingEntity::reset()
 {
     previous_direction_.reset();

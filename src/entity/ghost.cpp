@@ -30,8 +30,9 @@ void Ghost::tick(const Map &map, const Position &pacman) {
     handleStatus();
 
     // TODO : map.findPath()
-    if(move(map, getNextDirection(map, pacman))) // Move legal.
-        animate(next_direction_);
+    Direction direction = getNextDirection(map, pacman);
+    if(move(map, direction)) // Move legal.
+        animate(direction);
 }
 
 void Ghost::frightened()
@@ -155,7 +156,7 @@ void Ghost::animate(const Direction &direction)
     else if(status_ == GhostStatus::kFrightenedBlinking)
         setSprite(frightened_blinking_.animate());
     else if(!isDead())
-        MovingEntity::animate(direction);
+        MovingEntity::animate();
     else
     {
         if(direction.isLeft())
@@ -172,7 +173,7 @@ void Ghost::animate(const Direction &direction)
 Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 {
     auto current_unscaled = getPosition();
-    auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
+    auto current_position = current_unscaled.scaleDown(map.getCellSize());
     auto current_cell = map.getCell(current_position);
 
     // default, next = current
@@ -185,7 +186,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     {
         // effective next cell
         auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, getSpeed(), isZoneTunnelSlow());
-        next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
+        next_position = next_unscaled.scaleDown(map.getCellSize());
         next_cell = map.getCell(next_position);
 
         if(current_cell == next_cell) // ignore : only update on cell change

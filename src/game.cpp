@@ -79,7 +79,7 @@ void Game::tick(const Direction &direction) {
     {
         // Get pacman sprite position.
         auto pacman = pacman_.getSprite().getPosition();
-        auto pacman_cell_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
+        auto pacman_cell_position = pacman_.getPosition().scaleDown(map_.getCellSize());
 
         // Tick entities.
         fruit_.tick();
@@ -265,8 +265,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
 
     // Get pacman current cell.
     auto pacman_position = Position{pacman.x, pacman.y};
-    auto cell_position = pacman_position.getPositionUnscaled(
-            map_.getCellSize());
+    auto cell_position = pacman_position.scaleDown(map_.getCellSize());
     auto cell = map_.getCell(cell_position);
     std::shared_ptr<Entity> entity;
 

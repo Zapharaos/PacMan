@@ -70,12 +70,12 @@ int Position::getSingleAxisDistance(const Position &position) const
     return abs(position_.first - position.position_.first);
 }
 
-Position Position::getPositionScaled(int scale) const
+Position Position::scaleUp(int scale) const
 {
     return Position{position_.first * scale, position_.second * scale};
 }
 
-Position Position::getPositionUnscaled(int scale) const
+Position Position::scaleDown(int scale) const
 {
     auto x = getAbscissa() / scale;
     auto y = getOrdinate() / scale;

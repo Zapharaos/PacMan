@@ -157,14 +157,6 @@ public:
     { return position_.isNeighbor(cell.position_); };
 
     /**
-     * @brief Check if a position fits perfectly on the cell.
-     * @param position Position in pixels.
-     * @return true if the position fits perfectly on the cell, false otherwise.
-     */
-    [[nodiscard]] inline bool equalsPositionScaled(const Position &position) const
-    { return position == getPositionScaled(); };
-
-    /**
      * @brief Returns the cell's position.
      * @return The cell's position.
      */
@@ -175,8 +167,8 @@ public:
      * @brief Returns the cell's position in pixels.
      * @return The cell's position in pixels.
      */
-    [[nodiscard]] Position getPositionScaled() const
-    { return position_.getPositionScaled(size_); };
+    [[nodiscard]] Position positionToPixels() const
+    { return position_.scaleUp(size_); };
 
 };
 
