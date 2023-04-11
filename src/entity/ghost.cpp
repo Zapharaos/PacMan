@@ -30,9 +30,8 @@ void Ghost::tick(const Map &map, const Position &pacman) {
     handleStatus();
 
     // TODO : map.findPath()
-    Direction direction = getNextDirection(map, pacman);
-    if(move(map, direction)) // Move legal.
-        animate(direction);
+    if(move(map, getNextDirection(map, pacman))) // Move legal.
+        animate(getPreviousDirection());
 }
 
 void Ghost::frightened()
@@ -99,7 +98,7 @@ void Ghost::handleStatusChange() {
     {
         if(isDead()) // Death.
         {
-            if (getPosition() == house_target_)
+            if (house_target_ == getPosition().scaleDown(config::dimensions::kWindowCellSize))
             {
                 setEnabled(true);
                 counter_.loadSave();
@@ -156,7 +155,7 @@ void Ghost::animate(const Direction &direction)
     else if(status_ == GhostStatus::kFrightenedBlinking)
         setSprite(frightened_blinking_.animate());
     else if(!isDead())
-        MovingEntity::animate();
+        MovingEntity::animate(direction);
     else
     {
         if(direction.isLeft())

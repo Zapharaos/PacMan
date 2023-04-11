@@ -124,8 +124,6 @@ public:
      */
     virtual void animate(const Direction &direction);
 
-    void animate();
-
     /**
      * @brief Resets the entity to the given coordinates.
      */
@@ -142,6 +140,8 @@ public:
     [[nodiscard]] bool isGhostHouseDoorAccess() const;
 
     void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
+
+    const Direction &getPreviousDirection() const;
 };
 
 

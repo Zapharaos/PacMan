@@ -112,11 +112,6 @@ void MovingEntity::animate(const Direction &direction)
         setSprite(down_.animate(restart));
 }
 
-void MovingEntity::animate()
-{
-    MovingEntity::animate(previous_direction_);
-}
-
 void MovingEntity::reset()
 {
     previous_direction_.reset();
@@ -147,4 +142,8 @@ bool MovingEntity::isGhostHouseDoorAccess() const {
 
 void MovingEntity::setGhostHouseDoorAccess(bool ghostHouseDoorAccess) {
     ghost_house_door_access = ghostHouseDoorAccess;
+}
+
+const Direction &MovingEntity::getPreviousDirection() const {
+    return previous_direction_;
 }
