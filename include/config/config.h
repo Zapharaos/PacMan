@@ -105,13 +105,13 @@ namespace config {
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
 
-                /** Ghost scatter target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kMapWidth * dimensions::kWindowCellSize};
-                inline constexpr int kTargetY {0 * dimensions::kWindowCellSize};
+                /** Ghost scatter target. */
+                inline constexpr int kTargetX {dimensions::kMapWidth};
+                inline constexpr int kTargetY {0};
 
-                /** Ghost dead target (in pixels). */
-                inline constexpr int kHouseX {10 * dimensions::kWindowCellSize};
-                inline constexpr int kHouseY {13 * dimensions::kWindowCellSize};
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {10};
+                inline constexpr int kHouseY {13};
             }
 
             namespace pinky {
@@ -119,13 +119,13 @@ namespace config {
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {13 * dimensions::kWindowCellSize};
 
-                /** Ghost scatter target (in pixels). */
-                inline constexpr int kTargetX {0 * dimensions::kWindowCellSize};
-                inline constexpr int kTargetY {0 * dimensions::kWindowCellSize};
+                /** Ghost scatter target. */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {0};
 
-                /** Ghost dead target (in pixels). */
-                inline constexpr int kHouseX {10 * dimensions::kWindowCellSize};
-                inline constexpr int kHouseY {13 * dimensions::kWindowCellSize};
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {10};
+                inline constexpr int kHouseY {13};
             }
 
             namespace inky {
@@ -133,13 +133,13 @@ namespace config {
                 inline constexpr int kDefaultX {9 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
-                /** Ghost scatter target (in pixels). */
-                inline constexpr int kTargetX {dimensions::kMapWidth * dimensions::kWindowCellSize};
-                inline constexpr int kTargetY {dimensions::kMapHeight * dimensions::kWindowCellSize};
+                /** Ghost scatter target. */
+                inline constexpr int kTargetX {dimensions::kMapWidth};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
 
-                /** Ghost dead target (in pixels). */
-                inline constexpr int kHouseX {9 * dimensions::kWindowCellSize};
-                inline constexpr int kHouseY {13 * dimensions::kWindowCellSize};
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {9};
+                inline constexpr int kHouseY {13};
             }
 
             namespace clyde {
@@ -147,13 +147,13 @@ namespace config {
                 inline constexpr int kDefaultX {11 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
-                /** Ghost scatter target (in pixels). */
-                inline constexpr int kTargetX {0 * dimensions::kWindowCellSize};
-                inline constexpr int kTargetY {dimensions::kMapHeight * dimensions::kWindowCellSize};
+                /** Ghost scatter target. */
+                inline constexpr int kTargetX {0};
+                inline constexpr int kTargetY {dimensions::kMapHeight};
 
-                /** Ghost dead target (in pixels). */
-                inline constexpr int kHouseX {11 * dimensions::kWindowCellSize};
-                inline constexpr int kHouseY {13 * dimensions::kWindowCellSize};
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {11};
+                inline constexpr int kHouseY {13};
             }
         }
 

@@ -17,8 +17,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
 
     // Pacman already done at compilation (default).
     fruit_ = Fruit{pellets_total_};
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kBlinky,
-                               Position{config::positions::entities::blinky::kDefaultX,
+    ghosts_.emplace_back(Ghost{Position{config::positions::entities::blinky::kDefaultX,
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::blinky::kTargetX,
                                         config::positions::entities::blinky::kTargetY},
@@ -28,9 +27,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::blinky::right::kAnimation,
                                visuals::ghosts::blinky::up::kAnimation,
                                visuals::ghosts::blinky::down::kAnimation});
-    /*ghosts_.emplace_back(Ghost{Ghost::GhostType::kPinky,
-                               Position{config::positions::entities::blinky::kDefaultX,
-                                        config::positions::entities::blinky::kDefaultY},
+    /*ghosts_.emplace_back(Ghost{Position{config::positions::entities::pinky::kDefaultX,
+                                        config::positions::entities::pinky::kDefaultY},
                                Position{config::positions::entities::pinky::kTargetX,
                                         config::positions::entities::pinky::kTargetY},
                                Position{config::positions::entities::pinky::kHouseX,
@@ -39,9 +37,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::pinky::right::kAnimation,
                                visuals::ghosts::pinky::up::kAnimation,
                                visuals::ghosts::pinky::down::kAnimation});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kInky,
-                               Position{config::positions::entities::blinky::kDefaultX,
-                                        config::positions::entities::blinky::kDefaultY},
+    ghosts_.emplace_back(Ghost{Position{config::positions::entities::inky::kDefaultX,
+                                        config::positions::entities::inky::kDefaultY},
                                Position{config::positions::entities::inky::kTargetX,
                                         config::positions::entities::inky::kTargetY},
                                Position{config::positions::entities::inky::kHouseX,
@@ -50,9 +47,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::inky::right::kAnimation,
                                visuals::ghosts::inky::up::kAnimation,
                                visuals::ghosts::inky::down::kAnimation});
-    ghosts_.emplace_back(Ghost{Ghost::GhostType::kClyde,
-                               Position{config::positions::entities::blinky::kDefaultX,
-                                        config::positions::entities::blinky::kDefaultY},
+    ghosts_.emplace_back(Ghost{Position{config::positions::entities::clyde::kDefaultX,
+                                        config::positions::entities::clyde::kDefaultY},
                                Position{config::positions::entities::clyde::kTargetX,
                                         config::positions::entities::clyde::kTargetY},
                                Position{config::positions::entities::clyde::kHouseX,
@@ -83,12 +79,13 @@ void Game::tick(const Direction &direction) {
     {
         // Get pacman sprite position.
         auto pacman = pacman_.getSprite().getPosition();
+        auto pacman_cell_position = pacman_.getPosition().getPositionUnscaled(map_.getCellSize());
 
         // Tick entities.
         fruit_.tick();
         pacman_.tick(map_, direction);
         for(auto &ghost : ghosts_)
-            ghost.tick(map_, pacman_.getPosition());
+            ghost.tick(map_, pacman_cell_position);
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);
@@ -97,7 +94,6 @@ void Game::tick(const Direction &direction) {
     // Update game visuals.
     display();
 }
-
 
 void Game::display() {
     window_.clear();

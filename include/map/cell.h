@@ -29,7 +29,8 @@ enum class CellType
     kTunnel, /* Tunnel type cell */
     kGhostHouseDoor, /* Ghost house door type cell */
     kGhostOnlyHorizontal, /* Ghost only horizontal type cell */
-    kGhostOnlyHorizontalAndPellet /* Pellet & Ghost only horizontal type cell */
+    kGhostOnlyHorizontalAndPellet, /* Pellet & Ghost only horizontal type cell */
+    kGhostHouse /* Ghost house type cell */
 };
 
 /**
@@ -127,6 +128,13 @@ public:
              type_ == CellType::kGhostOnlyHorizontalAndPellet; };
 
     /**
+     * @brief Check if the cell is the ghost house.
+     * @return true if the cell is the ghost house, false otherwise.
+     */
+    [[nodiscard]] inline bool isGhostHouse() const
+    { return type_ == CellType::kGhostHouse; };
+
+    /**
      * @brief Getter for the type of cell.
      * @return Type of cell.
      */
@@ -155,6 +163,13 @@ public:
      */
     [[nodiscard]] inline bool equalsPositionScaled(const Position &position) const
     { return position == getPositionScaled(); };
+
+    /**
+     * @brief Returns the cell's position.
+     * @return The cell's position.
+     */
+    [[nodiscard]] Position getPosition() const
+    { return position_; };
 
     /**
      * @brief Returns the cell's position in pixels.

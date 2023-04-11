@@ -50,8 +50,9 @@ private:
      * @details Used to determine a swap of animation. */
     Direction previous_direction_{};
 
-    /** If the entity is slowed down while moving inside tunnels. */
-    bool tunnel_slow_ {false};
+    bool zone_tunnel_slow_ {false};
+    bool zone_horizontal_only_ {false};
+    bool ghost_house_door_access {false};
 
 public:
 
@@ -96,12 +97,6 @@ public:
     [[nodiscard]] int getSpeed() const;
 
     /**
-     * @brief Gets if the entity is slowed down while moving inside tunnels.
-     * @return True if the entity is slowed down while moving inside tunnels, otherwise false.
-     */
-    [[nodiscard]] bool isTunnelSlow() const;
-
-    /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
@@ -134,6 +129,17 @@ public:
      */
     virtual void reset();
 
+    [[nodiscard]] bool isZoneTunnelSlow() const;
+
+    void setZoneTunnelSlow(bool zoneTunnelSlow);
+
+    [[nodiscard]] bool isZoneHorizontalOnly() const;
+
+    void setZoneHorizontalOnly(bool zoneHorizontalOnly);
+
+    [[nodiscard]] bool isGhostHouseDoorAccess() const;
+
+    void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
 };
 
 

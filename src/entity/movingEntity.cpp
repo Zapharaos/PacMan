@@ -14,7 +14,8 @@ MovingEntity::MovingEntity(const Position &position, bool enabled, int points, i
         Entity(position, left.getSprite(), enabled, points), start_(position), speed_(speed),
         left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
 {
-    tunnel_slow_ = true; // Ghosts are slowed down inside tunnels.
+    zone_tunnel_slow_ = true;
+    zone_horizontal_only_ = true;
 }
 
 MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
@@ -25,10 +26,6 @@ MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
 
 int MovingEntity::getSpeed() const {
     return speed_;
-}
-
-bool MovingEntity::isTunnelSlow() const {
-    return tunnel_slow_;
 }
 
 void MovingEntity::tick(const Map &map, Direction direction)
@@ -67,12 +64,12 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = map.calculateDestination(origin, previous_direction_, tunnel_slow_, isDead() ? speed_*2 : speed_);
+    Position destination = map.calculateDestination(origin, previous_direction_, speed_, zone_tunnel_slow_);
 
     // Direction change.
     if(direction.isTurn(previous_direction_))
     {
-        position = map.turn(origin, destination, previous_direction_, direction);
+        position = map.turn(origin, destination, previous_direction_, direction, zone_horizontal_only_, ghost_house_door_access);
         if(!position) // Turn is illegal.
             direction = previous_direction_; // Move into previous direction.
     }
@@ -88,7 +85,7 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // No movements yet : move straight direction (or keeping same direction).
     if(!position)
     {
-        position = map.move(origin, destination, direction);
+        position = map.move(origin, destination, direction, zone_horizontal_only_, ghost_house_door_access);
         if (!position)
             return false; // Move is illegal.
     }
@@ -121,4 +118,28 @@ void MovingEntity::reset()
     left_.reset();
     setSprite(left_.getSprite()); // default sprite
     setPosition(start_); // reset position
+}
+
+bool MovingEntity::isZoneTunnelSlow() const {
+    return zone_tunnel_slow_;
+}
+
+void MovingEntity::setZoneTunnelSlow(bool zoneTunnelSlow) {
+    zone_tunnel_slow_ = zoneTunnelSlow;
+}
+
+bool MovingEntity::isZoneHorizontalOnly() const {
+    return zone_horizontal_only_;
+}
+
+void MovingEntity::setZoneHorizontalOnly(bool zoneHorizontalOnly) {
+    zone_horizontal_only_ = zoneHorizontalOnly;
+}
+
+bool MovingEntity::isGhostHouseDoorAccess() const {
+    return ghost_house_door_access;
+}
+
+void MovingEntity::setGhostHouseDoorAccess(bool ghostHouseDoorAccess) {
+    ghost_house_door_access = ghostHouseDoorAccess;
 }

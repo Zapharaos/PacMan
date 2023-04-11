@@ -20,25 +20,12 @@ class Ghost : public MovingEntity
 public:
 
     /**
-     * @brief Represents the different types of Ghosts.
-     */
-    enum class GhostType
-    {
-        kUndefined, /* Undefined Ghost type. */
-        kBlinky, /* Blinky Ghost type. */
-        kPinky, /* Pinky Ghost type. */
-        kInky, /* Inky Ghost type. */
-        kClyde /* Clyde Ghost type. */
-    };
-
-    /**
      * @brief Default Ghost constructor.
      */
     Ghost();
 
     /**
      * @brief Constructs a Ghost entity with the given type and position.
-     * @param type Which type of ghosts.
      * @param position Raw position.
      * @param scatter_target The position the Ghost is targeting while in scatter mode.
      * @param house_target The position the Ghost is returning to when killed.
@@ -47,7 +34,7 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    Ghost(Ghost::GhostType type, const Position &position, Position scatter_target,
+    Ghost(const Position &position, Position scatter_target,
           Position house_target, Animation left, Animation right, Animation up, Animation down);
 
     /**
@@ -79,9 +66,6 @@ public:
     void kill() override;
 
 private:
-
-    /** The type of ghost. */
-    GhostType type_ {GhostType::kUndefined};
 
     enum class GhostStatus
     {

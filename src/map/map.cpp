@@ -76,8 +76,8 @@ const Sprite &Map::getSprite() const {
 
 std::optional<Position>
 Map::turn(const Position &origin, const Position &destination,
-          const Direction &direction,
-          const Direction &turn) const
+          const Direction &direction, const Direction &turn,
+          bool zone_horizontal_only, bool ghost_house_door_access) const
 {
     // Can't turn while warping.
     if(isWarping(origin, destination))
@@ -105,12 +105,16 @@ Map::turn(const Position &origin, const Position &destination,
                     origin.getSingleAxisDistance(edge);
 
     // Move into new direction
-    return move(edge, edge.moveIntoDirection(turn, distance), turn);
+    return move(edge, edge.moveIntoDirection(turn, distance), turn, zone_horizontal_only, ghost_house_door_access);
 }
 
 std::optional<Position>
 Map::move(const Position &origin, const Position &destination,
-          const Direction &direction) const {
+          const Direction &direction, bool zone_horizontal_only, bool ghost_house_door_access) const {
+
+    // One of the cells is out of bounds : warp cell.
+    if(isWarping(origin, destination))
+        return destination;
 
     // Get cells at origin & destination
     auto origin_position = origin.getPositionUnscaled(cell_size_);
@@ -118,22 +122,24 @@ Map::move(const Position &origin, const Position &destination,
     auto origin_cell = getCell(origin_position);
     auto destination_cell = getCell(destination_position);
 
-    // One of the cells is out of bounds : warp cell.
-    if (!origin_cell || !destination_cell)
-        return destination;
-
     // Destination not directly accessible : move illegal
     if (origin_cell != destination_cell &&
         !destination_cell->isNeighbor((origin_cell.operator*())))
         return {};
 
+    if(zone_horizontal_only && direction.isVertical() && origin_cell->isGhostHorizontal())
+        return {};
+
     // Get next cell : in order to check for walls
-    auto next_cell = direction.isLeftOrUp() ? destination_cell : getCell(
-            origin_position.getNeighbor(direction));
+    auto next_cell = direction.isLeftOrUp() ? destination_cell :
+            getCell(origin_position.getNeighbor(direction));
+
+    if(!ghost_house_door_access && next_cell && next_cell->isGhostHouseDoor())
+        return {};
 
     // Ouf of bounds (warp) or is not a wall : move to destination
     if (!next_cell || !next_cell->isWall())
-        return destination;
+            return destination;
 
     // Facing wall & already in the corner of the cell : can't move further
     if (origin_cell->equalsPositionScaled(origin))
@@ -181,18 +187,21 @@ void Map::animate() {
 }
 
 std::set<Direction>
-Map::getAvailableDirections(const Position &position, const Direction &direction,
-                            bool ghost_dead, bool forbid_ghost_vertical) const {
+Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
+                            bool zone_horizontal_only, bool ghost_house_door_access) const {
     std::set<Direction> directions;
+    if(!cell) return directions;
+    auto position = cell->getPosition();
+    zone_horizontal_only = cell->isGhostHorizontal() && zone_horizontal_only;
     for (auto &element: Direction::directions) {
         Direction element_direction = Direction{element};
         if (element_direction == direction.reverse()) // Instant reverse not allowed
             continue;
-        auto cell = getCell(position.getNeighbor(element_direction));
+        auto neighbor = getCell(position.getNeighbor(element_direction));
         // Cell not reachable or special zone where ghosts only move horizontally
-        if (!cell || cell->isWall() ||
-                (!ghost_dead && cell->isGhostHouseDoor()) ||
-                (forbid_ghost_vertical && !element_direction.isHorizontal()))
+        if (!neighbor || neighbor->isWall() ||
+                (!ghost_house_door_access && neighbor->isGhostHouseDoor()) ||
+                (zone_horizontal_only && element_direction.isVertical()))
             continue;
         directions.insert(directions.end(), element_direction);
     }
@@ -200,9 +209,10 @@ Map::getAvailableDirections(const Position &position, const Direction &direction
 }
 
 
-Position Map::calculateDestination(const Position &origin, const Direction &direction, bool tunnel_slow, int speed) const
+Position Map::calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const
 {
     auto cell = getCell(origin.getPositionUnscaled(cell_size_));
-    speed = tunnel_slow && cell && cell->isTunnel() ? speed/2 : speed;
+    if(cell && cell->isTunnel() && zone_tunnel_slow)
+        speed /= 2;
     return origin.moveIntoDirection(direction, speed);
 }

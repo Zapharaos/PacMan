@@ -98,7 +98,7 @@ public:
      */
     [[nodiscard]] std::optional<Position>
     turn(const Position &origin, const Position &destination, const Direction &direction,
-               const Direction &turn) const;
+               const Direction &turn, bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief If legal, moves into a direction.
@@ -109,7 +109,8 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
-    move(const Position &origin, const Position &destination, const Direction &direction) const;
+    move(const Position &origin, const Position &destination,
+         const Direction &direction, bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief Tries to warp.
@@ -148,20 +149,17 @@ public:
      * @return Set of Direction.
      */
     [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const Position &position, const Direction &direction,
-                           bool ghost_dead, bool forbid_ghost_vertical) const;
+    getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
+                           bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief Calculates the destination from a position into a direction.
      * @param origin The initial position.
      * @param direction The direction to move towards to.
-     * @param tunnel_slow True if slowed down inside tunnels, otherwise false.
-     * @param speed The initial speed value.
      * @return The position of destination.
      */
     [[nodiscard]] Position
-    calculateDestination(const Position &origin, const Direction &direction,
-                         bool tunnel_slow, int speed) const;
+    calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const;
 };
 
 

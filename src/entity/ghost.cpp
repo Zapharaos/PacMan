@@ -11,9 +11,9 @@
 
 Ghost::Ghost() = default;
 
-Ghost::Ghost(Ghost::GhostType type, const Position &position, Position scatter_target,
+Ghost::Ghost(const Position &position, Position scatter_target,
              Position house_target, Animation left, Animation right, Animation up, Animation down) :
-    type_(type), scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
+    scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
@@ -29,6 +29,7 @@ void Ghost::tick(const Map &map, const Position &pacman) {
 
     handleStatus();
 
+    // TODO : map.findPath()
     if(move(map, getNextDirection(map, pacman))) // Move legal.
         animate(next_direction_);
 }
@@ -42,6 +43,7 @@ void Ghost::frightened()
     {
         previous_status_ = status_;
         direction_reverse_ = true;
+        setZoneHorizontalOnly(false);
     }
 
     if(status_timers.at(1) == 0)
@@ -61,6 +63,7 @@ void Ghost::unfrightened()
         counter_.loadSave();
     status_ = previous_status_;
     next_direction_.reset();
+    setZoneHorizontalOnly(true);
 }
 
 void Ghost::reset()
@@ -101,6 +104,9 @@ void Ghost::handleStatusChange() {
                 counter_.loadSave();
                 status_ = previous_status_;
                 next_direction_.reset();
+                setZoneTunnelSlow(true);
+                setZoneHorizontalOnly(true);
+                setGhostHouseDoorAccess(false);
                 show();
             }
         }
@@ -178,7 +184,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
     if(!next_direction_.isUninitialized()) // only false at start or reset
     {
         // effective next cell
-        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), isDead() ? getSpeed()*2 : getSpeed());
+        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, getSpeed(), isZoneTunnelSlow());
         next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
         next_cell = map.getCell(next_position);
 
@@ -192,14 +198,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
         }
     }
 
-    bool forbid_ghost_vertical = false;
-
-    if(current_position.getAbscissa() == 11 && current_position.getOrdinate() == 10)
-        forbid_ghost_vertical = false;
-
-    if(!isFrightened() && status_ != GhostStatus::kDead)
-        forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
-    auto directions = map.getAvailableDirections(next_position, next_direction_, status_ == GhostStatus::kDead, forbid_ghost_vertical);
+    auto directions = map.getAvailableDirections(next_cell, next_direction_, isZoneHorizontalOnly(), isGhostHouseDoorAccess());
 
     if(directions.empty()) // nothing available
     {
@@ -235,8 +234,7 @@ Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
 
         for(auto &element : directions)
         {
-            auto position_scaled = next_position.getNeighbor(Direction{element});
-            auto position = position_scaled.getPositionScaled(map.getCellSize());
+            auto position = next_position.getNeighbor(Direction{element});
             double distance = target.getDistance(position);
             if(distance < min_distance)
             {
@@ -264,5 +262,8 @@ void Ghost::kill() {
     status_ = GhostStatus::kDead;
     counter_.stop();
     next_direction_.reset();
+    setZoneTunnelSlow(false);
+    setZoneHorizontalOnly(false);
+    setGhostHouseDoorAccess(true);
     Entity::kill();
 }
