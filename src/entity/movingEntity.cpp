@@ -83,6 +83,9 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         }
     }
 
+    if(next_position.getAbscissa() == 20 && next_position.getOrdinate() == 13)
+        next_position = next_position;
+
     if(next_position == target) // reached the target
         return next_direction_;
 
@@ -96,8 +99,8 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
     }
 
     // warping : move instantly towards the next direction
-    if(next_direction_.isUninitialized() && current_cell->isWarp() || next_cell->isWarp())
-        return next_direction_;
+    if(current_direction == next_direction_.reverse() && (current_cell->isWarp() || next_cell->isWarp()))
+        return (next_direction_ = current_direction);
 
     // turning : move instantly towards the next direction
     if(current_direction.isTurn(next_direction_))

@@ -63,10 +63,7 @@ void Ghost::handleStatusChange() {
     {
         if(isDead()) // Death.
         {
-            auto position =  getPosition().scaleDown(config::dimensions::kWindowCellSize);
-            if(position.getAbscissa() == 10 && position.getOrdinate() == 10)
-                position = position;
-            if (house_target_ == position)
+            if (house_target_ == getPosition().scaleDown(config::dimensions::kWindowCellSize))
             {
                 setEnabled(true);
                 counter_.loadSave();
