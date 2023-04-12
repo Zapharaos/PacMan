@@ -114,6 +114,14 @@ public:
     virtual void handleStatus();
 
     /**
+     * @brief Prepares the next move.
+     * @param map The board with all the cells.
+     * @param target The position the entity is targeting.
+     * @return The direction to take in order to reach the target.
+     */
+    Direction prepare(const Map &map, std::optional<Position> target);
+
+    /**
      * @brief Moves the entity in the given direction if it is a legal move.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
@@ -143,8 +151,6 @@ public:
     void setDirectionReverse(bool directionReverse);
 
     void resetNextDirection();
-
-    Direction prepare(const Map &map, std::optional<Position> target);
 
     [[nodiscard]] const Direction &getPreviousDirection() const;
 

@@ -113,6 +113,19 @@ public:
          const Direction &direction, bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
+     * @brief Indicates which direction to go to reach the target.
+     * @param origin The starting position.
+     * @param target The target position.
+     * @param current_direction Direction taken to reach the origin position.
+     * @param zone_horizontal_only True if entity is sensible to the only horizontal zone, otherwise false.
+     * @param ghost_house_door_access True if the entity is allowed to pass by the ghost house door, otherwise false.
+     * @return The direction to take in order to reach the target.
+     */
+    [[nodiscard]] Direction
+    path(const Position &origin, std::optional<Position> &target, const Direction &current_direction,
+                   bool zone_horizontal_only, bool ghost_house_door_access) const;
+
+    /**
      * @brief Tries to warp.
      * @param destination The destination position.
      * @param corner The opposite corner of the current position.
@@ -131,6 +144,29 @@ public:
     isWarping(const Position &origin, const Position &destination) const;
 
     /**
+     * @brief Indicates all available directions from a specific position.
+     * @param cell The starting cell.
+     * @param direction Direction taken to reach the cell.
+     * @param zone_horizontal_only True if entity is sensible to the only horizontal zone, otherwise false.
+     * @param ghost_house_door_access True if the entity is allowed to pass by the ghost house door, otherwise false.
+     * @return A set of available directions from a starting cell.
+     */
+    [[nodiscard]] std::set<Direction>
+    getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
+                           bool zone_horizontal_only, bool ghost_house_door_access) const;
+
+    /**
+     * @brief Calculates the destination from a position into a direction.
+     * @param origin The starting position.
+     * @param direction The direction taken.
+     * @param speed The speed at which the entity is moving.
+     * @param zone_tunnel_slow True if the entity is slowed when moving through tunnels, otherwise false.
+     * @return The position of destination.
+     */
+    [[nodiscard]] Position
+    calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const;
+
+    /**
      * @brief Resets all cells on the map to their original state.
      */
     void reset() const;
@@ -140,30 +176,6 @@ public:
      */
     void animate();
 
-    /**
-     * @brief Indicates all available directions from a specific position.
-     * @param position The current position.
-     * @param direction The current direction (to reach the current position).
-     * @param ghost_dead True if the ghost is dead (enables to move in/out the ghost house), otherwise false.
-     * @param forbid_ghost_vertical True if the current position is located within the special zone.
-     * @return Set of Direction.
-     */
-    [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
-                           bool zone_horizontal_only, bool ghost_house_door_access) const;
-
-    /**
-     * @brief Calculates the destination from a position into a direction.
-     * @param origin The initial position.
-     * @param direction The direction to move towards to.
-     * @return The position of destination.
-     */
-    [[nodiscard]] Position
-    calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const;
-
-    Direction findPath(const Position &origin, std::optional<Position> &target,
-                       const Direction &current_direction,
-                       bool zone_horizontal_only, bool ghost_house_door_access) const;
 };
 
 

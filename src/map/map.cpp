@@ -149,6 +149,42 @@ Map::move(const Position &origin, const Position &destination,
     return origin_cell->positionToPixels();
 }
 
+Direction
+Map::path(const Position &origin, std::optional<Position> &target, const Direction &current_direction,
+                    bool zone_horizontal_only, bool ghost_house_door_access) const {
+
+    Direction direction;
+    auto cell = getCell(origin);
+
+    if(!cell)
+        return direction;
+
+    auto directions = getAvailableDirections(cell, current_direction, zone_horizontal_only, ghost_house_door_access);
+    // TODO : remove if directions contains current_direction.reverse()
+
+    if(directions.empty()) // nothing available
+        return current_direction.reverse();
+
+    if(directions.size() == 1) // one way
+        return *(directions.begin());
+
+    if(!target) // intersection : random
+        return Direction{getRandomElementFromSet(directions)};
+
+    double min_distance = std::numeric_limits<double>::max();
+    for(auto &element : directions)
+    {
+        auto position = origin.getNeighbor(Direction{element});
+        double distance = target->getDistance(position);
+        if(distance < min_distance)
+        {
+            min_distance = distance;
+            direction = Direction{element};
+        }
+    }
+    return direction;
+}
+
 std::optional<Position> Map::warp(Position destination, Position corner) const {
     auto destination_position = destination.scaleDown(cell_size_);
     auto corner_position = corner.scaleDown(cell_size_);
@@ -176,16 +212,6 @@ bool Map::isWarping(const Position &origin, const Position &destination) const {
     return (!origin_cell || origin_cell->isWarp()) && !destination_cell;
 }
 
-void Map::reset() const {
-    // Enables all cell entities back
-    for (auto &cell: getCellsWithEntities())
-        cell->getEntity()->setEnabled(true);
-}
-
-void Map::animate() {
-    sprite_ = animation_.animate();
-}
-
 std::set<Direction>
 Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
                             bool zone_horizontal_only, bool ghost_house_door_access) const {
@@ -209,43 +235,21 @@ Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &
 }
 
 
-Position Map::calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const
+Position
+Map::calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const
 {
     auto cell = getCell(origin.scaleDown(cell_size_));
-    if(cell && cell->isTunnel() && zone_tunnel_slow)
+    if(cell && cell->isTunnel() && zone_tunnel_slow) // Slow
         speed /= config::settings::kSpeedDownRatio;
     return origin.moveIntoDirection(direction, speed);
 }
 
-Direction Map::findPath(const Position &origin, std::optional<Position> &target, const Direction &current_direction,
-                        bool zone_horizontal_only, bool ghost_house_door_access) const {
-    auto cell = getCell(origin);
+void Map::reset() const {
+    // Enables all cell entities back
+    for (auto &cell: getCellsWithEntities())
+        cell->getEntity()->setEnabled(true);
+}
 
-    if(!cell) return {};
-
-    auto directions = getAvailableDirections(cell, current_direction, zone_horizontal_only, ghost_house_door_access);
-
-    if(directions.empty()) // nothing available
-        return current_direction.reverse();
-
-    if(directions.size() == 1) // one way
-        return *(directions.begin());
-
-    if(!target) // intersection : random
-        return Direction{getRandomElementFromSet(directions)};
-
-    Direction direction;
-    double min_distance = std::numeric_limits<double>::max();
-
-    for(auto &element : directions)
-    {
-        auto position = origin.getNeighbor(Direction{element});
-        double distance = target->getDistance(position);
-        if(distance < min_distance)
-        {
-            min_distance = distance;
-            direction = Direction{element};
-        }
-    }
-    return direction;
+void Map::animate() {
+    sprite_ = animation_.animate();
 }
