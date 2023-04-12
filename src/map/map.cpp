@@ -216,3 +216,36 @@ Position Map::calculateDestination(const Position &origin, const Direction &dire
         speed /= config::settings::kSpeedDownRatio;
     return origin.moveIntoDirection(direction, speed);
 }
+
+Direction Map::findPath(const Position &origin, std::optional<Position> &target, const Direction &current_direction,
+                        bool zone_horizontal_only, bool ghost_house_door_access) const {
+    auto cell = getCell(origin);
+
+    if(!cell) return {};
+
+    auto directions = getAvailableDirections(cell, current_direction, zone_horizontal_only, ghost_house_door_access);
+
+    if(directions.empty()) // nothing available
+        return current_direction.reverse();
+
+    if(directions.size() == 1) // one way
+        return *(directions.begin());
+
+    if(!target) // intersection : random
+        return Direction{getRandomElementFromSet(directions)};
+
+    Direction direction;
+    double min_distance = std::numeric_limits<double>::max();
+
+    for(auto &element : directions)
+    {
+        auto position = origin.getNeighbor(Direction{element});
+        double distance = target->getDistance(position);
+        if(distance < min_distance)
+        {
+            min_distance = distance;
+            direction = Direction{element};
+        }
+    }
+    return direction;
+}

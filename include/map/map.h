@@ -160,6 +160,10 @@ public:
      */
     [[nodiscard]] Position
     calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const;
+
+    Direction findPath(const Position &origin, std::optional<Position> &target,
+                       const Direction &current_direction,
+                       bool zone_horizontal_only, bool ghost_house_door_access) const;
 };
 
 

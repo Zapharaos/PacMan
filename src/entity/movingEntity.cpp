@@ -87,41 +87,12 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         return next_direction_;
 
     auto current_direction = next_direction_;
-    auto directions = map.getAvailableDirections(next_cell, current_direction, zone_horizontal_only_, ghost_house_door_access_);
-
-    if(directions.empty()) // nothing available
-    {
-        if(current_cell->isWarp() || next_cell->isWarp())
-            return next_direction_;
-        direction_reverse_ = true;
-    }
-    else if(directions.size() == 1) // one way
-    {
-        next_direction_ = *(directions.begin());
-    }
-    else if(!target) // intersection : random
-    {
-        next_direction_ = Direction{getRandomElementFromSet(directions)};
-    }
-    else // intersection : pathfinding
-    {
-        // TODO :
-//        next_direction = map.findPath(next_position, directions, target);
-        double min_distance = std::numeric_limits<double>::max();
-
-        for(auto &element : directions)
-        {
-            auto position = next_position.getNeighbor(Direction{element});
-            double distance = target->getDistance(position);
-            if(distance < min_distance)
-            {
-                min_distance = distance;
-                next_direction_ = Direction{element};
-            }
-        }
-    }
+    next_direction_ = map.findPath(next_position, target, current_direction, zone_horizontal_only_, ghost_house_door_access_);
 
     if(current_direction.isUninitialized())
+        return next_direction_;
+
+    if(next_direction_.isUninitialized() && current_cell->isWarp() || next_cell->isWarp())
         return next_direction_;
 
     if(current_direction.isTurn(next_direction_))
