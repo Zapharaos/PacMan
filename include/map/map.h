@@ -146,14 +146,12 @@ public:
     /**
      * @brief Indicates all available directions from a specific position.
      * @param cell The starting cell.
-     * @param direction Direction taken to reach the cell.
      * @param zone_horizontal_only True if entity is sensible to the only horizontal zone, otherwise false.
      * @param ghost_house_door_access True if the entity is allowed to pass by the ghost house door, otherwise false.
      * @return A set of available directions from a starting cell.
      */
     [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
-                           bool zone_horizontal_only, bool ghost_house_door_access) const;
+    getAvailableDirections(const std::shared_ptr<Cell>& cell, bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief Calculates the destination from a position into a direction.

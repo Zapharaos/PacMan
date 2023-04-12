@@ -159,8 +159,8 @@ Map::path(const Position &origin, std::optional<Position> &target, const Directi
     if(!cell)
         return direction;
 
-    auto directions = getAvailableDirections(cell, current_direction, zone_horizontal_only, ghost_house_door_access);
-    // TODO : remove if directions contains current_direction.reverse()
+    auto directions = getAvailableDirections(cell, zone_horizontal_only, ghost_house_door_access);
+    directions.erase(current_direction.reverse());
 
     if(directions.empty()) // nothing available
         return current_direction.reverse();
@@ -213,16 +213,13 @@ bool Map::isWarping(const Position &origin, const Position &destination) const {
 }
 
 std::set<Direction>
-Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, const Direction &direction,
-                            bool zone_horizontal_only, bool ghost_house_door_access) const {
+Map::getAvailableDirections(const std::shared_ptr<Cell>& cell, bool zone_horizontal_only, bool ghost_house_door_access) const {
     std::set<Direction> directions;
     if(!cell) return directions;
     auto position = cell->getPosition();
     zone_horizontal_only = cell->isGhostHorizontal() && zone_horizontal_only;
     for (auto &element: Direction::directions) {
         Direction element_direction = Direction{element};
-        if (element_direction == direction.reverse()) // Instant reverse not allowed
-            continue;
         auto neighbor = getCell(position.getNeighbor(element_direction));
         // Cell not reachable or special zone where ghosts only move horizontally
         if (!neighbor || neighbor->isWall() ||

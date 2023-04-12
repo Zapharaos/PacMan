@@ -87,7 +87,7 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         return next_direction_;
 
     auto current_direction = next_direction_; // local save before override
-    next_direction_ = map.findPath(next_position, target, current_direction, zone_horizontal_only_, ghost_house_door_access_);
+    next_direction_ = map.path(next_position, target, current_direction, zone_horizontal_only_, ghost_house_door_access_);
 
     if(current_direction.isUninitialized()) // only true at start or reset
     {
