@@ -112,15 +112,15 @@ std::optional<Position>
 Map::move(const Position &origin, const Position &destination,
           const Direction &direction, bool zone_horizontal_only, bool ghost_house_door_access) const {
 
-    // One of the cells is out of bounds : warp cell.
-    if(isWarping(origin, destination))
-        return destination;
-
     // Get cells at origin & destination
     auto origin_position = origin.scaleDown(cell_size_);
     auto destination_position = destination.scaleDown(cell_size_);
     auto origin_cell = getCell(origin_position);
     auto destination_cell = getCell(destination_position);
+
+    // One of the cells is out of bounds : warp cell.
+    if(!origin_cell || !destination_cell)
+        return destination;
 
     // Destination not directly accessible : move illegal
     if (origin_cell != destination_cell &&

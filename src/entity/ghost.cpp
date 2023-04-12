@@ -25,54 +25,19 @@ Ghost::Ghost(const Position &position, Position scatter_target,
     dead_down_ = visuals::ghosts::dead::down::kAnimation;
 }
 
-void Ghost::tick(const Map &map, const Position &pacman) {
-
-    handleStatus();
-
-    // TODO : MovingEntity::findPath() appelle fonctions de map avant d'appeler move()
-    if(move(map, getNextDirection(map, pacman))) // Move legal.
-        animate(getPreviousDirection());
-}
-
-void Ghost::frightened()
+std::optional<Position> Ghost::getTarget(const Position &pacman)
 {
-    if(isDead() || status_ == GhostStatus::kHouse)
-        return;
-
-    if(!isFrightened())
+    switch(status_)
     {
-        previous_status_ = status_;
-        direction_reverse_ = true;
-        setZoneHorizontalOnly(false);
+        case GhostStatus::kChase:
+            return pacman; // TODO : get pacman target per ghost
+        case GhostStatus::kScatter:
+            return scatter_target_;
+        case GhostStatus::kDead:
+            return house_target_;
+        default:
+            return std::nullopt;
     }
-
-    if(status_timers.at(1) == 0)
-        status_ = GhostStatus::kFrightenedBlinking;
-    else {
-        status_ = GhostStatus::kFrightened;
-        counter_.save();
-        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
-    }
-}
-
-void Ghost::unfrightened()
-{
-    if(!isFrightened())
-        return;
-    if(status_ == GhostStatus::kFrightened && counter_.isActive())
-        counter_.loadSave();
-    status_ = previous_status_;
-    next_direction_.reset();
-    setZoneHorizontalOnly(true);
-}
-
-void Ghost::reset()
-{
-    MovingEntity::reset();
-    status_ = GhostStatus::kStart;
-    counter_.stop();
-    status_changes_ = 1;
-    next_direction_.reset();
 }
 
 bool Ghost::isFrightened()
@@ -98,12 +63,15 @@ void Ghost::handleStatusChange() {
     {
         if(isDead()) // Death.
         {
-            if (house_target_ == getPosition().scaleDown(config::dimensions::kWindowCellSize))
+            auto position =  getPosition().scaleDown(config::dimensions::kWindowCellSize);
+            if(position.getAbscissa() == 10 && position.getOrdinate() == 10)
+                position = position;
+            if (house_target_ == position)
             {
                 setEnabled(true);
                 counter_.loadSave();
                 status_ = previous_status_;
-                next_direction_.reset();
+                resetNextDirection();
                 setZoneTunnelSlow(true);
                 setZoneHorizontalOnly(true);
                 setGhostHouseDoorAccess(false);
@@ -130,7 +98,7 @@ void Ghost::handleStatusChange() {
     {
         case GhostStatus::kChase:
             status_changes_++;
-            direction_reverse_ = true;
+            setDirectionReverse(true);
         case GhostStatus::kStart:
             status_ = GhostStatus::kScatter;
             counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
@@ -138,7 +106,7 @@ void Ghost::handleStatusChange() {
         case GhostStatus::kScatter:
             status_changes_++;
             status_ = GhostStatus::kChase;
-            direction_reverse_ = true;
+            setDirectionReverse(true);
             if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
                 counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
             return;
@@ -169,84 +137,15 @@ void Ghost::animate(const Direction &direction)
     }
 }
 
-Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
-{
-    auto current_unscaled = getPosition();
-    auto current_position = current_unscaled.scaleDown(map.getCellSize());
-    auto current_cell = map.getCell(current_position);
+void Ghost::tick(const Map &map, const Position &pacman) {
 
-    // default, next = current
-    auto next_position = current_position;
-    auto next_cell = current_cell;
+    handleStatus();
 
-    if(!next_direction_.isUninitialized()) // only false at start or reset
-    {
-        // effective next cell
-        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, getSpeed(), isZoneTunnelSlow());
-        next_position = next_unscaled.scaleDown(map.getCellSize());
-        next_cell = map.getCell(next_position);
+    // Current direction and prepare next move.
+    Direction direction = prepare(map, getTarget(pacman));
 
-        if(current_cell == next_cell) // ignore : only update on cell change
-            return next_direction_;
-
-        if(direction_reverse_) // reverse
-        {
-            direction_reverse_ = false;
-            next_position = current_position;
-            next_direction_ = getPreviousDirection().reverse();
-        }
-    }
-
-    auto current_direction = next_direction_;
-    auto directions = map.getAvailableDirections(next_cell, current_direction, isZoneHorizontalOnly(), isGhostHouseDoorAccess());
-
-    if(directions.empty()) // nothing available
-    {
-        if(current_cell->isWarp() || next_cell->isWarp())
-            return next_direction_;
-        direction_reverse_ = true;
-    }
-    else if(directions.size() == 1) // one way
-    {
-        next_direction_ = *(directions.begin());
-    }
-    else if(isFrightened()) // intersection : random
-    {
-        next_direction_ = Direction{getRandomElementFromSet(directions)};
-    }
-    else // intersection : pathfinding
-    {
-        Position target;
-        switch(status_)
-        {
-            case GhostStatus::kChase:
-                target = pacman; // TODO : get pacman target per ghost
-                break;
-            case GhostStatus::kScatter:
-                target = scatter_target_;
-                break;
-            case GhostStatus::kDead:
-            default:
-                target = house_target_;
-                break;
-        }
-        double min_distance = std::numeric_limits<double>::max();
-
-        for(auto &element : directions)
-        {
-            auto position = next_position.getNeighbor(Direction{element});
-            double distance = target.getDistance(position);
-            if(distance < min_distance)
-            {
-                min_distance = distance;
-                next_direction_ = Direction{element};
-            }
-        }
-    }
-
-    if(current_direction.isUninitialized())
-        return next_direction_;
-    return current_direction;
+    if(move(map, direction)) // Move legal => animate.
+        animate(getPreviousDirection());
 }
 
 void Ghost::kill() {
@@ -257,9 +156,58 @@ void Ghost::kill() {
     }
     status_ = GhostStatus::kDead;
     counter_.stop();
-    next_direction_.reset();
+    resetNextDirection();
     setZoneTunnelSlow(false);
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
+    setDirectionReverse(false);
+    setSpeedSlow(false);
     Entity::kill();
+}
+
+void Ghost::frightened()
+{
+    if(isDead() || status_ == GhostStatus::kHouse)
+        return;
+
+    if(!isFrightened())
+    {
+        previous_status_ = status_;
+        setDirectionReverse(true);
+        setZoneHorizontalOnly(false);
+        setSpeedSlow(true);
+    }
+
+    if(status_timers.at(1) == 0)
+        status_ = GhostStatus::kFrightenedBlinking;
+    else {
+        status_ = GhostStatus::kFrightened;
+        counter_.save();
+        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
+    }
+}
+
+void Ghost::unfrightened()
+{
+    if(!isFrightened())
+        return;
+    if(status_ == GhostStatus::kFrightened && counter_.isActive())
+        counter_.loadSave();
+    status_ = previous_status_;
+    resetNextDirection();
+    setZoneHorizontalOnly(true);
+    setSpeedSlow(false);
+}
+
+void Ghost::reset()
+{
+    MovingEntity::reset();
+    status_ = GhostStatus::kStart;
+    counter_.stop();
+    status_changes_ = 1;
+    resetNextDirection();
+    setZoneTunnelSlow(false);
+    setZoneHorizontalOnly(false);
+    setGhostHouseDoorAccess(true);
+    setSpeedSlow(false);
 }

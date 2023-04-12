@@ -49,11 +49,15 @@ private:
     /** Previous direction.
      * @details Used to determine a swap of animation. */
     Direction previous_direction_{};
-
+    /** The direction the Ghost will take when he reach the next cell. */
+    Direction next_direction_{};
+    /** Whether or not the Ghost is reversing direction as he reach the next cell. */
+    bool direction_reverse_ {false};
     bool zone_tunnel_slow_ {false};
     bool zone_horizontal_only_ {false};
-    bool ghost_house_door_access {false};
-    bool dead_speed_up {false};
+    bool ghost_house_door_access_ {false};
+    bool dead_speed_up_ {false};
+    bool speed_slow_ {false};
 
 public:
 
@@ -130,19 +134,23 @@ public:
      */
     virtual void reset();
 
-    [[nodiscard]] bool isZoneTunnelSlow() const;
-
     void setZoneTunnelSlow(bool zoneTunnelSlow);
-
-    [[nodiscard]] bool isZoneHorizontalOnly() const;
 
     void setZoneHorizontalOnly(bool zoneHorizontalOnly);
 
-    [[nodiscard]] bool isGhostHouseDoorAccess() const;
-
     void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
 
+    void setDirectionReverse(bool directionReverse);
+
+    void resetNextDirection();
+
+    Direction prepare(const Map &map, std::optional<Position> target);
+
     [[nodiscard]] const Direction &getPreviousDirection() const;
+
+    [[nodiscard]] bool isZoneTunnelSlow() const;
+
+    void setSpeedSlow(bool speedSlow);
 
 };
 

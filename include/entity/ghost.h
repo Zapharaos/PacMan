@@ -45,6 +45,11 @@ public:
     void tick(const Map &map, const Position &pacman);
 
     /**
+     * @brief Kill entity.
+     */
+    void kill() override;
+
+    /**
      * @brief Start the frightened mode.
      */
     void frightened();
@@ -59,11 +64,6 @@ public:
      * @see MovingEntity::reset()
      */
     void reset() override;
-
-    /**
-     * @brief Kill entity.
-     */
-    void kill() override;
 
 private:
 
@@ -105,12 +105,6 @@ private:
     /** The position the Ghost is returning to when killed. */
     Position house_target_ {};
 
-    /** The direction the Ghost will take when he reach the next cell. */
-    Direction next_direction_{};
-
-    /** Whether or not the Ghost is reversing direction as he reach the next cell. */
-    bool direction_reverse_ {false};
-
     /** Animations when moving frightened (default). */
     Animation frightened_ {};
 
@@ -128,6 +122,13 @@ private:
 
     /** Animations when dead and moving towards the bottom. */
     Animation dead_down_{};
+
+    /**
+     * @brief Indicates the current target, depending on the current status.
+     * @param pacman The pacman position on the map.
+     * @return The effective position target by the ghost.
+     */
+    std::optional<Position> getTarget(const Position &pacman);
 
     /**
      * @brief Checks whether or not the Ghost is currently in frightened mode.
@@ -154,13 +155,6 @@ private:
      */
     void animate(const Direction &direction) override;
 
-    /**
-     * @brief Gets the next direction for the Ghost to move in.
-     * @param map The game board.
-     * @param pacman The position of Pac-Man.
-     * @return The next direction for the Ghost to move to.
-     */
-    Direction getNextDirection(const Map &map, const Position &pacman);
 };
 
 
