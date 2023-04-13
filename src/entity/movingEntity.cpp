@@ -85,24 +85,25 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
     auto current_direction = next_direction_; // local save before override
     next_direction_ = map.path(next_position, target, current_direction, zone_horizontal_only_, ghost_house_door_access_);
 
-    if(current_direction.isUninitialized()) // only true at start or reset
-    {
-        previous_direction_.reset();
-        return next_direction_;
-    }
-
     if(direction_reverse_) // finish reverse
     {
         direction_reverse_ = false;
         return current_direction;
     }
 
-    if(next_position == target) // reached the target
-        return current_direction;
+    if(current_direction.isUninitialized()) // only true at start or reset
+    {
+        previous_direction_.reset();
+        return next_direction_;
+    }
 
     // warping : move instantly towards the next direction
-    if(current_direction == next_direction_.reverse() && (current_cell->isWarp() || next_cell->isWarp()))
+    if((next_direction_.isUninitialized() && current_cell->isWarp() && !next_cell) ||
+        (current_direction == next_direction_.reverse() && next_cell && next_cell->isWarp()))
         return (next_direction_ = current_direction);
+
+    if(next_position == target) // reached the target
+        return current_direction;
 
     // turning : move instantly towards the next direction
     if(current_direction.isTurn(next_direction_))

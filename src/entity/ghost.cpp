@@ -183,13 +183,12 @@ void Ghost::kill() {
 
     status_ = GhostStatus::kDead;
     counter_.stop();
-    resetNextDirection();
     setZoneTunnelSlow(false);
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
     setDirectionReverse(false);
     setSpeedSlow(false);
-    Entity::kill();
+    MovingEntity::kill();
 }
 
 void Ghost::unfrightened()
