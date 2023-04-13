@@ -9,9 +9,11 @@
 
 #include <utility>
 
-Ghost::Ghost() = default;
+template <GhostType T>
+Ghost<T>::Ghost() = default;
 
-Ghost::Ghost(const Position &position, Position scatter_target,
+template <GhostType T>
+Ghost<T>::Ghost(const Position &position, Position scatter_target,
              Position house_target, Animation left, Animation right, Animation up, Animation down) :
     scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
@@ -25,12 +27,13 @@ Ghost::Ghost(const Position &position, Position scatter_target,
     dead_down_ = visuals::ghosts::dead::down::kAnimation;
 }
 
-std::optional<Position> Ghost::getTarget(const Position &pacman)
+template <GhostType T>
+std::optional<Position> Ghost<T>::getTarget()
 {
     switch(status_)
     {
         case GhostStatus::kChase:
-            return pacman; // TODO : get pacman target per ghost
+            return chase_target_;
         case GhostStatus::kScatter:
             return scatter_target_;
         case GhostStatus::kDead:
@@ -40,12 +43,14 @@ std::optional<Position> Ghost::getTarget(const Position &pacman)
     }
 }
 
-bool Ghost::isFrightened()
+template <GhostType T>
+bool Ghost<T>::isFrightened()
 {
     return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
 }
 
-void Ghost::handleStatus()
+template <GhostType T>
+void Ghost<T>::handleStatus()
 {
     // Handle ghost status.
     if(counter_.isActive())
@@ -57,7 +62,8 @@ void Ghost::handleStatus()
     MovingEntity::handleStatus();
 }
 
-void Ghost::handleStatusChange() {
+template <GhostType T>
+void Ghost<T>::handleStatusChange() {
 
     if(!isEnabled())
     {
@@ -112,7 +118,8 @@ void Ghost::handleStatusChange() {
     }
 }
 
-void Ghost::animate(const Direction &direction)
+template <GhostType T>
+void Ghost<T>::animate(const Direction &direction)
 {
     // Override MovingEntity::animate() in special cases.
     if(status_ == GhostStatus::kFrightened)
@@ -134,18 +141,20 @@ void Ghost::animate(const Direction &direction)
     }
 }
 
-void Ghost::tick(const Map &map, const Position &pacman) {
+template <GhostType T>
+void Ghost<T>::tick(const Map &map) {
 
     handleStatus();
 
     // Current direction and prepare next move.
-    Direction direction = prepare(map, getTarget(pacman));
+    Direction direction = prepare(map, getTarget());
 
     if(move(map, direction)) // Move legal => animate.
         animate(getPreviousDirection());
 }
 
-void Ghost::kill() {
+template <GhostType T>
+void Ghost<T>::kill() {
     if(!isFrightened())
     {
         previous_status_ = status_;
@@ -162,7 +171,8 @@ void Ghost::kill() {
     Entity::kill();
 }
 
-void Ghost::frightened()
+template <GhostType T>
+void Ghost<T>::frightened()
 {
     if(isDead() || status_ == GhostStatus::kHouse)
         return;
@@ -184,7 +194,8 @@ void Ghost::frightened()
     }
 }
 
-void Ghost::unfrightened()
+template <GhostType T>
+void Ghost<T>::unfrightened()
 {
     if(!isFrightened())
         return;
@@ -196,7 +207,8 @@ void Ghost::unfrightened()
     setSpeedSlow(false);
 }
 
-void Ghost::reset()
+template <GhostType T>
+void Ghost<T>::reset()
 {
     MovingEntity::reset();
     status_ = GhostStatus::kStart;
@@ -207,4 +219,12 @@ void Ghost::reset()
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
     setSpeedSlow(false);
+}
+
+template <GhostType T>
+template <GhostType U, typename std::enable_if<U == GhostType::kBlinky, int>::type>
+void Ghost<T>::chase(const Position &pacman)
+{
+    if(status_ == GhostStatus::kChase)
+        chase_target_ = pacman;
 }

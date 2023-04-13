@@ -10,10 +10,18 @@
 
 #include "movingEntity.h"
 
+enum class GhostType {
+    kBlinky,
+    kPinky,
+    kInky,
+    kClyde
+};
+
 /**
  * @brief Represents the Ghost entity in the game.
  * @extends MovingEntity
 */
+template <GhostType T>
 class Ghost : public MovingEntity
 {
 
@@ -40,9 +48,8 @@ public:
     /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
-     * @param pacman The position this entity is targeting.
      */
-    void tick(const Map &map, const Position &pacman);
+    void tick(const Map &map);
 
     /**
      * @brief Kill entity.
@@ -59,6 +66,8 @@ public:
      */
     void unfrightened();
 
+    template <GhostType U = T, typename std::enable_if<U == GhostType::kBlinky, int>::type = 0>
+    void chase(const Position &pacman);
     /**
      * @brief Resets the entity object.
      * @see MovingEntity::reset()
@@ -66,6 +75,8 @@ public:
     void reset() override;
 
 private:
+
+    GhostType type_ {T};
 
     enum class GhostStatus
     {
@@ -99,6 +110,9 @@ private:
     /** Counts a number of frames between each statuses. */
     Counter counter_ {};
 
+    /** The position the Ghost is targeting while in chase mode. */
+    Position chase_target_ {};
+
     /** The position the Ghost is targeting while in scatter mode. */
     Position scatter_target_ {};
 
@@ -128,7 +142,7 @@ private:
      * @param pacman The pacman position on the map.
      * @return The effective position target by the ghost.
      */
-    std::optional<Position> getTarget(const Position &pacman);
+    std::optional<Position> getTarget();
 
     /**
      * @brief Checks whether or not the Ghost is currently in frightened mode.

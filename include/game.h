@@ -14,11 +14,13 @@
 #include "map/map.h"
 #include "entity/movingEntity.h"
 #include "entity/ghost.h"
+#include "../src/entity/ghost.cpp"
 #include "entity/pacman.h"
 #include "entity/fruit.h"
 #include "utils/utils.h"
 #include "display/window.h"
 #include "config/visuals.h"
+
 /**
  * @brief Represents the Pac-Man game.
  *
@@ -81,7 +83,8 @@ private:
     Pacman pacman_;
 
     /** The ghost entities. */
-    std::vector<Ghost> ghosts_;
+    /*std::vector<Ghost> ghosts_;*/
+    Ghost<GhostType::kBlinky> blinky_ {};
 
     /** The fruit entity. */
     Fruit fruit_;

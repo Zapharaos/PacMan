@@ -17,7 +17,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
 
     // Pacman already done at compilation (default).
     fruit_ = Fruit{pellets_total_};
-    ghosts_.emplace_back(Ghost{Position{config::positions::entities::blinky::kDefaultX,
+    blinky_ = {Position{config::positions::entities::blinky::kDefaultX,
                                         config::positions::entities::blinky::kDefaultY},
                                Position{config::positions::entities::blinky::kTargetX,
                                         config::positions::entities::blinky::kTargetY},
@@ -26,7 +26,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) : map_(map),
                                visuals::ghosts::blinky::left::kAnimation,
                                visuals::ghosts::blinky::right::kAnimation,
                                visuals::ghosts::blinky::up::kAnimation,
-                               visuals::ghosts::blinky::down::kAnimation});
+                               visuals::ghosts::blinky::down::kAnimation};
     /*ghosts_.emplace_back(Ghost{Position{config::positions::entities::pinky::kDefaultX,
                                         config::positions::entities::pinky::kDefaultY},
                                Position{config::positions::entities::pinky::kTargetX,
@@ -84,8 +84,11 @@ void Game::tick(const Direction &direction) {
         // Tick entities.
         fruit_.tick();
         pacman_.tick(map_, direction);
-        for(auto &ghost : ghosts_)
-            ghost.tick(map_, pacman_cell_position);
+        /*for(auto &ghost : ghosts_)
+            ghost.tick(map_, pacman_cell_position);*/
+
+        blinky_.chase(pacman_cell_position);
+        blinky_.tick(map_);
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);
@@ -147,9 +150,11 @@ void Game::display() {
     }
 
     // Ghosts
-    for(auto &ghost : ghosts_)
+    /*for(auto &ghost : ghosts_)
         if(!ghost.isHidden())
-            window_.draw(ghost, config::dimensions::kScoreBoardHeight);
+            window_.draw(ghost, config::dimensions::kScoreBoardHeight);*/
+    if(!blinky_.isHidden())
+        window_.draw(blinky_, config::dimensions::kScoreBoardHeight);
 
     // Pacman
     if (!pacman_.isHidden())
@@ -182,13 +187,14 @@ bool Game::handleStatus() {
         if (status_ == StatusType::kGameStartAnimate) {
             if (counter_.getCount() >= config::settings::kDurationGameStartFreeze) {
                 pacman_.show();
-                for(auto &ghost : ghosts_)
-                    ghost.show();
+                /*for(auto &ghost : ghosts_)
+                    ghost.show();*/
+                blinky_.show();
             } else {
                 pacman_.hide();
-                for(auto &ghost : ghosts_)
-                    ghost.hide();
-
+                /*for(auto &ghost : ghosts_)
+                    ghost.hide();*/
+                blinky_.hide();
             }
         }
 
@@ -252,8 +258,9 @@ bool Game::handleStatus() {
     if(status_ == StatusType::kSuperpower)
     {
         status_ = StatusType::kRunning;
-        for(auto &ghost : ghosts_)
-            ghost.unfrightened();
+        /*for(auto &ghost : ghosts_)
+            ghost.unfrightened();*/
+        blinky_.unfrightened();
     }
 
     // Game is not ready to run yet.
@@ -299,8 +306,9 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             status_ = StatusType::kSuperpower;
             counter_.start(config::settings::kDurationSuperpower);
             ghosts_eaten = 0;
-            for(auto &ghost : ghosts_)
-                ghost.frightened();
+            /*for(auto &ghost : ghosts_)
+                ghost.frightened();*/
+            blinky_.frightened();
         }
     }
 
@@ -315,10 +323,10 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         }
     }
 
-    for (auto &ghost: ghosts_) {
+    /*for (auto &ghost: ghosts_) {*/
         // Ghost is active and collided with Pacman.
-        if (ghost.isEnabled() &&
-            SDL_HasIntersection(&pacman, &ghost.getSprite().getPosition())) {
+        if (blinky_.isEnabled() &&
+            SDL_HasIntersection(&pacman, &blinky_.getSprite().getPosition())) {
             // Not dead yet && superpower disabled : death.
             if (!pacman_.isDead() && status_ != StatusType::kSuperpower)
             {
@@ -326,25 +334,25 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
                 status_ = StatusType::kDeathFreeze;
                 counter_.start(config::settings::kDurationDeathFreeze);
                 // TODO : ghosts status animate
-                break;
             }
+            else
+            {
+                // Disables ghost & updates game.
+                blinky_.setEnabled(false);
+                blinky_.kill();
+                auto value = (1 << (ghosts_eaten++));
+                score_ += blinky_.getPoints() * value;
 
-            // Disables ghost & updates game.
-            ghost.setEnabled(false);
-            ghost.kill();
-            auto value = (1 << (ghosts_eaten++));
-            score_ += ghost.getPoints() * value;
+                // Eating animation.
+                status_ = StatusType::kEatingGhost;
+                counter_.save();
+                counter_.start(config::settings::kDurationEatenGhostFreeze);
+                pacman_.hide();
 
-            // Eating animation.
-            status_ = StatusType::kEatingGhost;
-            counter_.save();
-            counter_.start(config::settings::kDurationEatenGhostFreeze);
-            pacman_.hide();
-
-            // Display points sprite.
-            // TODO : display points sprite
+                // Display points sprite.
+                // TODO : display points sprite
+            }
         }
-    }
 
     // Check if the score has evolved up the new life's limit.
     if (lowScore && score_ >= config::settings::kNewLifeAtPoints)
@@ -367,8 +375,9 @@ void Game::levelUp() {
     // Reset entities.
     map_.reset();
     pacman_.reset();
-    for(auto &ghost : ghosts_)
-        ghost.reset();
+    /*for(auto &ghost : ghosts_)
+        ghost.reset();*/
+    blinky_.reset();
 
     // TODO : speed and timers : up
 }
@@ -381,8 +390,9 @@ void Game::lostLife() {
         level_ = 1;
         pellets_eaten_ = 0;
         map_.reset();
-        for(auto &ghost : ghosts_)
-            ghost.reset();
+        /*for(auto &ghost : ghosts_)
+            ghost.reset();*/
+        blinky_.reset();
     }
 
     status_ = StatusType::kRunning;
