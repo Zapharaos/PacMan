@@ -7,13 +7,9 @@
 
 #include "../../include/entity/ghost.h"
 
-#include <utility>
+Ghost::Ghost() = default;
 
-template <GhostType T>
-Ghost<T>::Ghost() = default;
-
-template <GhostType T>
-Ghost<T>::Ghost(const Position &position, Position scatter_target,
+Ghost::Ghost(const Position &position, Position scatter_target,
              Position house_target, Animation left, Animation right, Animation up, Animation down) :
     scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
@@ -27,8 +23,17 @@ Ghost<T>::Ghost(const Position &position, Position scatter_target,
     dead_down_ = visuals::ghosts::dead::down::kAnimation;
 }
 
-template <GhostType T>
-std::optional<Position> Ghost<T>::getTarget()
+const Position &Ghost::getScatterTarget() const
+{
+    return scatter_target_;
+}
+
+void Ghost::setChaseTarget(const Position &chaseTarget)
+{
+    chase_target_ = chaseTarget;
+}
+
+std::optional<Position> Ghost::getTarget()
 {
     switch(status_)
     {
@@ -43,14 +48,12 @@ std::optional<Position> Ghost<T>::getTarget()
     }
 }
 
-template <GhostType T>
-bool Ghost<T>::isFrightened()
+bool Ghost::isFrightened()
 {
     return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
 }
 
-template <GhostType T>
-void Ghost<T>::handleStatus()
+void Ghost::handleStatus()
 {
     // Handle ghost status.
     if(counter_.isActive())
@@ -62,8 +65,7 @@ void Ghost<T>::handleStatus()
     MovingEntity::handleStatus();
 }
 
-template <GhostType T>
-void Ghost<T>::handleStatusChange() {
+void Ghost::handleStatusChange() {
 
     if(!isEnabled())
     {
@@ -118,8 +120,7 @@ void Ghost<T>::handleStatusChange() {
     }
 }
 
-template <GhostType T>
-void Ghost<T>::animate(const Direction &direction)
+void Ghost::animate(const Direction &direction)
 {
     // Override MovingEntity::animate() in special cases.
     if(status_ == GhostStatus::kFrightened)
@@ -141,8 +142,7 @@ void Ghost<T>::animate(const Direction &direction)
     }
 }
 
-template <GhostType T>
-void Ghost<T>::tick(const Map &map) {
+void Ghost::tick(const Map &map) {
 
     handleStatus();
 
@@ -153,8 +153,7 @@ void Ghost<T>::tick(const Map &map) {
         animate(getPreviousDirection());
 }
 
-template <GhostType T>
-void Ghost<T>::kill() {
+void Ghost::kill() {
     if(!isFrightened())
     {
         previous_status_ = status_;
@@ -171,8 +170,7 @@ void Ghost<T>::kill() {
     Entity::kill();
 }
 
-template <GhostType T>
-void Ghost<T>::frightened()
+void Ghost::frightened()
 {
     if(isDead() || status_ == GhostStatus::kHouse)
         return;
@@ -194,8 +192,7 @@ void Ghost<T>::frightened()
     }
 }
 
-template <GhostType T>
-void Ghost<T>::unfrightened()
+void Ghost::unfrightened()
 {
     if(!isFrightened())
         return;
@@ -207,8 +204,7 @@ void Ghost<T>::unfrightened()
     setSpeedSlow(false);
 }
 
-template <GhostType T>
-void Ghost<T>::reset()
+void Ghost::reset()
 {
     MovingEntity::reset();
     status_ = GhostStatus::kStart;
@@ -219,46 +215,4 @@ void Ghost<T>::reset()
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
     setSpeedSlow(false);
-}
-
-template <GhostType T>
-template <GhostType U, typename std::enable_if<U == GhostType::kBlinky, int>::type>
-void Ghost<T>::chase(const Position &pacman)
-{
-    if(status_ != GhostStatus::kChase) return;
-
-    chase_target_ = pacman;
-}
-
-template <GhostType T>
-template <GhostType U, typename std::enable_if<U == GhostType::kPinky, int>::type>
-void Ghost<T>::chase(const Position &pacman, const Direction &direction)
-{
-    if(status_ != GhostStatus::kChase) return;
-
-    chase_target_ = pacman.moveIntoDirection(direction, config::settings::kPinkyOffsetToPacman);
-}
-
-template <GhostType T>
-template <GhostType U, typename std::enable_if<U == GhostType::kInky, int>::type>
-void Ghost<T>::chase(const Position &pacman, const Direction &direction, const Position &blinky)
-{
-    if(status_ != GhostStatus::kChase) return;
-
-    auto offset_position = pacman.moveIntoDirection(direction, config::settings::kInkyOffsetToPacman);
-    auto difference = blinky.getDistance2D(offset_position);
-    chase_target_ = offset_position.shift(difference.getAbscissa(), difference.getOrdinate());
-}
-
-template <GhostType T>
-template <GhostType U, typename std::enable_if<U == GhostType::kClyde, int>::type>
-void Ghost<T>::chase(const Position &pacman)
-{
-    if(status_ != GhostStatus::kChase) return;
-
-    auto current_cell_position = getPosition().scaleDown(config::dimensions::kWindowCellSize);
-    if(current_cell_position.getDistance(pacman) >= config::settings::kClydeDistanceFromPacman)
-        chase_target_ = pacman;
-    else
-        chase_target_ = scatter_target_;
 }

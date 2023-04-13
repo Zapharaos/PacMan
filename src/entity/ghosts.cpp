@@ -6,7 +6,7 @@
 
 Ghosts::Ghosts()
 {
-    blinky_ = std::make_shared<Ghost<GhostType::kBlinky>>(
+    blinky_ = std::make_shared<GhostSpecial<GhostType::kBlinky>>(
             Position{config::positions::entities::blinky::kDefaultX,
                         config::positions::entities::blinky::kDefaultY},
                Position{config::positions::entities::blinky::kTargetX,
@@ -17,7 +17,7 @@ Ghosts::Ghosts()
                visuals::ghosts::blinky::right::kAnimation,
                visuals::ghosts::blinky::up::kAnimation,
                visuals::ghosts::blinky::down::kAnimation);
-    pinky_ = std::make_shared<Ghost<GhostType::kPinky>>(
+    pinky_ = std::make_shared<GhostSpecial<GhostType::kPinky>>(
             Position{config::positions::entities::pinky::kDefaultX,
                         config::positions::entities::pinky::kDefaultY},
                Position{config::positions::entities::pinky::kTargetX,
@@ -28,7 +28,7 @@ Ghosts::Ghosts()
                visuals::ghosts::pinky::right::kAnimation,
                visuals::ghosts::pinky::up::kAnimation,
                visuals::ghosts::pinky::down::kAnimation);
-    inky_ = std::make_shared<Ghost<GhostType::kInky>>(
+    inky_ = std::make_shared<GhostSpecial<GhostType::kInky>>(
             Position{config::positions::entities::inky::kDefaultX,
                         config::positions::entities::inky::kDefaultY},
                Position{config::positions::entities::inky::kTargetX,
@@ -39,7 +39,7 @@ Ghosts::Ghosts()
                visuals::ghosts::inky::right::kAnimation,
                visuals::ghosts::inky::up::kAnimation,
                visuals::ghosts::inky::down::kAnimation);
-    clyde_ = std::make_shared<Ghost<GhostType::kClyde>>(
+    clyde_ = std::make_shared<GhostSpecial<GhostType::kClyde>>(
             Position{config::positions::entities::clyde::kDefaultX,
                         config::positions::entities::clyde::kDefaultY},
                Position{config::positions::entities::clyde::kTargetX,
@@ -53,7 +53,7 @@ Ghosts::Ghosts()
     ghosts_entities = {blinky_, pinky_, inky_, clyde_};
 }
 
-std::array<std::shared_ptr<Entity>, 4> Ghosts::getGhostsAsEntities()
+std::array<std::shared_ptr<Ghost>, 4> Ghosts::getGhosts()
 {
     return ghosts_entities;
 }
@@ -67,44 +67,6 @@ void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
     clyde_->chase(pacman);
 
     // Handle ghosts.
-    blinky_->tick(map);
-    pinky_->tick(map);
-    inky_->tick(map);
-    clyde_->tick(map);
-}
-
-void Ghosts::show()
-{
     for(auto &ghost : ghosts_entities)
-        ghost->show();
-}
-
-void Ghosts::hide()
-{
-    for(auto &ghost : ghosts_entities)
-        ghost->hide();
-}
-
-void Ghosts::unfrightened()
-{
-    blinky_->unfrightened();
-    pinky_->unfrightened();
-    inky_->unfrightened();
-    clyde_->unfrightened();
-}
-
-void Ghosts::frightened()
-{
-    blinky_->frightened();
-    pinky_->frightened();
-    inky_->frightened();
-    clyde_->frightened();
-}
-
-void Ghosts::reset()
-{
-    blinky_->reset();
-    pinky_->reset();
-    inky_->reset();
-    clyde_->reset();
+        ghost->tick(map);
 }

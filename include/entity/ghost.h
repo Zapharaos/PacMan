@@ -10,19 +10,10 @@
 
 #include "movingEntity.h"
 
-enum class GhostType {
-    kUninitialized,
-    kBlinky,
-    kPinky,
-    kInky,
-    kClyde
-};
-
 /**
  * @brief Represents the Ghost entity in the game.
  * @extends MovingEntity
 */
-template <GhostType T = GhostType::kUninitialized>
 class Ghost : public MovingEntity
 {
 
@@ -46,6 +37,10 @@ public:
     Ghost(const Position &position, Position scatter_target,
           Position house_target, Animation left, Animation right, Animation up, Animation down);
 
+    [[nodiscard]] const Position &getScatterTarget() const;
+
+    void setChaseTarget(const Position &chaseTarget);
+
     /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
@@ -67,18 +62,6 @@ public:
      */
     void unfrightened();
 
-    template <GhostType U = T, typename std::enable_if<U == GhostType::kBlinky, int>::type = 0>
-    void chase(const Position &pacman);
-
-    template <GhostType U = T, typename std::enable_if<U == GhostType::kPinky, int>::type = 0>
-    void chase(const Position &pacman, const Direction &direction);
-
-    template <GhostType U = T, typename std::enable_if<U == GhostType::kInky, int>::type = 0>
-    void chase(const Position &pacman, const Direction &direction, const Position &blinky);
-
-    template <GhostType U = T, typename std::enable_if<U == GhostType::kClyde, int>::type = 0>
-    void chase(const Position &pacman);
-
     /**
      * @brief Resets the entity object.
      * @see MovingEntity::reset()
@@ -86,8 +69,6 @@ public:
     void reset() override;
 
 private:
-
-    GhostType type_ {T};
 
     enum class GhostStatus
     {
@@ -148,6 +129,7 @@ private:
     /** Animations when dead and moving towards the bottom. */
     Animation dead_down_{};
 
+private:
     /**
      * @brief Indicates the current target, depending on the current status.
      * @param pacman The pacman position on the map.

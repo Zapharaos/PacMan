@@ -85,7 +85,7 @@ void Game::display() {
             continue;
 
         // Display entity
-        window_.draw(*entity, config::dimensions::kScoreBoardHeight);
+        window_.draw(entity, config::dimensions::kScoreBoardHeight);
     }
 
     // Fruit
@@ -106,14 +106,9 @@ void Game::display() {
     }
 
     // Ghosts
-    /*for(auto &ghost : ghosts_)
-        if(!ghost.isHidden())
-            window_.draw(ghost, config::dimensions::kScoreBoardHeight);*/
-    for(auto &ghost : ghosts_.getGhostsAsEntities())
-    {
+    for(auto &ghost : ghosts_.getGhosts())
         if(!ghost->isHidden())
             window_.draw(ghost, config::dimensions::kScoreBoardHeight);
-    }
 
     // Pacman
     if (!pacman_.isHidden())
@@ -143,13 +138,18 @@ bool Game::handleStatus() {
         if (status_ == StatusType::kLevelUpAnimate)
             map_.animate();
 
-        if (status_ == StatusType::kGameStartAnimate) {
-            if (counter_.getCount() >= config::settings::kDurationGameStartFreeze) {
+        if (status_ == StatusType::kGameStartAnimate)
+        {
+            if (counter_.getCount() >= config::settings::kDurationGameStartFreeze)
+            {
                 pacman_.show();
-                ghosts_.show();
-            } else {
+                for(auto &ghost : ghosts_.getGhosts())
+                    ghost->show();
+            } else
+            {
                 pacman_.hide();
-                ghosts_.hide();
+                for(auto &ghost : ghosts_.getGhosts())
+                    ghost->hide();
             }
         }
 
@@ -213,7 +213,8 @@ bool Game::handleStatus() {
     if(status_ == StatusType::kSuperpower)
     {
         status_ = StatusType::kRunning;
-        ghosts_.unfrightened();
+        for(auto &ghost : ghosts_.getGhosts())
+            ghost->unfrightened();
     }
 
     // Game is not ready to run yet.
@@ -259,7 +260,8 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             status_ = StatusType::kSuperpower;
             counter_.start(config::settings::kDurationSuperpower);
             ghosts_eaten = 0;
-            ghosts_.frightened();
+            for(auto &ghost : ghosts_.getGhosts())
+                ghost->frightened();
         }
     }
 
@@ -274,7 +276,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         }
     }
 
-    for (auto &ghost : ghosts_.getGhostsAsEntities())
+    for (auto &ghost : ghosts_.getGhosts())
     {
         // Ghost is active and collided with Pacman.
         if (ghost->isEnabled() &&
@@ -328,7 +330,8 @@ void Game::levelUp() {
     // Reset entities.
     map_.reset();
     pacman_.reset();
-    ghosts_.reset();
+    for(auto &ghost : ghosts_.getGhosts())
+        ghost->reset();
 
     // TODO : speed and timers : up
 }
@@ -345,7 +348,8 @@ void Game::lostLife() {
 
     status_ = StatusType::kRunning;
     pacman_.reset();
-    ghosts_.reset();
+    for(auto &ghost : ghosts_.getGhosts())
+        ghost->reset();
 
     // TODO : speed and timers : reset
 }
