@@ -11,6 +11,7 @@
 #include "movingEntity.h"
 
 enum class GhostType {
+    kUninitialized,
     kBlinky,
     kPinky,
     kInky,
@@ -21,7 +22,7 @@ enum class GhostType {
  * @brief Represents the Ghost entity in the game.
  * @extends MovingEntity
 */
-template <GhostType T>
+template <GhostType T = GhostType::kUninitialized>
 class Ghost : public MovingEntity
 {
 

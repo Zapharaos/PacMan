@@ -13,8 +13,7 @@
 
 #include "map/map.h"
 #include "entity/movingEntity.h"
-#include "entity/ghost.h"
-#include "../src/entity/ghost.cpp"
+#include "entity/ghosts.h"
 #include "entity/pacman.h"
 #include "entity/fruit.h"
 #include "utils/utils.h"
@@ -83,8 +82,7 @@ private:
     Pacman pacman_;
 
     /** The ghost entities. */
-    /*std::vector<Ghost> ghosts_;*/
-    Ghost<GhostType::kBlinky> blinky_ {};
+    Ghosts ghosts_;
 
     /** The fruit entity. */
     Fruit fruit_;
