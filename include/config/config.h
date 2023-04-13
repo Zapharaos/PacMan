@@ -70,6 +70,10 @@ namespace config {
 
         /** After how many eaten pellets does the fruits appear (by level). */
         inline std::set<int> kFruitsPercentages {30, 70};
+
+        inline constexpr int kPinkyOffsetToPacman {4};
+        inline constexpr int kInkyOffsetToPacman {2};
+        inline constexpr int kClydeDistanceFromPacman {8};
     }
 
     namespace dimensions {

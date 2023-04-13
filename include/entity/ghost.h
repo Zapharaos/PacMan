@@ -68,6 +68,16 @@ public:
 
     template <GhostType U = T, typename std::enable_if<U == GhostType::kBlinky, int>::type = 0>
     void chase(const Position &pacman);
+
+    template <GhostType U = T, typename std::enable_if<U == GhostType::kPinky, int>::type = 0>
+    void chase(const Position &pacman, const Direction &direction);
+
+    template <GhostType U = T, typename std::enable_if<U == GhostType::kInky, int>::type = 0>
+    void chase(const Position &pacman, const Direction &direction, const Position &blinky);
+
+    template <GhostType U = T, typename std::enable_if<U == GhostType::kClyde, int>::type = 0>
+    void chase(const Position &pacman);
+
     /**
      * @brief Resets the entity object.
      * @see MovingEntity::reset()

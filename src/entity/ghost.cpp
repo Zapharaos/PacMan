@@ -225,6 +225,40 @@ template <GhostType T>
 template <GhostType U, typename std::enable_if<U == GhostType::kBlinky, int>::type>
 void Ghost<T>::chase(const Position &pacman)
 {
-    if(status_ == GhostStatus::kChase)
+    if(status_ != GhostStatus::kChase) return;
+
+    chase_target_ = pacman;
+}
+
+template <GhostType T>
+template <GhostType U, typename std::enable_if<U == GhostType::kPinky, int>::type>
+void Ghost<T>::chase(const Position &pacman, const Direction &direction)
+{
+    if(status_ != GhostStatus::kChase) return;
+
+    chase_target_ = pacman.moveIntoDirection(direction, config::settings::kPinkyOffsetToPacman);
+}
+
+template <GhostType T>
+template <GhostType U, typename std::enable_if<U == GhostType::kInky, int>::type>
+void Ghost<T>::chase(const Position &pacman, const Direction &direction, const Position &blinky)
+{
+    if(status_ != GhostStatus::kChase) return;
+
+    auto offset_position = pacman.moveIntoDirection(direction, config::settings::kInkyOffsetToPacman);
+    auto difference = blinky.getDistance2D(offset_position);
+    chase_target_ = offset_position.shift(difference.getAbscissa(), difference.getOrdinate());
+}
+
+template <GhostType T>
+template <GhostType U, typename std::enable_if<U == GhostType::kClyde, int>::type>
+void Ghost<T>::chase(const Position &pacman)
+{
+    if(status_ != GhostStatus::kChase) return;
+
+    auto current_cell_position = getPosition().scaleDown(config::dimensions::kWindowCellSize);
+    if(current_cell_position.getDistance(pacman) >= config::settings::kClydeDistanceFromPacman)
         chase_target_ = pacman;
+    else
+        chase_target_ = scatter_target_;
 }

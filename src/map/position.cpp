@@ -45,6 +45,11 @@ double Position::getDistance(const Position& position) const {
     return std::sqrt(dx * dx + dy * dy);
 }
 
+Position Position::getDistance2D(Position position) const
+{
+    return {position.getAbscissa() - getAbscissa(), position.getOrdinate() - getOrdinate()};
+}
+
 bool Position::isOutOfBounds(int width, int height) const
 {
     return (position_.first < 0 || position_.first >= width ||
@@ -65,6 +70,7 @@ bool Position::isBetween(const Position &a, const Position &b) const
 
 int Position::getSingleAxisDistance(const Position &position) const
 {
+    // TODO : refactor & use getDistance() instead ?
     if (position_.first == position.position_.first)
         return abs(position_.second - position.position_.second);
     return abs(position_.first - position.position_.first);
@@ -72,14 +78,14 @@ int Position::getSingleAxisDistance(const Position &position) const
 
 Position Position::scaleUp(int scale) const
 {
-    return Position{position_.first * scale, position_.second * scale};
+    return {position_.first * scale, position_.second * scale};
 }
 
 Position Position::scaleDown(int scale) const
 {
     auto x = getAbscissa() / scale;
     auto y = getOrdinate() / scale;
-    return Position{static_cast<int>(floor(x)), static_cast<int>(floor(y))};
+    return {static_cast<int>(floor(x)), static_cast<int>(floor(y))};
 }
 
 bool Position::isNeighbor(const Position &position) const
@@ -116,7 +122,7 @@ Position Position::moveIntoDirection(const Direction &direction, int distance) c
 
 Position Position::shift(int x, int y) const
 {
-    return Position{position_.first+x, position_.second+y};
+    return {position_.first+x, position_.second+y};
 }
 
 Position Position::getOpposite(int width, int height) const
@@ -133,5 +139,5 @@ Position Position::getOpposite(int width, int height) const
     if (y > height - 1) // Opposite on the bottom
         y = 0;
 
-    return Position{x, y};
+    return {x, y};
 }

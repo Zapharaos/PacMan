@@ -77,6 +77,8 @@ public:
      */
     [[nodiscard]] double getDistance(const Position& position) const;
 
+    [[nodiscard]] Position getDistance2D(Position position) const;
+
     /**
      * @brief Indicates whether the position is out of bounds or not.
      * @param width The width limit of the grid.
