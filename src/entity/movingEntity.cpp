@@ -75,19 +75,12 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         if(current_cell == next_cell) // ignore : only update on cell change
             return next_direction_;
 
-        if(direction_reverse_) // reverse
+        if(direction_reverse_) // prepare reverse
         {
-            direction_reverse_ = false;
             next_position = current_position;
             next_direction_ = previous_direction_.reverse();
         }
     }
-
-    if(next_position.getAbscissa() == 20 && next_position.getOrdinate() == 13)
-        next_position = next_position;
-
-    if(next_position == target) // reached the target
-        return next_direction_;
 
     auto current_direction = next_direction_; // local save before override
     next_direction_ = map.path(next_position, target, current_direction, zone_horizontal_only_, ghost_house_door_access_);
@@ -97,6 +90,15 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         previous_direction_.reset();
         return next_direction_;
     }
+
+    if(direction_reverse_) // finish reverse
+    {
+        direction_reverse_ = false;
+        return current_direction;
+    }
+
+    if(next_position == target) // reached the target
+        return current_direction;
 
     // warping : move instantly towards the next direction
     if(current_direction == next_direction_.reverse() && (current_cell->isWarp() || next_cell->isWarp()))

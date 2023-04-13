@@ -48,9 +48,57 @@ std::optional<Position> Ghost::getTarget()
     }
 }
 
-bool Ghost::isFrightened()
+void Ghost::statusChange()
 {
-    return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
+    switch(status_)
+    {
+        case GhostStatus::kChase:
+            setDirectionReverse(true);
+        case GhostStatus::kStart:
+            status_ = GhostStatus::kScatter;
+            return;
+        case GhostStatus::kScatter:
+            setDirectionReverse(true);
+            status_ = GhostStatus::kChase;
+            return;
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+        case GhostStatus::kFrightened:
+        case GhostStatus::kFrightenedBlinking:
+            if(previous_status_ == GhostStatus::kChase)
+                previous_status_ = GhostStatus::kScatter;
+            else
+                previous_status_ = GhostStatus::kChase;
+        default: // unreachable
+            return;
+    }
+}
+
+void Ghost::frightened(unsigned long seconds)
+{
+    switch(status_)
+    {
+        case GhostStatus::kStart:
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+            return;
+        case GhostStatus::kChase:
+        case GhostStatus::kScatter:
+            previous_status_ = status_;
+            setDirectionReverse(true);
+            setZoneHorizontalOnly(false);
+            setSpeedSlow(true);
+        default: // unreachable
+            break;
+    }
+
+    if(seconds == 0)
+        status_ = GhostStatus::kFrightenedBlinking;
+    else
+    {
+        status_ = GhostStatus::kFrightened;
+        counter_.start(seconds * config::settings::kFramesPerSecond);
+    }
 }
 
 void Ghost::handleStatus()
@@ -58,24 +106,16 @@ void Ghost::handleStatus()
     // Handle ghost status.
     if(counter_.isActive())
         counter_.increment();
-    else
-        handleStatusChange();
-
-    // Handle parent moving entity status.
-    MovingEntity::handleStatus();
-}
-
-void Ghost::handleStatusChange() {
-
-    if(!isEnabled())
+    else if(status_ == GhostStatus::kFrightened)
+        status_ = GhostStatus::kFrightenedBlinking;
+    else if(!isEnabled())
     {
         if(isDead()) // Death.
         {
             if (house_target_ == getPosition().scaleDown(config::dimensions::kWindowCellSize))
             {
                 setEnabled(true);
-                counter_.loadSave();
-                status_ = previous_status_;
+                status_ = GhostStatus::kHouse;
                 resetNextDirection();
                 setZoneTunnelSlow(true);
                 setZoneHorizontalOnly(true);
@@ -87,37 +127,10 @@ void Ghost::handleStatusChange() {
         {
             // TODO : ghost house status
         }
-        return;
     }
 
-    if (status_ == GhostStatus::kFrightened)
-    {
-        status_ = GhostStatus::kFrightenedBlinking;
-        return;
-    }
-
-    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
-        return;
-
-    switch(status_)
-    {
-        case GhostStatus::kChase:
-            status_changes_++;
-            setDirectionReverse(true);
-        case GhostStatus::kStart:
-            status_ = GhostStatus::kScatter;
-            counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            return;
-        case GhostStatus::kScatter:
-            status_changes_++;
-            status_ = GhostStatus::kChase;
-            setDirectionReverse(true);
-            if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
-                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            return;
-        default: // unreachable
-            return;
-    }
+    // Handle parent moving entity status.
+    MovingEntity::handleStatus();
 }
 
 void Ghost::animate(const Direction &direction)
@@ -154,11 +167,20 @@ void Ghost::tick(const Map &map) {
 }
 
 void Ghost::kill() {
-    if(!isFrightened())
+
+    switch (status_)
     {
-        previous_status_ = status_;
-        counter_.save();
+        case GhostStatus::kStart:
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+            return;
+        case GhostStatus::kChase:
+        case GhostStatus::kScatter:
+            previous_status_ = status_;
+        default:
+            break;
     }
+
     status_ = GhostStatus::kDead;
     counter_.stop();
     resetNextDirection();
@@ -170,38 +192,18 @@ void Ghost::kill() {
     Entity::kill();
 }
 
-void Ghost::frightened()
-{
-    if(isDead() || status_ == GhostStatus::kHouse)
-        return;
-
-    if(!isFrightened())
-    {
-        previous_status_ = status_;
-        setDirectionReverse(true);
-        setZoneHorizontalOnly(false);
-        setSpeedSlow(true);
-    }
-
-    if(status_timers.at(1) == 0)
-        status_ = GhostStatus::kFrightenedBlinking;
-    else {
-        status_ = GhostStatus::kFrightened;
-        counter_.save();
-        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
-    }
-}
-
 void Ghost::unfrightened()
 {
-    if(!isFrightened())
-        return;
-    if(status_ == GhostStatus::kFrightened && counter_.isActive())
-        counter_.loadSave();
-    status_ = previous_status_;
-    resetNextDirection();
-    setZoneHorizontalOnly(true);
-    setSpeedSlow(false);
+    switch (status_)
+    {
+        case GhostStatus::kFrightened:
+        case GhostStatus::kFrightenedBlinking:
+            status_ = previous_status_;
+            setZoneHorizontalOnly(true);
+            setSpeedSlow(false);
+        default:
+            return;
+    }
 }
 
 void Ghost::reset()
@@ -209,7 +211,6 @@ void Ghost::reset()
     MovingEntity::reset();
     status_ = GhostStatus::kStart;
     counter_.stop();
-    status_changes_ = 1;
     resetNextDirection();
     setZoneTunnelSlow(false);
     setZoneHorizontalOnly(false);

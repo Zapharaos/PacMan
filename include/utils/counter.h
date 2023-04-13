@@ -20,20 +20,20 @@ private:
     bool active_ = false;
 
     /** Current value. */
-    long count_ = 0;
+    unsigned long count_ = 0;
 
     /** Value to reach. */
-    long cap_ = 0;
+    unsigned long cap_ = 0;
 
     bool save_ = false;
 
-    long count_difference_ = 0;
+    unsigned long count_difference_ = 0;
 
     /** Save current value. */
-    long count_save_ = 0;
+    unsigned long count_save_ = 0;
 
     /** Save value to reach/ */
-    long cap_save_ = 0;
+    unsigned long cap_save_ = 0;
 
 public:
 
@@ -51,14 +51,14 @@ public:
      * @brief Getter for the current count value.
      * @return The current count value.
      */
-    [[nodiscard]] inline long getCount() const
+    [[nodiscard]] inline unsigned long getCount() const
     { return count_; };
 
     /**
      * @brief Starts the counter with a given value to reach.
      * @param cap The value to reach.
      */
-    inline void start(long cap)
+    inline void start(unsigned long cap)
     {
         active_ = true;
         count_ = 0;
@@ -114,7 +114,7 @@ public:
      * @brief Loads the saved values as the current ones.
      * @param Optional : time difference added to the saved counter.
      */
-    inline void loadSave(long difference = 0)
+    inline void loadSave(unsigned long difference = 0)
     {
         active_ = true;
         count_ = count_save_ + difference; // Time saved + time difference

@@ -17,7 +17,7 @@ Ghosts::Ghosts()
                visuals::ghosts::blinky::right::kAnimation,
                visuals::ghosts::blinky::up::kAnimation,
                visuals::ghosts::blinky::down::kAnimation);
-    pinky_ = std::make_shared<GhostSpecial<GhostType::kPinky>>(
+    /*pinky_ = std::make_shared<GhostSpecial<GhostType::kPinky>>(
             Position{config::positions::entities::pinky::kDefaultX,
                         config::positions::entities::pinky::kDefaultY},
                Position{config::positions::entities::pinky::kTargetX,
@@ -49,24 +49,51 @@ Ghosts::Ghosts()
                visuals::ghosts::clyde::left::kAnimation,
                visuals::ghosts::clyde::right::kAnimation,
                visuals::ghosts::clyde::up::kAnimation,
-               visuals::ghosts::clyde::down::kAnimation);
-    ghosts_entities = {blinky_, pinky_, inky_, clyde_};
+               visuals::ghosts::clyde::down::kAnimation);*/
+    ghosts_entities = {blinky_/*, pinky_, inky_, clyde_*/};
 }
 
-std::array<std::shared_ptr<Ghost>, 4> Ghosts::getGhosts()
+std::array<std::shared_ptr<Ghost>, 1> Ghosts::getGhosts()
 {
     return ghosts_entities;
 }
 
 void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
 {
+
+    if(status_counter_.isActive())
+    {
+        status_counter_.increment();
+    }
+    else if(status_changes_ < status_timers.size() - 1)
+    {
+        for(auto &ghost : ghosts_entities)
+            ghost->statusChange();
+        if((++status_changes_) < status_timers.size())
+            status_counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
+    }
+
     // Update chase targets.
     blinky_->chase(pacman);
-    pinky_->chase(pacman, pacman_direction);
+    /*pinky_->chase(pacman, pacman_direction);
     inky_->chase(pacman, pacman_direction, blinky_->getPosition().scaleDown(config::dimensions::kWindowCellSize));
-    clyde_->chase(pacman);
+    clyde_->chase(pacman);*/
 
-    // Handle ghosts.
+    // Tick ghosts.
     for(auto &ghost : ghosts_entities)
         ghost->tick(map);
+}
+
+void Ghosts::frightened()
+{
+    for(auto &ghost : ghosts_entities)
+        ghost->frightened(status_timers.at(0));
+}
+
+void Ghosts::reset()
+{
+    status_changes_ = 0;
+    status_counter_.stop();
+    for(auto &ghost : ghosts_entities)
+        ghost->reset();
 }

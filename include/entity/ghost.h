@@ -54,8 +54,9 @@ public:
 
     /**
      * @brief Start the frightened mode.
+     * @param seconds Duration of the frightened status, without frightened blinking.
      */
-    void frightened();
+    void frightened(unsigned long seconds);
 
     /**
      * @brief Quit the frightened mode.
@@ -67,6 +68,8 @@ public:
      * @see MovingEntity::reset()
      */
     void reset() override;
+
+    void statusChange();
 
 private:
 
@@ -87,17 +90,6 @@ private:
     /** The previous status.
      * @details Used to save the status while in frightened mode. */
     GhostStatus previous_status_ {};
-
-    /** The number of times the Ghost's status has changed.
-     * @details Set as 1 since the 0 index is const for the frightened mode. */
-    size_t status_changes_ = 1;
-
-    /** Duration values for the statuses (in seconds) :
-     * Index 0 is const for the frightened mode (not blinking!).
-     * Index odd : scatter timers.
-     * Index even : chase timers (infinite after last scatter).
-     */
-    inline static constexpr std::array<int, 8> status_timers {5, 7, 20, 7, 20, 5, 20, 5};
 
     /** Counts a number of frames between each statuses. */
     Counter counter_ {};
@@ -129,7 +121,6 @@ private:
     /** Animations when dead and moving towards the bottom. */
     Animation dead_down_{};
 
-private:
     /**
      * @brief Indicates the current target, depending on the current status.
      * @param pacman The pacman position on the map.
@@ -138,22 +129,11 @@ private:
     std::optional<Position> getTarget();
 
     /**
-     * @brief Checks whether or not the Ghost is currently in frightened mode.
-     * @return True if the Ghost is frightened, false otherwise.
-     */
-    bool isFrightened();
-
-    /**
      * @brief Handles the current status of the Ghost.
      * @details This method is called during each tick to determine the
      * appropriate behavior for the Ghost based on its current status.
      */
     void handleStatus() override;
-
-    /**
-     * @brief Handles a change in the Ghost's status.
-     */
-    void handleStatusChange();
 
     /**
      * @brief Animates the Ghost based on its current direction.

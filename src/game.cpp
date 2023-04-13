@@ -260,8 +260,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
             status_ = StatusType::kSuperpower;
             counter_.start(config::settings::kDurationSuperpower);
             ghosts_eaten = 0;
-            for(auto &ghost : ghosts_.getGhosts())
-                ghost->frightened();
+            ghosts_.frightened();
         }
     }
 
@@ -330,8 +329,7 @@ void Game::levelUp() {
     // Reset entities.
     map_.reset();
     pacman_.reset();
-    for(auto &ghost : ghosts_.getGhosts())
-        ghost->reset();
+    ghosts_.reset();
 
     // TODO : speed and timers : up
 }
@@ -344,12 +342,12 @@ void Game::lostLife() {
         level_ = 1;
         pellets_eaten_ = 0;
         map_.reset();
+        ghosts_.reset();
     }
 
     status_ = StatusType::kRunning;
     pacman_.reset();
-    for(auto &ghost : ghosts_.getGhosts())
-        ghost->reset();
+    ghosts_.reset();
 
     // TODO : speed and timers : reset
 }
