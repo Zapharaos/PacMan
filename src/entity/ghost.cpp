@@ -15,6 +15,9 @@ Ghost::Ghost(const Position &position, Position scatter_target,
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
+    setZoneTunnelSlow(true);
+    setZoneHorizontalOnly(true);
+    setDeadSpeedUp(true);
     frightened_ = visuals::ghosts::frightened::kAnimation;
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
     dead_left_ = visuals::ghosts::dead::left::kAnimation;
@@ -210,9 +213,7 @@ void Ghost::reset()
     MovingEntity::reset();
     status_ = GhostStatus::kStart;
     counter_.stop();
-    resetNextDirection();
-    setZoneTunnelSlow(false);
-    setZoneHorizontalOnly(false);
-    setGhostHouseDoorAccess(true);
-    setSpeedSlow(false);
+    setZoneTunnelSlow(true);
+    setZoneHorizontalOnly(true);
+    setDeadSpeedUp(true);
 }

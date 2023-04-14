@@ -11,11 +11,12 @@ class Ghosts
 {
 
 private:
+
     std::shared_ptr<GhostSpecial<GhostType::kBlinky>> blinky_ {};
     std::shared_ptr<GhostSpecial<GhostType::kPinky>> pinky_ {};
     std::shared_ptr<GhostSpecial<GhostType::kInky>> inky_ {};
     std::shared_ptr<GhostSpecial<GhostType::kClyde>> clyde_ {};
-    std::array<std::shared_ptr<Ghost>, 1> ghosts_entities {};
+    std::array<std::shared_ptr<Ghost>, 4> ghosts_entities {};
 
     /** Counts a number of frames between each statuses. */
     Counter status_counter_ {};
@@ -34,7 +35,7 @@ private:
 public:
     Ghosts();
 
-    std::array<std::shared_ptr<Ghost>, 1> getGhosts();
+    std::array<std::shared_ptr<Ghost>, 4> getGhosts();
 
     void tick(const Map& map, Position position, Direction direction);
 

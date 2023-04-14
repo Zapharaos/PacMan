@@ -158,6 +158,8 @@ public:
 
     void setSpeedSlow(bool speedSlow);
 
+    void setDeadSpeedUp(bool deadSpeedUp);
+
 };
 
 

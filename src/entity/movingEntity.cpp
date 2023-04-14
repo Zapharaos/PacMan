@@ -13,11 +13,7 @@ MovingEntity::MovingEntity(const Position &position, bool enabled, int points, i
                            Animation left, Animation right, Animation up, Animation down) :
         Entity(position, left.getSprite(), enabled, points), start_(position), speed_(speed),
         left_(std::move(left)), right_(std::move(right)), up_(std::move(up)), down_(std::move(down))
-{
-    zone_tunnel_slow_ = true;
-    zone_horizontal_only_ = true;
-    dead_speed_up_ = true;
-}
+{}
 
 MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
                            Animation right, Animation up, Animation down) :
@@ -78,7 +74,8 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         if(direction_reverse_) // prepare reverse
         {
             next_position = current_position;
-            next_direction_ = previous_direction_.reverse();
+            next_cell = map.getCell(next_position);
+            next_direction_ = next_direction_.reverse();
         }
     }
 
@@ -88,7 +85,7 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
     if(direction_reverse_) // finish reverse
     {
         direction_reverse_ = false;
-        return current_direction;
+        return current_direction.reverse();
     }
 
     if(current_direction.isUninitialized()) // only true at start or reset
@@ -177,7 +174,14 @@ void MovingEntity::animate(const Direction &direction)
 void MovingEntity::reset()
 {
     previous_direction_.reset();
-    left_.reset();
+    next_direction_.reset();
+    direction_reverse_ = false;
+    zone_tunnel_slow_ = false;
+    zone_horizontal_only_ = false;
+    ghost_house_door_access_ = false;
+    dead_speed_up_ = false;
+    speed_slow_ = false;
+    left_.reset(); // reset animation
     setSprite(left_.getSprite()); // default sprite
     setPosition(start_); // reset position
 }
@@ -212,4 +216,9 @@ const Direction &MovingEntity::getPreviousDirection() const {
 
 bool MovingEntity::isZoneTunnelSlow() const {
     return !speed_slow_ && zone_tunnel_slow_;
+}
+
+void MovingEntity::setDeadSpeedUp(bool deadSpeedUp)
+{
+    dead_speed_up_ = deadSpeedUp;
 }

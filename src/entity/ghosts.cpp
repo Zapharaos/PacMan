@@ -17,9 +17,9 @@ Ghosts::Ghosts()
                visuals::ghosts::blinky::right::kAnimation,
                visuals::ghosts::blinky::up::kAnimation,
                visuals::ghosts::blinky::down::kAnimation);
-    /*pinky_ = std::make_shared<GhostSpecial<GhostType::kPinky>>(
-            Position{config::positions::entities::pinky::kDefaultX,
-                        config::positions::entities::pinky::kDefaultY},
+    pinky_ = std::make_shared<GhostSpecial<GhostType::kPinky>>(
+            Position{config::positions::entities::blinky::kDefaultX,
+                        config::positions::entities::blinky::kDefaultY},
                Position{config::positions::entities::pinky::kTargetX,
                         config::positions::entities::pinky::kTargetY},
                Position{config::positions::entities::pinky::kHouseX,
@@ -29,8 +29,8 @@ Ghosts::Ghosts()
                visuals::ghosts::pinky::up::kAnimation,
                visuals::ghosts::pinky::down::kAnimation);
     inky_ = std::make_shared<GhostSpecial<GhostType::kInky>>(
-            Position{config::positions::entities::inky::kDefaultX,
-                        config::positions::entities::inky::kDefaultY},
+            Position{config::positions::entities::blinky::kDefaultX,
+                        config::positions::entities::blinky::kDefaultY},
                Position{config::positions::entities::inky::kTargetX,
                         config::positions::entities::inky::kTargetY},
                Position{config::positions::entities::inky::kHouseX,
@@ -40,8 +40,8 @@ Ghosts::Ghosts()
                visuals::ghosts::inky::up::kAnimation,
                visuals::ghosts::inky::down::kAnimation);
     clyde_ = std::make_shared<GhostSpecial<GhostType::kClyde>>(
-            Position{config::positions::entities::clyde::kDefaultX,
-                        config::positions::entities::clyde::kDefaultY},
+            Position{config::positions::entities::blinky::kDefaultX,
+                        config::positions::entities::blinky::kDefaultY},
                Position{config::positions::entities::clyde::kTargetX,
                         config::positions::entities::clyde::kTargetY},
                Position{config::positions::entities::clyde::kHouseX,
@@ -49,11 +49,11 @@ Ghosts::Ghosts()
                visuals::ghosts::clyde::left::kAnimation,
                visuals::ghosts::clyde::right::kAnimation,
                visuals::ghosts::clyde::up::kAnimation,
-               visuals::ghosts::clyde::down::kAnimation);*/
-    ghosts_entities = {blinky_/*, pinky_, inky_, clyde_*/};
+               visuals::ghosts::clyde::down::kAnimation);
+    ghosts_entities = {blinky_, pinky_, inky_, clyde_};
 }
 
-std::array<std::shared_ptr<Ghost>, 1> Ghosts::getGhosts()
+std::array<std::shared_ptr<Ghost>, 4> Ghosts::getGhosts()
 {
     return ghosts_entities;
 }
@@ -65,7 +65,7 @@ void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
     {
         status_counter_.increment();
     }
-    else if(status_changes_ < status_timers.size() - 1)
+    else if(status_changes_ < status_timers.size())
     {
         for(auto &ghost : ghosts_entities)
             ghost->statusChange();
@@ -75,9 +75,9 @@ void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
 
     // Update chase targets.
     blinky_->chase(pacman);
-    /*pinky_->chase(pacman, pacman_direction);
+    pinky_->chase(pacman, pacman_direction);
     inky_->chase(pacman, pacman_direction, blinky_->getPosition().scaleDown(config::dimensions::kWindowCellSize));
-    clyde_->chase(pacman);*/
+    clyde_->chase(pacman);
 
     // Tick ghosts.
     for(auto &ghost : ghosts_entities)

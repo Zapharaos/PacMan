@@ -45,7 +45,8 @@ template <GhostType U, typename std::enable_if<U == GhostType::kClyde, int>::typ
 void GhostSpecial<T>::chase(const Position &pacman)
 {
     auto current_cell_position = getPosition().scaleDown(config::dimensions::kWindowCellSize);
-    if(current_cell_position.getDistance(pacman) >= config::settings::kClydeDistanceFromPacman)
+    auto distance = current_cell_position.getDistance(pacman);
+    if(distance >= config::settings::kClydeDistanceFromPacman)
         setChaseTarget(pacman);
     else
         setChaseTarget(getScatterTarget());
