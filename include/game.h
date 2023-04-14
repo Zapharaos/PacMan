@@ -92,6 +92,9 @@ private:
     /** The counter used to count frames. */
     Counter counter_ {};
 
+    /**Vector that will store all points to display after eating a fruit/ghost till timer runs out */
+    std::vector<std::tuple<SDL_Rect, SDL_Rect, Counter,std::tuple<int, int, int>  >> points_ ;
+
 public:
 
     /**
@@ -147,13 +150,6 @@ public:
 
     bool updateHighScore() ;
 
-    /**
-     * getSavedHighScore
-     * Gets the high score set locally from the save.json file
-     * @return high_score_
-     */
-    int getLocalHighScore();
-
     unsigned long getHighScore() const;
 
     int getLevel() const;
@@ -164,6 +160,10 @@ public:
      * @brief Quits the game by setting the game status to kStopped.
      */
     void quit();
+
+    void displayPoints();
+
+    void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
 };
 
 

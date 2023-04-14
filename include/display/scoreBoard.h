@@ -9,7 +9,6 @@
 #include <memory>
 
 #include <queue>
-#include "../config/constants.h"
 #include "../utils/utils.h"
 #include "../config/config.h"
 #include "../config/visuals.h"
@@ -20,7 +19,7 @@
 class ScoreBoard {
 private :
     // Window width
-    int width_ = config::SCORE_BOARD_WIDTH;
+    int width_ = config::dimensions::kWindowWidth;
     //Window Height
     int height_ = 0 ;
     //Fruit queue
@@ -32,22 +31,13 @@ public:
 
     ScoreBoard();
 
-    ScoreBoard(int width, int height, std::vector<SDL_Rect> numbers);
-
-    /////////// Getters and setters ///////////
-
-    [[nodiscard]] int getWidth() const;
-
-
-
-
     /**
      * getPointsToPrint
      * Sets a vector with the sprites to print
      * @param points
      * @return vector containing sprites
      */
-    std::vector <SDL_Rect> getPointsToPrint(unsigned long points,const std::unordered_map<char, SDL_Rect>& character_map);
+    static std::vector <SDL_Rect> getPointsToPrint(unsigned long points,const std::unordered_map<char, SDL_Rect>& character_map);
 
     /**
      * Used to display lives remaining
@@ -55,7 +45,7 @@ public:
      * @param texture
      * @param livesNb
      */
-    void writeLives(const std::shared_ptr<SDL_Renderer>& render,
+    static void writeLives(const std::shared_ptr<SDL_Renderer>& render,
                     const std::shared_ptr<SDL_Texture>& texture,
                     int livesNb);
     /**
