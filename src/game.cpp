@@ -244,6 +244,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         // Updates fruit.
         ++pellets_eaten_;
         fruit_.update(pellets_eaten_, level_);
+        ghosts_.pelletEaten();
 
         // Updates game.
         if (pellets_eaten_ == pellets_total_) // Level up.

@@ -34,8 +34,8 @@ public:
      * @param up Animations when moving towards the up.
      * @param down Animations when moving towards the down.
      */
-    Ghost(const Position &position, Position scatter_target,
-          Position house_target, Animation left, Animation right, Animation up, Animation down);
+    Ghost(const Position &position, Position scatter_target, Position house_target,
+          unsigned long pellets, Animation left, Animation right, Animation up, Animation down);
 
     [[nodiscard]] const Position &getScatterTarget() const;
 
@@ -71,28 +71,31 @@ public:
 
     void statusChange();
 
+    bool inHouseIncrementCounter();
+
 private:
 
     enum class GhostStatus
     {
-        kStart,
+        kHouse,
         kChase,
         kScatter,
         kFrightened,
         kFrightenedBlinking,
-        kDead,
-        kHouse
+        kDead
     };
 
     /** The current status. */
-    GhostStatus status_ {GhostStatus::kStart};
+    GhostStatus status_ {GhostStatus::kHouse};
 
     /** The previous status.
      * @details Used to save the status while in frightened mode. */
     GhostStatus previous_status_ {};
 
     /** Counts a number of frames between each statuses. */
-    Counter counter_ {};
+    Counter frigthened_counter_ {};
+
+    Counter pellet_counter_ {};
 
     /** The position the Ghost is targeting while in chase mode. */
     Position chase_target_ {};
@@ -141,6 +144,8 @@ private:
      * @see MovingEntity::animate()
      */
     void animate(const Direction &direction) override;
+
+    Position getCurrentCellPosition();
 
 };
 

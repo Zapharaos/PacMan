@@ -12,9 +12,10 @@ template<GhostType T>
 GhostSpecial<T>::GhostSpecial(const Position &position,
                               const Position &scatterTarget,
                               const Position &houseTarget,
+                              unsigned long pellets,
                               const Animation &left, const Animation &right,
                               const Animation &up, const Animation &down):Ghost(
-        position, scatterTarget, houseTarget, left, right, up, down)
+        position, scatterTarget, houseTarget, pellets, left, right, up, down)
 {}
 
 template <GhostType T>

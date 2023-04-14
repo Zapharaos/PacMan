@@ -25,9 +25,9 @@ public:
     GhostSpecial();
 
     GhostSpecial(const Position &position, const Position &scatterTarget,
-                 const Position &houseTarget, const Animation &left,
-                 const Animation &right, const Animation &up,
-                 const Animation &down);
+                 const Position &houseTarget, unsigned long pellets,
+                 const Animation &left, const Animation &right,
+                 const Animation &up, const Animation &down);
 
     template <GhostType U = T, typename std::enable_if<U == GhostType::kBlinky, int>::type = 0>
     void chase(const Position &pacman);

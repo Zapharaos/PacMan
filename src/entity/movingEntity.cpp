@@ -75,7 +75,8 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         {
             next_position = current_position;
             next_cell = map.getCell(next_position);
-            next_direction_ = next_direction_.reverse();
+            previous_direction_ = getPreviousDirection().reverse();
+            next_direction_ = previous_direction_;
         }
     }
 
@@ -85,7 +86,7 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
     if(direction_reverse_) // finish reverse
     {
         direction_reverse_ = false;
-        return current_direction.reverse();
+        return next_direction_;
     }
 
     if(current_direction.isUninitialized()) // only true at start or reset

@@ -5,10 +5,11 @@
 #ifndef PACMAN_CONFIG_H
 #define PACMAN_CONFIG_H
 
+#include "../map/position.h"
+
 #include <chrono>
 #include <set>
 #include <array>
-
 
 enum class Score
 {
@@ -44,7 +45,7 @@ namespace config {
         inline constexpr int kRefreshRateTicksCharacters {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
-        /** Amount of ticks for each status. */
+        /** Amount of ticks for each game status. */
         inline constexpr int kDurationSuperpower {kFramesPerSecond * 10};
         inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
@@ -56,7 +57,17 @@ namespace config {
         inline constexpr int kDurationFruitPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
-        inline constexpr int kGhostStatusChangesBeforeInfiniteChase {6 + 1};
+        /** Amount of ticks for each ghost status. */
+        inline constexpr int kDurationGhostFrightened {kDurationSuperpower / 2};
+        inline constexpr std::array<int, 7> kDurationGhostStatuses {
+            7 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            7 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            5 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            5 * kFramesPerSecond // Scatter, then infinite chase
+        };
 
         /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
@@ -94,6 +105,8 @@ namespace config {
     }
 
     namespace positions {
+
+        inline static const Position kGhostHouseEntry {10, 10};
 
         namespace entities {
             /** Pacman default/starting position (in pixels). */
@@ -145,7 +158,7 @@ namespace config {
 
                 /** Ghost dead target. */
                 inline constexpr int kHouseX {9};
-                inline constexpr int kHouseY {13};
+                inline constexpr int kHouseY {12};
             }
 
             namespace clyde {
@@ -159,7 +172,7 @@ namespace config {
 
                 /** Ghost dead target. */
                 inline constexpr int kHouseX {11};
-                inline constexpr int kHouseY {13};
+                inline constexpr int kHouseY {12};
             }
         }
 

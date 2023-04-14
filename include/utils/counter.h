@@ -60,6 +60,7 @@ public:
      */
     inline void start(unsigned long cap)
     {
+        if(cap == 0) return;
         active_ = true;
         count_ = 0;
         cap_ = cap;
