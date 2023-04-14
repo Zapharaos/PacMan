@@ -328,10 +328,8 @@ void Game::levelUp() {
 
     // Reset entities.
     map_.reset();
-    pacman_.reset();
-    ghosts_.reset();
-
-    // TODO : speed and timers : up
+    pacman_.reset(); // TODO : pacman update speed & timers
+    ghosts_.levelUp();
 }
 
 void Game::lostLife() {
@@ -347,7 +345,7 @@ void Game::lostLife() {
 
     status_ = StatusType::kRunning;
     pacman_.reset();
-    ghosts_.reset();
+    ghosts_.clear();
 
     // TODO : speed and timers : reset
 }

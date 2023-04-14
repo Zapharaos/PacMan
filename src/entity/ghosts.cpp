@@ -90,10 +90,22 @@ void Ghosts::frightened()
         ghost->frightened(status_timers.at(0));
 }
 
+void Ghosts::clear()
+{
+    // TODO : house things ?
+    for(auto &ghost : ghosts_entities)
+        ghost->reset();
+}
+
 void Ghosts::reset()
 {
     status_changes_ = 0;
     status_counter_.stop();
-    for(auto &ghost : ghosts_entities)
-        ghost->reset();
+    clear();
+}
+
+void Ghosts::levelUp()
+{
+    // TODO : update timers & speed
+    reset();
 }

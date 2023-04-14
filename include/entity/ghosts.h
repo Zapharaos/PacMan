@@ -42,6 +42,10 @@ public:
     void frightened();
 
     void reset();
+
+    void levelUp();
+
+    void clear();
 };
 
 
