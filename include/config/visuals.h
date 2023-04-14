@@ -1795,6 +1795,10 @@ namespace visuals {
         }
 
     }
+    namespace welcome_screen{
+        /** DO NOT MODIFY : Welcome Screen animation. */
+        //Animate pacman going left with ghosts chasing
+    }
 
 }
 namespace characters {
@@ -2399,15 +2403,288 @@ namespace characters {
             inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
         }
     }
+    namespace points{
+        namespace points_100{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {13};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {180};
+            inline constexpr int kBitmapPositionY {133};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_200{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {155};
+            inline constexpr int kBitmapPositionY {176};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_300{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {179};
+            inline constexpr int kBitmapPositionY {142};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_400{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {155};
+            inline constexpr int kBitmapPositionY {185};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_500{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {179};
+            inline constexpr int kBitmapPositionY {151};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }namespace points_700{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {179};
+            inline constexpr int kBitmapPositionY {160};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_800{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {155};
+            inline constexpr int kBitmapPositionY {194};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_1000{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {16};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {177};
+            inline constexpr int kBitmapPositionY {169};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_1600{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {15};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {154};
+            inline constexpr int kBitmapPositionY {203};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_2000{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {16};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {177};
+            inline constexpr int kBitmapPositionY {178};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_3000{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {16};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {177};
+            inline constexpr int kBitmapPositionY {187};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }namespace points_5000{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {16};
+            inline constexpr int kBitmapHeight {7};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {177};
+            inline constexpr int kBitmapPositionY {196};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_10{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {7};
+            inline constexpr int kBitmapHeight {5};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {151};
+            inline constexpr int kBitmapPositionY {212};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_50{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {7};
+            inline constexpr int kBitmapHeight {5};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {162};
+            inline constexpr int kBitmapPositionY {212};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_small{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {14};
+            inline constexpr int kBitmapHeight {5};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {178};
+            inline constexpr int kBitmapPositionY {212};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+        namespace points_big{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {15};
+            inline constexpr int kBitmapHeight {5};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {178};
+            inline constexpr int kBitmapPositionY {205};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+
+        }
+
+    }
     namespace special{
         namespace dot {
             /** Sprite dimensions (in pixels). */
-            inline constexpr int kBitmapWidth {2};
-            inline constexpr int kBitmapHeight {2};
+            inline constexpr int kBitmapWidth {6};
+            inline constexpr int kBitmapHeight {7};
 
             /** Sprite positions (in pixels). */
-            inline constexpr int kBitmapPositionX {93};
-            inline constexpr int kBitmapPositionY {74};
+            inline constexpr int kBitmapPositionX {91};
+            inline constexpr int kBitmapPositionY {69};
 
             /** Sprite positions offset (in pixels). */
             inline constexpr int kBitmapOffsetX {0};
@@ -2451,11 +2728,11 @@ namespace characters {
         namespace dash {
             /** Sprite dimensions (in pixels). */
             inline constexpr int kBitmapWidth {6};
-            inline constexpr int kBitmapHeight {1};
+            inline constexpr int kBitmapHeight {7};
 
             /** Sprite positions (in pixels). */
             inline constexpr int kBitmapPositionX {84};
-            inline constexpr int kBitmapPositionY {56};
+            inline constexpr int kBitmapPositionY {53};
 
             /** Sprite positions offset (in pixels). */
             inline constexpr int kBitmapOffsetX {0};
@@ -2496,7 +2773,24 @@ namespace characters {
             /** DO NOT MODIFY : Sprite. */
             inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
         }
+        namespace points{
+            /** Sprite dimensions (in pixels). */
+            inline constexpr int kBitmapWidth {10};
+            inline constexpr int kBitmapHeight {5};
+
+            /** Sprite positions (in pixels). */
+            inline constexpr int kBitmapPositionX {178};
+            inline constexpr int kBitmapPositionY {212};
+
+            /** Sprite positions offset (in pixels). */
+            inline constexpr int kBitmapOffsetX {0};
+            inline constexpr int kBitmapOffsetY {0};
+
+            /** DO NOT MODIFY : Sprite. */
+            inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
+        }
     }
+
 }
 
 namespace colours{

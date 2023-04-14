@@ -53,7 +53,7 @@ namespace config {
         inline constexpr int kDurationLevelupFreeze {kFramesPerSecond};
         inline constexpr int kDurationLevelupBlinking {kFramesPerSecond * 4};
         inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
-        inline constexpr int kDurationFruitPoints {kFramesPerSecond * 3};
+        inline constexpr int kDurationPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
         inline constexpr int kGhostStatusChangesBeforeInfiniteChase {6 + 1};
@@ -76,7 +76,7 @@ namespace config {
         inline constexpr int kMapHeight {27};
 
         /** Score Board height(top and bottom), width as same as map */
-        inline constexpr int kScoreBoardHeight{128};
+        inline constexpr int kScoreBoardHeight{75};
 
         /** Window cell size. */
         inline constexpr int kWindowCellSize {32};
@@ -97,8 +97,8 @@ namespace config {
             /** Fruit position (in pixels). */
             inline constexpr int kFruitX {10 * dimensions::kWindowCellSize};
             inline constexpr int kFruitY {15 * dimensions::kWindowCellSize};
-            inline constexpr int kFruitPointsX{350};
-            inline constexpr int kFruitPointsY{490};
+            inline constexpr int kFruitPointsX{330};
+            inline constexpr int kFruitPointsY{490+dimensions::kScoreBoardHeight};
 
             namespace blinky {
                 /** Ghost default/starting (in pixels). */
@@ -141,66 +141,45 @@ namespace config {
             }
         }
 
-        /**Score Board Positions*/
-        inline constexpr int kScoreBoardX {0};
-        inline constexpr int kScoreBoardY {0};
-        inline constexpr int kScoreBoardOneUpTextX {50};
-        inline constexpr int kScoreBoardOneUpTextY {10};
-        inline constexpr int kScoreBoardScoreX {kScoreBoardOneUpTextX + 60};
-        inline constexpr int kScoreBoardScoreY {84};
-        inline constexpr int kScoreBoardHighScoreTextX {200};
-        inline constexpr int kScoreBoardHighScoreTextY {10};
-        inline constexpr int kScoreBoardHighScoreX {271};
-        inline constexpr int kScoreBoardHighScoreY {84};
-        inline constexpr int kScoreBoardLivesX {30};
-        inline constexpr int kScoreBoardLivesY{ dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
-        inline constexpr int kScoreBoardFruitsX {dimensions::kWindowWidth - 30 };
-        inline constexpr int kScoreBoardFruitsY {dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+        namespace offsets{
+            inline constexpr int kGhostPointsX { 10 };
+            inline constexpr int kGhostPointsY { 10 + config::dimensions::kScoreBoardHeight};
+            inline constexpr int kReady{2};
+            inline constexpr int kPlayerOne{2};
+        }
+        namespace display{
+            /**Score Board Positions*/
+            inline constexpr int kScoreBoardX {0};
+            inline constexpr int kScoreBoardY {0};
+            inline constexpr int kScoreBoardOneUpTextX {50};
+            inline constexpr int kScoreBoardOneUpTextY {10};
+            inline constexpr int kScoreBoardScoreX { 75};
+            inline constexpr int kScoreBoardScoreY {40};
+            inline constexpr int kScoreBoardHighScoreTextX {200};
+            inline constexpr int kScoreBoardHighScoreTextY {10};
+            inline constexpr int kScoreBoardHighScoreX {285};
+            inline constexpr int kScoreBoardHighScoreY {40};
+            inline constexpr int kScoreBoardLivesX {30};
+            inline constexpr int kScoreBoardLivesY{ dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+            inline constexpr int kScoreBoardFruitsX {dimensions::kWindowWidth - 30 };
+            inline constexpr int kScoreBoardFruitsY {dimensions::kScoreBoardHeight  + dimensions::kMapHeight * dimensions::kWindowCellSize};
+
+            /** Welcome Screen Positions */
+            inline constexpr int kCharaterNicknameX{kScoreBoardScoreX + 20 };
+            inline constexpr int kCharaterNicknameY{kScoreBoardScoreY + 50};
+            inline constexpr int kGhostsX {kScoreBoardOneUpTextX + 10};
+            inline constexpr int kBlinkyY {kCharaterNicknameY + 10};
 
 
-        /**Game Start display positions*/
-        inline constexpr int kReadyTextX {10 * dimensions::kWindowCellSize};
-        inline constexpr int kReadyTextY {15 * dimensions::kWindowCellSize};
-        inline constexpr int kPlayerOneTextX {0};
-        inline constexpr int kPlayerOneTextY {0};
+            /**Game Start display positions*/
+            inline constexpr int kReadyTextX {280};
+            inline constexpr int kReadyTextY {562};
+            inline constexpr int kPlayerOneTextX {229};
+            inline constexpr int kPlayerOneTextY {400};
+
+
+        }
     }
-
-
-    // Bitmap => Letters and numbers
-    inline constexpr int BMP_CHARACTER_WIDTH {7};
-    inline constexpr int BMP_CHARACTER_HEIGHT {7};
-    inline constexpr int BMP_CHARACTER_OFFSET_TO_LEFT_IMG {2 * BMP_CHARACTER_WIDTH};
-    inline constexpr int BMP_CHARACTER_OFFSET_TO_UP_IMG {BMP_CHARACTER_OFFSET_TO_LEFT_IMG + 2 * BMP_CHARACTER_WIDTH};
-    inline constexpr int BMP_CHARACTER_OFFSET_TO_DOWN_IMG{BMP_CHARACTER_OFFSET_TO_UP_IMG + 2 * BMP_CHARACTER_WIDTH};
-
-    // Bitmap => Letter and number positions
-    inline constexpr int BMP_NUMBER_START_ZERO_ROW_X {4};
-    inline constexpr int BMP_NUMBER_START_FIRST_ROW_X {12};
-    inline constexpr int BMP_NUMBER_START_FIRST_ROW_Y {53};
-    inline constexpr int BMP_NUMBER_START_SECOND_ROW_X {12};
-    inline constexpr int BMP_NUMBER_START_SECOND_ROW_Y {61};
-    inline constexpr int BMP_NUMBER_START_THIRD_ROW_X {4};
-    inline constexpr int BMP_NUMBER_START_THIRD_ROW_Y {69};
-
-    // Bitmap => points
-    inline constexpr int BMP_POINTS_START_ROW_1_X {155};
-    inline constexpr int BMP_POINTS_START_ROW_1_Y {176};
-    inline constexpr int BMP_POINTS_START_ROW_2_X {154};
-    inline constexpr int BMP_POINTS_START_ROW_2_Y {133};
-    inline constexpr int BMP_POINTS_WIDTH {16};
-    inline constexpr int BMP_POINTS_HEIGHT {7};
-
-    //Score Board
-    inline constexpr int SCORE_BOARD_WIDTH {300};
-    inline constexpr int SCORE_BOARD_START_X {config::dimensions::kWindowWidth +  10 };
-    inline constexpr int SCORE_BOARD_START_Y { 10 };
-    inline constexpr int SCORE_BOARD_POINTS_START_X {config::dimensions::kWindowWidth  +  160 };
-    inline constexpr int SCORE_BOARD_POINTS_START_Y {40};
-
-    //OFFSET FOR Extractor
-    inline constexpr int OFFSET_MAP {1};
-    inline constexpr int OFFSET_CHAR {1};
-
 }
 
 #endif //PACMAN_CONFIG_H

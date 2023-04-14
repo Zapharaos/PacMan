@@ -3,12 +3,9 @@
 //
 
 #include "../../include/display/window.h"
-
-#include "../../include/config/constants.h"
+#include "../../include/entity/movingEntity.h"
 
 Window::Window() = default;
-
-
 
 void Window::init() {
 
@@ -34,10 +31,6 @@ void Window::init() {
                                                            SDL_WINDOW_SHOWN), SDL_DestroyWindow);
 
     renderer_ = std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
-
-    std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(window_.get(), -1, render_flags), SDL_DestroyRenderer);
-
-    //surface_.get() = SDL_LoadBMP(config::files::kBitmap) ;
     surface_ = std::shared_ptr<SDL_Surface>(SDL_LoadBMP((config::files::kBitmap) ));
     Uint32 black = SDL_MapRGB(surface_->format, 0, 0, 0); // Get the pixel value for black
     SDL_SetColorKey(surface_.get(), SDL_TRUE, black); // Set black as the transparent color
@@ -58,31 +51,31 @@ void Window::update() {
 }
 
 void Window::writeHighScore() {
-
+    //TODO make 1up flash
     writeWord("1UP",
-              config::positions::kScoreBoardOneUpTextX ,
-              config::positions::kScoreBoardOneUpTextY ,
+              config::positions::display::kScoreBoardOneUpTextX ,
+              config::positions::display::kScoreBoardOneUpTextY ,
               2,visuals::kScaleCell);
 
     writeWord("HIGH SCORE ",
-              config::positions::kScoreBoardHighScoreTextX ,
-              config::positions::kScoreBoardHighScoreTextY ,
+              config::positions::display::kScoreBoardHighScoreTextX ,
+              config::positions::display::kScoreBoardHighScoreTextY ,
             2,visuals::kScaleCell);
 }
 
 void Window::updateHighScore(unsigned long points) {
-    writeScorePoints(points, config::positions::kScoreBoardHighScoreX,
-                     config::positions::kScoreBoardHighScoreY, 3.0);
+    writeScorePoints(points, config::positions::display::kScoreBoardHighScoreX,
+                     config::positions::display::kScoreBoardHighScoreY, 3.0);
 }
 
 void Window::updateScore(unsigned long score) {
     writeScorePoints(score,
-                     config::positions::kScoreBoardScoreX,
-                     config::positions::kScoreBoardScoreY, 3.0);
+                     config::positions::display::kScoreBoardScoreX,
+                     config::positions::display::kScoreBoardScoreY, 3.0);
 }
 
 void Window::updateLives(int nb_lives) {
-    score_board_.writeLives(renderer_, texture_, nb_lives);
+    ScoreBoard::writeLives(renderer_, texture_, nb_lives);
 }
 
 void Window::updateFruits() {
@@ -173,17 +166,39 @@ void Window::initSpriteMap() {
     character_map_.insert({'-', characters::special::dash::kSprite.getImage()});
     // Get !
     character_map_.insert({'!', characters::special::exclamation::kSprite.getImage()});
+
+
+    /** init points map*/
+    points_map_.insert({100,characters::points::points_100::kSprite.getImage()});
+    points_map_.insert({200,characters::points::points_200::kSprite.getImage()});
+    points_map_.insert({300,characters::points::points_300::kSprite.getImage()});
+    points_map_.insert({400,characters::points::points_400::kSprite.getImage()});
+    points_map_.insert({500,characters::points::points_500::kSprite.getImage()});
+    points_map_.insert({700,characters::points::points_700::kSprite.getImage()});
+    points_map_.insert({800,characters::points::points_800::kSprite.getImage()});
+    points_map_.insert({1000,characters::points::points_1000::kSprite.getImage()});
+    points_map_.insert({1600,characters::points::points_1600::kSprite.getImage()});
+    points_map_.insert({2000,characters::points::points_2000::kSprite.getImage()});
+    points_map_.insert({3000,characters::points::points_3000::kSprite.getImage()});
+    points_map_.insert({5000,characters::points::points_5000::kSprite.getImage()});
+
+
+}
+
+int Window::centerImage(SDL_Rect src,int x){
+    return (x-src.w/2);
 }
 
 
 void Window::writeScorePoints(unsigned long points, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour) {
-    std::vector<SDL_Rect> points_to_print = score_board_.getPointsToPrint(points, character_map_);
 
+    std::vector<SDL_Rect> points_to_print = ScoreBoard::getPointsToPrint(points, character_map_);
     SDL_Rect position = points_to_print[0];
-    position.x = pos_x - (points_to_print.size() * characters::numbers::kBitmapWidth * scale );
+
     position.y = pos_y;
-    position.w = characters::numbers::kBitmapWidth * scale;
-    position.h = characters::numbers::kBitmapWidth * scale;
+    position.w = (int )( characters::numbers::kBitmapWidth * scale);
+    position.h = (int ) (characters::numbers::kBitmapWidth * scale);
+    position.x = centerImage(position ,pos_x );
 
     if (colour!=colours::kWhite){
         SDL_SetTextureColorMod(texture_.get(),
@@ -192,9 +207,9 @@ void Window::writeScorePoints(unsigned long points, int pos_x, int pos_y, float 
                                std::get<2>(colour));
     }
 
-    int offset = characters::numbers::kBitmapWidth  * scale;
+    int offset = position.w;
     for (SDL_Rect s: points_to_print) {
-        drawObject(renderer_, texture_, s, position, 1);
+        drawObject(renderer_, texture_, s, position);
         position.x += offset + 5  ;
     }
     if (colour!=colours::kWhite){
@@ -219,11 +234,11 @@ void Window::writeWord(const std::string &word, int pos_x, int pos_y, int offset
     for (char c: word) {
         if(!std::isspace(c)){
             SDL_Rect src = character_map_.at(c) ;
-            dest.w = src.w * scale  ;
-            dest.h = src.h * scale  ;
+            dest.w = (int)( (float)src.w * scale  );
+            dest.h = (int)( (float)src.h * scale  );
             drawObject(renderer_, texture_,
                        character_map_.at(c),
-                       dest, 1);
+                       dest);
             dest.x += dest.w + offset;
         }else{
             dest.x += dest.w + offset;
@@ -246,23 +261,16 @@ const std::shared_ptr<SDL_Renderer> &Window::getRenderer() const {
 const std::shared_ptr<SDL_Texture> &Window::getTexture() const {
     return texture_;
 }
+/*
+void Window::animateMovement(Position start,Position end, const Animation& animation, MovingEntity entity,Direction direction,
+                             int speed){
+    entity.animate(direction);
+    start.moveIntoDirection(direction ,speed);
+    entity.animate(direction);
+    entity.setPosition();
+}*/
 
-const std::string &Window::getTitle() const {
-    return title_;
-}
 
-const SDL_Rect &Window::getGhostBlinkyR() const {
-    return ghost_blinky_r;
-}
-
-const SDL_Rect &Window::getGhostPinkyR() const {
-    return ghost_pinky_r;
-}
-
-const SDL_Rect &Window::getGhostInkyR() const {
-    return ghost_inky_r;
-}
-
-const SDL_Rect &Window::getGhostClydeR() const {
-    return ghost_clyde_r;
+const std::unordered_map<unsigned long, SDL_Rect> &Window::getPointsMap() const {
+    return points_map_;
 }
