@@ -109,11 +109,6 @@ public:
     void tick(const Map &map, Direction direction);
 
     /**
-     * @brief Handle the status.
-     */
-    virtual void handleStatus();
-
-    /**
      * @brief Prepares the next move.
      * @param map The board with all the cells.
      * @param target The position the entity is targeting.

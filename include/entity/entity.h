@@ -5,8 +5,8 @@
  * @date 08/02/2023
 */
 
-#ifndef PEC_MEN_ENTITY_H
-#define PEC_MEN_ENTITY_H
+#ifndef PACMAN_ENTITY_H
+#define PACMAN_ENTITY_H
 
 #include <SDL.h>
 
@@ -26,36 +26,43 @@ class Entity
 
 private:
 
-    /*
+    /**
      * @brief EntityStatus enumeration.
-     * Defines entity visibility status.
+     * Defines Entity status.
      */
     enum class EntityStatus {
-        kVisible, /* Entity is visible. */
+        kShown, /* Entity is shown. */
+        kShownTimed, /* Entity is timed shown. */
         kHidden, /* Entity is hidden. */
         kDead, /* Entity is dead. */
         kFrozen /* Entity is frozen. */
     };
 
+    /** Entity status. */
+    EntityStatus status_ {EntityStatus::kShown};
+
+    /** Counts a number of frames. */
+    Counter status_counter_ {};
+
+    /** If the Entity is active. */
+    bool enabled_ = false;
+
     /** Raw position. */
     Position position_{};
+
+    /** Raw size. */
+    int size_{config::dimensions::kMovingEntitySize};
 
     /** Image when displayed. */
     Sprite sprite_{};
 
-    int size_{config::dimensions::kMovingEntitySize};
-
-    /** If the entity is active. */
-    bool enabled_ = false;
-
-    /** Points earned when entity is eaten. */
+    /** Points earned when Entity is eaten. */
     unsigned long points_{};
 
-    /** Entity status. */
-    EntityStatus status_ {EntityStatus::kVisible};
-
-    /** Counts a number of frames. */
-    Counter counter_ {};
+    /**
+     * True if the Entity alternate between shown and hidden, otherwise false.
+     */
+    bool blinking_{};
 
 public:
 
@@ -66,139 +73,147 @@ public:
 
     /**
      * @brief Constructor for Entity.
-     * @param position The raw position of the entity.
-     * @param sprite The sprite used to display the entity.
-     * @param enabled Indicates if the entity is enabled.
-     * @param points The number of points earned when the entity is eaten.
+     * @param position The raw position of the Entity.
      */
-    Entity(Position position, Sprite sprite, bool enabled, int points);
+    explicit Entity(Position position);
 
     /**
      * @brief Constructor for Entity.
-     * @param position The raw position of the entity.
-     * @param sprite The sprite used to display the entity.
+     * @param position The raw position of the Entity.
+     * @param sprite The sprite used to display the Entity.
      */
     Entity(Position position, Sprite sprite);
 
     /**
      * @brief Constructor for Entity.
-     * @param position The raw position of the entity.
+     * @param position The raw position of the Entity.
+     * @param sprite The sprite used to display the Entity.
+     * @param enabled Indicates if the Entity is enabled.
+     * @param points The number of points earned when the Entity is eaten.
      */
-    explicit Entity(Position position);
+    Entity(Position position, Sprite sprite, bool enabled, int points);
 
     /**
-     * @brief Getter for the raw position of the entity.
-     * @return The raw position of the entity.
+     * @brief Constructor for Entity.
+     * @param position The raw position of the Entity.
+     * @param sprite The sprite used to display the Entity.
+     * @param enabled Indicates if the Entity is enabled.
+     * @param points The number of points earned when the Entity is eaten.
+     * @param blinking_ticks True if the Entity alternate between shown and hidden, otherwise false. When different from 0, it sets the blinking_ member to true.
      */
-    [[nodiscard]] const Position &getPosition() const;
+    Entity(Position position, Sprite sprite, bool enabled, int points, unsigned long blinking_ticks);
 
     /**
-     * @brief Setter for the raw position of the entity.
-     * @param position The new raw position of the entity.
-     */
-    void setPosition(const Position &position);
-
-    int getSize() const;
-
-    /**
-     * @brief Getter for the sprite used to display the entity.
-     * @return The new sprite used to display the entity.
-     */
-    [[nodiscard]] const Sprite &getSprite() const;
-
-    /**
-     * @brief Setter for the sprite used to display the entity.
-     * @param sprite The new sprite used to display the entity.
-     */
-    void setSprite(const Sprite &sprite);
-
-    /**
-     * @brief Getter for the number of points earned when the entity is eaten.
-     * @return The number of points earned when the entity is eaten.
-     */
-    [[nodiscard]] unsigned long getPoints() const;
-
-    /**
-     * @brief Setter for the number of points earned when the entity is eaten.
-     * @param points The new number of points earned when the entity is eaten.
-     */
-    void setPoints(unsigned long points);
-
-    /**
-     * @brief Getter for whether the entity is enabled.
-     * @return True if the entity is enabled, false otherwise.
+     * @brief Getter for whether the Entity is enabled.
+     * @return True if the entity is Entity, otherwise false.
      */
     [[nodiscard]] bool isEnabled() const;
 
     /**
-     * @brief Setter for entity status.
-     * @param enabled Entity status.
+     * @brief Setter for whether the Entity is enabled.
+     * @param enabled True if the Entity is enabled, otherwise false.
      */
     void setEnabled(bool enabled);
 
     /**
-     * @brief Count for a certain amount of frames.
-     * @param frames Amount of frames.
-     * @see Counter::start()
+     * @brief Getter for the raw position of the Entity.
+     * @return The raw position of the Entity.
      */
-    void count(long frames);
+    [[nodiscard]] const Position &getPosition() const;
 
     /**
-     * @brief Indicates if the counter is active (i.e. frames are being counted).
-     * @return True if active, else false.
+     * @brief Setter for the raw position of the Entity.
+     * @param position The new raw position of the Entity.
      */
-    [[nodiscard]] bool isCounterActive() const;
+    void setPosition(const Position &position);
 
     /**
-     * @brief Increments the counter.
-     * @see Counter::increment()
+     * @brief Getter for the raw size of the Entity.
+     * @return The raw size of the Entity.
      */
-    void counterIncrement();
+    [[nodiscard]] int getSize() const;
 
     /**
-     * @brief Hide entity.
+     * @brief Getter for the sprite used to display the Entity.
+     * @return The new sprite used to display the Entity.
+     */
+    [[nodiscard]] const Sprite &getSprite() const;
+
+    /**
+     * @brief Setter for the sprite used to display the Entity.
+     * @param sprite The new sprite used to display the Entity.
+     */
+    void setSprite(const Sprite &sprite);
+
+    /**
+     * @brief Getter for the number of points earned when the Entity is eaten.
+     * @return The number of points earned when the Entity is eaten.
+     */
+    [[nodiscard]] unsigned long getPoints() const;
+
+    /**
+     * @brief Setter for the number of points earned when the Entity is eaten.
+     * @param points The new number of points earned when the Entity is eaten.
+     */
+    void setPoints(unsigned long points);
+
+    /**
+     * @brief Hide Entity.
      */
     void hide();
 
     /**
-     * @brief Show entity.
+     * @brief Show Entity.
      */
     void show();
 
     /**
-     * @brief Kill entity.
+     * @brief Show Entity for a limited amount of time.
+     * @param ticks Amount of ticks for which the Entity is shown.
+     */
+    void showTimed(unsigned long ticks);
+
+    /**
+     * @brief Kill Entity.
      */
     virtual void kill();
 
     /**
-     * @brief Freeze entity.
+     * @brief Freeze Entity.
+     * @param ticks The freeze duration.
      */
-    void freeze();
+    void freeze(unsigned long ticks = 0);
 
     /**
-     * @brief Indicates if the entity is visible.
-     * @return bool True if visible, else false.
+     * @brief Indicates if the Entity is shown.
+     * @return True if shown, otherwise false.
      */
-    [[nodiscard]] bool isVisible() const;
+    [[nodiscard]] bool isShown() const;
 
     /**
-     * @brief Indicates if the entity is hidden.
-     * @return bool True if hidden, else false.
+     * @brief Indicates if the Entity is hidden.
+     * @return True if hidden, otherwise false.
      */
     [[nodiscard]] bool isHidden() const;
 
     /**
-     * @brief Indicates if the entity is dead.
-     * @return bool True if dead, else false.
+     * @brief Indicates if the Entity is dead.
+     * @return True if dead, otherwise false.
      */
     [[nodiscard]] bool isDead() const;
 
     /**
-     * @brief Toggles the entity status and its visibility according to the counter member.
-     * @return bool True if visible, false if hidden.
+     * @brief Handles the current status of the Entity.
+     * @details This method is called during each tick to determine the
+     * appropriate behavior for the Entity based on this current status.
      */
-    bool tickVisibility();
+    virtual void handleStatus();
+
+    /**
+     * @brief Handle and update the Entity.
+     */
+    virtual void tick();
 
 };
 
-#endif //PEC_MEN_ENTITY_H
+#endif //PACMAN_ENTITY_H

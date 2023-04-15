@@ -1,6 +1,6 @@
 /**
  * @file fruit.cpp
- * @brief Implements the Fruit class which represents a fruit that occasionally appears on the board.
+ * @brief Implements the Fruit class which represents a Fruit that occasionally appears on the board.
  * @author Matthieu FREITAG (Zapharaos)
  * @date 12/03/2023
 */
@@ -9,7 +9,7 @@
 
 Fruit::Fruit() = default;
 
-Fruit::Fruit(unsigned long total_pellets) : Entity(Position{config::positions::entities::kFruitX, config::positions::entities::kFruitY})
+Fruit::Fruit(unsigned long total_pellets) : Entity({config::positions::entities::kFruitX, config::positions::entities::kFruitY})
 {
     for(auto &percentage : config::settings::kFruitsPercentages)
         pellets_cap_.emplace(total_pellets * percentage / 100);
@@ -30,22 +30,17 @@ void Fruit::update(int pellets_eaten, int level)
             ++index_;
         }
 
-        setEnabled(true); // enables the entity
         setPoints(fruits_.at(index_).getPoints()); // update points
         setSprite(fruits_.at(index_).getSprite()); // update sprite
-        count(config::settings::kDurationFruit); // fruit duration
+        showTimed(config::settings::kDurationFruit);
     }
 }
 
 void Fruit::tick()
 {
-    if(isCounterActive())
-    {
-        counterIncrement();
+    Entity::tick();
+    if(isEnabled())
         animate();
-    }
-    else if (isEnabled())
-        setEnabled(false);
 }
 
 void Fruit::animate() {

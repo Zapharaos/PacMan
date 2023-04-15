@@ -45,6 +45,8 @@ void Game::tick(const Direction &direction) {
         fruit_.tick();
         pacman_.tick(map_, direction);
         ghosts_.tick(map_, pacman_cell_position, pacman_previous_direction);
+        for(auto &cell : map_.getCellsWithEntities())
+            cell->getEntity()->tick();
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);
@@ -72,28 +74,24 @@ void Game::display() {
     window_.updateLives(lives_);
 
     // Pellets
-    for (auto &cell: map_.getCellsWithEntities()) {
-        auto entity = cell->getEntity();
-
-        // Blinking energizer (homogenize counter even if disabled)
-        if (cell->getType() == CellType::kEnergizer &&
-            !entity->tickVisibility())
-            continue;
-
-        // Entity disabled
-        if (!entity->isEnabled())
+    for (auto &cell: map_.getCellsWithEntities())
+    {
+        // Entity disabled or hidden
+        if (!cell->getEntity()->isEnabled() || cell->getEntity()->isHidden())
             continue;
 
         // Display entity
-        window_.draw(entity, config::dimensions::kScoreBoardHeight);
+        window_.draw(cell->getEntity(), config::dimensions::kScoreBoardHeight);
     }
 
     // Fruit
     if (fruit_.isEnabled()) {
         // Display entity
         window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
-    } else if (fruit_.isCounterActive()) {
-        fruit_.counterIncrement();
+    } // TODO : remove
+    /*else if (fruit_.isStatusCounterActive()) {
+
+        *//*fruit_.statusCounterIncrement();*//*
         //TODO better way to center
         if (fruit_.getPoints() >= 1000) {
             window_.writeScorePoints(1000, config::positions::entities::kFruitPointsX+5, config::positions::entities::kFruitPointsY + config::dimensions::kScoreBoardHeight,
@@ -103,7 +101,7 @@ void Game::display() {
                                      config::positions::entities::kFruitPointsY + config::dimensions::kScoreBoardHeight,
                                      visuals::fruit::kScale, colours::kPink);
         }
-    }
+    }*/
 
     // Ghosts
     for(auto &ghost : ghosts_.getGhosts())
@@ -238,8 +236,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         score_ += entity->getPoints();
 
         // Freeze pacman.
-        pacman_.freeze();
-        pacman_.count(config::settings::kDurationEatenPelletFreeze);
+        pacman_.freeze(config::settings::kDurationEatenPelletFreeze);
 
         // Updates fruit.
         ++pellets_eaten_;
@@ -255,8 +252,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         } else if (cell->getType() == CellType::kEnergizer) // Superpower.
         {
             // Freeze pacman.
-            pacman_.freeze();
-            pacman_.count(config::settings::kDurationEatenEnergizerFreeze);
+            pacman_.freeze(config::settings::kDurationEatenEnergizerFreeze);
 
             status_ = StatusType::kSuperpower;
             counter_.start(config::settings::kDurationSuperpower);
@@ -271,7 +267,8 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman) {
         if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition())) {
             // Disables fruit.
             fruit_.setEnabled(false);
-            fruit_.count(config::settings::kDurationFruitPoints);
+            // TODO : remove
+            /*fruit_.statusCounterStart(config::settings::kDurationFruitPoints);*/
             score_ += fruit_.getPoints();
         }
     }

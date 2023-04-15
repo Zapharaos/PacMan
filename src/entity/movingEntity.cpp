@@ -38,19 +38,6 @@ void MovingEntity::tick(const Map &map, Direction direction)
         animate(previous_direction_);
 }
 
-void MovingEntity::handleStatus()
-{
-    // Changes ongoing.
-    if(isCounterActive())
-    {
-        counterIncrement();
-        return;
-    }
-
-    // Reset status : show entity.
-    if(isHidden()) show();
-}
-
 Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
 {
     auto current_unscaled = getPosition();

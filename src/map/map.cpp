@@ -43,8 +43,7 @@ Map::Map(const std::vector<CellType> &cell_types) {
             } else {
                 entity = std::make_shared<Entity>(
                         Entity{coordinates, visuals::energizer::kSprite, true,
-                               static_cast<int> (Score::kEnergizer)});
-                entity->count(config::settings::kRefreshRateTicksEnergizer);
+                               static_cast<int> (Score::kEnergizer), config::settings::kRefreshRateTicksEnergizer});
             }
 
             auto cell = std::make_shared<Cell>(
