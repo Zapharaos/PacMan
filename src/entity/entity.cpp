@@ -14,25 +14,29 @@ Entity::Entity(Position position) : position_(std::move(position))
     sprite_.updatePosition(position_);
 }
 
-Entity::Entity(Position position, Sprite sprite) : position_(std::move(position)),
+Entity::Entity(Position position, Sprite sprite) : position_(
+        std::move(position)),
                                                    sprite_(std::move(sprite))
 {
     sprite_.updatePosition(position_);
 }
 
 Entity::Entity(Position position, Sprite sprite, bool enabled, int points)
-        : position_(std::move(position)), sprite_(std::move(sprite)), enabled_(enabled),
+        : position_(std::move(position)), sprite_(std::move(sprite)),
+          enabled_(enabled),
           points_(points)
 {
     sprite_.updatePosition(position_);
 }
 
-Entity::Entity(Position position, Sprite sprite, bool enabled, int points, unsigned long blinking_ticks)
-        : position_(std::move(position)), sprite_(std::move(sprite)), enabled_(enabled),
+Entity::Entity(Position position, Sprite sprite, bool enabled, int points,
+               unsigned long blinking_ticks)
+        : position_(std::move(position)), sprite_(std::move(sprite)),
+          enabled_(enabled),
           points_(points)
 {
     sprite_.updatePosition(position_);
-    if(blinking_ticks != 0)
+    if (blinking_ticks != 0)
     {
         status_counter_.start(blinking_ticks);
         blinking_ = true;
@@ -98,7 +102,7 @@ void Entity::show()
 
 void Entity::showTimed(unsigned long ticks)
 {
-    if(ticks == 0) return;
+    if (ticks == 0) return;
     setEnabled(true);
     status_counter_.start(ticks);
     status_ = EntityStatus::kShownTimed;
@@ -112,7 +116,7 @@ void Entity::kill()
 void Entity::freeze(unsigned long ticks)
 {
     status_ = EntityStatus::kFrozen;
-    if(ticks != 0)
+    if (ticks != 0)
         status_counter_.start(ticks);
 }
 
@@ -134,20 +138,20 @@ bool Entity::isDead() const
 void Entity::handleStatus()
 {
     // Changes ongoing.
-    if(status_counter_.isActive())
+    if (status_counter_.isActive())
     {
         status_counter_.increment();
         return;
     }
 
-    if(status_ == EntityStatus::kShownTimed)
+    if (status_ == EntityStatus::kShownTimed)
     {
         setEnabled(false);
         return;
     }
 
     // Switch between hidden and shown.
-    if(blinking_)
+    if (blinking_)
     {
         isShown() ? hide() : show();
         status_counter_.increment(); // restart status_counter (i.e. blinking).
@@ -155,7 +159,7 @@ void Entity::handleStatus()
     }
 
     // Reset visibility.
-    if(isHidden())
+    if (isHidden())
         show();
 }
 

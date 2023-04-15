@@ -37,7 +37,7 @@ private:
 
     /** Index of the current FruitObject.
      * @details Used to access and animate the Fruit. */
-    int index_ {};
+    int index_{};
 
 public:
 

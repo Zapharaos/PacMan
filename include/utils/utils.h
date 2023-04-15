@@ -39,8 +39,10 @@ const T &getRandomElementFromSet(std::set<T> elements)
  * @return Maximum number of T objects that can be stored.
  */
 template<typename T>
-constexpr int getMaximumLegalSize() {
-    return static_cast<int>(std::numeric_limits<std::size_t>::max() / sizeof(T));
+constexpr int getMaximumLegalSize()
+{
+    return static_cast<int>(std::numeric_limits<std::size_t>::max() /
+                            sizeof(T));
 }
 
 /**
@@ -52,7 +54,7 @@ constexpr int getMaximumLegalSize() {
  * @return The resized array.
  */
 template<typename T, std::size_t max, std::size_t N>
-constexpr std::array<T, max> shrinkArray(const std::array<T, N>& array)
+constexpr std::array<T, max> shrinkArray(const std::array<T, N> &array)
 {
     std::array<T, max> resized;
     std::copy(array.begin(), array.begin() + max, resized.begin());
@@ -68,17 +70,19 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
 
 void saveGameState(int high_score, int round);
-std::string  getSavedHighScore();
+
+std::string getSavedHighScore();
+
 std::string getRound();
 
-std::vector <SDL_Rect> extractRowFromMap(int width, int height, int
+std::vector<SDL_Rect> extractRowFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
-std::vector <SDL_Rect> extractColumnFromMap(int width, int height, int
+std::vector<SDL_Rect> extractColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
 
 SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
-                                            int start_x, int start_y, int offset);
+                                     int start_x, int start_y, int offset);
 
 SDL_Rect extractNthElementColumnFromMap(int width, int height, int
 number, int start_x, int start_y, int offset);
@@ -86,6 +90,8 @@ number, int start_x, int start_y, int offset);
 static Sprite getPointsSprite(int points);
 
 void
-drawObject(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
+drawObject(const std::shared_ptr<SDL_Renderer> &render,
+           const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
            SDL_Rect dst_rect, float scale);
+
 #endif //PACMAN_UTILS_H

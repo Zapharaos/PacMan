@@ -9,9 +9,11 @@
 
 Fruit::Fruit() = default;
 
-Fruit::Fruit(unsigned long total_pellets) : Entity({config::positions::entities::kFruitX, config::positions::entities::kFruitY})
+Fruit::Fruit(unsigned long total_pellets) : Entity(
+        {config::positions::entities::kFruitX,
+         config::positions::entities::kFruitY})
 {
-    for(auto &percentage : config::settings::kFruitsPercentages)
+    for (auto &percentage: config::settings::kFruitsPercentages)
         pellets_cap_.emplace(total_pellets * percentage / 100);
 
     fruits_ = visuals::fruit::kFruits;
@@ -39,10 +41,11 @@ void Fruit::update(int pellets_eaten, int level)
 void Fruit::tick()
 {
     Entity::tick();
-    if(isEnabled())
+    if (isEnabled())
         animate();
 }
 
-void Fruit::animate() {
+void Fruit::animate()
+{
     setSprite(fruits_.at(index_).animate());
 }

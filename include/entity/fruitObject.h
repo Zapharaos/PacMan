@@ -50,7 +50,8 @@ public:
      * @param animation Sprites to switch between when the Fruit is displayed.
     */
     inline FruitObject(int points, std::set<int> levels, Animation animation) :
-            points_(points), levels_(std::move(levels)), animation_(std::move(animation))
+            points_(points), levels_(std::move(levels)),
+            animation_(std::move(animation))
     {}
 
     /**
@@ -71,7 +72,7 @@ public:
      * @brief Getter function for the current sprite.
      * @return The current sprite to be displayed.
      */
-    [[nodiscard]] inline const Sprite & getSprite()
+    [[nodiscard]] inline const Sprite &getSprite()
     { return animation_.getSprite(); }
 
     /**

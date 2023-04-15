@@ -12,7 +12,8 @@
  * @class Counter
  * @brief A class that counts until a certain value is reached.
  */
-class Counter {
+class Counter
+{
 
 private:
 
@@ -60,7 +61,7 @@ public:
      */
     inline void start(unsigned long cap)
     {
-        if(cap == 0) return;
+        if (cap == 0) return;
         active_ = true;
         count_ = 0;
         cap_ = cap;
@@ -72,11 +73,11 @@ public:
      */
     inline void increment()
     {
-        if(count_ == 0)
+        if (count_ == 0)
             active_ = true;
-        if(save_)
+        if (save_)
             ++count_difference_;
-        if((++count_) < cap_)
+        if ((++count_) < cap_)
             return;
         stop();
     };
@@ -103,7 +104,7 @@ public:
     /**
      * @brief Saves the current counter state.
      */
-     inline void save()
+    inline void save()
     {
         count_save_ = count_;
         cap_save_ = cap_;
@@ -121,7 +122,7 @@ public:
         count_ = count_save_ + difference; // Time saved + time difference
         cap_ = cap_save_;
         save_ = false;
-        if(count_ >= cap_)
+        if (count_ >= cap_)
             stop();
     }
 

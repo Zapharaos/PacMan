@@ -48,7 +48,12 @@ public:
      * @param offset Offset when displayed on the window.
      * @param size Size when displayed on the window.
      */
-    inline constexpr Sprite(SDL_Rect image, std::pair<int, int> offset, std::pair<int, int> size) : image_(image), offset_(std::move(offset)), size_(std::move(size)) {
+    inline constexpr Sprite(SDL_Rect image, std::pair<int, int> offset,
+                            std::pair<int, int> size) : image_(image),
+                                                        offset_(std::move(
+                                                                offset)),
+                                                        size_(std::move(size))
+    {
         position_ = {offset_.first, offset_.second, size_.first, size_.second};
     }
 
