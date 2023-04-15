@@ -102,6 +102,9 @@ namespace config {
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
         inline constexpr int kWindowHeight {  kScoreBoardHeight * 2 + kMapHeight * kWindowCellSize};
 
+        // Width and height of a moving entity.
+        inline constexpr int kMovingEntitySize {32};
+
     }
 
     namespace positions {

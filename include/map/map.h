@@ -97,8 +97,8 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
-    turn(const Position &origin, const Position &destination, const Direction &direction,
-               const Direction &turn, bool zone_horizontal_only, bool ghost_house_door_access) const;
+    turn(Position origin, Position destination, int corner_offset, const Direction &direction,
+         const Direction &turn, bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief If legal, moves into a direction.

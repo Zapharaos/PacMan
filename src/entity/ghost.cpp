@@ -16,9 +16,9 @@ Ghost::Ghost(const Position &position, Position scatter_target, Position house_t
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
     setZoneTunnelSlow(true);
-    setZoneHorizontalOnly(true);
     setDeadSpeedUp(true);
     setGhostHouseDoorAccess(true);
+    setZoneHorizontalOnly(false);
     frightened_ = visuals::ghosts::frightened::kAnimation;
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
     dead_left_ = visuals::ghosts::dead::left::kAnimation;
@@ -126,6 +126,7 @@ void Ghost::handleStatus()
         {
             status_ = GhostStatus::kScatter;
             setGhostHouseDoorAccess(false);
+            setZoneHorizontalOnly(true);
         }
     }
     else if(isDead()) // Death.
@@ -236,7 +237,10 @@ bool Ghost::inHouseIncrementCounter()
     {
         pellet_counter_.increment();
         if(!pellet_counter_.isActive())
+        {
             setGhostHouseDoorAccess(true);
+            setZoneHorizontalOnly(false);
+        }
         return true;
     }
     return false;
@@ -245,5 +249,8 @@ bool Ghost::inHouseIncrementCounter()
 
 Position Ghost::getCurrentCellPosition()
 {
-    return getPosition().scaleDown(config::dimensions::kWindowCellSize);
+    auto position = getPosition();
+    if(getPreviousDirection().isLeft() || getPreviousDirection().isUp())
+        position = position.shift(getSize()-1, getSize()-1);
+    return position.scaleDown(config::dimensions::kWindowCellSize);
 }

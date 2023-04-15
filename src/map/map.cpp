@@ -75,36 +75,37 @@ const Sprite &Map::getSprite() const {
 }
 
 std::optional<Position>
-Map::turn(const Position &origin, const Position &destination,
+Map::turn(Position origin, Position destination, int corner_offset,
           const Direction &direction, const Direction &turn,
           bool zone_horizontal_only, bool ghost_house_door_access) const
 {
+
+    if(direction.isLeft() || direction.isUp())
+    {
+        // Bottom right corner
+        origin = origin.shift(corner_offset, corner_offset);
+        destination = destination.shift(corner_offset, corner_offset);
+    }
+
     // Can't turn while warping.
     if(isWarping(origin, destination))
         return {};
 
     // Get cells at origin & destination
-    auto origin_position = origin.scaleDown(cell_size_);
-    auto destination_position = destination.scaleDown(cell_size_);
-    auto origin_cell = getCell(origin_position);
-    auto destination_cell = getCell(destination_position);
+    auto origin_cell = getCell(origin.scaleDown(cell_size_));
+    auto destination_cell = getCell(destination.scaleDown(cell_size_));
+    auto corner = destination_cell->getCorner(direction);
 
-    // Get turning position (edge)
-    Position edge;
-    if (direction.isLeftOrUp())
-        edge = origin_cell->positionToPixels();
-    else
-        edge = destination_cell->positionToPixels();
-
-    // Edge not between origin & destination : turn is illegal
-    if (!edge.isBetween(origin, destination))
+    // Corner not between origin & destination : turn is illegal
+    if (!corner.isBetween(origin, destination))
         return {};
 
     // Get the rest of the distance to travel
     auto distance = origin.getSingleAxisDistance(destination) -
-                    origin.getSingleAxisDistance(edge);
+                    origin.getSingleAxisDistance(corner);
 
     // Move into new direction
+    auto edge = destination_cell->positionToPixels();
     return move(edge, edge.moveIntoDirection(turn, distance), turn, zone_horizontal_only, ghost_house_door_access);
 }
 
@@ -142,7 +143,7 @@ Map::move(const Position &origin, const Position &destination,
             return destination;
 
     // Facing wall & already in the corner of the cell : can't move further
-    if (origin == origin_cell->positionToPixels())
+    if (origin == origin_cell->positionToPixels() || origin == origin_cell->getCorner(direction))
         return {};
 
     // Facing wall & not in the corner yet : get into the corner of the cell

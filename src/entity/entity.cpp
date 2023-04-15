@@ -118,3 +118,8 @@ bool Entity::isDead() const
 {
     return status_ == EntityStatus::kDead;
 }
+
+int Entity::getSize() const
+{
+    return size_;
+}

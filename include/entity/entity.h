@@ -16,6 +16,7 @@
 
 #include "../display/sprite.h"
 #include "../utils/counter.h"
+#include "../config/config.h"
 
 /**
  * @brief An object located on the map.
@@ -41,6 +42,8 @@ private:
 
     /** Image when displayed. */
     Sprite sprite_{};
+
+    int size_{config::dimensions::kMovingEntitySize};
 
     /** If the entity is active. */
     bool enabled_ = false;
@@ -94,6 +97,8 @@ public:
      * @param position The new raw position of the entity.
      */
     void setPosition(const Position &position);
+
+    int getSize() const;
 
     /**
      * @brief Getter for the sprite used to display the entity.

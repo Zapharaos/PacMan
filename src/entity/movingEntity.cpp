@@ -63,6 +63,15 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
 
     if(!next_direction_.isUninitialized()) // only false at start or reset
     {
+
+        if(next_direction_.isLeft() || next_direction_.isUp())
+        {
+            // Bottom right corner
+            current_unscaled = current_unscaled.shift(getSize()-1, getSize()-1);
+            current_position = current_unscaled.scaleDown(map.getCellSize());
+            current_cell = map.getCell(current_position);
+        }
+
         // effective next cell
         auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, getSpeed(), isZoneTunnelSlow());
         next_position = next_unscaled.scaleDown(map.getCellSize());
@@ -100,9 +109,6 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
         (current_direction == next_direction_.reverse() && next_cell && next_cell->isWarp()))
         return (next_direction_ = current_direction);
 
-    if(next_position == target) // reached the target
-        return current_direction;
-
     // turning : move instantly towards the next direction
     if(current_direction.isTurn(next_direction_))
         return next_direction_;
@@ -124,12 +130,12 @@ bool MovingEntity::move(const Map &map, Direction direction)
     // Get positions as pixels.
     std::optional<Position> position;
     auto origin = getPosition();
-    Position destination = map.calculateDestination(origin, previous_direction_, getSpeed(), isZoneTunnelSlow());
+    auto destination = map.calculateDestination(origin, previous_direction_, getSpeed(), isZoneTunnelSlow());
 
     // Direction change.
     if(direction.isTurn(previous_direction_))
     {
-        position = map.turn(origin, destination, previous_direction_, direction, zone_horizontal_only_, ghost_house_door_access_);
+        position = map.turn(origin, destination, getSize()-1,  previous_direction_, direction,zone_horizontal_only_, ghost_house_door_access_);
         if(!position) // Turn is illegal.
             direction = previous_direction_; // Move into previous direction.
     }

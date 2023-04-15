@@ -160,8 +160,16 @@ public:
      * @brief Returns the cell's position.
      * @return The cell's position.
      */
-    [[nodiscard]] Position getPosition() const
+    [[nodiscard]] inline Position getPosition() const
     { return position_; };
+
+    [[nodiscard]] inline Position getCorner(const Direction& direction) const
+    {
+        Position corner = positionToPixels();
+        if(direction.isLeft() || direction.isUp()) // Bottom right corner
+            return corner.shift(size_ - 1, size_ - 1);
+        return corner; // Upper left corner
+    };
 
     /**
      * @brief Returns the cell's position in pixels.
