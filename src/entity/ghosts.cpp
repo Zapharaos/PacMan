@@ -95,11 +95,11 @@ void Ghosts::frightened()
         ghost->frightened(config::settings::kDurationGhostFrightened);
 }
 
-void Ghosts::clear()
+void Ghosts::restartFromHouse()
 {
-    // TODO : disable ghost pellet_counter and make them wait
+    // reset ghost & disable ghost pellet counter but does not restart it
     for(auto &ghost : ghosts_entities)
-        ghost->reset(); // Disable counters but does not reset them
+        ghost->reset(false);
 }
 
 void Ghosts::reset()
@@ -107,8 +107,9 @@ void Ghosts::reset()
     status_changes_ = 0;
     status_counter_.stop();
     // TODO : reset special counter
+    // reset ghost & restart ghost pellet counter
     for(auto &ghost : ghosts_entities)
-        ghost->reset();
+        ghost->reset(true);
 }
 
 void Ghosts::levelUp()
@@ -116,8 +117,9 @@ void Ghosts::levelUp()
     status_changes_ = 0;
     status_counter_.stop();
     // TODO : reset special counter
+    // reset ghost & restart ghost pellet counter
     for(auto &ghost : ghosts_entities)
-        ghost->reset();
+        ghost->reset(true);
 }
 
 void Ghosts::pelletEaten()

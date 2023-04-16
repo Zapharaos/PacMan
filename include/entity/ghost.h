@@ -74,7 +74,7 @@ public:
      * @brief Resets the entity object.
      * @see MovingEntity::reset()
      */
-    void reset() override;
+    void reset(bool restart_pellet_counter);
 
     void statusChange();
 

@@ -38,7 +38,7 @@ public:
 
     void levelUp();
 
-    void clear();
+    void restartFromHouse();
 
     void pelletEaten();
 

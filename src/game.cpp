@@ -367,7 +367,6 @@ void Game::lostLife()
 {
     status_ = StatusType::kRunning;
     pacman_.reset();
-    ghosts_.clear();
 
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
@@ -378,7 +377,10 @@ void Game::lostLife()
         map_.reset();
         // TODO : pacman reset speed
         ghosts_.reset(); // TODO : reset speed
-        return;
+    }
+    else
+    {
+        ghosts_.restartFromHouse();
     }
 }
 

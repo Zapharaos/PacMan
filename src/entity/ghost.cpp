@@ -15,7 +15,7 @@ Ghost::Ghost(const Position &position, Position scatter_target, Position house_t
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
-    setZoneTunnelSlow(true);
+    setSpeedSlow(true);
     setGhostHouseDoorAccess(true);
     setZoneHorizontalOnly(false);
     frightened_ = visuals::ghosts::frightened::kAnimation;
@@ -129,6 +129,8 @@ void Ghost::handleStatus()
             status_ = GhostStatus::kScatter;
             setGhostHouseDoorAccess(false);
             setZoneHorizontalOnly(true);
+            setZoneTunnelSlow(true);
+            setSpeedSlow(false);
         }
     }
     else if(isDead()) // Death.
@@ -137,8 +139,9 @@ void Ghost::handleStatus()
         {
             setEnabled(true);
             status_ = GhostStatus::kHouseWaiting;
+            setSpeedSlow(true);
             setDeadSpeedUp(false);
-            setZoneTunnelSlow(true);
+            setZoneTunnelSlow(false);
             setZoneHorizontalOnly(false);
             setGhostHouseDoorAccess(false);
             resetNextDirection();
@@ -227,13 +230,16 @@ void Ghost::unfrightened()
     }
 }
 
-void Ghost::reset()
+void Ghost::reset(bool restart_pellet_counter)
 {
     MovingEntity::reset();
     status_ = GhostStatus::kHouseWaiting;
     frigthened_counter_.stop();
-    pellet_counter_.restart();
-    setZoneTunnelSlow(true);
+    if(restart_pellet_counter)
+        pellet_counter_.restart();
+    else
+        pellet_counter_.stop();
+    setSpeedSlow(true);
     setGhostHouseDoorAccess(true);
 }
 
