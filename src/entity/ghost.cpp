@@ -113,16 +113,13 @@ void Ghost::handleStatus()
     }
     else if(status_ == GhostStatus::kDead && house_target_ == getCurrentCellPosition())
     {
-        // Reached its house target : is now waiting in the house.
+        // Reached its house target : ready to exit again.
         setEnabled(true);
-        status_ = GhostStatus::kHouseWaiting;
+        show();
+        status_ = GhostStatus::kHouse;
         setSpeedSlow(true);
         setDeadSpeedUp(false);
-        setZoneTunnelSlow(false);
-        setZoneHorizontalOnly(false);
-        setGhostHouseDoorAccess(false);
-        resetNextDirection();
-        show();
+        setDirectionReverse(true);
     }
 
     // Handle parent moving entity status.
