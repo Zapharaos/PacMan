@@ -67,6 +67,21 @@ std::array<std::shared_ptr<Ghost>, 4> Ghosts::getGhosts()
 
 void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
 {
+    if(pellet_counting_)
+    {
+        if(ticks_without_eaten_pellet_ < config::settings::kGhostMaxTickWithoutEatenPellet)
+        {
+            ++ticks_without_eaten_pellet_;
+        }
+        else // No pellets eaten since a long time : free one ghost if possible.
+        {
+            ticks_without_eaten_pellet_ = 0;
+            for(auto &ghost : ghosts_entities)
+                if(ghost->exitHouse())
+                    break;
+        }
+    }
+
     // Switch ghost statuses when counter expired.
     if(status_counter_.isActive())
         status_counter_.increment();
@@ -127,6 +142,9 @@ void Ghosts::levelUp()
 
 void Ghosts::pelletEaten()
 {
+    // Reset.
+    ticks_without_eaten_pellet_ = 0;
+
     if(pellet_counting_) // Ghosts stuck in the house and waiting for pellets to leave.
     {
         if(pellet_counter_.isActive()) // Counting pellets.

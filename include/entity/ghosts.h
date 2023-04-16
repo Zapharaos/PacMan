@@ -31,6 +31,9 @@ private:
     /** The number of times the Ghost's status has changed. */
     size_t status_changes_ {};
 
+    /** Counts the number of ticks since the last eaten pellet. */
+    unsigned long ticks_without_eaten_pellet_ {};
+
     /** Counts a number of pellets after restartFromHouse() is called. */
     Counter pellet_counter_ {};
 

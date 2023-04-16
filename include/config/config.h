@@ -87,6 +87,8 @@ namespace config {
         inline constexpr int kInkyOffsetToPacman {2};
         inline constexpr int kClydeDistanceFromPacman {8};
 
+        inline constexpr unsigned long kGhostMaxTickWithoutEatenPellet {4 * kFramesPerSecond};
+
         /** Ghosts pellet counting limits after pacman death. */
         inline constexpr int kGhostRestartPelletLimitPinky {7};
         inline constexpr int kGhostRestartPelletLimitInky {17};
