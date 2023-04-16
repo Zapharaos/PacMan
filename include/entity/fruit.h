@@ -5,8 +5,8 @@
  * @date 12/03/2023
 */
 
-#ifndef PEC_MEN_POWERUP_H
-#define PEC_MEN_POWERUP_H
+#ifndef PACMAN_FRUIT_H
+#define PACMAN_FRUIT_H
 
 #include <SDL.h>
 
@@ -73,4 +73,4 @@ public:
 };
 
 
-#endif //PEC_MEN_POWERUP_H
+#endif //PACMAN_FRUIT_H

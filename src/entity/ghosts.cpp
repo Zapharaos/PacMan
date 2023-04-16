@@ -64,15 +64,15 @@ std::array<std::shared_ptr<Ghost>, 4> Ghosts::getGhosts()
 
 void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
 {
-
+    // Switch ghost statuses when counter expired.
     if(status_counter_.isActive())
-    {
         status_counter_.increment();
-    }
     else if(status_changes_ <= config::settings::kDurationGhostStatuses.size())
     {
+        // Prepare next status.
         for(auto &ghost : ghosts_entities)
             ghost->statusChange();
+        // Last status is infinite.
         if(status_changes_ < config::settings::kDurationGhostStatuses.size())
             status_counter_.start(config::settings::kDurationGhostStatuses.at(status_changes_));
         ++status_changes_;
@@ -97,34 +97,52 @@ void Ghosts::frightened()
 
 void Ghosts::restartFromHouse()
 {
-    // reset ghost & disable ghost pellet counter but does not restart it
+    pellet_counting_ = true;
+    pellet_counter_.start(config::settings::kGhostRestartPelletLimitMax);
+    // reset ghost & disable ghost pellet counter (but does not restart it)
     for(auto &ghost : ghosts_entities)
-        ghost->reset(false);
+        ghost->restartFromHouse();
 }
 
 void Ghosts::reset()
 {
     status_changes_ = 0;
     status_counter_.stop();
-    // TODO : reset special counter
+    pellet_counting_ = false;
+    pellet_counter_.stop();
     // reset ghost & restart ghost pellet counter
     for(auto &ghost : ghosts_entities)
-        ghost->reset(true);
+        ghost->reset();
 }
 
 void Ghosts::levelUp()
 {
-    status_changes_ = 0;
-    status_counter_.stop();
-    // TODO : reset special counter
-    // reset ghost & restart ghost pellet counter
-    for(auto &ghost : ghosts_entities)
-        ghost->reset(true);
+    reset();
 }
 
 void Ghosts::pelletEaten()
 {
-    // TODO : special counter, else :
+    if(pellet_counting_) // Ghosts stuck in the house and waiting for pellets to leave.
+    {
+        if(pellet_counter_.isActive())
+        {
+            pellet_counter_.increment();
+            auto count = pellet_counter_.getCount();
+
+            if(count == config::settings::kGhostRestartPelletLimitPinky)
+                pinky_->exitHouse();
+            if(count == config::settings::kGhostRestartPelletLimitInky)
+                inky_->exitHouse();
+            if(count == config::settings::kGhostRestartPelletLimitClyde && clyde_->exitHouse())
+            {
+                pellet_counting_ = false;
+                pellet_counter_.stop();
+            }
+        }
+        // If counter inactive, still keep pellet counting.
+        return;
+    }
+
     for(auto &ghost : ghosts_entities)
         if(ghost->inHouseIncrementPelletCounter()) // True if active, otherwise false.
             return; // Increment only one ghost pellet counter per tick.

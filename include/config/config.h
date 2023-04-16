@@ -82,9 +82,16 @@ namespace config {
         /** After how many eaten pellets does the fruits appear (by level). */
         inline std::set<int> kFruitsPercentages {30, 70};
 
+        /** Ghosts chase target settings. */
         inline constexpr int kPinkyOffsetToPacman {4};
         inline constexpr int kInkyOffsetToPacman {2};
         inline constexpr int kClydeDistanceFromPacman {8};
+
+        /** Ghosts pellet counting limits after pacman death. */
+        inline constexpr int kGhostRestartPelletLimitPinky {7};
+        inline constexpr int kGhostRestartPelletLimitInky {17};
+        inline constexpr int kGhostRestartPelletLimitClyde {32};
+        inline constexpr int kGhostRestartPelletLimitMax {kGhostRestartPelletLimitClyde + 1};
     }
 
     namespace dimensions {

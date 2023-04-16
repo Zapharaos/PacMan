@@ -25,6 +25,10 @@ private:
     * @details Set as 1 since the 0 index is const for the frightened mode. */
     size_t status_changes_ {};
 
+    Counter pellet_counter_ {};
+
+    bool pellet_counting_ {false};
+
 public:
     Ghosts();
 

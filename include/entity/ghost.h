@@ -5,8 +5,8 @@
  * @date 03/04/2023
 */
 
-#ifndef PEC_MEN_GHOST_H
-#define PEC_MEN_GHOST_H
+#ifndef PACMAN_GHOST_H
+#define PACMAN_GHOST_H
 
 #include "movingEntity.h"
 
@@ -29,6 +29,7 @@ public:
      * @param position Raw position.
      * @param scatter_target The position the Ghost is targeting while in scatter mode.
      * @param house_target The position the Ghost is returning to when killed.
+     * @param pellets The number amount of pellets to be eaten for the Ghost to leave the house.
      * @param left Animations when moving towards the left.
      * @param right Animations when moving towards the right.
      * @param up Animations when moving towards the up.
@@ -37,9 +38,23 @@ public:
     Ghost(const Position &position, Position scatter_target, Position house_target,
           unsigned long pellets, Animation left, Animation right, Animation up, Animation down);
 
+    /**
+     * @brief Gets the position the Ghost is targeting while in scatter mode.
+     * @return The scatter target.
+     */
     [[nodiscard]] const Position &getScatterTarget() const;
 
+    /**
+     * @brief Sets the position the Ghost is targeting while in chase mode.
+     * @param chaseTarget The new chase target.
+     */
     void setChaseTarget(const Position &chaseTarget);
+
+    /**
+     * @brief Change the ghost statuses.
+     * @details In some cases, it might not changed the current one, but the previous one.
+     */
+    void statusChange();
 
     /**
      * @brief Handle the moving entity.
@@ -74,23 +89,37 @@ public:
      * @brief Resets the entity object.
      * @see MovingEntity::reset()
      */
-    void reset(bool restart_pellet_counter);
+    void reset() override;
 
-    void statusChange();
+    /**
+     * @brief Restarts the Ghost from the house, after pacman death.
+     */
+    void restartFromHouse();
 
+    /**
+     * @brief If authorized, force the ghost to exit the ghost house.
+     * @return True if the Ghost has left the house, false otherwise.
+     */
+    bool exitHouse();
+
+    /**
+     * @brief Increments the pellet counter if the Ghost is in the house.
+     * @return True if the Ghost is in the house and the pellet counter is active, false otherwise.
+     */
     bool inHouseIncrementPelletCounter();
 
 private:
 
+    /** Represents the possible statuses of the Ghost. */
     enum class GhostStatus
     {
-        kHouseWaiting,
-        kHouse,
-        kChase,
-        kScatter,
-        kFrightened,
-        kFrightenedBlinking,
-        kDead
+        kHouseWaiting, /* Waiting in the house. */
+        kHouse, /* In the house but on his way out. */
+        kChase, /* Chasing pacman. */
+        kScatter, /* Scattering. */
+        kFrightened, /* Scared. */
+        kFrightenedBlinking, /* Scared with a blinking animation. */
+        kDead /* Dead on his way back to the ghost house. */
     };
 
     /** The current status. */
@@ -98,11 +127,12 @@ private:
 
     /** The previous status.
      * @details Used to save the status while in frightened mode. */
-    GhostStatus previous_status_ {};
+    GhostStatus previous_status_ {GhostStatus::kScatter};
 
     /** Counts a number of frames between each statuses. */
     Counter frigthened_counter_ {};
 
+    /** Counts a number of pellets to be eaten for the Ghost to leave the house. */
     Counter pellet_counter_ {};
 
     /** The position the Ghost is targeting while in chase mode. */
@@ -133,6 +163,13 @@ private:
     Animation dead_down_{};
 
     /**
+     * @brief Handles the current status of the Ghost.
+     * @details This method is called during each tick to determine the
+     * appropriate behavior for the Ghost based on its current status.
+     */
+    void handleStatus() override;
+
+    /**
      * @brief Indicates the current target, depending on the current status.
      * @param pacman The pacman position on the map.
      * @return The effective position target by the ghost.
@@ -140,15 +177,12 @@ private:
     std::optional<Position> getTarget();
 
     /**
-     * @brief Handles the current status of the Ghost.
-     * @details This method is called during each tick to determine the
-     * appropriate behavior for the Ghost based on its current status.
+     * @brief The current cell the ghost is occupying.
+     * @return The current cell the ghost is occupying.
      */
-    void handleStatus() override;
-
     Position getCurrentCellPosition();
 
 };
 
 
-#endif //PEC_MEN_GHOST_H
+#endif //PACMAN_GHOST_H

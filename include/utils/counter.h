@@ -20,6 +20,9 @@ private:
     /** Indicates if the counter is running. */
     bool active_ = false;
 
+    /** Indicates if the counter is paused. */
+    bool pause_ = false;
+
     /** Current value. */
     unsigned long count_ = 0;
 
@@ -63,6 +66,7 @@ public:
     {
         if (cap == 0) return;
         active_ = true;
+        pause_ = false;
         count_ = 0;
         cap_ = cap;
     };
@@ -73,6 +77,8 @@ public:
      */
     inline void increment()
     {
+        if (pause_)
+            return;
         if (count_ == 0)
             active_ = true;
         if (save_)
@@ -88,6 +94,7 @@ public:
     inline void stop()
     {
         active_ = false;
+        pause_ = false;
         count_ = 0;
     }
 
@@ -98,8 +105,17 @@ public:
     inline void restart()
     {
         active_ = true;
+        pause_ = false;
         count_ = 0;
     };
+
+    /**
+     * @brief Pause the counting process.
+     */
+    inline void pause()
+    {
+        pause_ = true;
+    }
 
     /**
      * @brief Saves the current counter state.
