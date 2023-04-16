@@ -1,6 +1,9 @@
-//
-// Created by mfrei on 13/04/2023.
-//
+/**
+ * @file ghosts.cpp
+ * @brief Implements the Ghosts class, which contains all Ghost entities in the game.
+ * @author Matthieu FREITAG (Zapharaos)
+ * @date 13/04/2023
+*/
 
 #include "../../include/entity/ghosts.h"
 
@@ -91,15 +94,17 @@ void Ghosts::tick(const Map& map, Position pacman, Direction pacman_direction)
 
 void Ghosts::frightened()
 {
+    // Starts the frightened mode for all ghosts for a specific amount of ticks.
     for(auto &ghost : ghosts_entities)
         ghost->frightened(config::settings::kDurationGhostFrightened);
 }
 
 void Ghosts::restartFromHouse()
 {
+    // Start counting the pellets eaten the free the ghosts one at a time and with a specific interval. */
     pellet_counting_ = true;
     pellet_counter_.start(config::settings::kGhostRestartPelletLimitMax);
-    // reset ghost & disable ghost pellet counter (but does not restart it)
+    // Reset ghost & disable ghost pellet counter (but does not restart it)
     for(auto &ghost : ghosts_entities)
         ghost->restartFromHouse();
 }
@@ -110,7 +115,7 @@ void Ghosts::reset()
     status_counter_.stop();
     pellet_counting_ = false;
     pellet_counter_.stop();
-    // reset ghost & restart ghost pellet counter
+    // Reset ghost & restart ghost pellet counter
     for(auto &ghost : ghosts_entities)
         ghost->reset();
 }
@@ -124,22 +129,24 @@ void Ghosts::pelletEaten()
 {
     if(pellet_counting_) // Ghosts stuck in the house and waiting for pellets to leave.
     {
-        if(pellet_counter_.isActive())
+        if(pellet_counter_.isActive()) // Counting pellets.
         {
             pellet_counter_.increment();
             auto count = pellet_counter_.getCount();
 
+            // Free the ghosts if conditions are met.
             if(count == config::settings::kGhostRestartPelletLimitPinky)
                 pinky_->exitHouse();
             if(count == config::settings::kGhostRestartPelletLimitInky)
                 inky_->exitHouse();
+            // Only stopping if Clyde in inside the house.
             if(count == config::settings::kGhostRestartPelletLimitClyde && clyde_->exitHouse())
             {
                 pellet_counting_ = false;
                 pellet_counter_.stop();
             }
         }
-        // If counter inactive, still keep pellet counting.
+        // If counter inactive, still keep pellet counting (see if case above).
         return;
     }
 
