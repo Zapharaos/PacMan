@@ -46,17 +46,28 @@ private:
     /** Animations when moving towards the bottom. */
     Animation down_{};
 
-    /** Previous direction.
-     * @details Used to determine a swap of animation. */
+    /** Previous direction. */
     Direction previous_direction_{};
-    /** The direction the Ghost will take when he reach the next cell. */
+
+    /** The direction the entity will take as it reach the next cell. */
     Direction next_direction_{};
-    /** Whether or not the Ghost is reversing direction as he reach the next cell. */
+
+    /** True if the entity is reversing direction as it reach the next cell. */
     bool direction_reverse_ {false};
+
+    /** True if the entity is slowed inside a tunnel, otherwise false. */
     bool zone_tunnel_slow_ {false};
+
+    /** True if the entity is sensible to the horizontal only zone, otherwise false. */
     bool zone_horizontal_only_ {false};
+
+    /** True if the entity is allowed to pass through the ghost house door, otherwise false. */
     bool ghost_house_door_access_ {false};
-    bool dead_speed_up_ {false};
+
+    /** True if the entity has a boost, otherwise false. */
+    bool speed_up_ {false};
+
+    /** True if the entity is slowed, otherwise false. */
     bool speed_slow_ {false};
 
 public:
@@ -124,6 +135,11 @@ public:
      */
     bool move(const Map &map, Direction direction);
 
+    /**
+     * @brief Indicates the next direction while moving vertically.
+     * @param map The board with all the cells.
+     * @return The next direction to take.
+     */
     Direction moveVertically(const Map &map);
 
     /**
@@ -139,23 +155,53 @@ public:
      */
     virtual void reset();
 
-    void setZoneTunnelSlow(bool zoneTunnelSlow);
-
-    void setZoneHorizontalOnly(bool zoneHorizontalOnly);
-
-    void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
-
-    void setDirectionReverse(bool directionReverse);
-
-    void resetNextDirection();
-
+    /**
+     * @brief Getter for the entity previous direction.
+     * @return The previous direction taken by the entity.
+     */
     [[nodiscard]] const Direction &getPreviousDirection() const;
 
+    /**
+     * Setter for the entity direction reversing.
+     * @param directionReverse True if the entity is reversing direction as it reach the next cell.
+     */
+    void setDirectionReverse(bool directionReverse);
+
+    /**
+     * @brief Setter for the entity sensibility to tunnels.
+     * @param zoneTunnelSlow True if the entity is slowed inside a tunnel, otherwise false.
+     */
+    void setZoneTunnelSlow(bool zoneTunnelSlow);
+
+    /**
+     * Getter for the entity sensibility inside a tunnel.
+     * @return True if the entity is slowed inside a tunnel, otherwise false.
+     */
     [[nodiscard]] bool isZoneTunnelSlow() const;
 
+    /**
+     * Setter for the horizontal only zone.
+     * @param zoneHorizontalOnly True if the entity is sensible to the horizontal only zone, otherwise false.
+     */
+    void setZoneHorizontalOnly(bool zoneHorizontalOnly);
+
+    /**
+     * Setter for the accessibility to the ghost house door.
+     * @param ghostHouseDoorAccess True if the entity is allowed to pass through the ghost house door, otherwise false.
+     */
+    void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
+
+    /**
+     * @brief Setter for the entity boost.
+     * @param speedSlow True if the entity has a boost, otherwise false.
+     */
     void setSpeedSlow(bool speedSlow);
 
-    void setDeadSpeedUp(bool deadSpeedUp);
+    /**
+     * Setter for the entity slow.
+     * @param speedUp True if the entity is slowed, otherwise false.
+     */
+    void setSpeedUp(bool speedUp);
 
 };
 

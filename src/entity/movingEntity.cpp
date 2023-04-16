@@ -24,7 +24,7 @@ MovingEntity::MovingEntity(const Position &position, int speed, Animation left,
 int MovingEntity::getSpeed() const {
     if(speed_slow_)
         return speed_ / config::settings::kSpeedDownRatio;
-    if(isDead() && dead_speed_up_)
+    if(speed_up_)
         return speed_ * config::settings::kSpeedUpRatio;
     return speed_;
 }
@@ -197,15 +197,27 @@ void MovingEntity::reset()
     zone_tunnel_slow_ = false;
     zone_horizontal_only_ = false;
     ghost_house_door_access_ = false;
-    dead_speed_up_ = false;
+    speed_up_ = false;
     speed_slow_ = false;
     left_.reset(); // reset animation
     setSprite(left_.getSprite()); // default sprite
     setPosition(start_); // reset position
 }
 
+const Direction &MovingEntity::getPreviousDirection() const {
+    return previous_direction_;
+}
+
+void MovingEntity::setDirectionReverse(bool directionReverse) {
+    direction_reverse_ = directionReverse;
+}
+
 void MovingEntity::setZoneTunnelSlow(bool zoneTunnelSlow) {
     zone_tunnel_slow_ = zoneTunnelSlow;
+}
+
+bool MovingEntity::isZoneTunnelSlow() const {
+    return !speed_slow_ && zone_tunnel_slow_;
 }
 
 void MovingEntity::setZoneHorizontalOnly(bool zoneHorizontalOnly) {
@@ -220,23 +232,7 @@ void MovingEntity::setSpeedSlow(bool speedSlow) {
     speed_slow_ = speedSlow;
 }
 
-void MovingEntity::setDirectionReverse(bool directionReverse) {
-    direction_reverse_ = directionReverse;
-}
-
-void MovingEntity::resetNextDirection() {
-    next_direction_.reset();
-}
-
-const Direction &MovingEntity::getPreviousDirection() const {
-    return previous_direction_;
-}
-
-bool MovingEntity::isZoneTunnelSlow() const {
-    return !speed_slow_ && zone_tunnel_slow_;
-}
-
-void MovingEntity::setDeadSpeedUp(bool deadSpeedUp)
+void MovingEntity::setSpeedUp(bool speedUp)
 {
-    dead_speed_up_ = deadSpeedUp;
+    speed_up_ = speedUp;
 }
