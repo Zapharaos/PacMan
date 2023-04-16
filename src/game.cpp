@@ -350,18 +350,17 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
                 break;
             } else
             {
-                // Disables ghost & updates game.
-                ghost->setEnabled(false);
-                ghost->kill();
                 auto points = ghost->getPoints() * (1 << (ghosts_eaten++));
+
+                // Disables ghost & updates game.
                 score_ += points;
+                ghost->kill();
+                pacman_.hide();
 
                 // Eating animation.
                 status_ = StatusType::kEatingGhost;
                 counter_.save();
                 counter_.start(config::settings::kDurationEatenGhostFreeze);
-                pacman_.hide();
-                ghost->hide();
 
                 // Display points sprite.
                 addPointsToDisplay(points, visuals::ghosts::kScale,
@@ -425,13 +424,11 @@ void Game::resetGame() {
     level_ = 1;
     pellets_eaten_ = 0;
     map_.reset();
-    ghosts_.restartFromHouse();
+    pacman_.reset();
+    ghosts_.reset();
     for (auto &ghost: ghosts_.getGhosts()) {
         ghost->hide();
     }
-
-    status_ = StatusType::kRunning;
-    pacman_.reset();
 
     // TODO : speed and timers : reset
     counter_.start(config::settings::kDurationTextDeathFreeze);

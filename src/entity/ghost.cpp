@@ -118,7 +118,7 @@ void Ghost::handleStatus()
         show();
         status_ = GhostStatus::kHouse;
         setSpeedSlow(true);
-        setDeadSpeedUp(false);
+        setSpeedUp(false);
         setDirectionReverse(true);
     }
 
@@ -161,13 +161,14 @@ void Ghost::kill() {
     // Change settings to death.
     status_ = GhostStatus::kDead;
     frigthened_counter_.stop();
-    setDeadSpeedUp(true);
+    setEnabled(false);
+    hide();
+    setSpeedUp(true);
     setSpeedSlow(false);
     setZoneTunnelSlow(false);
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
     setDirectionReverse(false);
-    MovingEntity::kill();
 }
 
 void Ghost::frightened(unsigned long seconds)
