@@ -13,7 +13,6 @@
 #include "json.hpp"
 #include "../map/cell.h"
 #include "../config/config.h"
-#include "../config/constants.h"
 #include <SDL.h>
 
 
@@ -90,8 +89,6 @@ number, int start_x, int start_y, int offset);
 static Sprite getPointsSprite(int points);
 
 void
-drawObject(const std::shared_ptr<SDL_Renderer> &render,
-           const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
-           SDL_Rect dst_rect, float scale);
-
+drawObject(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
+           SDL_Rect dst_rect);
 #endif //PACMAN_UTILS_H

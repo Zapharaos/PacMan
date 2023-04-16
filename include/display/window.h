@@ -16,7 +16,6 @@ class Window {
 
 private :
 
-
     /** Window title. */
     std::string title_{};
 
@@ -31,6 +30,9 @@ private :
 
     /** hashmap to store all characters */
     std::unordered_map<char, SDL_Rect> character_map_;
+
+    /** hashmap to store all point sprites */
+    std::unordered_map<unsigned long, SDL_Rect> points_map_;
 
 
 protected:
@@ -49,54 +51,12 @@ protected:
 
 public:
 
-    const std::string &getTitle() const;
+    const std::unordered_map<unsigned long, SDL_Rect> &getPointsMap() const;
 
-    const SDL_Rect &getGhostBlinkyR() const;
-
-    const SDL_Rect &getGhostPinkyR() const;
-
-    const SDL_Rect &getGhostInkyR() const;
-
-    const SDL_Rect &getGhostClydeR() const;
 
     const std::shared_ptr<SDL_Renderer> &getRenderer() const;
 
     const std::shared_ptr<SDL_Texture> &getTexture() const;
-    //TODO MOVE ALL THESE INTO VISUALS
-    SDL_Rect bg_ = {constants::WINDOW_MAP_START_X, constants::WINDOW_MAP_START_Y, constants::WINDOW_MAP_WIDTH,
-                    constants::WINDOW_MAP_HEIGHT}; // ici scale x4
-    SDL_Rect ghost_scared = {3, 195, constants::BMP_ENTITY_GHOST_WIDTH, constants::BMP_ENTITY_GHOST_HEIGHT};
-
-    SDL_Rect ghost_blinky_r = {constants::BMP_GHOST_BLINKY_START_X,
-                               constants::BMP_GHOST_BLINKY_START_Y,
-                               constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-
-    SDL_Rect ghost_pinky_r = {constants::BMP_GHOST_PINKY_START_X,
-                               constants::BMP_GHOST_PINKY_START_Y,
-                               constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-
-    SDL_Rect ghost_inky_r = {constants::BMP_GHOST_INKY_START_X,
-                              constants::BMP_GHOST_INKY_START_Y,
-                              constants::BMP_ENTITY_GHOST_WIDTH,
-                              constants::BMP_ENTITY_GHOST_HEIGHT};
-
-    SDL_Rect ghost_clyde_r = {constants::BMP_GHOST_CLYDE_START_X,
-                              constants::BMP_GHOST_CLYDE_START_Y,
-                              constants::BMP_ENTITY_GHOST_WIDTH,
-                              constants::BMP_ENTITY_GHOST_HEIGHT};
-
-    SDL_Rect ghost_blinky_l = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_LEFT_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_u = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_UP_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky_d = {constants::BMP_GHOST_BLINKY_START_X + constants::BMP_ENTITY_GHOST_OFFSET_TO_DOWN_IMG,
-                               constants::BMP_GHOST_BLINKY_START_Y, constants::BMP_ENTITY_GHOST_WIDTH,
-                               constants::BMP_ENTITY_GHOST_HEIGHT};
-    SDL_Rect ghost_blinky = {32, 32, constants::WINDOW_CELL_WIDTH, constants::WINDOW_CELL_HEIGHT};     // ici scale x2
 
     /** Default Window constructor. */
     Window();
@@ -120,7 +80,7 @@ public:
         auto sprite = object.getSprite();
         auto image = sprite.getImage();
         auto position = sprite.getPosition();
-        position.y += offsetY ;
+        position.y += offsetY;
         SDL_RenderCopy(renderer_.get(), texture_.get(), &image, &position);
     }
 
@@ -183,7 +143,8 @@ public:
      * @param pos_y
      * @return
      */
-    void writeScorePoints(unsigned long point, int pos_x, int pos_y, float scale, std::tuple<int, int, int> colour = colours::kWhite);
+    void writeScorePoints(unsigned long point, int pos_x, int pos_y, float scale,
+                          std::tuple<int, int, int> colour = colours::kWhite);
 
     /**
      * Writes a word at a given position and size
@@ -196,8 +157,18 @@ public:
      * @param colour
      */
     void writeWord(const std::string &word, int pos_x, int pos_y,
-                   int offset, float scale =  1 , std::tuple<int, int, int> colour = colours::kWhite);
+                   int offset, float scale = 1, std::tuple<int, int, int> colour = colours::kWhite);
 
+    /**
+     * centerImage
+     * Centers the sprite so the x coordinate is the center
+     * @param src
+     * @param x
+     * @return
+     */
+    static int centerImage(SDL_Rect src, int x);
+
+    void animateMovement(int pos_x, int pos_y, const Animation &animation, Entity entity);
 };
 
 #endif //PACMAN_WINDOW_H

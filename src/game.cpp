@@ -19,14 +19,7 @@ Game::Game(const Map &map, Window window, unsigned long high_score) :
     // Pacman and ghosts already initialized with the default constructors.
 }
 
-void Game::tick(const Direction &direction)
-{
-    // Display Welcome screen
-    // TODO : move
-    if (status_ == StatusType::kWelcomeScreen)
-    {
-        displayWelcomeScreen();
-    }
+void Game::tick(const Direction &direction) {
 
     // Game is paused, nothing to do.
     if (status_ == StatusType::kPaused)
@@ -56,26 +49,32 @@ void Game::tick(const Direction &direction)
 
         // Handle collisions.
         handleEntitiesCollisions(pacman);
-    }
 
-    // Update high score
-    if (score_ > high_score_)
-        high_score_ = score_;
+        // Update high score
+        if (score_ > high_score_)
+            high_score_ = score_;
+    }
 
     // Update game visuals.
     display();
 }
 
-void Game::display()
-{
+void Game::display() {
+
     window_.clear();
-    // Map.
-    window_.draw(map_, config::dimensions::kScoreBoardHeight);
 
     // Points
     window_.writeHighScore();
     window_.updateHighScore(high_score_);
     window_.updateScore(score_);
+
+    if (status_ == StatusType::kWelcomeScreen) {
+        displayWelcomeScreen();
+        return;
+    }
+
+    // Map.
+    window_.draw(map_, config::dimensions::kScoreBoardHeight);
 
     //Fruits
     window_.updateFruits();
@@ -99,20 +98,9 @@ void Game::display()
     {
         // Display entity
         window_.draw(fruit_, config::dimensions::kScoreBoardHeight);
-    } // TODO : remove
-    /*else if (fruit_.isStatusCounterActive()) {
+    }
 
-        *//*fruit_.statusCounterIncrement();*//*
-        //TODO better way to center
-        if (fruit_.getPoints() >= 1000) {
-            window_.writeScorePoints(1000, config::positions::entities::kFruitPointsX+5, config::positions::entities::kFruitPointsY + config::dimensions::kScoreBoardHeight,
-                                     visuals::fruit::kScale, colours::kPink);
-        } else {
-            window_.writeScorePoints(fruit_.getPoints(), config::positions::entities::kFruitPointsX,
-                                     config::positions::entities::kFruitPointsY + config::dimensions::kScoreBoardHeight,
-                                     visuals::fruit::kScale, colours::kPink);
-        }
-    }*/
+    displayPoints();
 
     // Ghosts
     for (auto &ghost: ghosts_.getGhosts())
@@ -123,13 +111,14 @@ void Game::display()
     if (!pacman_.isHidden())
         window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
 
-    if (status_ == StatusType::kGameStartAnimate)
-    {
-        window_.writeWord("READY!", 280, 615, 2, 3, colours::kYellow);
-        if (counter_.getCount() <= config::settings::kDurationGameStartFreeze &&
-            counter_.isActive())
-        {
-            window_.writeWord("PLAYER ONE", 229, 453, 2, 2.9, colours::kCyan);
+    if (status_ == StatusType::kGameStartAnimate) {
+        window_.writeWord("READY!", config::positions::display::kReadyTextX,
+                          config::positions::display::kReadyTextY,
+                          config::positions::offsets::kReady, 3, colours::kYellow);
+        if (counter_.getCount() <= config::settings::kDurationGameStartFreeze && counter_.isActive()) {
+            window_.writeWord("PLAYER ONE", config::positions::display::kPlayerOneTextX,
+                              config::positions::display::kPlayerOneTextY,
+                              config::positions::offsets::kPlayerOne, 2.9, colours::kCyan);
         }
     }
 
@@ -151,6 +140,7 @@ bool Game::handleStatus()
         if (status_ == StatusType::kLevelUpAnimate)
             map_.animate();
 
+        // Game frozen : pacman death
         if(status_ == StatusType::kDeathFreeze)
             ghosts_.animate();
 
@@ -195,9 +185,10 @@ bool Game::handleStatus()
     }
 
     if (status_ == StatusType::kGameStartAnimate && !counter_.isActive())
-    {
         status_ = StatusType::kRunning;
-    }
+
+    if (status_ == StatusType::kWelcomeScreen)
+        status_ = StatusType::kGameStartFreeze;
 
     // Game level up animation is over.
     if (status_ == StatusType::kLevelUpAnimate)
@@ -289,18 +280,15 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
         }
     }
 
-    // Fruit is active.
-    if (fruit_.isEnabled())
+    // Fruit is active and collided with pacman.
+    if (fruit_.isEnabled() && SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
     {
-        // Collided with Pacman.
-        if (SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
-        {
-            // Disables fruit.
-            fruit_.setEnabled(false);
-            // TODO : remove
-            /*fruit_.statusCounterStart(config::settings::kDurationFruitPoints);*/
-            score_ += fruit_.getPoints();
-        }
+        // Disables fruit.
+        fruit_.setEnabled(false);
+        score_ += fruit_.getPoints();
+        addPointsToDisplay(fruit_.getPoints(), visuals::fruit::kScale, colours::kPink,
+                           config::positions::entities::kFruitPointsX,
+                           config::positions::entities::kFruitPointsY);
     }
 
     for (auto &ghost: ghosts_.getGhosts())
@@ -310,8 +298,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
             SDL_HasIntersection(&pacman, &ghost->getSprite().getPosition()))
         {
             // Not dead yet && superpower disabled : death.
-            if (!pacman_.isDead() && status_ != StatusType::kSuperpower)
-            {
+            if (!pacman_.isDead() && status_ != StatusType::kSuperpower) {
                 // Freeze game (60 frames) before the death animation.
                 status_ = StatusType::kDeathFreeze;
                 counter_.start(config::settings::kDurationDeathFreeze);
@@ -321,8 +308,8 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
                 // Disables ghost & updates game.
                 ghost->setEnabled(false);
                 ghost->kill();
-                auto value = (1 << (ghosts_eaten++));
-                score_ += ghost->getPoints() * value;
+                auto points = ghost->getPoints() * (1 << (ghosts_eaten++));
+                score_ += points;
 
                 // Eating animation.
                 status_ = StatusType::kEatingGhost;
@@ -331,7 +318,12 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
                 pacman_.hide();
 
                 // Display points sprite.
-                // TODO : display points sprite
+                addPointsToDisplay(points, visuals::ghosts::kScale,
+                                   colours::kCyan,
+                                   ghost->getPosition().getAbscissa() +
+                                   config::positions::offsets::kGhostPointsX,
+                                   ghost->getPosition().getOrdinate() +
+                                   config::positions::offsets::kGhostPointsY);
             }
         }
     }
@@ -351,8 +343,9 @@ void Game::togglePause()
 
 void Game::levelUp()
 {
-    // Update game settings.
     window_.addFruits(fruit_.getSprite().getImage());
+
+    // Update game settings.
     ++level_;
     pellets_eaten_ = 0;
     status_ = StatusType::kRunning;
@@ -387,52 +380,147 @@ void Game::lostLife()
 void Game::displayWelcomeScreen()
 {
 
-    int scale = 3;
+
+    float scale = 2.75;
     int pos_x = 0;
     int pos_y = 5;
-    window_.writeWord("1UP    HIGH SCORE    2UP", pos_x, pos_y, 1, scale);
 
 
-    pos_x = 100;
-    pos_y = 50;
-    window_.writeWord("CHARACTER  /  NICKNAME ", pos_x, pos_y, 1, scale);
-
-    pos_x = 10;
-    pos_y += constants::BMP_CHARACTER_WIDTH * scale + 5;
-
-    //Draw blinky
+    window_.writeWord("CHARACTER / NICKNAME ", config::positions::display::kCharaterNicknameX,
+                      config::positions::display::kCharaterNicknameY, 1, 2.75);
     SDL_Rect dst;
-    dst.x = pos_x;
-    dst.y = pos_y;
-    dst.h = window_.getGhostBlinkyR().h * scale;
-    dst.w = window_.getGhostBlinkyR().w * scale;
-    drawObject(window_.getRenderer(), window_.getTexture(),
-               window_.getGhostBlinkyR(), dst, 1);
+    /* dst.x = config::positions::kGhostsX;
+     dst.y = config::positions::kBlinkyY;*/
 
-    pos_x = 100;
-    window_.writeWord("- SHADOW     ' BLINKY ' ", pos_x, dst.y, 1, scale,
-                      colours::kRed);
+    dst.x = 60;
+    dst.y = 170;
+    dst.h = visuals::ghosts::blinky::right::sprite_1::kBitmapHeight * 2.75;
+    dst.w = visuals::ghosts::blinky::right::sprite_1::kBitmapWidth * 2.75;
 
-    //Draw pinky
-    dst.y += dst.h + 4;
-    drawObject(window_.getRenderer(), window_.getTexture(),
-               window_.getGhostPinkyR(), dst, 1);
-    window_.writeWord("- SPEEDY     ' PINKY ' ", pos_x, dst.y, 1, scale,
-                      colours::kPink);
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 2) {
+        //Blinky
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::ghosts::blinky::right::sprite_1::kSprite.getImage(), dst);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 3) {
+        window_.writeWord("- SHADOW", config::positions::display::kCharaterNicknameX,
+                          180, 1, 2.75, colours::kRed);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 4) {
+        window_.writeWord("'BLINKY' ", 360,
+                          180, 1, 2.75, colours::kRed);
+    }
 
-    //Draw inky
-    dst.y += dst.h + 4;
-    drawObject(window_.getRenderer(), window_.getTexture(),
-               window_.getGhostInkyR(), dst, 1);
-    window_.writeWord("- BASHFUL     ' INKY  ' ", pos_x, dst.y, 1, scale,
-                      colours::kCyan);
 
-    //Draw clyde
-    dst.y += dst.h + 4;
-    drawObject(window_.getRenderer(), window_.getTexture(),
-               window_.getGhostClydeR(), dst, 1);
-    window_.writeWord("- POKEY     ' CLYDE ' ", pos_x + 10, dst.y, 1, scale,
-                      colours::kOrange);
+    dst.y = 240;
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 5) {
+        //Pinky
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::ghosts::pinky::right::sprite_1::kSprite.getImage(), dst);
+    }
+
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 6) {
+        window_.writeWord("- SPEEDY", config::positions::display::kCharaterNicknameX,
+                          250, 1, 2.75, colours::kPink);
+    }
+
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 7) {
+        window_.writeWord("'PINKY' ", 360,
+                          250, 1, 2.75, colours::kPink);
+    }
+
+
+    dst.y = 310;
+
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 8) {
+        //Inky
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::ghosts::inky::right::sprite_1::kSprite.getImage(), dst);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 9) {
+        window_.writeWord("- BASHFUL", config::positions::display::kCharaterNicknameX,
+                          320, 1, 2.75, colours::kCyan);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 10) {
+        window_.writeWord("'INKY' ", 360,
+                          320, 1, 2.75, colours::kCyan);
+    }
+
+
+    dst.y = 380;
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 11) {
+        //Clyde
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::ghosts::clyde::right::sprite_1::kSprite.getImage(), dst);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 12) {
+        window_.writeWord("- POKEY", config::positions::display::kCharaterNicknameX,
+                          390, 1, 2.75, colours::kOrange);
+    }
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 13) {
+        window_.writeWord("'CLYDE' ", 360,
+                          390, 1, 2.75, colours::kOrange);
+    }
+
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 14) {
+        //small pellet
+        dst.x = 250;
+        dst.y = 500;
+        dst.h = visuals::pellet::kBitmapHeight * 3;
+        dst.w = visuals::pellet::kBitmapWidth * 3;
+
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::pellet::kSprite.getImage(), dst);
+        dst.x = 280;
+        dst.y = 495;
+        window_.writeWord("10", dst.x, dst.y, 1, 2.2);
+
+
+        dst.h = visuals::energizer::kBitmapHeight * 3;
+        dst.w = visuals::energizer::kBitmapWidth * 3;
+        dst.x = 242;
+        dst.y = 520;
+        // big Pellet
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::energizer::kSprite.getImage(), dst);
+
+
+        dst.x = 280;
+        dst.y = 522;
+        window_.writeWord("50", dst.x, dst.y, 1, 2.2);
+
+
+        dst.h = characters::special::points::kBitmapHeight * 2.7;
+        dst.w = characters::special::points::kBitmapWidth * 2.7;
+        dst.x = 320;
+        dst.y = 500;
+
+
+        //pts for 10
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   characters::special::points::kSprite.getImage(),
+                   dst);
+        dst.y = 525;
+        //pts for 50
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   characters::special::points::kSprite.getImage(),
+                   dst);
+    }
+
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 15) {
+        dst.x = 70;
+        dst.y = 600;
+        window_.writeWord("` 1980 MIDWAY MFG. CO.", dst.x,
+                          dst.y, 1, 2.75, colours::kPink);
+    }
+
+
+    //TODO ANIMATION
+    dst.x = 60;
+    dst.y = config::dimensions::kWindowHeight - 50;
+    window_.writeWord("CREDIT 0", dst.x,
+                      dst.y, 1, 2.75);
+    //TODO ADD credit field  ?
     window_.update();
 
 }
@@ -447,4 +535,52 @@ int Game::getLevel() const
     return level_;
 }
 
+void Game::displayPoints() {
 
+    for (auto s = points_.begin(); s != points_.end();) {
+        //If counter is still active
+        if (std::get<2>(*s).isActive()) {
+            //Change colour
+            SDL_SetTextureColorMod(window_.getTexture().get(),
+                                   std::get<0>(std::get<3>(*s)),
+                                   std::get<1>(std::get<3>(*s)),
+                                   std::get<2>(std::get<3>(*s)));
+
+
+            drawObject(window_.getRenderer(), window_.getTexture(), std::get<0>(*s), std::get<1>(*s));
+
+            std::get<2>(*s).increment();
+            //Switch back to original colour
+            SDL_SetTextureColorMod(window_.getTexture().get(),
+                                   std::get<0>(colours::kWhite),
+                                   std::get<1>(colours::kWhite),
+                                   std::get<2>(colours::kWhite));
+        } else {
+            //Erase object to display from the vector
+            points_.erase(s);
+            return;
+        }
+        ++s;
+    }
+}
+
+void Game::addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y) {
+
+    auto found = window_.getPointsMap().find(points);
+    //Check so no crashes happen in case unrecognised value is passed
+    if (points == 0 || (found == window_.getPointsMap().end())) {
+        return;
+    }
+    //setting up the sprite
+    SDL_Rect src = window_.getPointsMap().at(points);
+    SDL_Rect dest;
+    dest.x = Window::centerImage(src, x);
+    dest.y = y;
+    dest.w = (int) ((float) src.w * scale);
+    dest.h = (int) ((float) src.h * scale);
+    //Adding Counter to the sprite to display
+    Counter counter = *new Counter();
+    counter.start(config::settings::kDurationPoints);
+    //Adding the sprite and counter to the vector
+    points_.emplace_back(src, dest, counter, colour);
+}

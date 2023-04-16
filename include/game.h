@@ -93,6 +93,9 @@ private:
     /** The counter used to count frames. */
     Counter counter_ {};
 
+    /**Vector that will store all points to display after eating a fruit/ghost till timer runs out */
+    std::vector<std::tuple<SDL_Rect, SDL_Rect, Counter,std::tuple<int, int, int>  >> points_ ;
+
 public:
 
     /**
@@ -151,6 +154,10 @@ public:
     int getLevel() const;
 
     void displayWelcomeScreen();
+
+    void displayPoints();
+
+    void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
 
 };
 
