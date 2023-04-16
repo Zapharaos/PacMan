@@ -359,12 +359,16 @@ void Game::levelUp()
 
     // Reset entities.
     map_.reset();
-    pacman_.reset(); // TODO : pacman update speed & timers
-    ghosts_.levelUp();
+    pacman_.reset(); // TODO : pacman update speed
+    ghosts_.levelUp(); // TODO : ghosts update speed
 }
 
 void Game::lostLife()
 {
+    status_ = StatusType::kRunning;
+    pacman_.reset();
+    ghosts_.clear();
+
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
         lives_ = config::settings::kLives; // temp
@@ -372,14 +376,10 @@ void Game::lostLife()
         level_ = 1;
         pellets_eaten_ = 0;
         map_.reset();
-        ghosts_.reset();
+        // TODO : pacman reset speed
+        ghosts_.reset(); // TODO : reset speed
+        return;
     }
-
-    status_ = StatusType::kRunning;
-    pacman_.reset();
-    ghosts_.clear();
-
-    // TODO : speed and timers : reset
 }
 
 void Game::displayWelcomeScreen()

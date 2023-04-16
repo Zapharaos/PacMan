@@ -16,7 +16,6 @@ Ghost::Ghost(const Position &position, Position scatter_target, Position house_t
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
     setZoneTunnelSlow(true);
-    setDeadSpeedUp(true);
     setGhostHouseDoorAccess(true);
     setZoneHorizontalOnly(false);
     frightened_ = visuals::ghosts::frightened::kAnimation;
@@ -73,6 +72,7 @@ void Ghost::statusChange()
             return;
         case GhostStatus::kDead:
         case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
         case GhostStatus::kFrightened:
         case GhostStatus::kFrightenedBlinking:
             if(previous_status_ == GhostStatus::kChase)
@@ -90,6 +90,7 @@ void Ghost::frightened(unsigned long seconds)
     {
         case GhostStatus::kDead:
         case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
             return;
         case GhostStatus::kChase:
         case GhostStatus::kScatter:
@@ -97,6 +98,7 @@ void Ghost::frightened(unsigned long seconds)
             setDirectionReverse(true);
             setZoneHorizontalOnly(false);
             setSpeedSlow(true);
+            setZoneTunnelSlow(false);
         default: // unreachable
             break;
     }
@@ -120,7 +122,7 @@ void Ghost::handleStatus()
         else
             status_ = GhostStatus::kFrightenedBlinking;
     }
-    else if(status_ == GhostStatus::kHouse)
+    else if(status_ == GhostStatus::kHouseWaiting || status_ == GhostStatus::kHouse)
     {
         if(config::positions::kGhostHouseEntry == getCurrentCellPosition())
         {
@@ -134,11 +136,12 @@ void Ghost::handleStatus()
         if (house_target_ == getCurrentCellPosition())
         {
             setEnabled(true);
-            status_ = GhostStatus::kHouse;
-            resetNextDirection();
+            status_ = GhostStatus::kHouseWaiting;
+            setDeadSpeedUp(false);
             setZoneTunnelSlow(true);
-            setZoneHorizontalOnly(true);
+            setZoneHorizontalOnly(false);
             setGhostHouseDoorAccess(false);
+            resetNextDirection();
             show();
         }
     }
@@ -174,10 +177,8 @@ void Ghost::tick(const Map &map) {
     handleStatus();
 
     Direction direction;
-    if(pellet_counter_.isActive()) // Stuck in the house
-    {
-        direction = moveVertically(map); // TODO : vertical movements
-    }
+    if(status_ == GhostStatus::kHouseWaiting) // Stuck in the house
+        direction = moveVertically(map);
     else
         direction = prepare(map, getTarget()); // Prepare next move
 
@@ -191,6 +192,7 @@ void Ghost::kill() {
     {
         case GhostStatus::kDead:
         case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
             return;
         case GhostStatus::kChase:
         case GhostStatus::kScatter:
@@ -201,11 +203,12 @@ void Ghost::kill() {
 
     status_ = GhostStatus::kDead;
     frigthened_counter_.stop();
+    setDeadSpeedUp(true);
+    setSpeedSlow(false);
     setZoneTunnelSlow(false);
     setZoneHorizontalOnly(false);
     setGhostHouseDoorAccess(true);
     setDirectionReverse(false);
-    setSpeedSlow(false);
     MovingEntity::kill();
 }
 
@@ -216,8 +219,9 @@ void Ghost::unfrightened()
         case GhostStatus::kFrightened:
         case GhostStatus::kFrightenedBlinking:
             status_ = previous_status_;
-            setZoneHorizontalOnly(true);
             setSpeedSlow(false);
+            setZoneTunnelSlow(true);
+            setZoneHorizontalOnly(true);
         default:
             return;
     }
@@ -226,20 +230,21 @@ void Ghost::unfrightened()
 void Ghost::reset()
 {
     MovingEntity::reset();
-    status_ = GhostStatus::kHouse;
+    status_ = GhostStatus::kHouseWaiting;
     frigthened_counter_.stop();
+    pellet_counter_.restart();
     setZoneTunnelSlow(true);
-    setZoneHorizontalOnly(true);
-    setDeadSpeedUp(true);
+    setGhostHouseDoorAccess(true);
 }
 
-bool Ghost::inHouseIncrementCounter()
+bool Ghost::inHouseIncrementPelletCounter()
 {
-    if(status_ == GhostStatus::kHouse && pellet_counter_.isActive())
+    if(status_ == GhostStatus::kHouseWaiting && pellet_counter_.isActive())
     {
         pellet_counter_.increment();
         if(!pellet_counter_.isActive())
         {
+            status_ = GhostStatus::kHouse;
             setGhostHouseDoorAccess(true);
             setZoneHorizontalOnly(false);
         }

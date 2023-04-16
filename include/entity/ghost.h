@@ -78,12 +78,13 @@ public:
 
     void statusChange();
 
-    bool inHouseIncrementCounter();
+    bool inHouseIncrementPelletCounter();
 
 private:
 
     enum class GhostStatus
     {
+        kHouseWaiting,
         kHouse,
         kChase,
         kScatter,
@@ -93,7 +94,7 @@ private:
     };
 
     /** The current status. */
-    GhostStatus status_ {GhostStatus::kHouse};
+    GhostStatus status_ {GhostStatus::kHouseWaiting};
 
     /** The previous status.
      * @details Used to save the status while in frightened mode. */

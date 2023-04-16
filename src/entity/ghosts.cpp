@@ -97,29 +97,35 @@ void Ghosts::frightened()
 
 void Ghosts::clear()
 {
-    // TODO : house things ?
+    // TODO : disable ghost pellet_counter and make them wait
     for(auto &ghost : ghosts_entities)
-        ghost->reset();
+        ghost->reset(); // Disable counters but does not reset them
 }
 
 void Ghosts::reset()
 {
     status_changes_ = 0;
     status_counter_.stop();
-    clear();
+    // TODO : reset special counter
+    for(auto &ghost : ghosts_entities)
+        ghost->reset();
 }
 
 void Ghosts::levelUp()
 {
-    // TODO : update speed
-    reset();
+    status_changes_ = 0;
+    status_counter_.stop();
+    // TODO : reset special counter
+    for(auto &ghost : ghosts_entities)
+        ghost->reset();
 }
 
 void Ghosts::pelletEaten()
 {
+    // TODO : special counter, else :
     for(auto &ghost : ghosts_entities)
-        if(ghost->inHouseIncrementCounter())
-            return;
+        if(ghost->inHouseIncrementPelletCounter()) // True if active, otherwise false.
+            return; // Increment only one ghost pellet counter per tick.
 }
 
 void Ghosts::animate()

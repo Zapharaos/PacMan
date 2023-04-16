@@ -152,7 +152,8 @@ Direction MovingEntity::moveVertically(const Map &map)
 {
     // Get previous direction.
     auto direction = getPreviousDirection();
-    if(direction.isUninitialized()) return Direction{DirectionType::kUp};
+    if(!direction.isUp() && !direction.isDown())
+        return (previous_direction_ = Direction{DirectionType::kUp});
 
     // Get next cell : in order to check for walls
     std::shared_ptr<Cell> next_cell;
