@@ -84,6 +84,16 @@ public:
         SDL_RenderCopy(renderer_.get(), texture_.get(), &image, &position);
     }
 
+    /** Draw an entity onto the window.
+     * @pre entity must have Sprite member and a getSprite() method.
+     * @tparam T Type of the object to display.
+     * @param entity Object to display.
+     */
+    template<typename T>
+    inline void draw(const std::shared_ptr<T> &object, int offsetY) {
+        draw(*object, offsetY);
+    }
+
     /**
      * display the highscore text
      */

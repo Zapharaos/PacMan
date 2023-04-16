@@ -54,7 +54,8 @@ void Timer::start()
     mutex_.unlock();
 
     std::thread([&]() {
-        std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(time_));
+        std::this_thread::sleep_until(std::chrono::steady_clock::now() +
+                                      std::chrono::milliseconds(time_));
 
         mutex_.lock();
         if (killed_)

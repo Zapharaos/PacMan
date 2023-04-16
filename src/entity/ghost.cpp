@@ -7,118 +7,212 @@
 
 #include "../../include/entity/ghost.h"
 
-#include <utility>
-
 Ghost::Ghost() = default;
 
-Ghost::Ghost(Ghost::GhostType type, const Position &position, Position target,
-             Animation left, Animation right, Animation up, Animation down) :
-    type_(type), target_(std::move(target)),
+Ghost::Ghost(const Position &position, Position scatter_target, Position house_target,
+             unsigned long pellets, Animation left, Animation right, Animation up, Animation down) :
+    scatter_target_(std::move(scatter_target)), house_target_(std::move(house_target)),
     MovingEntity(position, true, static_cast<int>(Score::kGhost), config::settings::kSpeedGhost,
                  std::move(left), std::move(right), std::move(up), std::move(down))
 {
+    // Load elements from configs.
     frightened_ = visuals::ghosts::frightened::kAnimation;
     frightened_blinking_ = visuals::ghosts::frightened_blinking::kAnimation;
-}
+    dead_left_ = visuals::ghosts::dead::left::kAnimation;
+    dead_right_ = visuals::ghosts::dead::right::kAnimation;
+    dead_up_ = visuals::ghosts::dead::up::kAnimation;
+    dead_down_ = visuals::ghosts::dead::down::kAnimation;
 
-void Ghost::tick(const Map &map, const Position &pacman) {
+    // Starts in the ghost house.
+    setSpeedSlow(true);
+    setGhostHouseDoorAccess(true);
 
-    handleStatus();
-
-    if(move(map, getNextDirection(map, pacman))) // Move legal.
-        animate(next_direction_);
-}
-
-void Ghost::frightened()
-{
-    if(!isFrightened())
+    if(pellets != 0) // Waiting in the ghost house.
     {
-        previous_status_ = status_;
-        direction_reverse_ = true;
-    }
-
-    if(status_timers.at(1) == 0)
-        status_ = GhostStatus::kFrightenedBlinking;
-    else {
-        status_ = GhostStatus::kFrightened;
-        counter_.save();
-        counter_.start(status_timers.at(0)*config::settings::kFramesPerSecond);
+        pellet_counter_.start(pellets);
+        setGhostHouseDoorAccess(false);
     }
 }
 
-void Ghost::unfrightened()
+const Position &Ghost::getScatterTarget() const
 {
-    if(!isFrightened())
-        return;
-    if(status_ == GhostStatus::kFrightened && counter_.isActive())
-        counter_.loadSave();
-    status_ = previous_status_;
-    next_direction_.reset();
+    return scatter_target_;
 }
 
-void Ghost::reset()
+void Ghost::setChaseTarget(const Position &chaseTarget)
 {
-    MovingEntity::reset();
-    status_ = GhostStatus::kStart;
-    counter_.stop();
-    status_changes_ = 1;
-    next_direction_.reset();
+    chase_target_ = chaseTarget;
 }
 
-bool Ghost::isFrightened()
+std::optional<Position> Ghost::getTarget()
 {
-    return (status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking);
+    switch(status_)
+    {
+        case GhostStatus::kChase:
+            return chase_target_;
+        case GhostStatus::kScatter:
+            return scatter_target_;
+        case GhostStatus::kDead:
+            return house_target_;
+        case GhostStatus::kHouse:
+            return config::positions::kGhostHouseEntry;
+        default:
+            return std::nullopt;
+    }
+}
+
+void Ghost::statusChange()
+{
+    switch(status_)
+    {
+        // Status change immediately taken into consideration.
+        case GhostStatus::kChase:
+            setDirectionReverse(true);
+            status_ = GhostStatus::kScatter;
+            return;
+        case GhostStatus::kScatter:
+            setDirectionReverse(true);
+            status_ = GhostStatus::kChase;
+            return;
+        // Do not interfere with the current status, prepare the next status.
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
+        case GhostStatus::kFrightened:
+        case GhostStatus::kFrightenedBlinking:
+            if(previous_status_ == GhostStatus::kChase)
+                previous_status_ = GhostStatus::kScatter;
+            else
+                previous_status_ = GhostStatus::kChase;
+        default: // unreachable
+            return;
+    }
 }
 
 void Ghost::handleStatus()
 {
-    if(!isEnabled()) // Death.
-    {
-        setEnabled(true);
-        MovingEntity::reset();
-        unfrightened();
-    }
-
     // Handle ghost status.
-    if(counter_.isActive())
-        counter_.increment();
-    else
-        handleStatusChange();
+    if(status_ == GhostStatus::kFrightened)
+    {
+        if(frigthened_counter_.isActive()) // Frightened mode still active.
+            frigthened_counter_.increment();
+        else // Switch to the blinking animation.
+            status_ = GhostStatus::kFrightenedBlinking;
+    }
+    else if(status_ == GhostStatus::kHouseWaiting || status_ == GhostStatus::kHouse)
+    {
+        // Reached the ghost house entry : exit the ghost house.
+        if(config::positions::kGhostHouseEntry == getCurrentCellPosition())
+        {
+            status_ = GhostStatus::kScatter;
+            setGhostHouseDoorAccess(false);
+            setZoneHorizontalOnly(true);
+            setZoneTunnelSlow(true);
+            setSpeedSlow(false);
+        }
+    }
+    else if(status_ == GhostStatus::kDead && house_target_ == getCurrentCellPosition())
+    {
+        // Reached its house target : ready to exit again.
+        setEnabled(true);
+        show();
+        status_ = GhostStatus::kHouse;
+        setSpeedSlow(true);
+        setDeadSpeedUp(false);
+        setDirectionReverse(true);
+    }
 
     // Handle parent moving entity status.
     MovingEntity::handleStatus();
 }
 
-void Ghost::handleStatusChange() {
+void Ghost::tick(const Map &map) {
 
-    if(status_changes_ > config::settings::kGhostStatusChangesBeforeInfiniteChase)
+    handleStatus();
+
+    Direction direction;
+    if(status_ == GhostStatus::kHouseWaiting) // Stuck in the house
+        direction = moveVertically(map);
+    else
+        direction = prepare(map, getTarget()); // Prepare next move
+
+    if(move(map, direction)) // Move legal => animate.
+        animate(getPreviousDirection());
+}
+
+void Ghost::kill() {
+
+    switch (status_)
     {
-        if(status_ == GhostStatus::kFrightened)
-            status_ = GhostStatus::kFrightenedBlinking;
-        return;
+        // Can not be killed while in those stages.
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
+            return;
+        // Saves the current status to return to after the death status.
+        // Careful : previous_status_ might change in between.
+        case GhostStatus::kChase:
+        case GhostStatus::kScatter:
+            previous_status_ = status_;
+        default:
+            break;
     }
 
+    // Change settings to death.
+    status_ = GhostStatus::kDead;
+    frigthened_counter_.stop();
+    setDeadSpeedUp(true);
+    setSpeedSlow(false);
+    setZoneTunnelSlow(false);
+    setZoneHorizontalOnly(false);
+    setGhostHouseDoorAccess(true);
+    setDirectionReverse(false);
+    MovingEntity::kill();
+}
+
+void Ghost::frightened(unsigned long seconds)
+{
     switch(status_)
     {
+        // Cannot be frightened while in those stages.
+        case GhostStatus::kDead:
+        case GhostStatus::kHouse:
+        case GhostStatus::kHouseWaiting:
+            return;
+            // If not already in frightened mode : update the settings.
         case GhostStatus::kChase:
-            status_changes_++;
-            direction_reverse_ = true;
-        case GhostStatus::kStart:
-            status_ = GhostStatus::kScatter;
-            counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            break;
         case GhostStatus::kScatter:
-            status_changes_++;
-            status_ = GhostStatus::kChase;
-            direction_reverse_ = true;
-            if(status_changes_ < config::settings::kGhostStatusChangesBeforeInfiniteChase)
-                counter_.start(status_timers.at(status_changes_) * config::settings::kFramesPerSecond);
-            break;
-        case GhostStatus::kFrightened:
-            status_ = GhostStatus::kFrightenedBlinking;
-            break;
+            previous_status_ = status_;
+            setDirectionReverse(true);
+            setZoneHorizontalOnly(false);
+            setSpeedSlow(true);
+            setZoneTunnelSlow(false);
         default: // unreachable
             break;
+    }
+
+    if(seconds == 0) // Switch instantly to the blinking animation.
+        status_ = GhostStatus::kFrightenedBlinking;
+    else // Start the frightened mode.
+    {
+        status_ = GhostStatus::kFrightened;
+        frigthened_counter_.start(seconds);
+    }
+}
+
+void Ghost::unfrightened()
+{
+    switch (status_)
+    {
+        // Can only leave the frightened mode when already frightened (obviously).
+        case GhostStatus::kFrightened:
+        case GhostStatus::kFrightenedBlinking:
+            status_ = previous_status_; // Switch back to the previous status.
+            setSpeedSlow(false);
+            setZoneTunnelSlow(true);
+            setZoneHorizontalOnly(true);
+        default:
+            return;
     }
 }
 
@@ -129,82 +223,71 @@ void Ghost::animate(const Direction &direction)
         setSprite(frightened_.animate());
     else if(status_ == GhostStatus::kFrightenedBlinking)
         setSprite(frightened_blinking_.animate());
-    else
+    else if(status_ == GhostStatus::kDead)
+    {
+        if(direction.isLeft())
+            setSprite(dead_left_.animate());
+        else if(direction.isRight())
+            setSprite(dead_right_.animate());
+        else if(direction.isUp())
+            setSprite(dead_up_.animate());
+        else if(direction.isDown())
+            setSprite(dead_down_.animate());
+    }
+    else // No special cases : default animation.
         MovingEntity::animate(direction);
 }
 
-Direction Ghost::getNextDirection(const Map &map, const Position &pacman)
+bool Ghost::exitHouse()
 {
-    auto current_unscaled = getPosition();
-    auto current_position = current_unscaled.getPositionUnscaled(map.getCellSize());
-    auto current_cell = map.getCell(current_position);
+    // Can only leave the house if it actually is waiting inside of it (obviously).
+    if(status_ != GhostStatus::kHouseWaiting)
+        return false;
 
-    // default, next = current
-    auto next_position = current_position;
-    auto next_cell = current_cell;
+    // Leave the house.
+    status_ = GhostStatus::kHouse;
+    setGhostHouseDoorAccess(true);
+    setZoneHorizontalOnly(false);
+    return true;
+}
 
-    Direction reverse = next_direction_.reverse();
-
-    if(!next_direction_.isUninitialized()) // only false at start or reset
+bool Ghost::inHouseIncrementPelletCounter()
+{
+    if(status_ == GhostStatus::kHouseWaiting && pellet_counter_.isActive())
     {
-        // effective next cell
-        auto next_unscaled = map.calculateDestination(current_unscaled, next_direction_, isTunnelSlow(), getSpeed());
-        next_position = next_unscaled.getPositionUnscaled(map.getCellSize());
-        next_cell = map.getCell(next_position);
-
-        if(current_cell == next_cell) // ignore : only update on cell change
-            return next_direction_;
-
-        if(direction_reverse_) // reverse
-        {
-            next_position = current_position;
-            next_direction_ = reverse;
-        }
+        pellet_counter_.increment(); // Increment until it can exit the house.
+        if(!pellet_counter_.isActive())
+            exitHouse(); // Exit.
+        return true;
     }
+    return false;
 
-    bool forbid_ghost_vertical = false;
+}
 
-    if(!isFrightened())
-        forbid_ghost_vertical = current_cell->isGhostHorizontal() && next_cell->isGhostHorizontal();
-    auto directions = map.getAvailableDirections(next_position, next_direction_, forbid_ghost_vertical);
+void Ghost::restartFromHouse()
+{
+    MovingEntity::reset();
+    status_ = GhostStatus::kHouseWaiting;
+    frigthened_counter_.stop();
+    // Pellet counter is paused until the ghost leaves the house again.
+    pellet_counter_.pause();
+    setSpeedSlow(true);
+}
 
-    if(directions.empty()) // nothing available
-    {
-        if(current_cell->isWarp() || next_cell->isWarp())
-            return next_direction_;
-        next_direction_ = reverse;
-    }
-    else if(directions.size() == 1) // one way
-    {
-        next_direction_ = *(directions.begin());
-    }
-    else if(isFrightened()) // intersection : random
-    {
-        next_direction_ = Direction{getRandomElementFromSet(directions)};
-    }
-    else // intersection : pathfinding
-    {
-        // TODO : get pacman target
-        auto target = status_ == GhostStatus::kChase ? pacman : target_;
-        double min_distance = std::numeric_limits<double>::max();
+void Ghost::reset()
+{
+    MovingEntity::reset();
+    status_ = GhostStatus::kHouseWaiting;
+    frigthened_counter_.stop();
+    pellet_counter_.restart();
+    setSpeedSlow(true);
+    setGhostHouseDoorAccess(true);
+}
 
-        for(auto &element : directions)
-        {
-            auto position = next_position.getNeighbor(Direction{element});
-            double distance = target.getDistance(position);
-            if(distance < min_distance)
-            {
-                min_distance = distance;
-                next_direction_ = Direction{element};
-            }
-        }
-    }
-
-    if(direction_reverse_) // reverse
-    {
-        direction_reverse_ = false;
-        return reverse;
-    }
-
-    return next_direction_;
+Position Ghost::getCurrentCellPosition()
+{
+    auto position = getPosition(); // Upper left corner
+    if(getPreviousDirection().isLeftOrUp()) // Bottom right corner
+        position = position.shift(getSize()-1, getSize()-1);
+    return position.scaleDown(config::dimensions::kWindowCellSize);
 }

@@ -29,7 +29,7 @@ enum class CellType
     kTunnel, /* Tunnel type cell */
     kGhostHouseDoor, /* Ghost house door type cell */
     kGhostOnlyHorizontal, /* Ghost only horizontal type cell */
-    kGhostOnlyHorizontalAndPellet /* Pellet & Ghost only horizontal type cell */
+    kGhostOnlyHorizontalAndPellet, /* Pellet & Ghost only horizontal type cell */
 };
 
 /**
@@ -71,7 +71,8 @@ public:
      */
     Cell(Position position, int size, const CellType &type,
          std::shared_ptr<Entity> entity) :
-            position_(std::move(position)), size_(size), type_(type), entity_(std::move(entity))
+            position_(std::move(position)), size_(size), type_(type),
+            entity_(std::move(entity))
     {};
 
     /**
@@ -91,11 +92,39 @@ public:
     { return !(cell == *this); };
 
     /**
+     * @brief Returns the cell's position.
+     * @return The cell's position.
+     */
+    [[nodiscard]] inline Position getPosition() const
+    { return position_; };
+
+    /**
+     * @brief Getter for the type of cell.
+     * @return Type of cell.
+     */
+    [[nodiscard]] inline const CellType &getType() const
+    { return type_; };
+
+    /**
+     * @brief Getter for the entity associated with the cell.
+     * @return Optional entity.
+     */
+    [[nodiscard]] inline const std::shared_ptr<Entity> &getEntity() const
+    { return entity_; };
+
+    /**
      * @brief Check if the cell is a wall.
      * @return true if the cell is a wall, false otherwise.
      */
     [[nodiscard]] inline bool isWall() const
     { return type_ == CellType::kWall; };
+
+    /**
+     * @brief Check if the cell is the ghost house door.
+     * @return true if the cell is the ghost house door, false otherwise.
+     */
+    [[nodiscard]] inline bool isGhostHouseDoor() const
+    { return type_ == CellType::kGhostHouseDoor; };
 
     /**
      * @brief Check if the cell is a warp.
@@ -116,22 +145,10 @@ public:
      * @return true if not enabled, false otherwise.
      */
     [[nodiscard]] inline bool isGhostHorizontal() const
-    { return type_ == CellType::kGhostOnlyHorizontal ||
-             type_ == CellType::kGhostOnlyHorizontalAndPellet; };
-
-    /**
-     * @brief Getter for the type of cell.
-     * @return Type of cell.
-     */
-    [[nodiscard]] inline const CellType &getType() const
-    { return type_; };
-
-    /**
-     * @brief Getter for the entity associated with the cell.
-     * @return Optional entity.
-     */
-    [[nodiscard]] inline const std::shared_ptr<Entity> &getEntity() const
-    { return entity_; };
+    {
+        return type_ == CellType::kGhostOnlyHorizontal ||
+               type_ == CellType::kGhostOnlyHorizontalAndPellet;
+    };
 
     /**
      * @brief Check if a cell is a neighbor of this cell.
@@ -142,19 +159,24 @@ public:
     { return position_.isNeighbor(cell.position_); };
 
     /**
-     * @brief Check if a position fits perfectly on the cell.
-     * @param position Position in pixels.
-     * @return true if the position fits perfectly on the cell, false otherwise.
+     *
+     * @param direction The direction taken to reach the cell
+     * @return The nearest corner according to the direction.
      */
-    [[nodiscard]] inline bool equalsPositionScaled(const Position &position) const
-    { return position == getPositionScaled(); };
+    [[nodiscard]] inline Position getCorner(const Direction &direction) const
+    {
+        Position corner = upperLeftCorner();
+        if (direction.isLeftOrUp()) // Bottom right corner
+            return corner.shift(size_ - 1, size_ - 1);
+        return corner; // Upper left corner
+    };
 
     /**
      * @brief Returns the cell's position in pixels.
      * @return The cell's position in pixels.
      */
-    [[nodiscard]] Position getPositionScaled() const
-    { return position_.getPositionScaled(size_); };
+    [[nodiscard]] Position upperLeftCorner() const
+    { return position_.scaleUp(size_); };
 
 };
 

@@ -26,6 +26,8 @@ add_executable(${PROJECT_NAME} ""
 		include/entity/fruit.h
 		include/entity/fruitObject.h
 		include/entity/ghost.h
+		include/entity/ghosts.h
+		include/entity/ghostSpecial.h
 		include/entity/movingEntity.h
 		include/entity/pacman.h
 
@@ -51,6 +53,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/entity/entity.cpp
 		src/entity/fruit.cpp
 		src/entity/ghost.cpp
+		src/entity/ghosts.cpp
+		src/entity/ghostSpecial.cpp
 		src/entity/movingEntity.cpp
 		src/entity/pacman.cpp
 

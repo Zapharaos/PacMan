@@ -43,10 +43,10 @@ private:
     std::vector<std::shared_ptr<Cell>> cells_with_entities_;
 
     /** Current map sprite. */
-    Sprite sprite_ {};
+    Sprite sprite_{};
 
     /** Animation when level up. */
-    Animation animation_ {};
+    Animation animation_{};
 
 public:
 
@@ -79,7 +79,8 @@ public:
      * @brief Gets the sub list of all cells with entities.
      * @return the sub list of all cells with entities.
      */
-    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCellsWithEntities() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &
+    getCellsWithEntities() const;
 
     /**
      * @brief Getter for the sprite used to display the entity.
@@ -97,8 +98,10 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
-    turn(const Position &origin, const Position &destination, const Direction &direction,
-               const Direction &turn) const;
+    turn(Position origin, Position destination, int corner_offset,
+         const Direction &direction,
+         const Direction &turn, bool zone_horizontal_only,
+         bool ghost_house_door_access) const;
 
     /**
      * @brief If legal, moves into a direction.
@@ -109,7 +112,23 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
-    move(const Position &origin, const Position &destination, const Direction &direction) const;
+    move(const Position &origin, const Position &destination,
+         const Direction &direction, bool zone_horizontal_only,
+         bool ghost_house_door_access) const;
+
+    /**
+     * @brief Indicates which direction to go to reach the target.
+     * @param origin The starting position.
+     * @param target The target position.
+     * @param current_direction Direction taken to reach the origin position.
+     * @param zone_horizontal_only True if entity is sensible to the only horizontal zone, otherwise false.
+     * @param ghost_house_door_access True if the entity is allowed to pass by the ghost house door, otherwise false.
+     * @return The direction to take in order to reach the target.
+     */
+    [[nodiscard]] Direction
+    path(const Position &origin, std::optional<Position> &target,
+         const Direction &current_direction,
+         bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief Tries to warp.
@@ -130,6 +149,30 @@ public:
     isWarping(const Position &origin, const Position &destination) const;
 
     /**
+     * @brief Indicates all available directions from a specific position.
+     * @param cell The starting cell.
+     * @param zone_horizontal_only True if entity is sensible to the only horizontal zone, otherwise false.
+     * @param ghost_house_door_access True if the entity is allowed to pass by the ghost house door, otherwise false.
+     * @return A set of available directions from a starting cell.
+     */
+    [[nodiscard]] std::set<Direction>
+    getAvailableDirections(const std::shared_ptr<Cell> &cell,
+                           bool zone_horizontal_only,
+                           bool ghost_house_door_access) const;
+
+    /**
+     * @brief Calculates the destination from a position into a direction.
+     * @param origin The starting position.
+     * @param direction The direction taken.
+     * @param speed The speed at which the entity is moving.
+     * @param zone_tunnel_slow True if the entity is slowed when moving through tunnels, otherwise false.
+     * @return The position of destination.
+     */
+    [[nodiscard]] Position
+    calculateDestination(const Position &origin, const Direction &direction,
+                         int speed, bool zone_tunnel_slow) const;
+
+    /**
      * @brief Resets all cells on the map to their original state.
      */
     void reset() const;
@@ -139,28 +182,6 @@ public:
      */
     void animate();
 
-    /**
-     * @brief Indicates all available directions from a specific position.
-     * @param position The current position.
-     * @param direction The current direction (to reach the current position).
-     * @param forbid_ghost_vertical True if the current position is located within the special zone.
-     * @return Set of Direction.
-     */
-    [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const Position &position, const Direction &direction,
-                           bool forbid_ghost_vertical) const;
-
-    /**
-     * @brief Calculates the destination from a position into a direction.
-     * @param origin The initial position.
-     * @param direction The direction to move towards to.
-     * @param tunnel_slow True if slowed down inside tunnels, otherwise false.
-     * @param speed The initial speed value.
-     * @return The position of destination.
-     */
-    [[nodiscard]] Position
-    calculateDestination(const Position &origin, const Direction &direction,
-                         bool tunnel_slow, int speed) const;
 };
 
 

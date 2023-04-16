@@ -22,14 +22,15 @@
  * @brief Sprites to switch between when displayed.
  * A class that provides sprite animation by switching between a sequence of Sprites.
 */
-class Animation {
+class Animation
+{
 
 private:
 
     /** Sprites to switch between when displayed. */
-    std::vector<Sprite> animation_ {};
+    std::vector<Sprite> animation_{};
 
-    /** If the animation should reverse when it reached the end of the sprite vector. */
+    /** If the Animation should reverse when it reached the end of the sprite vector. */
     bool reverse_ = false;
 
     /** Amount of ticks before the sprite switches. */
@@ -45,7 +46,7 @@ private:
     bool over_ = false;
 
     /** Object used to count frames between each sprite. */
-    Counter counter_ {};
+    Counter counter_{};
 
 public:
 
@@ -73,7 +74,7 @@ public:
      * @brief Get the current sprite to be displayed.
      * @return The current sprite to be displayed.
      */
-    [[nodiscard]] const Sprite & getSprite();
+    [[nodiscard]] const Sprite &getSprite();
 
     /**
      * @brief Indicates whether the animation is over.

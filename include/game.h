@@ -13,12 +13,13 @@
 
 #include "map/map.h"
 #include "entity/movingEntity.h"
-#include "entity/ghost.h"
+#include "entity/ghosts.h"
 #include "entity/pacman.h"
 #include "entity/fruit.h"
 #include "utils/utils.h"
 #include "display/window.h"
 #include "config/visuals.h"
+
 /**
  * @brief Represents the Pac-Man game.
  *
@@ -81,7 +82,7 @@ private:
     Pacman pacman_;
 
     /** The ghost entities. */
-    std::vector<Ghost> ghosts_;
+    Ghosts ghosts_;
 
     /** The fruit entity. */
     Fruit fruit_;
@@ -148,22 +149,16 @@ public:
      */
     void lostLife();
 
-    bool updateHighScore() ;
-
     unsigned long getHighScore() const;
 
     int getLevel() const;
 
     void displayWelcomeScreen();
 
-    /**
-     * @brief Quits the game by setting the game status to kStopped.
-     */
-    void quit();
-
     void displayPoints();
 
     void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
+
 };
 
 

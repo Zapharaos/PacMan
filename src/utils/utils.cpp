@@ -21,7 +21,8 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
     }
 
     int value;
-    while (file >> value) { // Loop through each integer in the file
+    while (file >> value)
+    { // Loop through each integer in the file
         cell_types.emplace_back((CellType) value);
     }
 
@@ -36,28 +37,31 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
  * @param high_score
  * @param round
  */
-void saveGameState(int high_score, int round) {
+void saveGameState(unsigned long high_score, int round)
+{
 
     json j =
             {
-                    {"High Score",std::to_string(high_score)},
-                    {"Round",std::to_string(round)}
+                    {"High Score", std::to_string(high_score)},
+                    {"Round",      std::to_string(round)}
             };
 
     // pretty print with indent of 4 spaces
     std::ofstream file("../resources/save.json");
-    file << j ;
+    file << j;
 }
+
 /**
  *getHighScore
  * get highest score reached locally
  * @return
  */
-std::string getSavedHighScore() {
+std::string getSavedHighScore()
+{
     std::ifstream f("../resources/save.json");
-    json data  = json::parse(f);
-    std::string high_score = data.value("High Score","Not found");
-    return high_score ;
+    json data = json::parse(f);
+    std::string high_score = data.value("High Score", "Not found");
+    return high_score;
 }
 
 /**
@@ -65,11 +69,12 @@ std::string getSavedHighScore() {
  * Get highest round reached locally from json
  * @return round
  */
-std::string getRound() {
+std::string getRound()
+{
     std::ifstream f("../resources/save.json");
-    json data  = json::parse(f);
-    std::string round = data.value("Round","Not found");
-    return round ;
+    json data = json::parse(f);
+    std::string round = data.value("Round", "Not found");
+    return round;
 }
 
 

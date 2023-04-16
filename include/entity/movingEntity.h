@@ -49,9 +49,15 @@ private:
     /** Previous direction.
      * @details Used to determine a swap of animation. */
     Direction previous_direction_{};
-
-    /** If the entity is slowed down while moving inside tunnels. */
-    bool tunnel_slow_ {false};
+    /** The direction the Ghost will take when he reach the next cell. */
+    Direction next_direction_{};
+    /** Whether or not the Ghost is reversing direction as he reach the next cell. */
+    bool direction_reverse_ {false};
+    bool zone_tunnel_slow_ {false};
+    bool zone_horizontal_only_ {false};
+    bool ghost_house_door_access_ {false};
+    bool dead_speed_up_ {false};
+    bool speed_slow_ {false};
 
 public:
 
@@ -96,12 +102,6 @@ public:
     [[nodiscard]] int getSpeed() const;
 
     /**
-     * @brief Gets if the entity is slowed down while moving inside tunnels.
-     * @return True if the entity is slowed down while moving inside tunnels, otherwise false.
-     */
-    [[nodiscard]] bool isTunnelSlow() const;
-
-    /**
      * @brief Handle the moving entity.
      * @param map The board with all the cells.
      * @param direction The direction the entity is moving towards.
@@ -109,9 +109,12 @@ public:
     void tick(const Map &map, Direction direction);
 
     /**
-     * @brief Handle the status.
+     * @brief Prepares the next move.
+     * @param map The board with all the cells.
+     * @param target The position the entity is targeting.
+     * @return The direction to take in order to reach the target.
      */
-    virtual void handleStatus();
+    Direction prepare(const Map &map, std::optional<Position> target);
 
     /**
      * @brief Moves the entity in the given direction if it is a legal move.
@@ -120,6 +123,8 @@ public:
      * @return True if the move is legal, otherwise false.
      */
     bool move(const Map &map, Direction direction);
+
+    Direction moveVertically(const Map &map);
 
     /**
      * @brief Switches between sprites depending on the direction of the current move.
@@ -133,6 +138,24 @@ public:
      * @brief Resets the entity to the given coordinates.
      */
     virtual void reset();
+
+    void setZoneTunnelSlow(bool zoneTunnelSlow);
+
+    void setZoneHorizontalOnly(bool zoneHorizontalOnly);
+
+    void setGhostHouseDoorAccess(bool ghostHouseDoorAccess);
+
+    void setDirectionReverse(bool directionReverse);
+
+    void resetNextDirection();
+
+    [[nodiscard]] const Direction &getPreviousDirection() const;
+
+    [[nodiscard]] bool isZoneTunnelSlow() const;
+
+    void setSpeedSlow(bool speedSlow);
+
+    void setDeadSpeedUp(bool deadSpeedUp);
 
 };
 

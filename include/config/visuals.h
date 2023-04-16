@@ -1794,6 +1794,114 @@ namespace visuals {
             inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite, frightened::sprite_1::kSprite, frightened::sprite_2::kSprite}, kAnimationReverse, kAnimationRefreshRate};
         }
 
+        namespace dead {
+
+            namespace left {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {10};
+                    inline constexpr int kBitmapHeight {5};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {92};
+                    inline constexpr int kBitmapPositionY {202};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {3};
+                    inline constexpr int kBitmapOffsetY {6};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {false};
+
+                /** DO NOT MODIFY : Dead ghost left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace right {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {10};
+                    inline constexpr int kBitmapHeight {5};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {74};
+                    inline constexpr int kBitmapPositionY {202};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {3};
+                    inline constexpr int kBitmapOffsetY {6};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {false};
+
+                /** DO NOT MODIFY : Dead ghost left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace up {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {10};
+                    inline constexpr int kBitmapHeight {5};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {108};
+                    inline constexpr int kBitmapPositionY {202};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {3};
+                    inline constexpr int kBitmapOffsetY {6};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {false};
+
+                /** DO NOT MODIFY : Dead ghost left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+            namespace down {
+
+                namespace sprite_1 {
+                    /** Sprite dimensions (in pixels). */
+                    inline constexpr int kBitmapWidth {10};
+                    inline constexpr int kBitmapHeight {5};
+
+                    /** Sprite positions (in pixels). */
+                    inline constexpr int kBitmapPositionX {125};
+                    inline constexpr int kBitmapPositionY {202};
+
+                    /** Sprite positions offset (in pixels). */
+                    inline constexpr int kBitmapOffsetX {3};
+                    inline constexpr int kBitmapOffsetY {6};
+
+                    /** DO NOT MODIFY : Sprite. */
+                    inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {kBitmapWidth * kScale, kBitmapHeight * kScale}};
+                }
+
+                /** When animation's over : True if the animation should reverse, false if it should restart from zero. */
+                inline constexpr bool kAnimationReverse {false};
+
+                /** DO NOT MODIFY : Dead ghost left animation. */
+                inline Animation kAnimation {{sprite_1::kSprite}, kAnimationReverse, kAnimationRefreshRate};
+            }
+
+        }
+
     }
     namespace welcome_screen{
         /** DO NOT MODIFY : Welcome Screen animation. */

@@ -1,12 +1,12 @@
 /**
  * @file fruit.h
- * @brief Defines the Fruit class which represents a fruit that occasionally appears on the board.
+ * @brief Defines the Fruit class which represents a Fruit that occasionally appears on the board.
  * @author Matthieu FREITAG (Zapharaos)
  * @date 12/03/2023
 */
 
-#ifndef PEC_MEN_POWERUP_H
-#define PEC_MEN_POWERUP_H
+#ifndef PACMAN_FRUIT_H
+#define PACMAN_FRUIT_H
 
 #include <SDL.h>
 
@@ -20,7 +20,7 @@
 #include "../config/visuals.h"
 
 /**
- * @brief Represents a fruit that occasionally appears on the board.
+ * @brief Represents a Fruit that occasionally appears on the board.
  * @extends Entity
 */
 class Fruit : public Entity
@@ -28,16 +28,16 @@ class Fruit : public Entity
 
 private:
 
-    /** List of values at which the fruit will be displayed. */
+    /** List of values at which the Fruit will be displayed. */
     std::set<unsigned long> pellets_cap_{};
 
-    /** List of fruits that can be displayed.
+    /** List of Fruits that can be displayed.
      * @see Fruit::FruitObject class */
     std::vector<FruitObject> fruits_{};
 
     /** Index of the current FruitObject.
-     * @details Used to access and animate the fruit. */
-    int index_ {};
+     * @details Used to access and animate the Fruit. */
+    int index_{};
 
 public:
 
@@ -53,10 +53,10 @@ public:
     explicit Fruit(unsigned long total_pellets);
 
     /**
-     * @brief Update the fruit only if specific conditions are met.
-     * @note pelletsEaten must belong to pelletsCap_ for the fruit to be displayed.
+     * @brief Update the Fruit only if specific conditions are met.
      * @param pellets_eaten Current number of pellets eaten.
      * @param level Current level of the game.
+     * @note pellets_eaten must belong to pellets_cap_ for the Fruit to be displayed.
      */
     void update(int pellets_eaten, int level);
 
@@ -67,10 +67,10 @@ public:
     void animate();
 
     /**
-     * @brief Update the fruit counter and disable it when it's over.
+     * @brief Update the Fruit counter and disable it when it's over.
      */
-    void tick();
+    void tick() override;
 };
 
 
-#endif //PEC_MEN_POWERUP_H
+#endif //PACMAN_FRUIT_H

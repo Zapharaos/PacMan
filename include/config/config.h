@@ -5,10 +5,11 @@
 #ifndef PACMAN_CONFIG_H
 #define PACMAN_CONFIG_H
 
+#include "../map/position.h"
+
 #include <chrono>
 #include <set>
 #include <array>
-
 
 enum class Score
 {
@@ -44,7 +45,7 @@ namespace config {
         inline constexpr int kRefreshRateTicksCharacters {15};
         inline constexpr int kRefreshRateTicksEnergizer {15};
 
-        /** Amount of ticks for each status. */
+        /** Amount of ticks for each game status. */
         inline constexpr int kDurationSuperpower {kFramesPerSecond * 10};
         inline constexpr int kDurationFruit {kFramesPerSecond * 10};
         inline constexpr int kDurationEatenPelletFreeze {1};
@@ -56,11 +57,23 @@ namespace config {
         inline constexpr int kDurationPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
 
-        inline constexpr int kGhostStatusChangesBeforeInfiniteChase {6 + 1};
+        /** Amount of ticks for each ghost status. */
+        inline constexpr int kDurationGhostFrightened {kDurationSuperpower / 2};
+        inline constexpr std::array<int, 7> kDurationGhostStatuses {
+            7 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            7 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            5 * kFramesPerSecond, // Scatter
+            20 * kFramesPerSecond, // Chase
+            5 * kFramesPerSecond // Scatter, then infinite chase
+        };
 
         /** Amount of pixels the entities are moving (per tick). */
         inline constexpr int kSpeedPacman {3};
         inline constexpr int kSpeedGhost {2};
+        inline constexpr int kSpeedUpRatio {2};
+        inline constexpr int kSpeedDownRatio {2};
 
         /** Global game settings. */
         inline constexpr int kLives {3};
@@ -68,6 +81,19 @@ namespace config {
 
         /** After how many eaten pellets does the fruits appear (by level). */
         inline std::set<int> kFruitsPercentages {30, 70};
+
+        /** Ghosts chase target settings. */
+        inline constexpr int kPinkyOffsetToPacman {4};
+        inline constexpr int kInkyOffsetToPacman {2};
+        inline constexpr int kClydeDistanceFromPacman {8};
+
+        inline constexpr unsigned long kGhostMaxTickWithoutEatenPellet {4 * kFramesPerSecond};
+
+        /** Ghosts pellet counting limits after pacman death. */
+        inline constexpr int kGhostRestartPelletLimitPinky {7};
+        inline constexpr int kGhostRestartPelletLimitInky {17};
+        inline constexpr int kGhostRestartPelletLimitClyde {32};
+        inline constexpr int kGhostRestartPelletLimitMax {kGhostRestartPelletLimitClyde + 1};
     }
 
     namespace dimensions {
@@ -85,9 +111,14 @@ namespace config {
         inline constexpr int kWindowWidth {kMapWidth * kWindowCellSize};
         inline constexpr int kWindowHeight {  kScoreBoardHeight * 2 + kMapHeight * kWindowCellSize};
 
+        // Width and height of a moving entity.
+        inline constexpr int kMovingEntitySize {32};
+
     }
 
     namespace positions {
+
+        inline static const Position kGhostHouseEntry {10, 10};
 
         namespace entities {
             /** Pacman default/starting position (in pixels). */
@@ -105,9 +136,13 @@ namespace config {
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {10 * dimensions::kWindowCellSize};
 
-                /** Ghost target (in pixels). */
+                /** Ghost scatter target. */
                 inline constexpr int kTargetX {dimensions::kMapWidth};
                 inline constexpr int kTargetY {0};
+
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {10};
+                inline constexpr int kHouseY {13};
             }
 
             namespace pinky {
@@ -115,9 +150,13 @@ namespace config {
                 inline constexpr int kDefaultX {10 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {13 * dimensions::kWindowCellSize};
 
-                /** Ghost target (in pixels). */
+                /** Ghost scatter target. */
                 inline constexpr int kTargetX {0};
                 inline constexpr int kTargetY {0};
+
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {10};
+                inline constexpr int kHouseY {13};
             }
 
             namespace inky {
@@ -125,9 +164,13 @@ namespace config {
                 inline constexpr int kDefaultX {9 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
-                /** Ghost target (in pixels). */
+                /** Ghost scatter target. */
                 inline constexpr int kTargetX {dimensions::kMapWidth};
                 inline constexpr int kTargetY {dimensions::kMapHeight};
+
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {9};
+                inline constexpr int kHouseY {12};
             }
 
             namespace clyde {
@@ -135,9 +178,13 @@ namespace config {
                 inline constexpr int kDefaultX {11 * dimensions::kWindowCellSize};
                 inline constexpr int kDefaultY {12 * dimensions::kWindowCellSize};
 
-                /** Ghost target (in pixels). */
+                /** Ghost scatter target. */
                 inline constexpr int kTargetX {0};
                 inline constexpr int kTargetY {dimensions::kMapHeight};
+
+                /** Ghost dead target. */
+                inline constexpr int kHouseX {11};
+                inline constexpr int kHouseY {12};
             }
         }
 
@@ -169,7 +216,6 @@ namespace config {
             inline constexpr int kCharaterNicknameY{kScoreBoardScoreY + 50};
             inline constexpr int kGhostsX {kScoreBoardOneUpTextX + 10};
             inline constexpr int kBlinkyY {kCharaterNicknameY + 10};
-
 
             /**Game Start display positions*/
             inline constexpr int kReadyTextX {280};
