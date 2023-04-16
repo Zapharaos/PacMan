@@ -25,7 +25,7 @@ public:
     Ghost();
 
     /**
-     * @brief Constructs a Ghost entity with the given type and position.
+     * @brief Constructor for the Ghost class.
      * @param position Raw position.
      * @param scatter_target The position the Ghost is targeting while in scatter mode.
      * @param house_target The position the Ghost is returning to when killed.
