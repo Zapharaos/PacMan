@@ -56,6 +56,8 @@ namespace config {
         inline constexpr int kDurationGameStartFreeze {kFramesPerSecond * 2};
         inline constexpr int kDurationPoints {kFramesPerSecond * 3};
         inline constexpr int kDurationDeathFreeze {kFramesPerSecond};
+        inline constexpr int kDurationDeathAnimation {kFramesPerSecond*2};
+        inline constexpr int kDurationTextDeathFreeze{kFramesPerSecond*3};
 
         /** Amount of ticks for each ghost status. */
         inline constexpr int kDurationGhostFrightened {kDurationSuperpower / 2};
@@ -187,13 +189,6 @@ namespace config {
                 inline constexpr int kHouseY {12};
             }
         }
-
-        namespace offsets{
-            inline constexpr int kGhostPointsX { 10 };
-            inline constexpr int kGhostPointsY { 10 + config::dimensions::kScoreBoardHeight};
-            inline constexpr int kReady{2};
-            inline constexpr int kPlayerOne{2};
-        }
         namespace display{
             /**Score Board Positions*/
             inline constexpr int kScoreBoardX {0};
@@ -223,8 +218,16 @@ namespace config {
             inline constexpr int kPlayerOneTextX {229};
             inline constexpr int kPlayerOneTextY {400};
 
+            /**Game Over*/
+            inline constexpr int kGameOverTextX {227};
+            inline constexpr int kGameOverTextY {562};
+
+            /** Credit Position*/
+            inline constexpr int kCreditTextX {60};
+            inline constexpr int kCreditTextY {964};
 
         }
+
     }
 }
 

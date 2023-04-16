@@ -19,7 +19,6 @@
 #include "utils/utils.h"
 #include "display/window.h"
 #include "config/visuals.h"
-
 /**
  * @brief Represents the Pac-Man game.
  *
@@ -44,10 +43,12 @@ private:
         kLevelUpAnimate, /* The game is animating level up. */
         kDeathFreeze, /* The game is freezing before death. */
         kDeathAnimate, /* The game is animating death. */
+        kDeathAnimate_2, /*Game Over text*/
         kEatingGhost, /* Pacman is eating a ghost. */
         kWelcomeScreen, /*Initial Screen with animations */
         kGameStartFreeze, /* The game is frozen before starting*/
         kGameStartAnimate,
+        kGameOver,
         kSuperpower, /* The pacman ate an energizer. */
     };
 
@@ -95,6 +96,7 @@ private:
 
     /**Vector that will store all points to display after eating a fruit/ghost till timer runs out */
     std::vector<std::tuple<SDL_Rect, SDL_Rect, Counter,std::tuple<int, int, int>  >> points_ ;
+
 
 public:
 
@@ -159,6 +161,7 @@ public:
 
     void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
 
+    void resetGame();
 };
 
 

@@ -42,7 +42,7 @@ add_executable(${PROJECT_NAME} ""
 		include/utils/utils.h
 
 		include/game.h
-		include/config/config.h)
+		include/config/config.h include/utils/soundPlayer.h)
 
 target_sources(${PROJECT_NAME} PRIVATE
 
