@@ -249,8 +249,8 @@ bool Ghost::inHouseIncrementCounter()
 
 Position Ghost::getCurrentCellPosition()
 {
-    auto position = getPosition();
-    if(getPreviousDirection().isLeft() || getPreviousDirection().isUp())
+    auto position = getPosition(); // Upper left corner
+    if(getPreviousDirection().isLeftOrUp()) // Bottom right corner
         position = position.shift(getSize()-1, getSize()-1);
     return position.scaleDown(config::dimensions::kWindowCellSize);
 }

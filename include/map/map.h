@@ -43,10 +43,10 @@ private:
     std::vector<std::shared_ptr<Cell>> cells_with_entities_;
 
     /** Current map sprite. */
-    Sprite sprite_ {};
+    Sprite sprite_{};
 
     /** Animation when level up. */
-    Animation animation_ {};
+    Animation animation_{};
 
 public:
 
@@ -79,7 +79,8 @@ public:
      * @brief Gets the sub list of all cells with entities.
      * @return the sub list of all cells with entities.
      */
-    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCellsWithEntities() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &
+    getCellsWithEntities() const;
 
     /**
      * @brief Getter for the sprite used to display the entity.
@@ -97,8 +98,10 @@ public:
      * @return the effective destination if the move is legal, else it returns nullptr.
      */
     [[nodiscard]] std::optional<Position>
-    turn(Position origin, Position destination, int corner_offset, const Direction &direction,
-         const Direction &turn, bool zone_horizontal_only, bool ghost_house_door_access) const;
+    turn(Position origin, Position destination, int corner_offset,
+         const Direction &direction,
+         const Direction &turn, bool zone_horizontal_only,
+         bool ghost_house_door_access) const;
 
     /**
      * @brief If legal, moves into a direction.
@@ -110,7 +113,8 @@ public:
      */
     [[nodiscard]] std::optional<Position>
     move(const Position &origin, const Position &destination,
-         const Direction &direction, bool zone_horizontal_only, bool ghost_house_door_access) const;
+         const Direction &direction, bool zone_horizontal_only,
+         bool ghost_house_door_access) const;
 
     /**
      * @brief Indicates which direction to go to reach the target.
@@ -122,8 +126,9 @@ public:
      * @return The direction to take in order to reach the target.
      */
     [[nodiscard]] Direction
-    path(const Position &origin, std::optional<Position> &target, const Direction &current_direction,
-                   bool zone_horizontal_only, bool ghost_house_door_access) const;
+    path(const Position &origin, std::optional<Position> &target,
+         const Direction &current_direction,
+         bool zone_horizontal_only, bool ghost_house_door_access) const;
 
     /**
      * @brief Tries to warp.
@@ -151,7 +156,9 @@ public:
      * @return A set of available directions from a starting cell.
      */
     [[nodiscard]] std::set<Direction>
-    getAvailableDirections(const std::shared_ptr<Cell>& cell, bool zone_horizontal_only, bool ghost_house_door_access) const;
+    getAvailableDirections(const std::shared_ptr<Cell> &cell,
+                           bool zone_horizontal_only,
+                           bool ghost_house_door_access) const;
 
     /**
      * @brief Calculates the destination from a position into a direction.
@@ -162,7 +169,8 @@ public:
      * @return The position of destination.
      */
     [[nodiscard]] Position
-    calculateDestination(const Position &origin, const Direction &direction, int speed, bool zone_tunnel_slow) const;
+    calculateDestination(const Position &origin, const Direction &direction,
+                         int speed, bool zone_tunnel_slow) const;
 
     /**
      * @brief Resets all cells on the map to their original state.

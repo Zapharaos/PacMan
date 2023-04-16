@@ -80,6 +80,14 @@ public:
     [[nodiscard]] Position getDistance2D(Position position) const;
 
     /**
+     * @brief Gets the distance between two positions on a single axis (horizontal or vertical).
+     * @pre Both positions must be either horizontally or vertically aligned.
+     * @param position The second position.
+     * @return The distance between both positions.
+     */
+    [[nodiscard]] int getDistanceSingleAxis(const Position &position) const;
+
+    /**
      * @brief Indicates whether the position is out of bounds or not.
      * @param width The width limit of the grid.
      * @param height The height limit of the grid.
@@ -96,28 +104,6 @@ public:
     [[nodiscard]] bool isBetween(const Position &a, const Position &b) const;
 
     /**
-     * @brief Gets the distance between two positions on a single axis (horizontal or vertical).
-     * @pre Both positions must be either horizontally or vertically aligned.
-     * @param position The second position.
-     * @return The distance between both positions.
-     */
-    [[nodiscard]] int getSingleAxisDistance(const Position &position) const;
-
-    /**
-     * @brief Scales the position.
-     * @param scale The scale factor.
-     * @return A copy of the original object with its position scaled.
-     */
-    [[nodiscard]] Position scaleUp(int scale) const;
-
-    /**
-     * @brief Scales the position down.
-     * @param scale The scale factor.
-     * @return A copy of the original object with its position unscaled.
-     */
-    [[nodiscard]] Position scaleDown(int scale) const;
-
-    /**
      * @brief Indicates if two positions are neighbors.
      * @param position Second position.
      * @return True if positions are neighbors, else false.
@@ -132,11 +118,34 @@ public:
     [[nodiscard]] Position getNeighbor(const Direction &direction) const;
 
     /**
-     * @brief Moves the position a certain distance into a direction.
+     * @brief Gets the position's limit at the opposite.
+     * @pre The position's origin must already be out of bounds.
+     * @param width The maximum width.
+     * @param height The maximum height.
+     * @return The position at the opposite.
+     */
+    [[nodiscard]] Position getOpposite(int width, int height) const;
+
+    /**
+     * @brief Scales the position up.
+     * @param scale The scale factor.
+     * @return A copy of the original object with its position scaled.
+     */
+    [[nodiscard]] Position scaleUp(int scale) const;
+
+    /**
+     * @brief Scales the position down.
+     * @param scale The scale factor.
+     * @return A copy of the original object with its position unscaled.
+     */
+    [[nodiscard]] Position scaleDown(int scale) const;
+
+    /**
+     * @brief Shifts the position by a certain amount into a direction.
      * @param direction The direction of the movement.
      * @return Copy of the original object with its position moved.
      */
-    [[nodiscard]] Position moveIntoDirection(const Direction &direction, int distance) const;
+    [[nodiscard]] Position shift(const Direction &direction, int distance) const;
 
     /**
      * @brief Shifts the position by a certain amount.
@@ -145,15 +154,6 @@ public:
      * @return The position shifted.
      */
     [[nodiscard]] Position shift(int x, int y) const;
-
-    /**
-     * @brief Gets the position's limit at the opposite.
-     * @pre The position's origin must already be out of bounds.
-     * @param width The maximum width.
-     * @param height The maximum height.
-     * @return The position at the opposite.
-     */
-    [[nodiscard]] Position getOpposite(int width, int height) const;
 
 };
 

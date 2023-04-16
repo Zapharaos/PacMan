@@ -29,14 +29,14 @@ template <GhostType T>
 template <GhostType U, typename std::enable_if<U == GhostType::kPinky, int>::type>
 void GhostSpecial<T>::chase(const Position &pacman, const Direction &direction)
 {
-    setChaseTarget(pacman.moveIntoDirection(direction, config::settings::kPinkyOffsetToPacman));
+    setChaseTarget(pacman.shift(direction, config::settings::kPinkyOffsetToPacman));
 }
 
 template <GhostType T>
 template <GhostType U, typename std::enable_if<U == GhostType::kInky, int>::type>
 void GhostSpecial<T>::chase(const Position &pacman, const Direction &direction, const Position &blinky)
 {
-    auto offset_position = pacman.moveIntoDirection(direction, config::settings::kInkyOffsetToPacman);
+    auto offset_position = pacman.shift(direction, config::settings::kInkyOffsetToPacman);
     auto difference = blinky.getDistance2D(offset_position);
     setChaseTarget(offset_position.shift(difference.getAbscissa(), difference.getOrdinate()));
 }

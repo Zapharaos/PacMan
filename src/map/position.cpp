@@ -50,6 +50,15 @@ Position Position::getDistance2D(Position position) const
     return {position.getAbscissa() - getAbscissa(), position.getOrdinate() - getOrdinate()};
 }
 
+int Position::getDistanceSingleAxis(const Position &position) const
+{
+    if (position_.first == position.position_.first)
+        return abs(position_.second - position.position_.second);
+    if (position_.second == position.position_.second)
+        return abs(position_.first - position.position_.first);
+    return 0;
+}
+
 bool Position::isOutOfBounds(int width, int height) const
 {
     return (position_.first < 0 || position_.first >= width ||
@@ -66,26 +75,6 @@ bool Position::isBetween(const Position &a, const Position &b) const
             position_.second <= a.position_.second) ||
            (a.position_.second <= position_.second &&
             position_.second < b.position_.second);
-}
-
-int Position::getSingleAxisDistance(const Position &position) const
-{
-    // TODO : refactor & use getDistance() instead ?
-    if (position_.first == position.position_.first)
-        return abs(position_.second - position.position_.second);
-    return abs(position_.first - position.position_.first);
-}
-
-Position Position::scaleUp(int scale) const
-{
-    return {position_.first * scale, position_.second * scale};
-}
-
-Position Position::scaleDown(int scale) const
-{
-    auto x = getAbscissa() / scale;
-    auto y = getOrdinate() / scale;
-    return {static_cast<int>(floor(x)), static_cast<int>(floor(y))};
 }
 
 bool Position::isNeighbor(const Position &position) const
@@ -110,21 +99,6 @@ Position Position::getNeighbor(const Direction &direction) const
     return Position{position};
 }
 
-Position Position::moveIntoDirection(const Direction &direction, int distance) const
-{
-    auto position = position_;
-    if (direction.isLeft()) position.first -= distance;
-    else if (direction.isRight()) position.first += distance;
-    else if (direction.isUp()) position.second -= distance;
-    else if (direction.isDown()) position.second += distance;
-    return Position{position};
-}
-
-Position Position::shift(int x, int y) const
-{
-    return {position_.first+x, position_.second+y};
-}
-
 Position Position::getOpposite(int width, int height) const
 {
     auto x = position_.first;
@@ -140,4 +114,31 @@ Position Position::getOpposite(int width, int height) const
         y = 0;
 
     return {x, y};
+}
+
+Position Position::scaleUp(int scale) const
+{
+    return {position_.first * scale, position_.second * scale};
+}
+
+Position Position::scaleDown(int scale) const
+{
+    auto x = getAbscissa() / scale;
+    auto y = getOrdinate() / scale;
+    return {static_cast<int>(floor(x)), static_cast<int>(floor(y))};
+}
+
+Position Position::shift(const Direction &direction, int distance) const
+{
+    auto position = position_;
+    if (direction.isLeft()) position.first -= distance;
+    else if (direction.isRight()) position.first += distance;
+    else if (direction.isUp()) position.second -= distance;
+    else if (direction.isDown()) position.second += distance;
+    return Position{position};
+}
+
+Position Position::shift(int x, int y) const
+{
+    return {position_.first+x, position_.second+y};
 }

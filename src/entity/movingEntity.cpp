@@ -51,9 +51,8 @@ Direction MovingEntity::prepare(const Map &map, std::optional<Position> target)
     if(!next_direction_.isUninitialized()) // only false at start or reset
     {
 
-        if(next_direction_.isLeft() || next_direction_.isUp())
+        if(next_direction_.isLeftOrUp()) // Bottom right corner
         {
-            // Bottom right corner
             current_unscaled = current_unscaled.shift(getSize()-1, getSize()-1);
             current_position = current_unscaled.scaleDown(map.getCellSize());
             current_cell = map.getCell(current_position);
