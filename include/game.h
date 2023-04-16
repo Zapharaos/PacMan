@@ -146,25 +146,12 @@ public:
      */
     void lostLife();
 
-    bool updateHighScore() ;
-
-    /**
-     * getSavedHighScore
-     * Gets the high score set locally from the save.json file
-     * @return high_score_
-     */
-    int getLocalHighScore();
-
     unsigned long getHighScore() const;
 
     int getLevel() const;
 
     void displayWelcomeScreen();
 
-    /**
-     * @brief Quits the game by setting the game status to kStopped.
-     */
-    void quit();
 };
 
 

@@ -64,6 +64,13 @@ public:
     void unfrightened();
 
     /**
+     * @brief Animates the Ghost based on its current direction.
+     * @param direction The direction the Ghost is moving to.
+     * @see MovingEntity::animate()
+     */
+    void animate(const Direction &direction) override;
+
+    /**
      * @brief Resets the entity object.
      * @see MovingEntity::reset()
      */
@@ -137,13 +144,6 @@ private:
      * appropriate behavior for the Ghost based on its current status.
      */
     void handleStatus() override;
-
-    /**
-     * @brief Animates the Ghost based on its current direction.
-     * @param direction The direction the Ghost is moving to.
-     * @see MovingEntity::animate()
-     */
-    void animate(const Direction &direction) override;
 
     Position getCurrentCellPosition();
 

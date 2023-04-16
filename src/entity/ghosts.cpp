@@ -121,3 +121,9 @@ void Ghosts::pelletEaten()
         if(ghost->inHouseIncrementCounter())
             return;
 }
+
+void Ghosts::animate()
+{
+    for(auto &ghost : ghosts_entities)
+        ghost->animate(ghost->getPreviousDirection());
+}

@@ -41,11 +41,11 @@ int main(int argc, char **argv)
         SDL_PumpEvents(); // Get keys
         Direction direction;
 
-        // Exit
+        // Exit game.
         if (keys[SDL_SCANCODE_ESCAPE])
             quit = true;
 
-        // Movements
+        // Read user input for Pacman movement.
         if (keys[SDL_SCANCODE_LEFT])
             direction.setDirection(DirectionType::kLeft);
         else if (keys[SDL_SCANCODE_RIGHT])
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
         else if (keys[SDL_SCANCODE_DOWN])
             direction.setDirection(DirectionType::kDown);
 
-        // Handle game
+        // Handle game & move Pacman.
         game.tick(direction);
 
         // Cap to 60 frames per second.
@@ -64,9 +64,9 @@ int main(int argc, char **argv)
             SDL_Delay(std::chrono::duration_cast<std::chrono::milliseconds>(
                     config::settings::kTickTime - finish).count());
     }
-    saveGameState(game.getHighScore(),game.getLevel());
+
     // Save high score.
-    // TODO : write high score to file
+    saveGameState(game.getHighScore(), game.getLevel());
 
     // Leave game.
     SDL_Quit();

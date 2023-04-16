@@ -38,7 +38,7 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
  * @param high_score
  * @param round
  */
-void saveGameState(int high_score, int round)
+void saveGameState(unsigned long high_score, int round)
 {
 
     json j =

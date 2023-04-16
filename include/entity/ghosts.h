@@ -41,6 +41,8 @@ public:
     void clear();
 
     void pelletEaten();
+
+    void animate();
 };
 
 

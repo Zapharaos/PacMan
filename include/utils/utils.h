@@ -69,7 +69,7 @@ constexpr std::array<T, max> shrinkArray(const std::array<T, N> &array)
 std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
 
-void saveGameState(int high_score, int round);
+void saveGameState(unsigned long high_score, int round);
 
 std::string getSavedHighScore();
 
