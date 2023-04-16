@@ -148,6 +148,30 @@ bool MovingEntity::move(const Map &map, Direction direction)
     return true;
 }
 
+Direction MovingEntity::moveVertically(const Map &map)
+{
+    // Get previous direction.
+    auto direction = getPreviousDirection();
+    if(direction.isUninitialized()) return Direction{DirectionType::kUp};
+
+    // Get next cell : in order to check for walls
+    std::shared_ptr<Cell> next_cell;
+    if(direction.isLeftOrUp())
+    {
+        auto next_unscaled = map.calculateDestination(getPosition(), direction, getSpeed(), isZoneTunnelSlow());
+        next_cell = map.getCell(next_unscaled.scaleDown(map.getCellSize()));
+    }
+    else
+    {
+        auto neighbor = getPosition().scaleDown(map.getCellSize()).getNeighbor(direction);
+        next_cell = map.getCell(neighbor);
+    }
+
+    if(next_cell->isWall() || (!ghost_house_door_access_ && next_cell->isGhostHouseDoor()))
+        return direction.reverse();
+    return direction;
+}
+
 void MovingEntity::animate(const Direction &direction)
 {
     // Nothing to animate yet.

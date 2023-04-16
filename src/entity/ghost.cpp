@@ -175,7 +175,9 @@ void Ghost::tick(const Map &map) {
 
     Direction direction;
     if(pellet_counter_.isActive()) // Stuck in the house
-        direction = prepare(map, getTarget()); // TODO : vertical movements
+    {
+        direction = moveVertically(map); // TODO : vertical movements
+    }
     else
         direction = prepare(map, getTarget()); // Prepare next move
 

@@ -124,6 +124,8 @@ public:
      */
     bool move(const Map &map, Direction direction);
 
+    Direction moveVertically(const Map &map);
+
     /**
      * @brief Switches between sprites depending on the direction of the current move.
      * Called when a move is legal.
