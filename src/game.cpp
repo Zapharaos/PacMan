@@ -361,6 +361,7 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
                 counter_.save();
                 counter_.start(config::settings::kDurationEatenGhostFreeze);
                 pacman_.hide();
+                ghost->hide();
 
                 // Display points sprite.
                 addPointsToDisplay(points, visuals::ghosts::kScale,
