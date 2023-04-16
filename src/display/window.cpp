@@ -65,13 +65,13 @@ void Window::writeHighScore() {
 
 void Window::updateHighScore(unsigned long points) {
     writeScorePoints(points, config::positions::display::kScoreBoardHighScoreX,
-                     config::positions::display::kScoreBoardHighScoreY, 3.0);
+                     config::positions::display::kScoreBoardHighScoreY, scales::kScore);
 }
 
 void Window::updateScore(unsigned long score) {
     writeScorePoints(score,
                      config::positions::display::kScoreBoardScoreX,
-                     config::positions::display::kScoreBoardScoreY, 3.0);
+                     config::positions::display::kScoreBoardScoreY, scales::kScore);
 }
 
 void Window::updateLives(int nb_lives) {

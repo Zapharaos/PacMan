@@ -7,6 +7,7 @@
 
 #include "../include/game.h"
 
+
 Game::Game() = default;
 
 Game::Game(const Map &map, Window window, unsigned long high_score) :
@@ -114,13 +115,33 @@ void Game::display() {
     if (status_ == StatusType::kGameStartAnimate) {
         window_.writeWord("READY!", config::positions::display::kReadyTextX,
                           config::positions::display::kReadyTextY,
-                          config::positions::offsets::kReady, 3, colours::kYellow);
+                          offsets::kReady, scales::kReadyTextScale, colours::kYellow);
+
         if (counter_.getCount() <= config::settings::kDurationGameStartFreeze && counter_.isActive()) {
             window_.writeWord("PLAYER ONE", config::positions::display::kPlayerOneTextX,
                               config::positions::display::kPlayerOneTextY,
-                              config::positions::offsets::kPlayerOne, 2.9, colours::kCyan);
+                              offsets::kPlayerOne, scales::kPlayerOneText, colours::kCyan);
         }
     }
+
+    if (status_ == StatusType::kDeathAnimate_2) {
+        window_.writeWord("READY!", config::positions::display::kReadyTextX,
+                          config::positions::display::kReadyTextY,
+                          offsets::kReady, scales::kReadyTextScale, colours::kYellow);
+
+    }
+    if (status_ == StatusType::kGameOver) {
+        window_.writeWord("GAME  OVER", config::positions::display::kGameOverTextX,
+                          config::positions::display::kGameOverTextY,offsets::kGameOverText,
+                          scales::kGameOverText, colours::kRed);
+
+        window_.writeWord("CREDIT 0", config::positions::display::kCreditTextX,
+                          config::positions::display::kCreditTextY,
+                          offsets::kCreditText, scales::kCreditText);
+
+    }
+
+
 
     window_.update();
 }
@@ -159,7 +180,11 @@ bool Game::handleStatus()
                     ghost->hide();
             }
         }
-
+        if (status_ == StatusType::kDeathAnimate_2 ) {
+            pacman_.show();
+            for (auto &ghost: ghosts_.getGhosts())
+                ghost->show();
+        }
         return false;
     }
 
@@ -174,21 +199,24 @@ bool Game::handleStatus()
         return false;
     }
 
-    // Game is beginning freeze
-    if (status_ == StatusType::kGameStartFreeze)
-    {
+    // Game is begining freeze
+    if (status_ == StatusType::kGameStartFreeze) {
+        if (lives_ == 0) {
+            resetGame();
+        }
         // Draw pacman and ghosts
         status_ = StatusType::kGameStartAnimate;
         // Start level up animation.
-        counter_.start(config::settings::kDurationGameStartFreeze);
+        counter_.start(config::settings::kDurationGameStartFreeze*2);
         return false;
     }
 
-    if (status_ == StatusType::kGameStartAnimate && !counter_.isActive())
+    if (status_ == StatusType::kGameStartAnimate)
         status_ = StatusType::kRunning;
 
     if (status_ == StatusType::kWelcomeScreen)
         status_ = StatusType::kGameStartFreeze;
+
 
     // Game level up animation is over.
     if (status_ == StatusType::kLevelUpAnimate)
@@ -202,16 +230,34 @@ bool Game::handleStatus()
     {
         status_ = StatusType::kDeathAnimate;
         pacman_.kill();
+        for (auto &ghost: ghosts_.getGhosts())
+            ghost->hide();
+        return false;
+    }
+
+
+    if (status_ == StatusType::kDeathAnimate_2) {
+        status_ = StatusType::kRunning;
+        return false;
+    }
+
+    if (status_ == StatusType::kGameOver) {
+        resetGame();
         return false;
     }
 
     // Death animation is over.
-    if (status_ == StatusType::kDeathAnimate)
-    {
-        if (!pacman_.isDead()) lostLife();
-        return false;
+    if (status_ == StatusType::kDeathAnimate && !pacman_.isDead()) {
+        lostLife();
+        counter_.start(config::settings::kDurationTextDeathFreeze);
+        if(lives_ == 0){
+            status_ = StatusType::kGameOver;
+        }else{
+            for (auto &ghost: ghosts_.getGhosts())
+                ghost->show();
+            status_ = StatusType::kDeathAnimate_2;
+        }
     }
-
     // Eating ghost animation is over.
     if (status_ == StatusType::kEatingGhost)
     {
@@ -228,7 +274,6 @@ bool Game::handleStatus()
         for (auto &ghost: ghosts_.getGhosts())
             ghost->unfrightened();
     }
-
     // Game is not ready to run yet.
     return (status_ == StatusType::kRunning);
 }
@@ -321,9 +366,9 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
                 addPointsToDisplay(points, visuals::ghosts::kScale,
                                    colours::kCyan,
                                    ghost->getPosition().getAbscissa() +
-                                   config::positions::offsets::kGhostPointsX,
+                                   offsets::kGhostPointsX,
                                    ghost->getPosition().getOrdinate() +
-                                   config::positions::offsets::kGhostPointsY);
+                                   offsets::kGhostPointsY);
             }
         }
     }
@@ -363,19 +408,35 @@ void Game::lostLife()
 
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
-        lives_ = config::settings::kLives; // temp
-        score_ = 0;
-        level_ = 1;
-        pellets_eaten_ = 0;
-        map_.reset();
-        // TODO : pacman reset speed
-        ghosts_.reset(); // TODO : reset speed
+        status_ = StatusType::kGameStartFreeze;
     }
-    else
-    {
-        ghosts_.restartFromHouse();
-    }
+
+    status_ = StatusType::kRunning;
+    pacman_.reset();
+    ghosts_.restartFromHouse();
+    // TODO : speed and timers : reset
+    //TODO if no more lives left -> welcome screen
 }
+
+void Game::resetGame() {
+    lives_ = config::settings::kLives; // temp
+    score_ = 0;
+    level_ = 1;
+    pellets_eaten_ = 0;
+    map_.reset();
+    ghosts_.restartFromHouse();
+    for (auto &ghost: ghosts_.getGhosts()) {
+        ghost->hide();
+    }
+
+    status_ = StatusType::kRunning;
+    pacman_.reset();
+
+    // TODO : speed and timers : reset
+    counter_.start(config::settings::kDurationTextDeathFreeze);
+    status_ = StatusType::kGameStartAnimate;
+}
+
 
 void Game::displayWelcomeScreen()
 {

@@ -523,7 +523,7 @@ namespace visuals {
             inline constexpr bool kAnimationReverse {false};
 
             /** DO NOT MODIFY : Amount of frames for which the current sprite is shown. */
-            inline constexpr int kAnimationFrames {config::settings::kDurationDeathFreeze /kAnimationSize};
+            inline constexpr int kAnimationFrames {config::settings::kDurationDeathAnimation /kAnimationSize};
 
             /** DO NOT MODIFY : Pacman death animation. */
             inline Animation kAnimation {{sprite_1::kSprite, sprite_2::kSprite, sprite_3::kSprite, sprite_4::kSprite, sprite_5::kSprite, sprite_6::kSprite, sprite_7::kSprite, sprite_8::kSprite, sprite_9::kSprite, sprite_10::kSprite}, kAnimationReverse, kAnimationFrames};
@@ -2898,7 +2898,23 @@ namespace characters {
             inline constexpr Sprite kSprite {{kBitmapPositionX, kBitmapPositionY, kBitmapWidth, kBitmapHeight}, {kBitmapOffsetX * kScale, kBitmapOffsetY * kScale}, {(kBitmapWidth ) * kScale, (kBitmapHeight ) * kScale}};
         }
     }
+}
 
+namespace scales{
+    inline constexpr float kReadyTextScale {3};
+    inline constexpr float kPlayerOneText {2.9};
+    inline constexpr float kGameOverText {2.9};
+    inline constexpr float kCreditText {2.9};
+    inline constexpr float kScore {3.0};
+}
+
+namespace offsets{
+    inline constexpr int kGhostPointsX { 10 };
+    inline constexpr int kGhostPointsY { 10 + config::dimensions::kScoreBoardHeight};
+    inline constexpr int kReady{2};
+    inline constexpr int kPlayerOne{2};
+    inline constexpr int kGameOverText {2};
+    inline constexpr int kCreditText {1};
 }
 
 namespace colours{
