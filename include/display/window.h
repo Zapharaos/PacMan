@@ -169,6 +169,8 @@ public:
     static int centerImage(SDL_Rect src, int x);
 
     void animateMovement(int pos_x, int pos_y, const Animation &animation, Entity entity);
+
+    void quit();
 };
 
 #endif //PACMAN_WINDOW_H

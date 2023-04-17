@@ -274,3 +274,8 @@ void Window::animateMovement(Position start,Position end, const Animation& anima
 const std::unordered_map<unsigned long, SDL_Rect> &Window::getPointsMap() const {
     return points_map_;
 }
+
+void Window::quit()
+{
+    SDL_Quit();
+}
