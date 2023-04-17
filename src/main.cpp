@@ -9,7 +9,9 @@ int main(int argc, char **argv)
     Map map = Map{loadCellTypesFromFile(config::files::kMap)};
     Window window;
     window.init();
-    auto high_score = stoul(getSavedHighScore());
+    // TODO : fix high_score to not crash when file does not exist.
+    /*auto high_score = stoul(getSavedHighScore());*/
+    unsigned long high_score = 0;
     Game game = Game{map, window, high_score};
 
     // Prepare reading user's inputs.
@@ -39,13 +41,13 @@ int main(int argc, char **argv)
 
         auto start = std::chrono::steady_clock::now();
         SDL_PumpEvents(); // Get keys
-        Direction direction;
 
         // Exit game.
         if (keys[SDL_SCANCODE_ESCAPE])
-            quit = true;
+            break;
 
         // Read user input for Pacman movement.
+        Direction direction;
         if (keys[SDL_SCANCODE_LEFT])
             direction.setDirection(DirectionType::kLeft);
         else if (keys[SDL_SCANCODE_RIGHT])
@@ -65,10 +67,7 @@ int main(int argc, char **argv)
                     config::settings::kTickTime - finish).count());
     }
 
-    // Save high score.
-    saveGameState(game.getHighScore(), game.getLevel());
-
     // Leave game.
-    SDL_Quit();
+    game.quit();
     return 0;
 }

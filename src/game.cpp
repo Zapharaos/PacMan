@@ -20,7 +20,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) :
     // Pacman and ghosts already initialized with the default constructors.
 }
 
-void Game::tick(const Direction &direction) {
+void Game::tick(const Direction &direction)
+{
 
     // Game is paused, nothing to do.
     if (status_ == StatusType::kPaused)
@@ -60,7 +61,8 @@ void Game::tick(const Direction &direction) {
     display();
 }
 
-void Game::display() {
+void Game::display()
+{
 
     window_.clear();
 
@@ -69,7 +71,8 @@ void Game::display() {
     window_.updateHighScore(high_score_);
     window_.updateScore(score_);
 
-    if (status_ == StatusType::kWelcomeScreen) {
+    if (status_ == StatusType::kWelcomeScreen)
+    {
         displayWelcomeScreen();
         return;
     }
@@ -112,27 +115,38 @@ void Game::display() {
     if (!pacman_.isHidden())
         window_.draw(pacman_, config::dimensions::kScoreBoardHeight);
 
-    if (status_ == StatusType::kGameStartAnimate) {
+    if (status_ == StatusType::kGameStartAnimate)
+    {
         window_.writeWord("READY!", config::positions::display::kReadyTextX,
                           config::positions::display::kReadyTextY,
-                          offsets::kReady, scales::kReadyTextScale, colours::kYellow);
+                          offsets::kReady, scales::kReadyTextScale,
+                          colours::kYellow);
 
-        if (counter_.getCount() <= config::settings::kDurationGameStartFreeze && counter_.isActive()) {
-            window_.writeWord("PLAYER ONE", config::positions::display::kPlayerOneTextX,
+        if (counter_.getCount() <= config::settings::kDurationGameStartFreeze &&
+            counter_.isActive())
+        {
+            window_.writeWord("PLAYER ONE",
+                              config::positions::display::kPlayerOneTextX,
                               config::positions::display::kPlayerOneTextY,
-                              offsets::kPlayerOne, scales::kPlayerOneText, colours::kCyan);
+                              offsets::kPlayerOne, scales::kPlayerOneText,
+                              colours::kCyan);
         }
     }
 
-    if (status_ == StatusType::kDeathAnimate_2) {
+    if (status_ == StatusType::kDeathAnimate_2)
+    {
         window_.writeWord("READY!", config::positions::display::kReadyTextX,
                           config::positions::display::kReadyTextY,
-                          offsets::kReady, scales::kReadyTextScale, colours::kYellow);
+                          offsets::kReady, scales::kReadyTextScale,
+                          colours::kYellow);
 
     }
-    if (status_ == StatusType::kGameOver) {
-        window_.writeWord("GAME  OVER", config::positions::display::kGameOverTextX,
-                          config::positions::display::kGameOverTextY,offsets::kGameOverText,
+    if (status_ == StatusType::kGameOver)
+    {
+        window_.writeWord("GAME  OVER",
+                          config::positions::display::kGameOverTextX,
+                          config::positions::display::kGameOverTextY,
+                          offsets::kGameOverText,
                           scales::kGameOverText, colours::kRed);
 
         window_.writeWord("CREDIT 0", config::positions::display::kCreditTextX,
@@ -140,7 +154,6 @@ void Game::display() {
                           offsets::kCreditText, scales::kCreditText);
 
     }
-
 
 
     window_.update();
@@ -162,7 +175,7 @@ bool Game::handleStatus()
             map_.animate();
 
         // Game frozen : pacman death
-        if(status_ == StatusType::kDeathFreeze)
+        if (status_ == StatusType::kDeathFreeze)
             ghosts_.animate();
 
         if (status_ == StatusType::kGameStartAnimate)
@@ -180,7 +193,8 @@ bool Game::handleStatus()
                     ghost->hide();
             }
         }
-        if (status_ == StatusType::kDeathAnimate_2 ) {
+        if (status_ == StatusType::kDeathAnimate_2)
+        {
             pacman_.show();
             for (auto &ghost: ghosts_.getGhosts())
                 ghost->show();
@@ -200,14 +214,16 @@ bool Game::handleStatus()
     }
 
     // Game is begining freeze
-    if (status_ == StatusType::kGameStartFreeze) {
-        if (lives_ == 0) {
+    if (status_ == StatusType::kGameStartFreeze)
+    {
+        if (lives_ == 0)
+        {
             resetGame();
         }
         // Draw pacman and ghosts
         status_ = StatusType::kGameStartAnimate;
         // Start level up animation.
-        counter_.start(config::settings::kDurationGameStartFreeze*2);
+        counter_.start(config::settings::kDurationGameStartFreeze * 2);
         return false;
     }
 
@@ -236,23 +252,28 @@ bool Game::handleStatus()
     }
 
 
-    if (status_ == StatusType::kDeathAnimate_2) {
+    if (status_ == StatusType::kDeathAnimate_2)
+    {
         status_ = StatusType::kRunning;
         return false;
     }
 
-    if (status_ == StatusType::kGameOver) {
+    if (status_ == StatusType::kGameOver)
+    {
         resetGame();
         return false;
     }
 
     // Death animation is over.
-    if (status_ == StatusType::kDeathAnimate && !pacman_.isDead()) {
+    if (status_ == StatusType::kDeathAnimate && !pacman_.isDead())
+    {
         lostLife();
         counter_.start(config::settings::kDurationTextDeathFreeze);
-        if(lives_ == 0){
+        if (lives_ == 0)
+        {
             status_ = StatusType::kGameOver;
-        }else{
+        } else
+        {
             for (auto &ghost: ghosts_.getGhosts())
                 ghost->show();
             status_ = StatusType::kDeathAnimate_2;
@@ -326,12 +347,14 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
     }
 
     // Fruit is active and collided with pacman.
-    if (fruit_.isEnabled() && SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
+    if (fruit_.isEnabled() &&
+        SDL_HasIntersection(&pacman, &fruit_.getSprite().getPosition()))
     {
         // Disables fruit.
         fruit_.setEnabled(false);
         score_ += fruit_.getPoints();
-        addPointsToDisplay(fruit_.getPoints(), visuals::fruit::kScale, colours::kPink,
+        addPointsToDisplay(fruit_.getPoints(), visuals::fruit::kScale,
+                           colours::kPink,
                            config::positions::entities::kFruitPointsX,
                            config::positions::entities::kFruitPointsY);
     }
@@ -342,34 +365,34 @@ void Game::handleEntitiesCollisions(const SDL_Rect &pacman)
         if (ghost->isEnabled() &&
             SDL_HasIntersection(&pacman, &ghost->getSprite().getPosition()))
         {
-            // Not dead yet && superpower disabled : death.
-            if (!pacman_.isDead() && status_ != StatusType::kSuperpower) {
+            // Ghost not frightened : death.
+            if (!ghost->isFrightened())
+            {
                 // Freeze game (60 frames) before the death animation.
                 status_ = StatusType::kDeathFreeze;
                 counter_.start(config::settings::kDurationDeathFreeze);
                 break;
-            } else
-            {
-                auto points = ghost->getPoints() * (1 << (ghosts_eaten++));
-
-                // Disables ghost & updates game.
-                score_ += points;
-                ghost->kill();
-                pacman_.hide();
-
-                // Eating animation.
-                status_ = StatusType::kEatingGhost;
-                counter_.save();
-                counter_.start(config::settings::kDurationEatenGhostFreeze);
-
-                // Display points sprite.
-                addPointsToDisplay(points, visuals::ghosts::kScale,
-                                   colours::kCyan,
-                                   ghost->getPosition().getAbscissa() +
-                                   offsets::kGhostPointsX,
-                                   ghost->getPosition().getOrdinate() +
-                                   offsets::kGhostPointsY);
             }
+
+            auto points = ghost->getPoints() * (1 << (ghosts_eaten++));
+
+            // Disables ghost & updates game.
+            score_ += points;
+            ghost->kill();
+            pacman_.hide();
+
+            // Eating animation.
+            status_ = StatusType::kEatingGhost;
+            counter_.save();
+            counter_.start(config::settings::kDurationEatenGhostFreeze);
+
+            // Display points sprite.
+            addPointsToDisplay(points, visuals::ghosts::kScale,
+                               colours::kCyan,
+                               ghost->getPosition().getAbscissa() +
+                               offsets::kGhostPointsX,
+                               ghost->getPosition().getOrdinate() +
+                               offsets::kGhostPointsY);
         }
     }
 
@@ -418,7 +441,8 @@ void Game::lostLife()
     //TODO if no more lives left -> welcome screen
 }
 
-void Game::resetGame() {
+void Game::resetGame()
+{
     lives_ = config::settings::kLives; // temp
     score_ = 0;
     level_ = 1;
@@ -426,7 +450,8 @@ void Game::resetGame() {
     map_.reset();
     pacman_.reset();
     ghosts_.reset();
-    for (auto &ghost: ghosts_.getGhosts()) {
+    for (auto &ghost: ghosts_.getGhosts())
+    {
         ghost->hide();
     }
 
@@ -445,7 +470,8 @@ void Game::displayWelcomeScreen()
     int pos_y = 5;
 
 
-    window_.writeWord("CHARACTER / NICKNAME ", config::positions::display::kCharaterNicknameX,
+    window_.writeWord("CHARACTER / NICKNAME ",
+                      config::positions::display::kCharaterNicknameX,
                       config::positions::display::kCharaterNicknameY, 1, 2.75);
     SDL_Rect dst;
     /* dst.x = config::positions::kGhostsX;
@@ -456,34 +482,44 @@ void Game::displayWelcomeScreen()
     dst.h = visuals::ghosts::blinky::right::sprite_1::kBitmapHeight * 2.75;
     dst.w = visuals::ghosts::blinky::right::sprite_1::kBitmapWidth * 2.75;
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 2) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 2)
+    {
         //Blinky
         drawObject(window_.getRenderer(), window_.getTexture(),
-                   visuals::ghosts::blinky::right::sprite_1::kSprite.getImage(), dst);
+                   visuals::ghosts::blinky::right::sprite_1::kSprite.getImage(),
+                   dst);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 3) {
-        window_.writeWord("- SHADOW", config::positions::display::kCharaterNicknameX,
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 3)
+    {
+        window_.writeWord("- SHADOW",
+                          config::positions::display::kCharaterNicknameX,
                           180, 1, 2.75, colours::kRed);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 4) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 4)
+    {
         window_.writeWord("'BLINKY' ", 360,
                           180, 1, 2.75, colours::kRed);
     }
 
 
     dst.y = 240;
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 5) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 5)
+    {
         //Pinky
         drawObject(window_.getRenderer(), window_.getTexture(),
-                   visuals::ghosts::pinky::right::sprite_1::kSprite.getImage(), dst);
+                   visuals::ghosts::pinky::right::sprite_1::kSprite.getImage(),
+                   dst);
     }
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 6) {
-        window_.writeWord("- SPEEDY", config::positions::display::kCharaterNicknameX,
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 6)
+    {
+        window_.writeWord("- SPEEDY",
+                          config::positions::display::kCharaterNicknameX,
                           250, 1, 2.75, colours::kPink);
     }
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 7) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 7)
+    {
         window_.writeWord("'PINKY' ", 360,
                           250, 1, 2.75, colours::kPink);
     }
@@ -491,37 +527,48 @@ void Game::displayWelcomeScreen()
 
     dst.y = 310;
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 8) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 8)
+    {
         //Inky
         drawObject(window_.getRenderer(), window_.getTexture(),
-                   visuals::ghosts::inky::right::sprite_1::kSprite.getImage(), dst);
+                   visuals::ghosts::inky::right::sprite_1::kSprite.getImage(),
+                   dst);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 9) {
-        window_.writeWord("- BASHFUL", config::positions::display::kCharaterNicknameX,
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 9)
+    {
+        window_.writeWord("- BASHFUL",
+                          config::positions::display::kCharaterNicknameX,
                           320, 1, 2.75, colours::kCyan);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 10) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 10)
+    {
         window_.writeWord("'INKY' ", 360,
                           320, 1, 2.75, colours::kCyan);
     }
 
 
     dst.y = 380;
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 11) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 11)
+    {
         //Clyde
         drawObject(window_.getRenderer(), window_.getTexture(),
-                   visuals::ghosts::clyde::right::sprite_1::kSprite.getImage(), dst);
+                   visuals::ghosts::clyde::right::sprite_1::kSprite.getImage(),
+                   dst);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 12) {
-        window_.writeWord("- POKEY", config::positions::display::kCharaterNicknameX,
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 12)
+    {
+        window_.writeWord("- POKEY",
+                          config::positions::display::kCharaterNicknameX,
                           390, 1, 2.75, colours::kOrange);
     }
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 13) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 13)
+    {
         window_.writeWord("'CLYDE' ", 360,
                           390, 1, 2.75, colours::kOrange);
     }
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 14) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 14)
+    {
         //small pellet
         dst.x = 250;
         dst.y = 500;
@@ -566,7 +613,8 @@ void Game::displayWelcomeScreen()
                    dst);
     }
 
-    if (counter_.getCount() >= config::settings::kFramesPerSecond * 15) {
+    if (counter_.getCount() >= config::settings::kFramesPerSecond * 15)
+    {
         dst.x = 70;
         dst.y = 600;
         window_.writeWord("` 1980 MIDWAY MFG. CO.", dst.x,
@@ -584,21 +632,14 @@ void Game::displayWelcomeScreen()
 
 }
 
-unsigned long Game::getHighScore() const
+void Game::displayPoints()
 {
-    return high_score_;
-}
 
-int Game::getLevel() const
-{
-    return level_;
-}
-
-void Game::displayPoints() {
-
-    for (auto s = points_.begin(); s != points_.end();) {
+    for (auto s = points_.begin(); s != points_.end();)
+    {
         //If counter is still active
-        if (std::get<2>(*s).isActive()) {
+        if (std::get<2>(*s).isActive())
+        {
             //Change colour
             SDL_SetTextureColorMod(window_.getTexture().get(),
                                    std::get<0>(std::get<3>(*s)),
@@ -606,7 +647,8 @@ void Game::displayPoints() {
                                    std::get<2>(std::get<3>(*s)));
 
 
-            drawObject(window_.getRenderer(), window_.getTexture(), std::get<0>(*s), std::get<1>(*s));
+            drawObject(window_.getRenderer(), window_.getTexture(),
+                       std::get<0>(*s), std::get<1>(*s));
 
             std::get<2>(*s).increment();
             //Switch back to original colour
@@ -614,7 +656,8 @@ void Game::displayPoints() {
                                    std::get<0>(colours::kWhite),
                                    std::get<1>(colours::kWhite),
                                    std::get<2>(colours::kWhite));
-        } else {
+        } else
+        {
             //Erase object to display from the vector
             points_.erase(s);
             return;
@@ -623,11 +666,14 @@ void Game::displayPoints() {
     }
 }
 
-void Game::addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y) {
+void Game::addPointsToDisplay(unsigned long points, float scale,
+                              std::tuple<int, int, int> colour, int x, int y)
+{
 
     auto found = window_.getPointsMap().find(points);
     //Check so no crashes happen in case unrecognised value is passed
-    if (points == 0 || (found == window_.getPointsMap().end())) {
+    if (points == 0 || (found == window_.getPointsMap().end()))
+    {
         return;
     }
     //setting up the sprite
@@ -642,4 +688,13 @@ void Game::addPointsToDisplay(unsigned long points, float scale, std::tuple<int,
     counter.start(config::settings::kDurationPoints);
     //Adding the sprite and counter to the vector
     points_.emplace_back(src, dest, counter, colour);
+}
+
+void Game::quit()
+{
+    // Save high score.
+    saveGameState(high_score_, level_);
+
+    // Quit the window.
+    window_.quit();
 }

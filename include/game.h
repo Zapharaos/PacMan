@@ -151,10 +151,6 @@ public:
      */
     void lostLife();
 
-    unsigned long getHighScore() const;
-
-    int getLevel() const;
-
     void displayWelcomeScreen();
 
     void displayPoints();
@@ -162,6 +158,8 @@ public:
     void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
 
     void resetGame();
+
+    void quit();
 };
 
 

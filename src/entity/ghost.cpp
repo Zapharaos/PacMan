@@ -292,3 +292,8 @@ Position Ghost::getCurrentCellPosition()
         position = position.shift(getSize()-1, getSize()-1);
     return position.scaleDown(config::dimensions::kWindowCellSize);
 }
+
+bool Ghost::isFrightened()
+{
+    return status_ == GhostStatus::kFrightened || status_ == GhostStatus::kFrightenedBlinking;
+}

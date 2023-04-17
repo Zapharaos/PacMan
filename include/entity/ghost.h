@@ -79,6 +79,12 @@ public:
     void unfrightened();
 
     /**
+     * @brief Indicates whether the ghost is frightened or not.
+     * @return True if frightened, otherwise false.
+     */
+    bool isFrightened();
+
+    /**
      * @brief Animates the Ghost based on its current direction.
      * @param direction The direction the Ghost is moving to.
      * @see MovingEntity::animate()

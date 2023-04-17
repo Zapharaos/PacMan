@@ -1,11 +1,14 @@
 # PacMan
 build/
+lib/
 
 # IDEs and OS
 .idea/
 .vs/
 .vscode/
 .DS_Store
+CMakeSettings.json
+out/
 
 # Prerequisites
 *.d
