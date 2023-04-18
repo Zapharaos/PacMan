@@ -70,6 +70,8 @@ public:
      * @brief Update the Fruit counter and disable it when it's over.
      */
     void tick() override;
+
+    void reset();
 };
 
 

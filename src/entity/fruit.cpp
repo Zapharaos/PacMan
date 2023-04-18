@@ -49,3 +49,7 @@ void Fruit::animate()
 {
     setSprite(fruits_.at(index_).animate());
 }
+
+void Fruit::reset() {
+    setEnabled(false);
+}
