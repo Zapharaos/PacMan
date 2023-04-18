@@ -420,6 +420,7 @@ void Game::levelUp()
 
     // Reset entities.
     map_.reset();
+    fruit_.reset();
     pacman_.reset(); // TODO : pacman update speed
     ghosts_.levelUp(); // TODO : ghosts update speed
 }
@@ -432,6 +433,7 @@ void Game::lostLife()
     if ((--lives_) == 0) // Game lost : reset the game settings
     {
         status_ = StatusType::kGameStartFreeze;
+        fruit_.reset();
     }
 
     status_ = StatusType::kRunning;
@@ -449,11 +451,10 @@ void Game::resetGame()
     pellets_eaten_ = 0;
     map_.reset();
     pacman_.reset();
+    fruit_.reset();
     ghosts_.reset();
     for (auto &ghost: ghosts_.getGhosts())
-    {
         ghost->hide();
-    }
 
     // TODO : speed and timers : reset
     counter_.start(config::settings::kDurationTextDeathFreeze);
