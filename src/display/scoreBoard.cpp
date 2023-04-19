@@ -34,8 +34,8 @@ void ScoreBoard::writeLives(const std::shared_ptr<SDL_Renderer> &render,
     SDL_Rect lives_start;
     lives_start.w = (int) (life_sprite.w * visuals::pacman::sprite_score_board::kScale);
     lives_start.h = (int) (life_sprite.h * visuals::pacman::sprite_score_board::kScale);
-    lives_start.x = config::positions::display::kScoreBoardLivesX;
-    lives_start.y = config::positions::display::kScoreBoardLivesY;
+    lives_start.x = display::scoreboard::kScoreBoardLivesX;
+    lives_start.y = display::scoreboard::kScoreBoardLivesY;
 
     for (int i = 0; i < livesNb; i++) {
         drawObject(render, texture, life_sprite, lives_start);
@@ -47,8 +47,8 @@ void
 ScoreBoard::updateFruits(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture) {
 
     SDL_Rect position;
-    position.x = config::positions::display::kScoreBoardFruitsX ;
-    position.y = config::positions::display::kScoreBoardFruitsY;
+    position.x = display::scoreboard::kScoreBoardFruitsX ;
+    position.y = display::scoreboard::kScoreBoardFruitsY;
     position.w = visuals::fruit::cherry::sprite_1::kBitmapWidth * visuals::fruit::kScale;
     position.h = visuals::fruit::cherry::sprite_1::kBitmapHeight * visuals::fruit::kScale;
     int offset = position.w ;

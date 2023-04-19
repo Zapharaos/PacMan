@@ -31,15 +31,10 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
 }
 
 
-/**
- * saveGameState
- * Save local game state
- * @param high_score
- * @param round
- */
+
 void saveGameState(unsigned long high_score, int round)
 {
-
+    //TODO fix crash
     json j =
             {
                     {"High Score", std::to_string(high_score)},
@@ -51,11 +46,7 @@ void saveGameState(unsigned long high_score, int round)
     file << j;
 }
 
-/**
- *getHighScore
- * get highest score reached locally
- * @return
- */
+
 std::string getSavedHighScore()
 {
     std::ifstream f("../resources/save.json");
@@ -64,11 +55,7 @@ std::string getSavedHighScore()
     return high_score;
 }
 
-/**
- * getRound
- * Get highest round reached locally from json
- * @return round
- */
+
 std::string getRound()
 {
     std::ifstream f("../resources/save.json");
@@ -78,14 +65,7 @@ std::string getRound()
 }
 
 
-/**
- * drawObject
- * Draws a sprite ath the desired position
- * @param render
- * @param texture
- * @param src_rect
- * @param dst_rect
- */
+
 void
 drawObject(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
            SDL_Rect dst_rect ) {

@@ -50,12 +50,13 @@ protected:
     int height_{};
 
 public:
-
+    /** Map containing points from eaten ghosts and fruits to display  */
     const std::unordered_map<unsigned long, SDL_Rect> &getPointsMap() const;
 
-
+    /**Renderer used by SDL */
     const std::shared_ptr<SDL_Renderer> &getRenderer() const;
 
+    /**Texture used by SDL */
     const std::shared_ptr<SDL_Texture> &getTexture() const;
 
     /** Default Window constructor. */
@@ -95,36 +96,36 @@ public:
     }
 
     /**
-     * display the highscore text
+     * @Brief display the highscore text
      */
     void writeHighScore();
 
     /**
-     * update and display the highscore
-     * @param points
+     * @Brief update and display the highscore
+     * @param points number to display
      */
     void updateHighScore(unsigned long points);
 
     /**
-     * update and display current score
-     * @param score
+     * @Brief update and display current score
+     * @param score number to display
      */
     void updateScore(unsigned long score);
 
     /**
-     * update and display number of lives
-     * @param nb_lives
+     * @brief update and display number of lives
+     * @param nb_lives nb of lives to display
      */
     void updateLives(int nb_lives);
 
     /**
-     * update the display the fruits and powerups
+     * update the display the fruits and powerups in the scorebaord
      */
     void updateFruits();
 
     /**
-     * adds a fruit sprite into the queue in scoreboard
-     * @param fruit
+     * @brief adds a fruit sprite into the queue in scoreboard
+     * @param fruit fruit sprite to display and add to scoreboard
      */
     void addFruits(SDL_Rect fruit);
 
@@ -134,27 +135,24 @@ public:
     void initSpriteMap();
 
     /**
-     * Displays and updates the score
-     * @param render
-     * @param texture
-     * @param points
-     * @param character_map
-     * @param pos_x
-     * @param pos_y
-     * @return
+     * @Brief Writes an integer, used to update score and highscore
+     * @param point number to display
+     * @param pos_x X pos on where to display
+     * @param pos_y Y pos on where to display
+     * @param scale scale used for display
+     * @param colour colour used to display
      */
     void writeScorePoints(unsigned long point, int pos_x, int pos_y, float scale,
                           std::tuple<int, int, int> colour = colours::kWhite);
 
     /**
      * Writes a word at a given position and size
-     * @param word
-     * @param pos_x
-     * @param pos_y
-     * @param w
-     * @param h
-     * @param offset
-     * @param colour
+     * @param word Word to display
+     * @param pos_x X pos on where to display
+     * @param pos_y Y pos on where to display
+     * @param offset Space between characters
+     * @param scale scale used for display
+     * @param colour colour used to display
      */
     void writeWord(const std::string &word, int pos_x, int pos_y,
                    int offset, float scale = 1, std::tuple<int, int, int> colour = colours::kWhite);
@@ -162,14 +160,15 @@ public:
     /**
      * centerImage
      * Centers the sprite so the x coordinate is the center
-     * @param src
-     * @param x
+     * @param src source image
+     * @param x initial position
      * @return
      */
     static int centerImage(SDL_Rect src, int x);
 
-    void animateMovement(int pos_x, int pos_y, const Animation &animation, Entity entity);
-
+    /**
+     * Closes and quits all SDL related elements
+     */
     void quit();
 };
 

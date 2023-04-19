@@ -40,24 +40,27 @@ public:
     static std::vector <SDL_Rect> getPointsToPrint(unsigned long points,const std::unordered_map<char, SDL_Rect>& character_map);
 
     /**
-     * Used to display lives remaining
+     * writeLives
+     * @Brief Used to display lives remaining on scoreboard
      * @param render
      * @param texture
-     * @param livesNb
+     * @param livesNb number of lives
      */
     static void writeLives(const std::shared_ptr<SDL_Renderer>& render,
                     const std::shared_ptr<SDL_Texture>& texture,
                     int livesNb);
     /**
-     * Used to display fruits and powerups
+     * @Brief Used to display fruits and powerups on scoreboard
      * @param render
      * @param texture
      */
     void updateFruits(const std::shared_ptr<SDL_Renderer>& render,
                      const std::shared_ptr<SDL_Texture>& texture);
+
     /**
-     * Add a fruit to the queue of fruits to display
-     * @param fruit
+     * addFruits
+     * @BriefAdd a fruit to the queue of fruits to display
+     * @param fruit fruit to add
      */
     void addFruits(SDL_Rect fruit) ;
 };

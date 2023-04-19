@@ -15,7 +15,8 @@ Game::Game(const Map &map, Window window, unsigned long high_score) :
 {
     pellets_total_ = map.getCellsWithEntities().size();
     lives_ = config::settings::kLives;
-    status_ = StatusType::kGameStartFreeze;
+    counter_.start(config::settings::kWelcomeScreen);
+    status_ = StatusType::kWelcomeScreen;
     fruit_ = Fruit{pellets_total_};
     // Pacman and ghosts already initialized with the default constructors.
 }
@@ -117,8 +118,8 @@ void Game::display()
 
     if (status_ == StatusType::kGameStartAnimate)
     {
-        window_.writeWord("READY!", config::positions::display::kReadyTextX,
-                          config::positions::display::kReadyTextY,
+        window_.writeWord("READY!", display::game_messages::kReadyTextX,
+                          display::game_messages::kReadyTextY,
                           offsets::kReady, scales::kReadyTextScale,
                           colours::kYellow);
 
@@ -126,8 +127,8 @@ void Game::display()
             counter_.isActive())
         {
             window_.writeWord("PLAYER ONE",
-                              config::positions::display::kPlayerOneTextX,
-                              config::positions::display::kPlayerOneTextY,
+                              display::game_messages::kPlayerOneTextX,
+                              display::game_messages::kPlayerOneTextY,
                               offsets::kPlayerOne, scales::kPlayerOneText,
                               colours::kCyan);
         }
@@ -135,8 +136,8 @@ void Game::display()
 
     if (status_ == StatusType::kDeathAnimate_2)
     {
-        window_.writeWord("READY!", config::positions::display::kReadyTextX,
-                          config::positions::display::kReadyTextY,
+        window_.writeWord("READY!", display::game_messages::kReadyTextX,
+                          display::game_messages::kReadyTextY,
                           offsets::kReady, scales::kReadyTextScale,
                           colours::kYellow);
 
@@ -144,13 +145,13 @@ void Game::display()
     if (status_ == StatusType::kGameOver)
     {
         window_.writeWord("GAME  OVER",
-                          config::positions::display::kGameOverTextX,
-                          config::positions::display::kGameOverTextY,
+                          display::game_messages::kGameOverTextX,
+                          display::game_messages::kGameOverTextY,
                           offsets::kGameOverText,
                           scales::kGameOverText, colours::kRed);
 
-        window_.writeWord("CREDIT 0", config::positions::display::kCreditTextX,
-                          config::positions::display::kCreditTextY,
+        window_.writeWord("CREDIT 0", display::game_messages::kCreditTextX,
+                          display::game_messages::kCreditTextY,
                           offsets::kCreditText, scales::kCreditText);
 
     }
@@ -178,6 +179,7 @@ bool Game::handleStatus()
         if (status_ == StatusType::kDeathFreeze)
             ghosts_.animate();
 
+        //Game Frozen : starting game
         if (status_ == StatusType::kGameStartAnimate)
         {
             if (counter_.getCount() >=
@@ -227,9 +229,11 @@ bool Game::handleStatus()
         return false;
     }
 
+    // Game start animation is done
     if (status_ == StatusType::kGameStartAnimate)
         status_ = StatusType::kRunning;
 
+    // Welcome screen is done
     if (status_ == StatusType::kWelcomeScreen)
         status_ = StatusType::kGameStartFreeze;
 
@@ -251,13 +255,14 @@ bool Game::handleStatus()
         return false;
     }
 
-
+    //Second part of death animation is done
     if (status_ == StatusType::kDeathAnimate_2)
     {
         status_ = StatusType::kRunning;
         return false;
     }
 
+    // Game over animation is done
     if (status_ == StatusType::kGameOver)
     {
         resetGame();
@@ -445,7 +450,8 @@ void Game::lostLife()
 
 void Game::resetGame()
 {
-    lives_ = config::settings::kLives; // temp
+    //Reset game parameters and variables
+    lives_ = config::settings::kLives;
     score_ = 0;
     level_ = 1;
     pellets_eaten_ = 0;
@@ -456,32 +462,27 @@ void Game::resetGame()
     for (auto &ghost: ghosts_.getGhosts())
         ghost->hide();
 
-    // TODO : speed and timers : reset
-    counter_.start(config::settings::kDurationTextDeathFreeze);
-    status_ = StatusType::kGameStartAnimate;
+    // TODO : speed and timers : reset , reset frutis and lives display
+    counter_.start(config::settings::kWelcomeScreen);
+    status_ = StatusType::kWelcomeScreen;
 }
 
 
 void Game::displayWelcomeScreen()
 {
-
-
-    float scale = 2.75;
-    int pos_x = 0;
-    int pos_y = 5;
-
+    SDL_Rect dst;
 
     window_.writeWord("CHARACTER / NICKNAME ",
-                      config::positions::display::kCharaterNicknameX,
-                      config::positions::display::kCharaterNicknameY, 1, 2.75);
-    SDL_Rect dst;
-    /* dst.x = config::positions::kGhostsX;
-     dst.y = config::positions::kBlinkyY;*/
+                      display::welcome_screen::text::kCharaterNicknameX,
+                      display::welcome_screen::text::kCharaterNicknameY,
+                      display::welcome_screen::text::kCharaterNicknameOffset,
+                      display::welcome_screen::text::kCharaterNicknameScale);
 
-    dst.x = 60;
-    dst.y = 170;
-    dst.h = visuals::ghosts::blinky::right::sprite_1::kBitmapHeight * 2.75;
-    dst.w = visuals::ghosts::blinky::right::sprite_1::kBitmapWidth * 2.75;
+
+    dst.x = display::welcome_screen::ghosts::blinky::kWelcomeScreenX;
+    dst.y = display::welcome_screen::ghosts::blinky::kWelcomeScreenY;
+    dst.h = (int) display::welcome_screen::ghosts::kSpriteHeight ;
+    dst.w = (int) display::welcome_screen::ghosts::kSpriteWidth ;
 
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 2)
     {
@@ -493,17 +494,23 @@ void Game::displayWelcomeScreen()
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 3)
     {
         window_.writeWord("- SHADOW",
-                          config::positions::display::kCharaterNicknameX,
-                          180, 1, 2.75, colours::kRed);
+                          display::welcome_screen::ghosts::blinky::kNameX,
+                          display::welcome_screen::ghosts::blinky::kNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale,
+                          colours::kRed);
     }
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 4)
     {
-        window_.writeWord("'BLINKY' ", 360,
-                          180, 1, 2.75, colours::kRed);
+        window_.writeWord("'BLINKY' ",
+                          display::welcome_screen::ghosts::blinky::kNickNameX,
+                          display::welcome_screen::ghosts::blinky::kNickNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale, colours::kRed);
     }
 
 
-    dst.y = 240;
+    dst.y = display::welcome_screen::ghosts::pinky::kWelcomeScreenY;
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 5)
     {
         //Pinky
@@ -515,18 +522,23 @@ void Game::displayWelcomeScreen()
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 6)
     {
         window_.writeWord("- SPEEDY",
-                          config::positions::display::kCharaterNicknameX,
-                          250, 1, 2.75, colours::kPink);
+                          display::welcome_screen::ghosts::pinky::kNameX,
+                          display::welcome_screen::ghosts::pinky::kNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale, colours::kPink);
     }
 
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 7)
     {
-        window_.writeWord("'PINKY' ", 360,
-                          250, 1, 2.75, colours::kPink);
+        window_.writeWord("'PINKY' ",
+                display::welcome_screen::ghosts::pinky::kNickNameX,
+                display::welcome_screen::ghosts::pinky::kNickNameY,
+                display::welcome_screen::text::kCharaterNicknameOffset,
+                display::welcome_screen::ghosts::kNameScale, colours::kPink);
     }
 
 
-    dst.y = 310;
+    dst.y = display::welcome_screen::ghosts::inky::kWelcomeScreenY;
 
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 8)
     {
@@ -538,17 +550,22 @@ void Game::displayWelcomeScreen()
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 9)
     {
         window_.writeWord("- BASHFUL",
-                          config::positions::display::kCharaterNicknameX,
-                          320, 1, 2.75, colours::kCyan);
+                          display::welcome_screen::ghosts::inky::kNameX,
+                          display::welcome_screen::ghosts::inky::kNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale, colours::kCyan);
     }
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 10)
     {
-        window_.writeWord("'INKY' ", 360,
-                          320, 1, 2.75, colours::kCyan);
+        window_.writeWord("'INKY' ",
+                          display::welcome_screen::ghosts::inky::kNickNameX,
+                          display::welcome_screen::ghosts::inky::kNickNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale,colours::kCyan);
     }
 
 
-    dst.y = 380;
+    dst.y = display::welcome_screen::ghosts::clyde::kWelcomeScreenY;
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 11)
     {
         //Clyde
@@ -559,55 +576,72 @@ void Game::displayWelcomeScreen()
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 12)
     {
         window_.writeWord("- POKEY",
-                          config::positions::display::kCharaterNicknameX,
-                          390, 1, 2.75, colours::kOrange);
+                          display::welcome_screen::ghosts::clyde::kNameX,
+                          display::welcome_screen::ghosts::clyde::kNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale, colours::kOrange);
     }
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 13)
     {
-        window_.writeWord("'CLYDE' ", 360,
-                          390, 1, 2.75, colours::kOrange);
+        window_.writeWord("'CLYDE' ",
+                          display::welcome_screen::ghosts::clyde::kNickNameX,
+                          display::welcome_screen::ghosts::clyde::kNickNameY,
+                          display::welcome_screen::text::kCharaterNicknameOffset,
+                          display::welcome_screen::ghosts::kNameScale,colours::kOrange);
     }
 
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 14)
     {
         //small pellet
-        dst.x = 250;
-        dst.y = 500;
-        dst.h = visuals::pellet::kBitmapHeight * 3;
-        dst.w = visuals::pellet::kBitmapWidth * 3;
+        dst.x = display::welcome_screen::pellet::kPosX;
+        dst.y = display::welcome_screen::pellet::kPosY;
+        dst.h = (int) display::welcome_screen::pellet::kSpriteHeight ;
+        dst.w = (int) display::welcome_screen::pellet::kSpriteWidth ;
 
         drawObject(window_.getRenderer(), window_.getTexture(),
                    visuals::pellet::kSprite.getImage(), dst);
-        dst.x = 280;
-        dst.y = 495;
-        window_.writeWord("10", dst.x, dst.y, 1, 2.2);
 
+        window_.writeWord("10",
+                          display::welcome_screen::pellet::kPointsTextPosX,
+                          display::welcome_screen::pellet::kPointsTextPosY,
+                          display::welcome_screen::pellet::kOffset,
+                          display::welcome_screen::pellet::kPointsTextscale);
 
-        dst.h = visuals::energizer::kBitmapHeight * 3;
-        dst.w = visuals::energizer::kBitmapWidth * 3;
-        dst.x = 242;
-        dst.y = 520;
-        // big Pellet
-        drawObject(window_.getRenderer(), window_.getTexture(),
-                   visuals::energizer::kSprite.getImage(), dst);
-
-
-        dst.x = 280;
-        dst.y = 522;
-        window_.writeWord("50", dst.x, dst.y, 1, 2.2);
-
-
-        dst.h = characters::special::points::kBitmapHeight * 2.7;
-        dst.w = characters::special::points::kBitmapWidth * 2.7;
-        dst.x = 320;
-        dst.y = 500;
+        dst.x = display::welcome_screen::pellet::kPointsPosX;
+        dst.y = display::welcome_screen::pellet::kPointsPosY;
+        dst.h = (int) display::welcome_screen::pellet::kPointsSpriteHeight ;
+        dst.w = (int) display::welcome_screen::pellet::kPointsSpriteWidth ;
 
 
         //pts for 10
         drawObject(window_.getRenderer(), window_.getTexture(),
                    characters::special::points::kSprite.getImage(),
                    dst);
-        dst.y = 525;
+
+
+
+
+        // big Pellet
+        dst.x = display::welcome_screen::energizer::kPosX;
+        dst.y = display::welcome_screen::energizer::kPosY;
+        dst.h = (int) display::welcome_screen::energizer::kSpriteHeight ;
+        dst.w = (int) display::welcome_screen::energizer::kSpriteWidth ;
+
+        drawObject(window_.getRenderer(), window_.getTexture(),
+                   visuals::energizer::kSprite.getImage(), dst);
+
+
+        window_.writeWord("50",
+                display::welcome_screen::energizer::kPointsTextPosX,
+                display::welcome_screen::energizer::kPointsTextPosY,
+                display::welcome_screen::energizer::kOffset,
+                display::welcome_screen::energizer::kPointsTextscale);
+
+
+        dst.x = display::welcome_screen::energizer::kPointsPosX;
+        dst.y = display::welcome_screen::energizer::kPointsPosY;
+        dst.h = (int) display::welcome_screen::energizer::kPointsSpriteHeight ;
+        dst.w = (int) display::welcome_screen::energizer::kPointsSpriteWidth ;
         //pts for 50
         drawObject(window_.getRenderer(), window_.getTexture(),
                    characters::special::points::kSprite.getImage(),
@@ -616,19 +650,22 @@ void Game::displayWelcomeScreen()
 
     if (counter_.getCount() >= config::settings::kFramesPerSecond * 15)
     {
-        dst.x = 70;
-        dst.y = 600;
-        window_.writeWord("` 1980 MIDWAY MFG. CO.", dst.x,
-                          dst.y, 1, 2.75, colours::kPink);
+        window_.writeWord("` 1980 MIDWAY MFG. CO.",
+                          display::welcome_screen::text::kMidwayX,
+                    display::welcome_screen::text::kMidwayY,
+                          display::welcome_screen::text::kMidwayOffset,
+                    display::welcome_screen::text::kMidwayScale,
+                    colours::kPink);
     }
 
 
+
     //TODO ANIMATION
-    dst.x = 60;
-    dst.y = config::dimensions::kWindowHeight - 50;
-    window_.writeWord("CREDIT 0", dst.x,
-                      dst.y, 1, 2.75);
-    //TODO ADD credit field  ?
+    window_.writeWord("CREDIT 0",
+                      display::scoreboard::kCreditPosX,
+                      display::scoreboard::kCreditPosY,
+                      offsets::kCreditText,
+                      scales::kCreditText);
     window_.update();
 
 }

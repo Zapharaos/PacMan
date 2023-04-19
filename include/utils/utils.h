@@ -70,25 +70,40 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path);
 
 void saveGameState(unsigned long high_score, int round);
 
+
+/**
+ *getHighScore
+ * get highest score reached locally
+ * @return
+ */
 std::string getSavedHighScore();
 
+/**
+ * getRound
+ * Get highest round reached locally from json file
+ * @return round
+ */
 std::string getRound();
 
-std::vector<SDL_Rect> extractRowFromMap(int width, int height, int
-number, int start_x, int start_y, int offset);
 
-std::vector<SDL_Rect> extractColumnFromMap(int width, int height, int
-number, int start_x, int start_y, int offset);
-
-SDL_Rect extractNthElementRowFromMap(int width, int height, int number,
-                                     int start_x, int start_y, int offset);
-
-SDL_Rect extractNthElementColumnFromMap(int width, int height, int
-number, int start_x, int start_y, int offset);
-
-static Sprite getPointsSprite(int points);
-
+/**
+ * drawObject
+ * Draws a sprite ath the desired position
+ * @param render
+ * @param texture
+ * @param src_rect Initial SDL_RECT
+ * @param dst_rect Dest SDL_RECT
+ */
 void
 drawObject(const std::shared_ptr<SDL_Renderer> &render, const std::shared_ptr<SDL_Texture> &texture, SDL_Rect src_rect,
            SDL_Rect dst_rect);
+
+
+/**
+ * saveGameState
+ * Save local game state
+ * @param high_score
+ * @param round
+ */
+void saveGameState(unsigned long high_score, int round);
 #endif //PACMAN_UTILS_H
