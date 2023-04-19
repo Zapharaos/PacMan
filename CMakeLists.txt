@@ -38,7 +38,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		include/utils/utils.h
 		include/game.h
 		include/config/config.h
-		include/utils/soundPlayer.h
 		src/display/animation.cpp
 		src/display/scoreBoard.cpp
 		src/display/window.cpp

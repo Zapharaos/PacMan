@@ -53,25 +53,25 @@ void Window::update() {
 void Window::writeHighScore() {
     //TODO make 1up flash
     writeWord("1UP",
-              config::positions::display::kScoreBoardOneUpTextX ,
-              config::positions::display::kScoreBoardOneUpTextY ,
+              display::scoreboard::kScoreBoardOneUpTextX ,
+              display::scoreboard::kScoreBoardOneUpTextY ,
               2,visuals::kScaleCell);
 
     writeWord("HIGH SCORE ",
-              config::positions::display::kScoreBoardHighScoreTextX ,
-              config::positions::display::kScoreBoardHighScoreTextY ,
+              display::scoreboard::kScoreBoardHighScoreTextX ,
+              display::scoreboard::kScoreBoardHighScoreTextY ,
             2,visuals::kScaleCell);
 }
 
 void Window::updateHighScore(unsigned long points) {
-    writeScorePoints(points, config::positions::display::kScoreBoardHighScoreX,
-                     config::positions::display::kScoreBoardHighScoreY, scales::kScore);
+    writeScorePoints(points, display::scoreboard::kScoreBoardHighScoreX,
+                     display::scoreboard::kScoreBoardHighScoreY, scales::kScore);
 }
 
 void Window::updateScore(unsigned long score) {
     writeScorePoints(score,
-                     config::positions::display::kScoreBoardScoreX,
-                     config::positions::display::kScoreBoardScoreY, scales::kScore);
+                     display::scoreboard::kScoreBoardScoreX,
+                     display::scoreboard::kScoreBoardScoreY, scales::kScore);
 }
 
 void Window::updateLives(int nb_lives) {

@@ -151,14 +151,34 @@ public:
      */
     void lostLife();
 
+    /**
+     * Handles initial welcome screen display
+     */
     void displayWelcomeScreen();
 
+    /**
+     * Display the points gotten from ghosts and powerups in the points list
+     */
     void displayPoints();
 
+    /**
+     * Adding points to display to the list
+     * @param points Number of points
+     * @param scale Display scale
+     * @param colour Display colour
+     * @param x X pos display
+     * @param y Y pos Display
+     */
     void addPointsToDisplay(unsigned long points, float scale, std::tuple<int, int, int> colour, int x, int y);
 
+    /**
+     * Handles game over event
+     */
     void resetGame();
 
+    /**
+     * Quits Game
+     */
     void quit();
 };
 
