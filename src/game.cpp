@@ -13,6 +13,7 @@ Game::Game() = default;
 Game::Game(const Map &map, Window window, unsigned long high_score) :
         map_(map), window_(std::move(window)), high_score_(high_score)
 {
+    //TODOS GET SAVED HIGHSCORE
     pellets_total_ = map.getCellsWithEntities().size();
     lives_ = config::settings::kLives;
     counter_.start(config::settings::kWelcomeScreen);
@@ -426,8 +427,8 @@ void Game::levelUp()
     // Reset entities.
     map_.reset();
     fruit_.reset();
-    pacman_.reset(); // TODO : pacman update speed
-    ghosts_.levelUp(); // TODO : ghosts update speed
+    pacman_.reset();
+    ghosts_.levelUp();
 }
 
 void Game::lostLife()
@@ -444,8 +445,7 @@ void Game::lostLife()
     status_ = StatusType::kRunning;
     pacman_.reset();
     ghosts_.restartFromHouse();
-    // TODO : speed and timers : reset
-    //TODO if no more lives left -> welcome screen
+    points_.clear();
 }
 
 void Game::resetGame()
@@ -459,10 +459,12 @@ void Game::resetGame()
     pacman_.reset();
     fruit_.reset();
     ghosts_.reset();
+    points_.clear();
+
     for (auto &ghost: ghosts_.getGhosts())
         ghost->hide();
 
-    // TODO : speed and timers : reset , reset frutis and lives display
+    fruit_.reset();
     counter_.start(config::settings::kWelcomeScreen);
     status_ = StatusType::kWelcomeScreen;
 }
@@ -658,9 +660,6 @@ void Game::displayWelcomeScreen()
                     colours::kPink);
     }
 
-
-
-    //TODO ANIMATION
     window_.writeWord("CREDIT 0",
                       display::scoreboard::kCreditPosX,
                       display::scoreboard::kCreditPosY,

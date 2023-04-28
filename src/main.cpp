@@ -9,9 +9,8 @@ int main(int argc, char **argv)
     Map map = Map{loadCellTypesFromFile(config::files::kMap)};
     Window window;
     window.init();
-    // TODO : fix high_score to not crash when file does not exist.
-    /*auto high_score = stoul(getSavedHighScore());*/
-    unsigned long high_score = 0;
+
+    auto high_score = stoul(getSavedHighScore());
     Game game = Game{map, window, high_score};
 
     // Prepare reading user's inputs.

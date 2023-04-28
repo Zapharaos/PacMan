@@ -13,7 +13,6 @@ void Window::init() {
     height_ = config::dimensions::kWindowHeight;
     title_ = config::settings::kName;
 
-    // TODO : replace
     initSpriteMap();
 
     // returns zero on success else non-zero
@@ -88,7 +87,6 @@ void Window::addFruits(SDL_Rect fruit) {
 
 void Window::initSpriteMap() {
     /** Numbers */
-    //TODO change to array
     character_map_.insert({'1', characters::numbers::one::kSprite.getImage()});
     character_map_.insert({'2', characters::numbers::two::kSprite.getImage()});
     character_map_.insert({'3', characters::numbers::three::kSprite.getImage()});
@@ -261,15 +259,6 @@ const std::shared_ptr<SDL_Renderer> &Window::getRenderer() const {
 const std::shared_ptr<SDL_Texture> &Window::getTexture() const {
     return texture_;
 }
-/*
-void Window::animateMovement(Position start,Position end, const Animation& animation, MovingEntity entity,Direction direction,
-                             int speed){
-    entity.animate(direction);
-    start.moveIntoDirection(direction ,speed);
-    entity.animate(direction);
-    entity.setPosition();
-}*/
-
 
 const std::unordered_map<unsigned long, SDL_Rect> &Window::getPointsMap() const {
     return points_map_;

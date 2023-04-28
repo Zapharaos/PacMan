@@ -120,7 +120,9 @@ namespace config {
 
     namespace positions {
 
-        inline static const Position kGhostHouseEntry{10, 10};
+        inline static const int kGhostHouseEntryX{10};
+        inline static const int kGhostHouseEntryY{10};
+        inline static const Position kGhostHouseEntry{kGhostHouseEntryX, kGhostHouseEntryY};
 
         namespace entities {
             /** Pacman default/starting position (in pixels). */
