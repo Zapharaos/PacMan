@@ -34,24 +34,44 @@ std::vector<CellType> loadCellTypesFromFile(const std::string &file_path)
 
 void saveGameState(unsigned long high_score, int round)
 {
-    //TODO fix crash
     json j =
             {
                     {"High Score", std::to_string(high_score)},
                     {"Round",      std::to_string(round)}
             };
 
-    // pretty print with indent of 4 spaces
+
+
+    // Open the file for writing
     std::ofstream file("../resources/save.json");
-    file << j;
+    if (!file) {
+        std::cerr << "Failed to open file for writing!\n";
+        return;
+    }
+    // Pretty print with indent of 4 spaces
+    file << j ;
 }
 
 
 std::string getSavedHighScore()
 {
+
+    // Check if the file exists
+    std::ifstream infile("../resources/save.json");
+    bool file_exists = infile.good();
+    std::string high_score = "0";
+
+    // If the file does not exist, create it
+    if (!file_exists) {
+        std::ofstream file("../resources/save.json", std::ofstream::out);
+        if (!file) {
+            std::cerr << "Failed to create file!\n";
+        }
+        return high_score ;
+    }
     std::ifstream f("../resources/save.json");
     json data = json::parse(f);
-    std::string high_score = data.value("High Score", "Not found");
+    high_score = data.value("High Score", "0");
     return high_score;
 }
 
