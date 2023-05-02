@@ -279,7 +279,7 @@ void Ghost::reset()
 {
     MovingEntity::reset();
     status_ = GhostStatus::kHouseWaiting;
-    previous_status_ = status_;
+    previous_status_ = {};
     frigthened_counter_.stop();
     pellet_counter_.restart();
     setSpeedSlow(true);

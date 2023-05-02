@@ -202,6 +202,7 @@ void MovingEntity::reset()
     left_.reset(); // reset animation
     setSprite(left_.getSprite()); // default sprite
     setPosition(start_); // reset position
+    setEnabled(true);
 }
 
 const Direction &MovingEntity::getPreviousDirection() const {
