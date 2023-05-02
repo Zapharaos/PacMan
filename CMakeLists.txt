@@ -5,12 +5,6 @@ project(PacMan LANGUAGES CXX)
 #Find SDL2 library
 find_package(SDL2 REQUIRED)
 
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_WIN32_THREADS_INIT 0)
-set(CMAKE_USE_PTHREADS_INIT 1)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-
 # Add source files to executable target
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE
@@ -31,13 +25,10 @@ target_sources(${PROJECT_NAME} PRIVATE
 		include/map/cell.h
 		include/map/map.h
 		include/map/position.h
-		include/utils/container.h
 		include/utils/json.hpp
-		include/utils/timer.h
 		include/utils/direction.h
 		include/utils/utils.h
 		include/game.h
-		include/config/config.h
 		src/display/animation.cpp
 		src/display/scoreBoard.cpp
 		src/display/window.cpp
@@ -50,7 +41,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		src/entity/pacman.cpp
 		src/map/map.cpp
 		src/map/position.cpp
-		src/utils/timer.cpp
 		src/utils/utils.cpp
 		src/game.cpp
 		src/main.cpp)
