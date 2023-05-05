@@ -50,7 +50,6 @@ void Window::update() {
 }
 
 void Window::writeHighScore() {
-    //TODO make 1up flash
     writeWord("1UP",
               display::scoreboard::kScoreBoardOneUpTextX ,
               display::scoreboard::kScoreBoardOneUpTextY ,
