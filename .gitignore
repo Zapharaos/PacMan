@@ -1,7 +1,14 @@
+# PacMan
+build/
+lib/
+
+# IDEs and OS
 .idea/
 .vs/
 .vscode/
 .DS_Store
+CMakeSettings.json
+out/
 
 # Prerequisites
 *.d
@@ -48,3 +55,9 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+.cmake/*
+cmake-build-debug
+build.ninja
+
+#local save file
+resources/save.json
