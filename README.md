@@ -11,7 +11,7 @@ Our version was made using C++ and the SDL library.
 
 ![Our PacMan as GIF](documents/pacman.gif)
 
-Normal speed video accessible here : https://youtu.be/32FccmnIAMc
+Normal speed video accessible here : https://youtu.be/FxbC6NFKyzQ
 
 - EL-CHAMAA Omar
 - FREITAG Matthieu (Zapharaos)
