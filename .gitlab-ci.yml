@@ -1,0 +1,23 @@
+
+image: stabletec/build-core:ubuntu
+
+stages :
+  - build
+
+build:
+  stage: build
+  only:
+    - merge_requests
+    - main
+  before_script:
+    - apt-get update
+    - apt-get install build-essential cmake libsdl2-dev -y
+  script:
+    - mkdir build && cd build
+    - cmake ..
+    - make
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
+      - build/
+
